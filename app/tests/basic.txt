@@ -32,6 +32,9 @@ reboot
 wait 600
 expect octave 1
 expect wave 1
+turn PRESET -1
+wait 30
+expect wave 0
 midi 90 3C 64
 wait 30
 expect note 60
@@ -42,10 +45,13 @@ expect peak_db_min -30
 midi 80 3C 00
 listen
 wait 100
-said BGIRL. OCTAVE +1. WAVE TRIANGLE
+said BGIRL. OCTAVE +1. PART BASS
 tap ARP
 wait 30
-said BUTTON ARP
+said GROOVE RUNNING
+tap ARP
+wait 30
+expect running 0
 # MASTER turned while a note plays: the gain glides, so no sample jumps further than the wave itself does
 midi 90 45 64
 wait 100
