@@ -1,0 +1,56 @@
+{
+  "human_listening": "pending",
+  "source": "tests/vocoder_test.c, same existing sequencer patterns and carrier, no post normalization",
+  "examples": [
+    {
+      "file": "12-band.flac",
+      "seconds": 9.0,
+      "rate": 44100,
+      "channels": 2,
+      "sha256": "171aea550eccc3f2e230f12d10ffecc68db92e5aed4bea745de982cbc1e93776",
+      "bytes": 60055,
+      "peak": 0.1416015625,
+      "rms": 0.015397606237804121
+    },
+    {
+      "file": "12-chorus.flac",
+      "seconds": 9.0,
+      "rate": 44100,
+      "channels": 2,
+      "sha256": "87ac4da6ad855c9192e99b35731dfb0da03674f87174ac078591c298b4a1aa12",
+      "bytes": 61074,
+      "peak": 0.1424560546875,
+      "rms": 0.012145113410149316
+    },
+    {
+      "file": "12-consonants.flac",
+      "seconds": 9.0,
+      "rate": 44100,
+      "channels": 2,
+      "sha256": "6165c2d5c864f970d48c9ba24fe26444c19d02673f12c447306ccadd1d50a620",
+      "bytes": 61583,
+      "peak": 0.1416015625,
+      "rms": 0.015383406825643174
+    },
+    {
+      "file": "8-band.flac",
+      "seconds": 9.0,
+      "rate": 44100,
+      "channels": 2,
+      "sha256": "5226516fc732d183fabfc6496a33dc247b7cc28cfe2e6ffc032fe91a702334fc",
+      "bytes": 61422,
+      "peak": 0.14373779296875,
+      "rms": 0.01732381081290945
+    },
+    {
+      "file": "dry.flac",
+      "seconds": 9.0,
+      "rate": 44100,
+      "channels": 2,
+      "sha256": "a0fa140e8fdddf35693ff6cf6eabee6fcad66a825b1ad1c98500c96c3c560ea8",
+      "bytes": 155218,
+      "peak": 0.075225830078125,
+      "rms": 0.011183707558018393
+    }
+  ]
+}

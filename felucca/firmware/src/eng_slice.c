@@ -59,14 +59,17 @@ typedef struct {
 } slc_src_t;
 
 static const slc_src_t SLC_BREAK = SLC_BREAK_INIT;
+#include "bgirl_speech.h"
+static const slc_src_t SLC_SPEECH = BG_SPEECH_INIT;
 static const slc_src_t SLC_PIANO = SLC_PIANO_INIT;
 static slc_src_t slc_usr[SMP_USER_SLOTS];
 typedef int16_t slc_rbuf_t[NVOICE][SLC_RB];           /* reverse windows, one per part voice (the part's eng_mem) */
 ENG_MEM_FITS("SLICE", sizeof(slc_rbuf_t));
 /* append-only: stored sounds keep their SRC numbers (1.0.4 added PIANO) */
-static const char *const N_SLC_SRC[] = {"BREAK", "USR1", "USR2", "USR3", "PIANO"};
+static const char *const N_SLC_SRC[] = {"BREAK", "USR1", "USR2", "USR3", "PIANO", "SPEECH"};
 #define SLC_SRC_PIANO 4u
-#define SLC_NSRC 5
+#define SLC_SRC_SPEECH 5u
+#define SLC_NSRC 6
 #define SLC_SINE 7u                  /* a voice's source when it has no material: the sine */
 static const char *const N_SLC_DIV[] = {"4", "8", "16", "32", "AUTO", "MAN"};
 static const char *const N_SLC_MODE[] = {"ONE", "GATE", "LOOP"};
@@ -94,6 +97,7 @@ static uint32_t slc_src_of(const int16_t *p) { return (uint32_t)clamp(p[P_E0], 0
 /* source 0 = BREAK, 1..3 = USR1..3, 4 = PIANO; 0 = no material (an empty or erased slot, no PIANO in the build) */
 static const slc_src_t *slc_get(uint32_t src)
 {
+    if (src == SLC_SRC_SPEECH) return &SLC_SPEECH;
     if (!src)
         return SLC_BREAK.len ? &SLC_BREAK : 0;
     if (src == SLC_SRC_PIANO)
@@ -131,7 +135,7 @@ static inline int32_t slc_dec_next(const slc_src_t *s, slc_dec_t *d)
         d->pred = 0;
         d->idx = 0;
     }
-    b = SMP_DATA[g->off + (rel >> 1)];
+    b = (s == &SLC_SPEECH ? BG_SPEECH_DATA : SMP_DATA)[g->off + (rel >> 1)];
     code = (rel & 1u) ? (b >> 4) : (b & 15u);
     step = IMA_STEP[d->idx];
     vd = step >> 3;
@@ -165,6 +169,7 @@ static const slc_man_t *slc_man_of(const slc_src_t *s)
 static uint32_t slc_man_end(const slc_src_t *s, const slc_man_t *m) { return m->end && m->end < s->len ? m->end : s->len; }
 static uint32_t slc_count(const slc_src_t *s, uint32_t div)
 {
+    if(s==&SLC_SPEECH) div=SLC_DIV_AUTO;
     const slc_man_t *m = div == SLC_DIV_MAN ? slc_man_of(s) : 0;
     return div < SLC_DIV_AUTO ? 4u << div : m ? m->n : s->nauto;
 }
@@ -178,6 +183,7 @@ static uint32_t slc_note_slice(const int16_t *p, uint32_t note, uint32_t n)
 /* slice j of DIV div: [*a, *b), *st the state at *a */
 static void slc_bounds(const slc_src_t *s, uint32_t div, uint32_t j, uint32_t *a, uint32_t *b, uint32_t *st)
 {
+    if(s==&SLC_SPEECH) div=SLC_DIV_AUTO;
     const slc_man_t *m = div == SLC_DIV_MAN ? slc_man_of(s) : 0;
     if (div < SLC_DIV_AUTO) {
         uint32_t w = SLC_GRID >> (2u + div);
@@ -436,12 +442,19 @@ static int16_t *slc_rb(track_t *t, voice_t *v)
     return p < NPART && i < NVOICE ? (*(slc_rbuf_t *)ENG_MEM(p))[i] : 0;
 }
 
+static int32_t speech_last[NTRK], speech_from[NTRK];
+static uint32_t speech_fade[NTRK];
+
 static void slice_note_on(track_t *t, voice_t *v)
 {
     const int16_t *p = t->p;
     uint32_t src = slc_src_of(p), div = (uint32_t)clamp(p[P_E1], 0, SLC_DIV_MAN), rev = p[P_E5] != 0;
     uint32_t a, b, st, j;
+    if (src == SLC_SRC_SPEECH) { div = SLC_DIV_AUTO; rev = 0; }
     const slc_src_t *s = slc_get(src);
+    if (src == SLC_SRC_SPEECH) {
+        uint32_t k=t-trk; speech_from[k]=speech_last[k]; speech_fade[k]=128;
+    }
     v->ph[1] = 0;
     v->s[2] = v->s[3] = 0;
     v->s[5] = 32767;
@@ -538,9 +551,9 @@ static inline int slc_rev(const slc_src_t *s, voice_t *v, int16_t *rb, int loop,
 static int32_t slice_amp(track_t *t, voice_t *v, int32_t adsr)
 {
     const int16_t *p = t->p;
-    if (p[P_E4] == SLC_ONE && v->stage == 3u && ((uint32_t)v->s[4] & 7u) != SLC_SINE)
+    if ((p[P_E4] == SLC_ONE || slc_src_of(p) == SLC_SRC_SPEECH) && v->stage == 3u && ((uint32_t)v->s[4] & 7u) != SLC_SINE)
         v->stage = 2;                                   /* ONE: the slice plays to its end (the sine has none) */
-    if (p[P_E6] < 127) {
+    if (slc_src_of(p) != SLC_SRC_SPEECH && p[P_E6] < 127) {
         v->s[5] -= mulq16(v->s[5], ENV_EXP[p[P_E6] & 127]);
         if (v->s[5] < 8)
             v->s[6] = 2;                                /* faded out: the voice ends */
@@ -553,7 +566,7 @@ static void slice_render(track_t *t, voice_t *v, int32_t *out, uint32_t n, const
     const int16_t *p = t->p;
     uint32_t pk = (uint32_t)v->s[4], i, frac = v->ph[1], rev = (pk >> 7) & 1u, stepq, rem;
     int32_t lp = 4000 + ((clamp((p[P_E7] << 8) + m->cutoff, 0, 127 << 8) * 28767) >> 15), x;
-    int loop = p[P_E4] == SLC_LOOP && v->gate;
+    int loop = slc_src_of(p) != SLC_SRC_SPEECH && p[P_E4] == SLC_LOOP && v->gate;
     const slc_src_t *s = v->s[6] == 2 || (pk & 7u) == SLC_SINE ? 0 : slc_get(pk & 7u);
     int16_t *rb = slc_rb(t, v);
     slc_dec_t d;
@@ -566,6 +579,7 @@ static void slice_render(track_t *t, voice_t *v, int32_t *out, uint32_t n, const
         return;
     }
     stepq = (pow2_q16(clamp(m->pitch16 - v->pitch_cur + p[P_E3] * 16, -1536, 576)) >> 8) * (s->rate >> 8);
+    if (s == &SLC_SPEECH) stepq = s->rate;
     d.pos = v->ph[0];
     d.pred = v->s[0];
     d.idx = v->s[1];
@@ -596,7 +610,14 @@ static void slice_render(track_t *t, voice_t *v, int32_t *out, uint32_t n, const
         }
         y = v->s[2] + (((v->s[3] - v->s[2]) * (int32_t)(frac >> 1)) >> 15);
         v->s[7] += mulq15(y - v->s[7], lp);             /* TONE */
-        out[i] += voice_amp(v->s[7], m, i) << 1;
+        y = voice_amp(v->s[7], m, i) << 1;
+        if (s == &SLC_SPEECH) {
+            uint32_t k=t-trk, fade=speech_fade[k];
+            if (fade) { y=(int32_t)(((int64_t)y*(128-fade)+(int64_t)speech_from[k]*fade)/128); speech_fade[k]--; }
+            speech_last[k]=y;
+            if (v->s[6]==2) speech_last[k]=0;
+        }
+        out[i] += y;
         if (v->s[6] == 2)
             break;
     }
