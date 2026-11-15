@@ -1,3 +1,11 @@
+# Felucca-Engines (MIT): the ANALOG LOFI TRIO WHEEL NOISE PHASE engines, dsp.c, felucca_engine.h, their tables.
+# felucca-bsp (MPL-2.0): the hardware layer (chip/, boards/fm1/).
+[submodule "felucca/firmware/engines"]
+	path = felucca/firmware/engines
+	url = https://github.com/hugelton/Felucca-Engines.git
+[submodule "felucca/firmware/bsp"]
+	path = felucca/firmware/bsp
+	url = https://github.com/hugelton/felucca-bsp.git
 [submodule "base"]
 	path = base
 	url = https://github.com/charlesvestal/fm1-base
