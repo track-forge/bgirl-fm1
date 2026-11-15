@@ -20,14 +20,14 @@ not the application architecture for this next milestone.
 
 This plan supersedes the architectural direction of `INITIAL_BUILD_PLAN.md` for
 the next implementation. That document and `BUILD_STATUS.md` remain historical
-evidence. Existing `AGENTS.md` still describes an independent fm1-base app:
-update its app-layout/base-pin rules in the migration PR to reflect this explicit
-direction, while retaining real-time audio, provenance and verification safeguards.
+evidence. `AGENTS.md` now points to this migration direction while distinguishing
+the existing prototype from the intended baseline. Keep it current with the actual
+layout during implementation, retaining real-time audio, provenance and verification safeguards.
 Do not mistake the old base-pin rule for a requirement to port Felucca onto
 fm1-base. Use Felucca's own supported dependency/build layout as the starting point.
 
-**This planning PR adds only this document.** No source, dependency, defaults,
-workflow, license or notebook changes are part of it.
+**This planning PR adds this document and updates `AGENTS.md`.** No source,
+dependency, defaults, workflow, license or notebook changes are part of it.
 
 ## What we inherit
 
