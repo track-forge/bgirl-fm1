@@ -52,7 +52,8 @@ static void midi_in(void)                    /* audio interrupt: the packets tha
 {
     uint32_t pkt;
     int port;
-    while (plat_midi_in(&pkt, &port)) {
+    unsigned budget=64; /* Bound work under continuous MIDI traffic; drain more next block. */
+    while (budget-- && plat_midi_in(&pkt, &port)) {
         uint32_t st = (pkt >> 8) & 0xFFu, d1 = (pkt >> 16) & 0x7Fu, d2 = (pkt >> 24) & 0x7Fu;
         if (st != 0xF8u && st != 0xFEu) {    /* (clock and active sensing would flood the screen) */
             midi_last = pkt;
