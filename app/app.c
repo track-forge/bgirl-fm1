@@ -1,24 +1,22 @@
 /* SPDX-License-Identifier: MPL-2.0
  * Copyright (C) 2026 Charles Vestal */
-/* The template app: every control on the screen as it arrives, by the name the app knows it by (plat.h B_*, EN_*,
- * the keys), and a few of them doing something: the keys play a voice and go out over USB-MIDI (MIDI in plays it
- * too), OCT- / OCT+ set the octave, PRESET the wave, MASTER the volume, SAVE stores the settings; the keys are
- * played with velocity and pressure (lib/touch.h), shown on them. One of each thing the platform offers, kept short. Part of the unity build (device/unity.c, host/plat_host.c), after the platform:
- * gfx.c and announce.c are in scope. */
+/* BGIRL electro app. Input/accessibility/storage adapted from the fm1-base template.
+ * DSP and frame-clock sequencing live in dsp/, not the UI frame loop. */
 #include "fastmath.h"
+#include "dsp/electro.h"
 
-#define SET_MAGIC 0x54504C31u            /* "TPL1": the settings record; another magic loads defaults */
+#define SET_MAGIC 0x42475231u            /* "BGR1": the settings record; another magic loads defaults */
 typedef struct {
     uint32_t magic;
     int8_t octave;                       /* -2 .. +2 */
-    uint8_t wave;                        /* 0 sine, 1 triangle */
+    uint8_t wave;                        /* 0 bass, 1 experimental live vocoder */
     uint8_t ble_off;                     /* Bluetooth switched off (REC held); 0, the default: on */
     uint8_t rsv[1];
 } settings_t;
 static settings_t set;
 static uint8_t set_dirty;                /* changed since the last save: SAVE is lit */
 
-static const char *const WAVE_NAME[] = {"SINE", "TRIANGLE"};
+static const char *const PART_NAME[] = {"BASS", "VOICE"};
 /* the controls by their names in plat.h, in its order */
 static const char *const BTN_NAME[NB] = {"FX", "SEL", "ENV", "LFO", "EDIT", "GLO", "HOME", "SAVE", "ARP", "SEQ",
                                          "PLAY", "REC", "OCT-", "OCT+"};
@@ -26,19 +24,27 @@ static const char *const ENC_NAME[NE] = {"SELECT", "ALGO", "PRESET", "K1", "K2",
 
 /* ------------------------------------------------------------------ voice --- */
 /* one voice, the last note wins; the main loop and MIDI in set it, the audio interrupt plays it */
-static volatile int32_t voice_note = -1;     /* MIDI note, -1 = released */
-static volatile float voice_vel = 1.0f;      /* the note's velocity, 0..1 */
-static float voice_phase, voice_level, gain_now;   /* gain_now glides to MASTER: no step at a block's edge */
+/* One aligned scalar publishes note, velocity and retrigger generation together.
+ * Low byte is MIDI note+1 (0 released); bits 8..14 velocity; high 17 bits generation.
+ * UI and render are serialized by the platform's interrupt model, not a heap queue. */
+static volatile uint32_t note_request;
+#define voice_note ((int32_t)(note_request & 255u) - 1)
+static electro engine;
+static volatile uint32_t run_request, panic_serial;
+static volatile uint32_t bpm_request=120, mute_request, tone_request=45;
+static volatile uint32_t displayed_step, displayed_steps, displayed_running;
 
+static void note_release_all(void) { note_request &= ~255u; }
 static void note_on(int32_t note, uint32_t vel)
 {
-    voice_vel = (float)vel / 127.0f;
-    voice_note = note;
+    uint32_t generation;
+    if(note<0 || note>127) return;
+    generation=(note_request+32768u)&0xffff8000u;
+    note_request=generation | ((vel>127?127:vel)<<8) | (uint32_t)(note+1);
 }
 static void note_off(int32_t note)
 {
-    if (voice_note == note)
-        voice_note = -1;
+    if(voice_note==note) note_release_all();
 }
 
 static volatile uint32_t midi_last, midi_last_port, midi_count;   /* the last message in (shown), and how many */
@@ -46,14 +52,17 @@ static void midi_in(void)                    /* audio interrupt: the packets tha
 {
     uint32_t pkt;
     int port;
-    while (plat_midi_in(&pkt, &port)) {
-        uint32_t st = (pkt >> 8) & 0xFFu, d1 = (pkt >> 16) & 0x7Fu, d2 = pkt >> 24;
+    unsigned budget=64; /* Bound work under continuous MIDI traffic; drain more next block. */
+    while (budget-- && plat_midi_in(&pkt, &port)) {
+        uint32_t st = (pkt >> 8) & 0xFFu, d1 = (pkt >> 16) & 0x7Fu, d2 = (pkt >> 24) & 0x7Fu;
         if (st != 0xF8u && st != 0xFEu) {    /* (clock and active sensing would flood the screen) */
             midi_last = pkt;
             midi_last_port = (uint32_t)port;
             midi_count++;
         }
-        if ((st & 0xF0u) == 0x90u && d2)
+        if (st == 0xFFu || ((st & 0xF0u) == 0xB0u && (d1 == 120u || d1 == 123u)))
+            app_panic();
+        else if ((st & 0xF0u) == 0x90u && d2)
             note_on((int32_t)d1, d2);
         else if ((st & 0xF0u) == 0x80u || (st & 0xF0u) == 0x90u)
             note_off((int32_t)d1);
@@ -62,30 +71,27 @@ static void midi_in(void)                    /* audio interrupt: the packets tha
 
 void app_render(int32_t *lr, uint32_t n, uint32_t master_q12)
 {
-    uint32_t i;
-    int32_t note = voice_note;
-    float target = note >= 0 ? 0.25f * voice_vel : 0.0f;
-    float inc = note >= 0 ? 440.0f * fm_exp2f((float)(note - 69) / 12.0f) / 44100.0f : 0.0f;
-    float gain = (float)master_q12 / 4096.0f * 8300000.0f;   /* MASTER, read once a block */
+    static uint32_t last_panic;
     midi_in();
-    for (i = 0; i < n; i++) {
-        float s;
-        voice_level += (target - voice_level) * 0.002f;          /* ~10 ms attack and release */
-        gain_now += (gain - gain_now) * 0.004f;                  /* ~5 ms: turning MASTER does not click */
-        voice_phase += inc;
-        if (voice_phase >= 1.0f)
-            voice_phase -= 1.0f;
-        s = set.wave ? 4.0f * fm_fabsf(voice_phase - 0.5f) - 1.0f : fm_sinf(voice_phase * 6.2831853f);
-        s *= voice_level * gain_now;
-        lr[2 * i] = (int32_t)s;
-        lr[2 * i + 1] = (int32_t)s;
+    if (panic_serial != last_panic) {
+        last_panic=panic_serial;
+        electro_panic(&engine);
     }
+    if (run_request != engine.running)
+        electro_transport(&engine, run_request);
+    { uint32_t req=note_request;
+      electro_note(&engine,(int)(req&255u)-1,(req>>8)&127u,req>>15,set.wave); }
+    electro_render(&engine,lr,n,master_q12,bpm_request,mute_request,tone_request);
+    displayed_step=engine.step;
+    displayed_steps=engine.steps;
+    displayed_running=engine.running;
 }
 
 void app_panic(void)
 {
-    voice_note = -1;
-    voice_level = 0.0f;
+    note_release_all();
+    run_request=0;
+    panic_serial++;
 }
 
 /* --------------------------------------------------------------- settings --- */
@@ -99,6 +105,7 @@ static void settings_defaults(void)
 
 void app_init(void)
 {
+    electro_init(&engine);
     if (plat_store_load(OBJ_SETTINGS, &set, sizeof set) != (int)sizeof set || set.magic != SET_MAGIC
         || set.octave < -2 || set.octave > 2 || set.wave > 1u || set.ble_off > 1u)
         settings_defaults();
@@ -109,6 +116,7 @@ static struct {
     char msg[2][24];                     /* a short message over the header */
     uint32_t msg_until;
     uint32_t keys, btn;                  /* held at the last input */
+    uint8_t key_note[NKEYS];             /* original MIDI note, even across octave changes */
     uint8_t vel[NKEYS], prs[NKEYS];      /* each key's last velocity, and its pressure while held */
     int32_t last_key;                    /* the key pressed last: its numbers in the header */
     uint8_t looking;                     /* Bluetooth MIDI devices: REC pressed, the scan's list up (lib/btdev) */
@@ -181,24 +189,11 @@ static void speak(void)
         t[0] = 0;
         text_cat(t, APP_NAME ". OCTAVE ");
         text_cat(t, o);
-        text_cat(t, ". WAVE ");
-        text_cat(t, WAVE_NAME[set.wave]);
-        if (midi_count) {                    /* the last MIDI message in, as the screen shows it */
-            static const char *const PORT[NPORTS] = {"USB", "BLE", "TRS"};
-            static const char HEX[] = "0123456789ABCDEF";
-            uint32_t m = midi_last, b;
-            char h[10];
-            for (b = 0; b < 3u; b++) {
-                uint32_t v = (m >> (8u + 8u * b)) & 0xFFu;
-                h[3 * b] = HEX[v >> 4];
-                h[3 * b + 1] = HEX[v & 15u];
-                h[3 * b + 2] = b < 2u ? ' ' : 0;
-            }
-            text_cat(t, ". MIDI IN ");
-            text_cat(t, midi_last_port < NPORTS ? PORT[midi_last_port] : "");
-            text_cat(t, " ");
-            text_cat(t, h);
-        }
+        text_cat(t, ". PART ");
+        text_cat(t, PART_NAME[set.wave]);
+        text_cat(t, run_request ? ". RUNNING " : ". STOPPED ");
+        { char n[12]; int_text((int32_t)bpm_request,n);text_cat(t,n); }
+        text_cat(t, mute_request ? " BPM. DRUMS MUTED" : " BPM. DRUMS ON");
         ann_say(t, 0, ANN_NOW);
     }
     ann_tick(plat_ms());
@@ -214,13 +209,22 @@ static void note_name(int32_t note, char *b)
     text_cat(b, o);
 }
 
+/* Match all outgoing key-ons before octave/mode/stop/panic. Key-up later is harmless. */
+static void release_keys(void)
+{
+    unsigned k;
+    for(k=0;k<NKEYS;k++) if((ui.keys|touch_keys())&(1u<<k))
+        plat_midi_send(0x08u | 0x80u<<8 | (uint32_t)ui.key_note[k]<<16,TO_USB|TO_BLE);
+}
+
 static void octave_step(int32_t d)
 {
     int32_t o = clamp(set.octave + d, -2, 2);
     char t[4];
     if (o == set.octave)
         return;
-    voice_note = -1;                         /* a key held across the change would not find its note off */
+    release_keys();
+    note_release_all();                         /* a key held across the change would not find its note off */
     set.octave = (int8_t)o;
     set_dirty = 1;
     octave_text(t);
@@ -272,6 +276,7 @@ static void input(void)
         int32_t note = 53 + (int32_t)k + 12 * set.octave;
         if ((keys & bit) && !(ui.keys & bit)) {
             v = touch_vel(k);
+            ui.key_note[k]=(uint8_t)note;
             ui.vel[k] = (uint8_t)v;
             ui.prs[k] = 0;
             ui.last_key = (int32_t)k;
@@ -279,9 +284,11 @@ static void input(void)
             plat_midi_send(0x09u | 0x90u << 8 | (uint32_t)note << 16 | v << 24, TO_USB | TO_BLE);   /* BLE: if built with it */
         } else if (!(keys & bit) && (ui.keys & bit)) {
             ui.prs[k] = 0;
+            note=ui.key_note[k];
             note_off(note);
             plat_midi_send(0x08u | 0x80u << 8 | (uint32_t)note << 16, TO_USB | TO_BLE);
-        } else if ((keys & bit) && touch_pressure(k) != ui.prs[k]) {   /* pressure: poly aftertouch */
+        } else if ((keys & bit) && touch_pressure(k) != ui.prs[k]) {
+            note=ui.key_note[k];   /* pressure: poly aftertouch */
             ui.prs[k] = touch_pressure(k);
             ui.redraw = 1;
             plat_midi_send(0x0Au | 0xA0u << 8 | (uint32_t)note << 16 | (uint32_t)ui.prs[k] << 24, TO_USB | TO_BLE);
@@ -297,7 +304,18 @@ static void input(void)
             octave_step(1);
         else if (k == B_REC && FM1B_BLE)
             ui.rec_t = plat_ms();                /* a press: on release (a hold switches Bluetooth) */
-        else if (k == B_SAVE) {
+        else if (k == B_ARP) {
+            run_request=!run_request;
+            if(!run_request) {release_keys();app_panic();}
+            app_say("GROOVE",run_request?"RUNNING":"STOPPED");
+        } else if (k == B_FX) {
+            mute_request=!mute_request;
+            app_say("DRUMS",mute_request?"MUTED":"ON");
+        } else if (k == B_HOME) {
+            release_keys();
+            app_panic();
+            app_say("PANIC","STOPPED");
+        } else if (k == B_SAVE) {
             if (plat_store_save(OBJ_SETTINGS, &set, sizeof set) == 0) {
                 set_dirty = 0;
                 app_say("SAVED", "");
@@ -322,7 +340,7 @@ static void input(void)
                 app_say("BUTTON", "REC");
         }
     }
-    for (k = 0; k < NE; k++) {               /* an encoder turned: its count; PRESET also changes the wave */
+    for (k = 0; k < NE; k++) {               /* an encoder turned: PRESET selects the playable part */
         char t[12];
         if ((e = plat_enc((int)k)) == 0)
             continue;
@@ -333,9 +351,17 @@ static void input(void)
             btdev_choose(btdev_pick() + e);
             ble_device_say();
         } else if (k == EN_PRESET) {
+            release_keys();
+            note_release_all();
             set.wave ^= 1u;
             set_dirty = 1;
-            app_say("WAVE", WAVE_NAME[set.wave]);
+            app_say("PART", PART_NAME[set.wave]);
+        } else if (k == EN_K1) {
+            bpm_request=(uint32_t)clamp((int32_t)bpm_request+e,60,180);
+            int_text((int32_t)bpm_request,t); app_say("TEMPO",t);
+        } else if (k == EN_K2) {
+            tone_request=(uint32_t)clamp((int32_t)tone_request+e,0,100);
+            int_text((int32_t)tone_request,t); app_say("TONE",t);
         } else {
             int_text(ui.turns[k], t);
             app_say(ENC_NAME[k], t);
@@ -346,7 +372,8 @@ static void input(void)
     ui.keys = keys;
     ui.btn = btn;
     plat_glow(1);                            /* the unlit buttons glow, readable in the dark */
-    plat_leds(btn | (set_dirty ? 1u << B_SAVE : 0u), keys);
+    plat_leds(btn | (set_dirty ? 1u << B_SAVE : 0u) | (run_request ? 1u << B_ARP : 0u)
+              | (mute_request ? 1u << B_FX : 0u), keys);
 }
 
 void app_input_only(void) { input(); }
@@ -373,82 +400,38 @@ static void key_cell(int32_t x, int32_t y, int32_t w, int32_t h, uint32_t k, uin
 static void draw(void)
 {
     char t[24];
-    int32_t note = voice_note;
-    uint32_t i, now = plat_ms(), pct = plat_master() * 100u / 4096u;
-    static const uint8_t WK[16] = PLAT_WHITE_KEYS, BK[11] = PLAT_BLACK_KEYS;
-    /* the header: the name and the note, or a message for a moment */
-    cv_begin(240, 32, C_BLACK);
-    if (now < ui.msg_until) {
-        int32_t x = cv_text(10, 6, &FONT_B, ui.msg[0], C_WHITE);
-        cv_text(x + 8, 6, &FONT_B, ui.msg[1], C_HI);
-    } else {
-        int32_t x = cv_text(10, 6, &FONT_B, APP_NAME, C_WHITE);
-        if (FM1B_BLE)                        /* Bluetooth: grey while it waits, lit while a computer is connected */
-            x = cv_text(x + 8, 10, &FONT_XS, "BLE", plat_ble_connected() ? C_HI : C_DIM);
-        if (FM1B_BLE_CENTRAL)                /* a Bluetooth MIDI device: lit while connected */
-            cv_text(x + 6, 10, &FONT_XS, "DEV", plat_ble_device() == BLE_DEV_READY ? C_HI : C_DIM);
-        if (note >= 0) {                     /* the note, and the last key's velocity and pressure */
-            int32_t x;
-            note_name(note, t);
-            x = 230 - text_w(&FONT_B, t);
-            cv_text(x, 6, &FONT_B, t, C_HI);
-            if (ui.keys >> ui.last_key & 1u) {
-                char n[24] = "V ";
-                int_text(ui.vel[ui.last_key], t);
-                text_cat(n, t);
-                text_cat(n, "  P ");
-                int_text(ui.prs[ui.last_key], t);
-                text_cat(n, t);
-                cv_text(x - 12 - text_w(&FONT_XS, n), 10, &FONT_XS, n, C_GRAY);
-            }
-        }
+    uint32_t i;
+    static const uint16_t pattern[3]={0x0941,0x1010,0xaaaa};
+    static const char *const names[3]={"KICK","SNARE","HAT"};
+    static const uint8_t WK[16]=PLAT_WHITE_KEYS, BK[11]=PLAT_BLACK_KEYS;
+    cv_begin(240,180,C_BLACK);
+    cv_text(8,4,&FONT_L,APP_NAME,C_HI);
+    cv_text(140,12,&FONT_S,run_request?"RUNNING":"STOPPED",C_WHITE);
+    int_text((int32_t)bpm_request,t);
+    cv_text(8,42,&FONT_L,t,C_WHITE);
+    cv_text(68,55,&FONT_XS,"BPM",C_GRAY);
+    cv_text(115,44,&FONT_M,PART_NAME[set.wave],C_HI);
+    cv_text(8,80,&FONT_XS,mute_request?"DRUMS MUTED / FX RETURN":"DRUMS ON / FX MUTE",C_GRAY);
+    for(i=0;i<16;i++) {
+        unsigned row;
+        for(row=0;row<3;row++)
+            cv_rect(44+(int)i*12,101+(int)row*16,9,10,
+                run_request&&displayed_step==i?C_WHITE:(pattern[row]&(1u<<i)?C_HI:C_LINE));
     }
-    cv_blit(0, 0);
-    /* the buttons, 4 to a row, lit while held; the encoders and their counts, lit for a moment after a turn */
-    cv_begin(240, 144, C_BLACK);
-    for (i = 0; i < NB; i++)
-        cell(4 + (int32_t)(i % 4u) * 58, (int32_t)(i / 4u) * 21, 56, BTN_NAME[i], (ui.btn >> i) & 1u);
-    for (i = 0; i < NE; i++) {
-        int32_t x = 4 + (int32_t)(i % 4u) * 58, y = 88 + (int32_t)(i / 4u) * 28;
-        int lit = ui.turned_at[i] && now - ui.turned_at[i] < 300u;
-        cv_text(x, y, &FONT_XS, ENC_NAME[i], lit ? C_HI : C_GRAY);
-        int_text(ui.turns[i], t);
-        cv_text(x, y + 13, &FONT_XS, t, lit ? C_WHITE : C_DIM);
+    for(i=0;i<3;i++)cv_text(2,98+(int)i*16,&FONT_XS,names[i],C_GRAY);
+    cv_text(8,153,&FONT_XS,"ARP RUN   K1 BPM   K2 TONE",C_GRAY);
+    cv_blit(0,0);
+    cv_begin(240,60,C_BLACK);
+    for(i=0;i<16;i++)key_cell(4+(int)i*14,14,13,14,WK[i],C_DIM);
+    for(i=0;i<11;i++) {
+        static const uint8_t AT[11]={0,1,2,4,5,7,8,9,11,12,14};
+        key_cell(4+(int)AT[i]*14+8,0,11,12,BK[i],C_LINE);
     }
-    cv_blit(0, 36);
-    /* the keys, black above white: a held key fills to its velocity (amber), its pressure over that (white) */
-    cv_begin(240, 60, C_BLACK);
-    for (i = 0; i < 16u; i++)
-        key_cell(4 + (int32_t)i * 14, 14, 13, 14, WK[i], C_DIM);
-    for (i = 0; i < 11u; i++) {
-        static const uint8_t AT[11] = {0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14};   /* the white key each one follows */
-        key_cell(4 + (int32_t)AT[i] * 14 + 8, 0, 11, 12, BK[i], C_LINE);
-    }
-    octave_text(t);
-    cv_text(4, 36, &FONT_XS, "OCT", C_GRAY);
-    cv_text(30, 36, &FONT_XS, t, C_HI);
-    cv_text(64, 36, &FONT_XS, "PRESET", C_GRAY);
-    cv_text(112, 36, &FONT_XS, WAVE_NAME[set.wave], C_HI);
-    if (midi_count) {                        /* the last MIDI message in, and where from */
-        static const char *const PORT[NPORTS] = {"USB", "BLE", "TRS"};
-        static const char HEX[] = "0123456789ABCDEF";
-        uint32_t m = midi_last, b;
-        char h[12];
-        for (b = 0; b < 3u; b++) {
-            uint32_t v = (m >> (8u + 8u * b)) & 0xFFu;
-            h[3 * b] = HEX[v >> 4];
-            h[3 * b + 1] = HEX[v & 15u];
-            h[3 * b + 2] = b < 2u ? ' ' : 0;
-        }
-        cv_text(4, 48, &FONT_XS, "MIDI IN", C_GRAY);
-        cv_text(52, 48, &FONT_XS, midi_last_port < NPORTS ? PORT[midi_last_port] : "", C_HI);
-        cv_text(82, 48, &FONT_XS, h, C_WHITE);
-    }
-    cv_text(178, 36, &FONT_XS, "VOL", C_GRAY);
-    int_text((int32_t)pct, t);
-    text_cat(t, "%");
-    cv_text(204, 36, &FONT_XS, t, C_HI);
-    cv_blit(0, 180);
+    octave_text(t);cv_text(4,36,&FONT_XS,"OCT",C_GRAY);cv_text(30,36,&FONT_XS,t,C_HI);
+    cv_text(70,36,&FONT_XS,"TONE",C_GRAY);int_text((int)tone_request,t);cv_text(106,36,&FONT_XS,t,C_HI);
+    cv_text(150,36,&FONT_XS,"VOL",C_GRAY);int_text((int)(plat_master()*100u/4096u),t);cv_text(180,36,&FONT_XS,t,C_HI);
+    cv_text(4,48,&FONT_XS,set.wave?"EXPERIMENTAL VOICE / HOME PANIC":"PRESET PART / HOME PANIC",C_GRAY);
+    cv_blit(0,180);
 }
 
 void app_ui_init(void)
@@ -464,6 +447,7 @@ void app_frame(void)
     uint32_t i, now = plat_ms(), pct = plat_master() * 100u / 4096u;
     input();
     speak();
+    { static uint32_t last_step; if(displayed_steps!=last_step) {last_step=displayed_steps;ui.redraw=1;} }
     for (i = 0; i < NE; i++)                 /* an encoder's light goes out */
         if (ui.turned_at[i] && now - ui.turned_at[i] < 400u && now > lit_until)
             lit_until = ui.turned_at[i] + 300u;
@@ -503,7 +487,13 @@ void app_frame(void)
 #ifdef PLAT_HOST
 int app_expect(const char *what, int *got)
 {
-    if (!strcmp(what, "octave"))
+    if (!strcmp(what,"running")) *got=displayed_running;
+    else if (!strcmp(what,"tempo")) *got=bpm_request;
+    else if (!strcmp(what,"muted")) *got=mute_request;
+    else if (!strcmp(what,"step")) *got=displayed_step;
+    else if (!strcmp(what,"steps")) *got=displayed_steps;
+    else if (!strcmp(what,"tone")) *got=tone_request;
+    else if (!strcmp(what, "octave"))
         *got = set.octave;
     else if (!strcmp(what, "wave"))
         *got = set.wave;

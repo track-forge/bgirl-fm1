@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-# This planning scaffold deliberately retains the upstream template identity.
+# Device identity/storage are unreviewed: host and web only.
 case "${1:-}" in
   --host|--web) ;;
   *) echo "Usage: ./build.sh --host|--web (device/release setup is deferred)" >&2; exit 2 ;;
