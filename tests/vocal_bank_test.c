@@ -35,7 +35,8 @@ static void entry_tests(void) {
             for(uint32_t i=a;i<b;i++) assert(slc_dec_next(&SLC_VOCALS,&d)==slc_dec_next(&SLC_VOCALS,&all));
             uint32_t frames=duration(60+j);
             printf("duration g%u j%u frames%u expected%u pos%u\n",g,j,frames,(b-a)*2,trk[3].v[0].ph[0]);
-            assert(frames>=(b-a)*2 && frames<=(b-a)*2+CTL*4);
+            assert(abs((int)frames-(int)((b-a)*2))<=HALF_FRAMES*2);
+            assert(trk[3].v[0].ph[0]==b);
             for(int32_t n=0;n<128;n++) {
                 trk[3].p[P_E2]=j; trk[3].p[P_ROOT]=0;
                 assert(slc_note_slice(trk[3].p,n,BG_VOCAL_GROUPS[g].n)==(uint32_t)((n-60+(int32_t)j+128*(int32_t)BG_VOCAL_GROUPS[g].n)%(int32_t)BG_VOCAL_GROUPS[g].n));
