@@ -124,6 +124,28 @@ verification details: [build status](docs/BUILD_STATUS.md).
 - Vocoder sound approval/target validation, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
   device identity/storage review and physical MIDI/clock/performance testing remain follow-ups.
 
-No release/site workflow is active. Root CI only builds/tests. Workflows retained
-under `felucca/.github/` are imported source, not GitHub Actions entry points.
-No merging, flashing, releases or site publication is part of this milestone.
+## GitHub Pages preview
+
+The root `host.yml` workflow builds the browser instrument and runs host plus
+Chromium AudioWorklet checks on pushes and PRs. After a successful **main** build,
+it uploads only `felucca/build/emu` and deploys via GitHub Pages. PRs and other
+branches never deploy. Manual Actions runs also deploy only when run on main.
+No hardware firmware, installer or release is published.
+
+One-time repository setup: **Settings → Pages → Build and deployment → Source:
+GitHub Actions**. The `github-pages` environment must allow main deployments.
+Expected URL (unless a custom domain is configured):
+https://track-forge.github.io/bgirl-fm1/ . The deployment job reports the actual
+URL. HTTPS is required for AudioWorklet outside localhost. No token secret needed;
+only the deploy job receives `pages:write` / `id-token:write`.
+
+CI tests the `/bgirl-fm1/` prefix so WASM, worklet, font and listening-file paths
+remain project-site-relative. `build.json` records the published commit and source
+URL, and `LICENSE` accompanies the build. Check that revision when reporting bugs.
+The existing local browser autosave is origin-specific; old saved work on the same
+origin remains unchanged after a deployment. Explicitly load a demo to adopt new
+demo defaults.
+
+This workflow is a preview deployment, not hardware-performance proof. Imported
+upstream workflows under `felucca/.github` remain inactive; do not enable their
+release or installer destinations.

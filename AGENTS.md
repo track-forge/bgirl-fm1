@@ -27,7 +27,9 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
 - Prototype assets remain historical at `4cc1e11`. New reference speech is generated
   via Moltazine/Crucible. Silhouette animation remains out of scope.
 - Device package identity/storage/target compatibility remain unreviewed. No device
-  build/flash, merge, release/tag/site publishing or repository identity changes.
+  build/flash, merge, release/tag or repository identity changes. GitHub Pages
+  browser-preview deployment on main is explicitly authorized via host.yml; do not
+  activate unrelated imported site/installer workflows.
   Root build intentionally exposes browser only. Do not activate imported workflows
   or inherited installer destinations. Label browser/host/physical evidence separately.
 - Keep changes scoped, run `git diff --check`, end with exact revision/results,

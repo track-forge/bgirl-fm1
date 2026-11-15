@@ -33,7 +33,7 @@ const assert=require('node:assert/strict'), fs=require('node:fs');
   const after=await page.locator('#screen').evaluate(c=>c.toDataURL());assert(before!==after,"panel knob changes VOC INPUT screen");
   await page.screenshot({path:'tmp/vocoder-browser/freeze.png',fullPage:true});
   for(const name of ['dry','8-band','12-band','12-consonants','12-chorus']){
-   const r=await page.request.get(new URL('/listening/'+name+'.flac',page.url()).href);assert.equal(r.status(),200);assert((await r.body()).length>1000);
+   const r=await page.request.get(new URL('listening/'+name+'.flac',page.url()).href);assert.equal(r.status(),200);assert((await r.body()).length>1000);
   }
   await page.setViewportSize({width:390,height:844});await page.waitForTimeout(150);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
