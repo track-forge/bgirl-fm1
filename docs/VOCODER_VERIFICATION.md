@@ -1,6 +1,6 @@
 # Vocoder host/browser verification
 
-2026-11-15. Implementation review on `feat/sample-fed-vocoder`, stacked on open
+2026-11-15. [Draft implementation PR #6](https://github.com/track-forge/bgirl-fm1/pull/6). Implementation review on `feat/sample-fed-vocoder`, stacked on open
 planning PR #5 (`7aa442c281293698b3f8b5c0fa47286a6105d20d`). No merge, device build,
 flash, release/site publication, BSP/engine pin advance or installer activation.
 
@@ -39,7 +39,8 @@ Observed PASS:
   no rewritten goldens. CPU instruction counters zero on host: not target budgets.
 - Native/WASM heavy-song output **88200 frames bit-identical**; full upstream WASM
   boot, keys, MIDI, transport, knob and saved-preset checks passed.
-- New integration: original-pitch key mapping, one-shot release, newest phrase/no
+- New integration: original-pitch key mapping, one-shot release (including note-off
+  before first render), STOP on user-loaded modulators, newest phrase/no
   fallback (also with stored UNISON), independent carrier notes, Freeze continuing
   after sample end, unfreeze decay, stop/panic, invalid/self-source, no stale input
   or carrierless consonant bleed, pre-level carrier feed, monitoring/sends,
@@ -102,12 +103,16 @@ cmp felucca/build/host/emu_native_off.f32 felucca/build/host/emu_native.f32
 
 ## Resource evidence, not target fit
 
-Native GCC15.3.1 / Python3.14.5. DSP state348bytes, capture+metadata280bytes
+Native GCC15.3.1 / Python3.14.5. Default flags: SLICE=1, CPU2=1, FM4=0,
+ADPCM=0, BGIRL_VOCODER=1. Alternative engine/target flag combinations are not
+claimed by this browser milestone. DSP state348bytes, capture+metadata280bytes
 (two mono int32[32] inputs alone256bytes). Speech transition state48bytes;
 track_t1856bytes in CPU2 build /1840bytes in explicit single-core build. Track
 parameter/pad growth is16bytes per track. Coefficients400read-only bytes; ADPCM
 **54357bytes /108714samples at22050Hz (4.930340136s)** plus immutable SLICE tables,
 source labels and descriptors. See packaged manifest for individual phrase lengths.
+Final local WASM841523bytes, SHA256
+`c37e01a3d0aabe99930ac498d8b7349216deec4ae95478b42caf9006b0d5ea69`.
 Twelve-band algorithm runs24biquads per sample; eight runs16 (operation estimate,
 not cycles). Actual target alignment, linker map, cache visibility, stack and CPU
 cost remain unmeasured. WASM byte size/hash is a toolchain artifact, not device flash.

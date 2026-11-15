@@ -9,6 +9,8 @@ int main(int argc,char **argv)
 {
     web_nor_erase();web_boot();tick(44100);
     assert(P_COUNT==126 && P_E0==118);
+    setup(0);trk_note_on(&trk[3],60,110);trk_note_off(&trk[3],60);tick(3200);assert(trk[3].v[0].active && trk[3].v[0].ph[0]>1000);
+    setup(2);trk[3].p[P_E0]=0;trk[3].p[P_E4]=SLC_ONE;trk_note_on(&trk[3],60,110);tick(1024);seq_stop();tick(1024);assert(!trk[3].v[0].active);
     setup(0);trk[3].p[P_VOICE]=V_UNISON;trk_note_on(&trk[3],60,110);tick(3200);uint32_t a=trk[3].v[0].ph[0];
     setup(0);trk_note_on(&trk[3],64,110);tick(3200);assert(trk[3].v[0].ph[0]==a);
     trk_note_off(&trk[3],64);tick(3200);assert(trk[3].v[0].active && trk[3].v[0].ph[0]>a);

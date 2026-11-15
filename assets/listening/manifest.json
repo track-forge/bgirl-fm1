@@ -7,50 +7,50 @@
       "seconds": 9.0,
       "rate": 44100,
       "channels": 2,
-      "sha256": "171aea550eccc3f2e230f12d10ffecc68db92e5aed4bea745de982cbc1e93776",
-      "bytes": 60055,
+      "sha256": "167fe9e62b3adb3b278c4ccf931538667983aed607251b380b11a9097caf9667",
+      "bytes": 60014,
       "peak": 0.1416015625,
-      "rms": 0.015397606237804121
+      "rms": 0.015401266020141652
     },
     {
       "file": "12-chorus.flac",
       "seconds": 9.0,
       "rate": 44100,
       "channels": 2,
-      "sha256": "87ac4da6ad855c9192e99b35731dfb0da03674f87174ac078591c298b4a1aa12",
-      "bytes": 61074,
+      "sha256": "db44c9145c176c07a4607efb060b6b9bf61ba4a48d7fd42a2b13ab91efea7fd3",
+      "bytes": 61077,
       "peak": 0.1424560546875,
-      "rms": 0.012145113410149316
+      "rms": 0.012148104346342826
     },
     {
       "file": "12-consonants.flac",
       "seconds": 9.0,
       "rate": 44100,
       "channels": 2,
-      "sha256": "6165c2d5c864f970d48c9ba24fe26444c19d02673f12c447306ccadd1d50a620",
-      "bytes": 61583,
+      "sha256": "0d5837a24b1f779854617a68cf5c66b8044808e8e19ec464699f0a9ecfa47fce",
+      "bytes": 61588,
       "peak": 0.1416015625,
-      "rms": 0.015383406825643174
+      "rms": 0.015387170261984367
     },
     {
       "file": "8-band.flac",
       "seconds": 9.0,
       "rate": 44100,
       "channels": 2,
-      "sha256": "5226516fc732d183fabfc6496a33dc247b7cc28cfe2e6ffc032fe91a702334fc",
-      "bytes": 61422,
+      "sha256": "278cf8100543f61e1837b4bc5a6c8fea311139b7c26e0ca5bef32421b4018f33",
+      "bytes": 61371,
       "peak": 0.14373779296875,
-      "rms": 0.01732381081290945
+      "rms": 0.017326139219712332
     },
     {
       "file": "dry.flac",
       "seconds": 9.0,
       "rate": 44100,
       "channels": 2,
-      "sha256": "a0fa140e8fdddf35693ff6cf6eabee6fcad66a825b1ad1c98500c96c3c560ea8",
-      "bytes": 155218,
+      "sha256": "b9091b8bc52b0341affdf704306635c8b9eb1cdda3944cd96f3b7129c65fa97b",
+      "bytes": 155217,
       "peak": 0.075225830078125,
-      "rms": 0.011183707558018393
+      "rms": 0.011185638809621054
     }
   ]
 }

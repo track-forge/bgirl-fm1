@@ -1,7 +1,7 @@
 # BGIRL reference speech v1
 
 Four original short texts, generated 2026-11-15 through the discovered Moltazine CLI
-workflow `qwen3-tts-voicedesign-1.7b`, one credit/job (four jobs). No real-person voice,
+workflow `qwen3-tts-voicedesign-1.7b`, one-credit quote/job (four jobs). No real-person voice,
 reference audio or cloning. Not pre-vocoded. Source FLACs retained unchanged;
 mono PCM16 WAVs decoded with ffmpeg are the reproducible offline packaging inputs.
 

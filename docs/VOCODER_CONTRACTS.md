@@ -4,6 +4,9 @@ Implementation base: planning PR #5, `7aa442c281293698b3f8b5c0fa47286a6105d20d`.
 Pins remain Felucca v1.8.1 / engines d0260074 / BSP 5942e68b.
 Written before implementation; host/browser milestone, not target feasibility.
 
+- Routed SLICE sources also use one voice/newest trigger; ordinary bank-off SLICE
+  behavior stays inherited. ONE note-off never enters release, including a tap
+  before the first render and an articulation queued during an engine transition.
 - One instance: lowest numbered SLICE track with CARR != OFF wins. Other requests
   remain visible but inactive. No self-route; invalid/unsupported/muted source yields
   zero carrier and no consonant leakage. An ineligible owner yields no instance.
