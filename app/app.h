@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "plat.h"
 
-#define APP_NAME "TEMPLATE"
+#define APP_NAME "BGIRL"
 #define APP_SPLASH_RGB RGB(242, 120, 72)
 #define APP_BLOCK 256u                   /* frames per audio block: 5.8 ms at 44.1 kHz */
 #define APP_TOUCH                        /* velocity and pressure from the keys (lib/touch.h) */
