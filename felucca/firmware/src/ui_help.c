@@ -26,7 +26,7 @@ static const struct { const char *title, *hint; } HELP_PAGE[] = {
     {"INSERT 2", "[K1]DRY / WET[FX]DLY"},
     {"VOCODER", "[K1]CARRIER[FX]INPUT"},
     {"VOC INPUT", "[K1]FREEZE[FX]COLOR"},
-    {"VOC COLOR", "[K1-4]COLOR[FX]DLY"},
+    {"VOC COLOR", "[K1-4]COLOR[FX]SLICER"},
     {"DLY", "[K1-4]ALL TRACKS[FX]REVERB"},
     {"REVERB", "[K1]ROOM SPRING HALL[FX]CHORUS"},
     {"CHORUS", "[K1-4]ALL TRACKS[FX]FX"},

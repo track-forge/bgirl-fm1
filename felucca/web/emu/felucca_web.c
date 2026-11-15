@@ -523,35 +523,45 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
     return 0;
 }
 
-/* Early listening setup uses the same project, SLICE, ANALOG and step machinery. */
-EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
+/* Existing isolated ANALOG comparison remains reproducible; the live wet buttons
+ * borrow the electro demo's actual FM6 bell part, including its patch and pattern. */
+static uint32_t bgirl_vocoder_setup(uint32_t mode, int bell_demo)
 {
     uint32_t k;
-    if(web_bgirl_project(0)) return 1;
+    if(web_bgirl_project(bell_demo ? 1 : 0)) return 1;
     undo_depth++;
-    set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0);
+    if(!bell_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
     set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
     undo_depth--;
-    for(k=0;k<NTRK;k++) {
+    for(k=0;k<NTRK;k++) if(!bell_demo || k==3) {
         trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
         trk[k].p[P_DIST]=0;
     }
-    trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
-    trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
-    trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
-    trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
+    if(!bell_demo) {
+        trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
+        trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
+        trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
+        trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
+    }
     trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
     trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
     trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
-    trk[3].p[P_VCARR]=mode ? 2 : 0; trk[3].p[P_VMON]=0;
+    trk[3].p[P_VCARR]=mode ? (bell_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=bell_demo ? 1 : 0;
     trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
     trk[3].p[P_VCONS]=0;
-    trk[1].p[P_SLEN]=trk[3].p[P_SLEN]=64;
+    trk[3].p[P_SLEN]=64;
+    if(!bell_demo) trk[1].p[P_SLEN]=64;
+    memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply, not the bell part */
     for(k=0;k<64;k++) {
-        if(k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
+        if(!bell_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
         if(k%16==0) { uint8_t note[4]={(uint8_t)(60+k/16),0,0,0}; put_step(&trk[3],k,1,note,ST_NOTE,0); }
     }
     if(!mode) trk[1].p[P_MUTE]=1;
     song.sel=3; ui.home=1; ui.force=1; bg_vreset++;
     return 0;
+}
+
+EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
+{
+    return bgirl_vocoder_setup(mode, mode!=0);
 }

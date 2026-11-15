@@ -3,7 +3,7 @@
 #include <assert.h>
 static void tick(uint32_t frames) { for(uint32_t i=0;i<frames;i+=CTL) web_render(CTL); }
 static float block_peak(void) { float p=0;for(uint32_t i=0;i<CTL;i++){float a=fabsf(out_l[i])+fabsf(out_r[i]);if(a>p)p=a;assert(isfinite(a)&&a<=2);}return p; }
-static void setup(uint32_t mode) { web_keys(0); web_buttons(0); assert(!web_bgirl_vocoder(mode));tick(4410); }
+static void setup(uint32_t mode) { web_keys(0); web_buttons(0); assert(!bgirl_vocoder_setup(mode,0));tick(4410); }
 static void trigger(uint32_t phrase) { trk_note_on(&trk[1],48,110);trk_note_on(&trk[3],60+phrase,110); }
 int main(int argc,char **argv)
 {
@@ -80,5 +80,19 @@ int main(int argc,char **argv)
         printf("listening: five 9s comparable sequenced WAVs written; NOT human approval\n");
     }
     printf("state: DSP=%zu bytes; captures=%zu bytes; track=%zu bytes; bank=%zu bytes\n",sizeof bg_voc,sizeof bg_bus,sizeof(track_t),sizeof BG_SPEECH_DATA);
+    assert(!web_bgirl_project(1));tick(4410);
+    step_t electroSteps[3][NSTEP];int16_t electroSound[3][P_COUNT];
+    for(uint32_t t=0;t<3;t++){memcpy(electroSteps[t],trk[t].step,sizeof trk[t].step);memcpy(electroSound[t],trk[t].p,sizeof trk[t].p);}
+    for(uint32_t mode=1;mode<=2;mode++) {
+        assert(!web_bgirl_vocoder(mode));tick(4410);
+        assert(trk[2].engine==ENGI_FM6 && trk[2].preset==1 && trk[3].engine==13);
+        assert(trk[3].p[P_VCARR]==3 && trk[3].p[P_VMON]==1 && trk[3].p[P_VBANDS]==(mode==2));
+        for(uint32_t t=0;t<3;t++){assert(!memcmp(electroSteps[t],trk[t].step,sizeof trk[t].step));assert(!memcmp(electroSound[t],trk[t].p,sizeof trk[t].p));}
+        assert(trk[3].step[0].note[0]==60 && trk[3].step[16].note[0]==61 && !trk[3].step[11].n);
+        transport_req=1;tick(44100);assert(bg_bus.owner==3 && bg_bus.carrier==2 && block_peak()>.00001f);seq_stop();tick(4410);
+    }
+    uint32_t fx[4],nf=0;for(uint32_t i=0;i<NPAGES && nf<4;i++)if(PAGES[i].fam==FAM_FX)fx[nf++]=i;
+    assert(nf==4 && !strcmp(PAGES[fx[0]].title,"FX") && !strcmp(PAGES[fx[1]].title,"VOCODER") && !strcmp(PAGES[fx[2]].title,"VOC INPUT") && !strcmp(PAGES[fx[3]].title,"VOC COLOR"));
+    puts("demo: FX pages2-4 vocoder; electro drums/bass/bell preserved, T3 bell carrier/dry monitor ON, old VOX replaced PASS");
     return 0;
 }

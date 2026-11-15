@@ -111,7 +111,7 @@ track_t1856bytes in CPU2 build /1840bytes in explicit single-core build. Track
 parameter/pad growth is16bytes per track. Coefficients400read-only bytes; ADPCM
 **54357bytes /108714samples at22050Hz (4.930340136s)** plus immutable SLICE tables,
 source labels and descriptors. See packaged manifest for individual phrase lengths.
-Final local WASM841523bytes, SHA256
+Initial milestone local WASM841523bytes, SHA256
 `c37e01a3d0aabe99930ac498d8b7349216deec4ae95478b42caf9006b0d5ea69`.
 Twelve-band algorithm runs24biquads per sample; eight runs16 (operation estimate,
 not cycles). Actual target alignment, linker map, cache visibility, stack and CPU
@@ -145,3 +145,33 @@ cost remain unmeasured. WASM byte size/hash is a toolchain artifact, not device 
 - TTS stochastic regeneration isn't bit-identical; retained original FLAC/PCM and
   deterministic offline packaging are the reproducibility boundary. Rights/provenance
   caveats are explicit in the speech manifest; no voice impersonation/source record.
+
+
+## Bell-carrier listening follow-up (2026-11-15)
+
+Doug's feedback: overall a win, and he expects the vocoder to work. Requested
+front-loaded vocoder pages and borrowing the electro demo's bell as carrier.
+
+- FX page1 stays FX; pages2/3/4 are VOCODER / VOC INPUT / VOC COLOR, followed
+  by SLICER / INSERT / INSERT2 / DLY / REVERB / CHORUS. Parameter IDs unchanged.
+- Wet8/12 buttons now retain electro-demo T1 drums/T2 bass/T3 FM6 BELL sounds
+  and patterns; only T4 VOX is replaced with speech. CARR=T3, MON=ON.
+- Dry speech and existing five isolated ANALOG comparison assets stay separate.
+  No DSP, save schema, bank assets, engine/BSP or default startup changes.
+- Focused host checks assert all three original parts' sounds/steps unchanged,
+  both band choices, correct actual FM6 bell carrier, four speech triggers and
+  removal of the old VOX reply; FX page-order checks retained alongside normal
+  keyboard/panel routing tests. Upstream second-FX-tap assertion deliberately
+  now expects VOCODER instead of SLICER, as requested.
+- Shared downstream FX tails survive project replacement intentionally; isolate
+  bus assertions before running the full electro-groove demo checks.
+- Actual tailnet HTTPS Chromium audition harness passes8/12 output, CARR=T3 /
+  MON=ON / VOCODER2/10 inspected in screenshot, third-page Freeze knob, served
+  references, portrait and zero page errors. These are operation checks, not a
+  new intelligibility verdict on the sparse, decaying bell carrier.
+
+Refresh https://openclaw-fedora.tail549b77.ts.net:8447/ then explicitly load8/12
+and PLAY (an already running browser retains its old project until reloaded).
+Select track4, tap FX slowly twice: CARR=T3; fourth knob MON disables the dry bell
+without disabling its feed. Track3 keys play the bell independently of speech.
+For a less busy audition, mute tracks1/2; do not mute track3 to hide the dry bell.

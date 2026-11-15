@@ -80,3 +80,16 @@ their saved SPREAD is nonzero; unrelated tracks retain SPREAD bit-identically.
 The failed-worker path resets voices/insert state and drops that block's sums;
 LFO/other engine state is not rolled back. It is bounded recovery with possible
 silence/discontinuity, not transaction rollback or fault-transparent rendering.
+
+
+## Listening follow-up: bell carrier / front-loaded pages
+
+Doug reports the overall experiment is a win and expects the vocoder to work.
+At his request, FX now cycles FX → VOCODER → VOC INPUT → VOC COLOR → SLICER →
+INSERT → INSERT2 → DLY → REVERB → CHORUS. No parameter IDs changed. Wet preview
+buttons preserve the electro demo's original T1 drums, T2 bass and T3 FM6 BELL
+patches/patterns, replacing only T4 VOX with speech and choosing CARR=T3, MON=ON.
+Dry speech remains isolated. Diagnostic tests and existing listening references
+retain the old isolated ANALOG setup; they are labeled separately from the live
+bell groove. Bell decay/sparse notes naturally provide a different, less sustained
+carrier; no patch brightening or envelope changes are silently added.

@@ -544,7 +544,7 @@ index 69ba568..ab1079d 100644
      song.sel = 0;
      song.master_q12 = 2048;                   /* (the pot's level replaces it before the audio starts: master_boot) */
 diff --git a/firmware/src/params.c b/firmware/src/params.c
-index 4d00f50..3573d1a 100644
+index 4d00f50..3deca88 100644
 --- a/firmware/src/params.c
 +++ b/firmware/src/params.c
 @@ -87,7 +87,21 @@ static const char *const N_SLOT[] = {"A", "B", "C", "D", 0};   /* G_SLOT 1..4 (F
@@ -585,16 +585,16 @@ index 4d00f50..3573d1a 100644
      if (id >= P_E0 && id <= P_E7) {                   /* the engine asked for (t->engine follows after a fade) */
          const engine_t *e = ENGINES[eng_idx(t->eng_req)];
          const param_desc_t *d = e->desc ? e->desc(t, id - P_E0) : 0;   /* a mode-dependent label / names */
-@@ -466,6 +487,9 @@ static const page_t PAGES[] = {
-     {"SLICER", FAM_FX, SC_TRACK, GR_SLCR, {P_SLCR, P_SLPAT, P_SLRATE, P_SLDEPTH}},
-     {"INSERT", FAM_FX, SC_TRACK, GR_INS, {P_ITYPE, P_IA, P_IB, P_IC}},   /* 1.5: the track's INSERT (fx.c) */
-     {"INSERT 2", FAM_FX, SC_TRACK, GR_INS, {P_IMIX, 0xFF, 0xFF, 0xFF}},  /* .. its dry / wet */
+@@ -463,6 +484,9 @@ static const page_t PAGES[] = {
+     {"LFO DEST", FAM_LFO, SC_TRACK, GR_NONE, {P_LD_PIT, P_LD_FLT, P_LD_SHP, P_LD_AMP}},
+     {"MOD", FAM_LFO, SC_TRACK, GR_MOD, {0xFF, P_M1SRC, P_M1DST, P_M1AMT}},   /* KNOB 1: the slot (mod_ui_slot) */
+     {"FX", FAM_FX, SC_TRACK, GR_FX, {P_DIST, P_CHOR, P_DLY, P_REV}},
 +    {"VOCODER", FAM_FX, SC_TRACK, GR_NONE, {P_VCARR, P_VBANDS, P_VWET, P_VMON}},
 +    {"VOC INPUT", FAM_FX, SC_TRACK, GR_NONE, {P_VHOLD, P_VMTRIM, P_VCTRIM, P_VCONS}},
 +    {"VOC COLOR", FAM_FX, SC_TRACK, GR_NONE, {P_VLOW, P_VMID, P_VHIGH, P_VREL}},
-     {"DLY", FAM_FX, SC_GLOBAL, GR_NONE, {G_DTIME, G_DFDBK, G_DCOLOR, G_DMIX}},
-     {"REVERB", FAM_FX, SC_GLOBAL, GR_NONE, {G_RTYPE, G_RSIZE, G_RDAMP, 0xFF}},   /* TYPE: ROOM / SPRING / HALL */
-     {"CHORUS", FAM_FX, SC_GLOBAL, GR_NONE, {G_CRATE, G_CDEPTH, 0xFF, 0xFF}},
+     {"SLICER", FAM_FX, SC_TRACK, GR_SLCR, {P_SLCR, P_SLPAT, P_SLRATE, P_SLDEPTH}},
+     {"INSERT", FAM_FX, SC_TRACK, GR_INS, {P_ITYPE, P_IA, P_IB, P_IC}},   /* 1.5: the track's INSERT (fx.c) */
+     {"INSERT 2", FAM_FX, SC_TRACK, GR_INS, {P_IMIX, 0xFF, 0xFF, 0xFF}},  /* .. its dry / wet */
 diff --git a/firmware/src/project.c b/firmware/src/project.c
 index 0399264..f88ebc1 100644
 --- a/firmware/src/project.c
@@ -693,7 +693,7 @@ index b34c378..8e24d0f 100644
      cin_flush = 0;
      memset(cin_n, 0, sizeof cin_n);
 diff --git a/firmware/src/ui_help.c b/firmware/src/ui_help.c
-index 0cdd918..0a8c0cf 100644
+index 0cdd918..11466f2 100644
 --- a/firmware/src/ui_help.c
 +++ b/firmware/src/ui_help.c
 @@ -24,6 +24,9 @@ static const struct { const char *title, *hint; } HELP_PAGE[] = {
@@ -702,7 +702,7 @@ index 0cdd918..0a8c0cf 100644
      {"INSERT 2", "[K1]DRY / WET[FX]DLY"},
 +    {"VOCODER", "[K1]CARRIER[FX]INPUT"},
 +    {"VOC INPUT", "[K1]FREEZE[FX]COLOR"},
-+    {"VOC COLOR", "[K1-4]COLOR[FX]DLY"},
++    {"VOC COLOR", "[K1-4]COLOR[FX]SLICER"},
      {"DLY", "[K1-4]ALL TRACKS[FX]REVERB"},
      {"REVERB", "[K1]ROOM SPRING HALL[FX]CHORUS"},
      {"CHORUS", "[K1-4]ALL TRACKS[FX]FX"},
@@ -948,6 +948,19 @@ index 2c285d2..ebde940 100644
          bad += check("FUN8 with a DIGITAL track: FM6, the converted patch its own, PTCH / preset FM6 PAD", ok && FM4_OK(c));
          bad += check("  its motion on INDEX / OP LEVEL / E7 goes; a send's and the other track's stay",
                       c.motion.count == 2u && c.motion.event[0].param == P_CHOR && c.motion.event[1].place == 3u &&
+diff --git a/tests/ui_test.c b/tests/ui_test.c
+index 50f528c..9e11b29 100644
+--- a/tests/ui_test.c
++++ b/tests/ui_test.c
+@@ -3171,7 +3171,7 @@ static int test_layer(void)
+     bad += check("FX tap: nothing on press, the FX page when let go", ok && !ui.home && cur_page()->fam == FAM_FX);
+     frames(320);                                       /* (not a double tap: #83) */
+     press(B_FX);
+-    bad += check("  a second tap: the next page of the family (SLICER)", str_eq(cur_page()->title, "SLICER"));
++    bad += check("  a second tap: the next page of the family (VOCODER)", str_eq(cur_page()->title, "VOCODER"));
+     ui_power_on();
+     btn_down(B_FX);
+     for (flash = 0, i = 0; i < 22u; i++) { frame(); flash |= ui.layer; }      /* 0.35 s */
 diff --git a/tests/upreset_test.c b/tests/upreset_test.c
 index 0f97274..5899e59 100644
 --- a/tests/upreset_test.c
@@ -978,10 +991,10 @@ index b8f30be..d8d449f 100644
 
  The firmware side is `firmware/src/editor.c`. Commands 1-15, track selection, dumps, step reads
 diff --git a/web/emu/felucca_web.c b/web/emu/felucca_web.c
-index 89ef369..3314dfe 100644
+index 89ef369..9a9d42d 100644
 --- a/web/emu/felucca_web.c
 +++ b/web/emu/felucca_web.c
-@@ -495,3 +495,63 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
+@@ -495,3 +495,73 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
  EXPORT uint32_t web_now_ms(void) { return fm1_ms; }
  EXPORT uint32_t web_playing(void) { return song.playing; }
  EXPORT uint32_t web_sample_rate(void) { return FS; }
@@ -1013,40 +1026,50 @@ index 89ef369..3314dfe 100644
 +    return 0;
 +}
 +
-+/* Early listening setup uses the same project, SLICE, ANALOG and step machinery. */
-+EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
++/* Existing isolated ANALOG comparison remains reproducible; the live wet buttons
++ * borrow the electro demo's actual FM6 bell part, including its patch and pattern. */
++static uint32_t bgirl_vocoder_setup(uint32_t mode, int bell_demo)
 +{
 +    uint32_t k;
-+    if(web_bgirl_project(0)) return 1;
++    if(web_bgirl_project(bell_demo ? 1 : 0)) return 1;
 +    undo_depth++;
-+    set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0);
++    if(!bell_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
 +    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
 +    undo_depth--;
-+    for(k=0;k<NTRK;k++) {
++    for(k=0;k<NTRK;k++) if(!bell_demo || k==3) {
 +        trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
 +        trk[k].p[P_DIST]=0;
 +    }
-+    trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
-+    trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
-+    trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
-+    trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
++    if(!bell_demo) {
++        trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
++        trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
++        trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
++        trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
++    }
 +    trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
 +    trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
 +    trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
-+    trk[3].p[P_VCARR]=mode ? 2 : 0; trk[3].p[P_VMON]=0;
++    trk[3].p[P_VCARR]=mode ? (bell_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=bell_demo ? 1 : 0;
 +    trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
 +    trk[3].p[P_VCONS]=0;
-+    trk[1].p[P_SLEN]=trk[3].p[P_SLEN]=64;
++    trk[3].p[P_SLEN]=64;
++    if(!bell_demo) trk[1].p[P_SLEN]=64;
++    memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply, not the bell part */
 +    for(k=0;k<64;k++) {
-+        if(k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
++        if(!bell_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
 +        if(k%16==0) { uint8_t note[4]={(uint8_t)(60+k/16),0,0,0}; put_step(&trk[3],k,1,note,ST_NOTE,0); }
 +    }
 +    if(!mode) trk[1].p[P_MUTE]=1;
 +    song.sel=3; ui.home=1; ui.force=1; bg_vreset++;
 +    return 0;
 +}
++
++EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
++{
++    return bgirl_vocoder_setup(mode, mode!=0);
++}
 diff --git a/web/emu/index.html b/web/emu/index.html
-index 2a4a4a2..40827d6 100644
+index 2a4a4a2..a7af079 100644
 --- a/web/emu/index.html
 +++ b/web/emu/index.html
 @@ -6,7 +6,7 @@
@@ -1073,20 +1096,22 @@ index 2a4a4a2..40827d6 100644
  <div class="device" id="device">
    <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>
    <canvas id="screen" width="240" height="240" role="img" aria-label="The screen"></canvas>
-@@ -96,10 +100,28 @@ footer small { font-size: 11px; opacity: .8; }
+@@ -96,10 +100,30 @@ footer small { font-size: 11px; opacity: .8; }
    </select></span>
  </p>
 
 +<section aria-label="Vocoder listening checkpoint">
 +<h2>Speech lab · listening checkpoint</h2>
 +<p>Replaces the unsaved project; saved slots stay intact. Press PLAY after loading.
-+Track 4: phrases on chromatic keys. Track 2: independent carrier melody.
-+FX pages: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not speech.</p>
++Wet setups keep the electro groove: track 3 FM6 BELL feeds track 4 speech.
++Dry bell monitoring starts ON; switch MON OFF to hear only the vocoded bell.
++The dry speech setup stays isolated. Track 4 keys select phrases at original pitch.
++FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not speech.</p>
 +<button id="speech-dry">Load dry speech</button>
 +<button id="speech-8">Load 8-band vocoder</button>
 +<button id="speech-12">Load 12-band vocoder</button>
 +<details><summary>Same sequenced phrases · reference renders</summary>
-+<p>Unnormalized firmware renders. Volume differs; start low. Captions identify processing, not listening approval.</p>
++<p>Original isolated ANALOG-carrier reference renders (not the live bell groove). Volume differs; start low. Captions identify processing, not listening approval.</p>
 +<label>Dry speech <audio controls preload="none" src="listening/dry.flac"></audio></label><br>
 +<label>8 bands <audio controls preload="none" src="listening/8-band.flac"></audio></label><br>
 +<label>12 bands <audio controls preload="none" src="listening/12-band.flac"></audio></label><br>
@@ -1103,7 +1128,7 @@ index 2a4a4a2..40827d6 100644
    <small>M-VAVE and FM-1 are trademarks of their respective owners. Felucca is not affiliated with or endorsed by them.</small>
  </footer>
  </main>
-@@ -115,7 +137,7 @@ const PLAY_GREEN = 14;
+@@ -115,7 +139,7 @@ const PLAY_GREEN = 14;
  const WHITE = [0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26];
  const BLACK = [1, 3, 5, 8, 10, 13, 15, 17, 20, 22, 25];
  const BLACK_AFTER = [0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14];      // the white key each black one follows
@@ -1112,7 +1137,7 @@ index 2a4a4a2..40827d6 100644
 
  // ------------------------------------------------------------------ the panel
  // Two drawings of the same controls: WIDE after the FM-1's own layout, TALL for a phone held upright (the
-@@ -161,6 +183,12 @@ angle.MASTER = -135 + 270 * masterValue / 1023;
+@@ -161,6 +185,12 @@ angle.MASTER = -135 + 270 * masterValue / 1023;
  const knobs = [], buttons = [], keys = [];
  const btnBy = new Map(), keyBy = new Map();                   // pointer / key code -> label bit or key
  const send = (m) => { if (node) node.port.postMessage(m); };
@@ -1125,7 +1150,7 @@ index 2a4a4a2..40827d6 100644
 
  function build(name) {
    const L = LAYOUTS[name];
-@@ -501,6 +529,7 @@ async function switchOn() {
+@@ -501,6 +531,7 @@ async function switchOn() {
        node.port.onmessage = (e) => {
          const m = e.data;
          if (m.type === "ready") res();
@@ -1133,7 +1158,7 @@ index 2a4a4a2..40827d6 100644
          else if (m.type === "error") rej(new Error(m.message));
          else if (m.type === "frame") {
            if (m.fb) drawScreen(m.fb);
-@@ -516,6 +545,7 @@ async function switchOn() {
+@@ -516,6 +547,7 @@ async function switchOn() {
      await ac.resume();
      document.getElementById("start").hidden = true;
      go.textContent = "On";
@@ -1141,7 +1166,7 @@ index 2a4a4a2..40827d6 100644
      if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
      syncButtons();
      syncKeys();
-@@ -528,6 +558,14 @@ async function switchOn() {
+@@ -528,6 +560,14 @@ async function switchOn() {
      say("Could not start: " + (err && err.message || err) + ". A current Chrome, Edge, Firefox or Safari should work.");
    }
  }

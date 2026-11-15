@@ -24,7 +24,7 @@ const assert=require('node:assert/strict'), fs=require('node:fs');
   }
   // Real FX family pages and four-knob control, not a JavaScript alternate synth.
   await tap('FX'); // FX
-  for(let i=0;i<4;i++)await tap('FX'); // VOCODER
+  await tap('FX'); // VOCODER, FX page2
   fs.mkdirSync('tmp/vocoder-browser',{recursive:true});
   await page.screenshot({path:'tmp/vocoder-browser/routing.png',fullPage:true});
   await tap('FX'); // VOC INPUT
