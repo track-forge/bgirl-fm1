@@ -124,6 +124,12 @@ static void sequence_tests(void) {
 int main(int argc,char **argv) {
     web_nor_erase();web_boot();tick(FS);
     entry_tests();lifetime_tests();save_tests();sequence_tests();
+    setup(0);
+    trk[3].p[P_E0]=0;
+    for(uint32_t cc=0;cc<128;cc++) { midi_cc_set(&trk[3],P_E1,cc); assert(trk[3].p[P_E1]==(int16_t)((cc*5+63)/127)); }
+    trk[3].p[P_E0]=6;motion_capture(&trk[3],P_E0,6);
+    for(uint32_t cc=0;cc<128;cc++) { midi_cc_set(&trk[3],P_E1,cc); assert(trk[3].p[P_E1]==(int16_t)((cc*(NELEM(BG_VOCAL_GROUPS)-1)+63)/127)); }
+    puts("vocal/ordinary SLICE: all128 learned-CC VIEW/DIV mappings use source-specific bounds PASS");
     printf("structs: undo=%zu project=%zu\n",sizeof undo,sizeof(project_t));
     printf("resources: audio=%zu entries=%zu groups=%zu source=%zu fingerprint=%zu const-UI-descriptors=%zu undo-ID=%zu project-ID=%zu track=%zu bytes\n",sizeof BG_VOCAL_DATA,sizeof BG_VOCAL_ENTRIES,sizeof BG_VOCAL_GROUPS,sizeof SLC_VOCALS,sizeof bg_vocal_expected, sizeof BG_VOCAL_STARTS, sizeof undo.vocal_id, sizeof ((project_t*)0)->vocal_id,sizeof(track_t));
     if(argc>1) {
