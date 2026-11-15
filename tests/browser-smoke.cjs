@@ -17,7 +17,7 @@ const fs = require('node:fs');
     });
     await page.goto(process.env.BGIRL_URL || 'http://127.0.0.1:8767');
     assert.match(await page.title(), /BGIRL/);
-    assert.match(await page.locator('main').innerText(), /robot synth placeholder/);
+    assert.match(await page.locator('main').innerText(), /normal electro palette/);
     const on = async () => { await page.locator('#go').click(); await page.waitForFunction(() => document.querySelector('#start').hidden); await page.waitForTimeout(1100); };
     await on();
     const listen = () => page.evaluate(() => { window.analyser = testAC.createAnalyser(); analyser.fftSize = 4096; testNode.connect(analyser); });

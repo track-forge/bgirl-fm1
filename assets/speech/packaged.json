@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "bank_id": "bgirl-speech-v1",
+  "codec": "IMA4 low-nibble-first",
+  "bytes": 54357,
+  "samples": 108714,
+  "sha256": "855a08f7bf1cf5001bb7d112e8f423f12fcb1ff5a85577e3b9b2957ad1dc5b1f",
+  "header_sha256": "e5c86f79f278e4c9e60d52e3d4ba172eda81548b9990f411a51b90bff12edc75",
+  "phrases": [
+    {
+      "id": "bgirl-speech-v1-01",
+      "samples": 20134,
+      "rate": 22050,
+      "trim_source_frames": [
+        0,
+        21915
+      ]
+    },
+    {
+      "id": "bgirl-speech-v1-02",
+      "samples": 19862,
+      "rate": 22050,
+      "trim_source_frames": [
+        0,
+        21619
+      ]
+    },
+    {
+      "id": "bgirl-speech-v1-03",
+      "samples": 20124,
+      "rate": 22050,
+      "trim_source_frames": [
+        32,
+        21936
+      ]
+    },
+    {
+      "id": "bgirl-speech-v1-04",
+      "samples": 48594,
+      "rate": 22050,
+      "trim_source_frames": [
+        0,
+        52892
+      ]
+    }
+  ]
+}

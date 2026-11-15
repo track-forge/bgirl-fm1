@@ -32,7 +32,10 @@ static void *c1h_main(void *x)
         fn = c1h_fn;
         arg = c1h_arg;
         pthread_mutex_unlock(&c1h_mu);
-        fn(arg);
+        const char *failure=getenv("C1_FAILURE");
+        if(failure && !strcmp(failure,"partial")) {
+            uint32_t mask=arg&255u; mask &= -mask; fn((arg&~255u)|mask);
+        } else fn(arg);
         pthread_mutex_lock(&c1h_mu);
         c1h_done = c1h_job;
         pthread_cond_broadcast(&c1h_cv);
@@ -42,6 +45,8 @@ static void *c1h_main(void *x)
 
 static int c1h_run(void (*fn)(uint32_t), uint32_t arg)
 {
+    const char *failure=getenv("C1_FAILURE");
+    if(failure && !strcmp(failure,"reject")) return 0;
     if (!c1h_up) {                                  /* started in the child that renders (the tests fork) */
         pthread_t th;
         if (pthread_create(&th, 0, c1h_main, 0))
@@ -64,6 +69,8 @@ static int c1h_wait(void)
     while (c1h_done != c1h_job)
         pthread_cond_wait(&c1h_cv, &c1h_mu);
     pthread_mutex_unlock(&c1h_mu);
+    const char *failure=getenv("C1_FAILURE");
+    if(failure && strcmp(failure,"reject")) { c1h_off=1; return -1; }
     return 0;
 }
 

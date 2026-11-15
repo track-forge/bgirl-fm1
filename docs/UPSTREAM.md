@@ -1,5 +1,17 @@
 # BGIRL migration provenance
 
+## Vocoder follow-up delta
+
+The scoped follow-up implements [VOCODER_CONTRACTS.md](VOCODER_CONTRACTS.md) on this
+same pinned tree: bundled original speech through SLICE, count-mapped controls,
+post-join capture/processing, normal FX pages, bounded worker-failure recovery and
+FUNB compact project writes with all legacy readers. No gitlinks, flash addresses,
+engine numbers, release/install workflows or device identities change. New files
+retain GPL-3.0-only; generated speech has its separate rights/provenance manifest.
+The baseline-only statements below are historical; current evidence is in
+[VOCODER_VERIFICATION.md](VOCODER_VERIFICATION.md).
+
+
 ## Selected source and import
 
 - Felucca **v1.8.1**, annotated tag object `71f1cf70ee2e732f34671c47cc6e83f5104803f3`,
@@ -83,3 +95,8 @@ Versilian CC0 attribution under assets/. No commercial-record samples or new
 external sound dependency. Ported DSP retains MIT/Apache/LGPL notices as enumerated
 by upstream LICENSING.md. Optional ADPCM is not enabled by this milestone.
 No claim of trademark endorsement or completed device/distribution review.
+
+The current review-aid patch normalizes whitespace-only context lines after
+`git diff`; `git apply --numstat docs/BGIRL_DELTA.patch` validates its diff syntax.
+This prevents a diff-of-the-diff from reporting blank context markers as newly
+introduced trailing whitespace. It is not a runtime/build dependency.

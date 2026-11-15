@@ -1,5 +1,8 @@
 # BGIRL Felucca baseline — verification
 
+> This is the preserved baseline report. Current sample-fed vocoder evidence:
+> [VOCODER_VERIFICATION.md](VOCODER_VERIFICATION.md).
+
 2026-11-15. **Browser milestone implemented; not installable/device-ready.**
 Tested source revision: **`1bc9d29ebeae69c8bb045e7ca36c541616245fc1`**.
 Later commits only record evidence/screenshots. See [provenance](UPSTREAM.md) for

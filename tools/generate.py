@@ -6,3 +6,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'felucca/tools'))
 import build
 build.generate()
+
+import package_speech
+package_speech.package()
+
+import shutil
+listening = Path(__file__).resolve().parents[1] / 'assets/listening'
+shutil.copytree(listening, Path(__file__).resolve().parents[1] / 'felucca/build/emu/listening', dirs_exist_ok=True)

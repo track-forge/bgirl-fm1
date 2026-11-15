@@ -408,6 +408,7 @@ static int up_store_cat(uint32_t k, const char *name, uint32_t cat)
     up_set_name(&r, k, name);
     for (i = 0; i < P_COUNT; i++)
         up_set_value(&r, i, motion_base_value(TSEL, i));
+    up_set_value(&r, P_VCARR, 0); up_set_value(&r, P_VHOLD, 0);
     up_pat_from(&r, TSEL->step);
     up_set_cat(&r, cat ? cat : track_cat(TSEL));
     if (drum_track(TSEL)) {                             /* a DRUM track that strikes a lane: its grid */
@@ -462,6 +463,7 @@ static int up_load(uint32_t k)
         return 1;
     r = up_rec(k);
     up_values(r, v);
+    v[P_VCARR]=0; v[P_VHOLD]=0;
     load_begin(t, UNDO_SOUND);                          /* (ui.c: the copy for SAVE held = undo) */
     panic_req |= (uint8_t)(1u << song.sel);
 #if !FELUCCA_FM4

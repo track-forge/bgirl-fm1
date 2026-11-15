@@ -1,6 +1,6 @@
 # BGIRL FM-1 — Felucca electro edition
 
-**Felucca behavior intact, BGIRL electro defaults, working browser build.**
+**Felucca electro defaults + a sample-fed vocoder listening checkpoint.**
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 
@@ -14,7 +14,7 @@ Pillow must have FreeType/Raqm support (ordinary Linux wheels do).
 ```sh
 git clone https://github.com/track-forge/bgirl-fm1.git
 cd bgirl-fm1
-git checkout feat/felucca-electro-baseline # unmerged implementation review
+git checkout feat/sample-fed-vocoder # unmerged review, stacked on planning PR #5
 git submodule update --init --recursive
 python3 -m pip install Pillow==12.1.1 fonttools==4.68.0
 # Install/activate Emscripten 6.0.10 using emsdk; then:
@@ -39,6 +39,33 @@ git -C /path/to/emsdk checkout 708dcbcc9ee23bc7d2dad44fc90db377e38b771c
 /path/to/emsdk/emsdk activate 6.0.10
 source /path/to/emsdk/emsdk_env.sh
 ```
+
+## Sample-fed vocoder / early listening demo
+
+Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
+vocoder** below the panel; confirm replacing the current unsaved project. Press
+PLAY. The wet setups keep the electro demo drums/bass and use a **track3 sustained ANALOG saw
+pad** as track4 speech's carrier, with dry pad monitoring OFF. The dry-speech
+button stays isolated. Saved slots are not erased; startup defaults remain.
+
+- Track4 chromatic keys wrap four phrases, at original pitch, one-shot/retrigger.
+- Select track3 (ALGORITHM) and play pad/carrier notes without restarting speech.
+- Track4 FX pages2–4 (immediately after FX): VOCODER (carrier, bands, wet, dry monitoring), VOC INPUT
+  (live HOLD/Freeze, trims, consonants), VOC COLOR (three character groups/release).
+  Tap FX **slowly**, or use SELECT after opening FX; quick double-tap locks the
+  inherited performance layer, whose FRZ is a different effect.
+- MON OFF hides the carrier's direct output/sends while retaining its audio feed.
+  Ordinary mute silences the feed. STOP/panic ends speech and live Freeze.
+- Expand **reference renders** for dry/8/12/consonant/chorus comparisons.
+  These original isolated ANALOG references are not the live pad groove.
+  Unnormalized levels differ. Doug reports the overall vocoder experiment is a win;
+  a final band preference/intelligibility curation decision remains open.
+- Save projects normally. Old saves load with vocoder OFF. New FUNB saves keep
+  bank/routing/controls but load unfrozen; old firmware rejects this new format.
+  Sound presets clear project-specific carrier references.
+
+[Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
+[speech provenance](assets/speech/README.md). No physical-device performance proof.
 
 ## Starting palette and demo
 
@@ -94,7 +121,7 @@ verification details: [build status](docs/BUILD_STATUS.md).
   [component texts](felucca/LICENSES). Engines retain MIT; BSP retains MPL-2.0;
   fonts and CC0/other assets retain their notices. `LICENSE.upstream` is the old
   prototype's MPL notice, **not** the license of this combined application.
-- Vocoder integration, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
+- Vocoder sound approval/target validation, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
   device identity/storage review and physical MIDI/clock/performance testing remain follow-ups.
 
 No release/site workflow is active. Root CI only builds/tests. Workflows retained

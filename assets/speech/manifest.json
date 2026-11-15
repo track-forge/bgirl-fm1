@@ -1,0 +1,88 @@
+{
+  "bank_id": "bgirl-speech-v1",
+  "workflow_id": "qwen3-tts-voicedesign-1.7b",
+  "workflow_version": "72466405-c802-46a9-8831-284d06ff3f4f",
+  "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "model_revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+  "tokenizer_revision": "7dd38ad4e9bad454aae9cd937d0cd577604fe229",
+  "rights_basis": "Original short text and synthetic described voice; no real-person reference or cloning. Model metadata Apache-2.0. Generated original contributions offered CC0-1.0 to extent rights exist; no assertion of exclusive copyright in machine output. No copied model or custom-node code.",
+  "caveats": [
+    "Generation is stochastic; reproduce packaging from retained dry sources, not regeneration.",
+    "Workflow metadata retains private-beta custom-node license-file caveat; no license warranty for that external service code.",
+    "Not human-auditioned; no speech quality/intelligibility approval."
+  ],
+  "phrases": [
+    {
+      "id": "bgirl-speech-v1-01",
+      "text": "Enter the circle.",
+      "dry_source": "source/1.wav",
+      "source_sha256": "10343cf45cee2d6c418c90aa98eb77406270852a69bbedab19594f5c063ba039",
+      "original_source": "source/1.flac",
+      "original_sha256": "bceb9ad0dc59c510835b3b3d7064163f6436d5f43e5796a4b6a4a2756e4ed96e",
+      "job_id": "4eec7555-1a83-45fa-b95d-0f6a98c951dd",
+      "generation": {
+        "tts.text": "Enter the circle.",
+        "tts.instruct": "A clear dry mid-range adult voice, crisp consonants, steady rhythmic delivery, no music, no background ambience. Speak naturally; sustain the final aah vowel when present. Original voice, not an imitation.",
+        "tts.seed": 1500,
+        "tts.language": "English",
+        "save.filename_prefix": "bgirl-dev-1"
+      },
+      "crucible_output_id": "ca5b274d-b88a-40d3-b54d-8da5e59d7d22",
+      "output_index": 0
+    },
+    {
+      "id": "bgirl-speech-v1-02",
+      "text": "Bring it back.",
+      "dry_source": "source/2.wav",
+      "source_sha256": "60187aa39c93a82a4cf8a4f8b3f5d6e72256048e2f393cdbdbee653b389aaa78",
+      "original_source": "source/2.flac",
+      "original_sha256": "7f5f08a1042d215e8c9d864dd81682163698b5d521c05940f6362c9a4245c8f3",
+      "job_id": "469abe45-dcbb-42f1-b018-e0362ff5d57b",
+      "generation": {
+        "tts.text": "Bring it back.",
+        "tts.instruct": "A clear dry mid-range adult voice, crisp consonants, steady rhythmic delivery, no music, no background ambience. Speak naturally; sustain the final aah vowel when present. Original voice, not an imitation.",
+        "tts.seed": 1501,
+        "tts.language": "English",
+        "save.filename_prefix": "bgirl-dev-2"
+      },
+      "crucible_output_id": "419b8315-6fc1-4844-931f-a3cc773348f8",
+      "output_index": 0
+    },
+    {
+      "id": "bgirl-speech-v1-03",
+      "text": "Your move.",
+      "dry_source": "source/3.wav",
+      "source_sha256": "cde6f396312c0739d0dedc14da97fccc46856bdbfe08cdbfaaa60326763f5cdf",
+      "original_source": "source/3.flac",
+      "original_sha256": "a4db1c7209473a4b1ec8d29cac7fdd3448e17facafd310ce1ed833d47cc257e9",
+      "job_id": "8600937d-73ad-4294-b79c-509d4af32b67",
+      "generation": {
+        "tts.text": "Your move.",
+        "tts.instruct": "A clear dry mid-range adult voice, crisp consonants, steady rhythmic delivery, no music, no background ambience. Speak naturally; sustain the final aah vowel when present. Original voice, not an imitation.",
+        "tts.seed": 1502,
+        "tts.language": "English",
+        "save.filename_prefix": "bgirl-dev-3"
+      },
+      "crucible_output_id": "8cba46ee-a21b-4075-b998-b0ba7cc2401e",
+      "output_index": 0
+    },
+    {
+      "id": "bgirl-speech-v1-04",
+      "text": "Freeze. Aah.",
+      "dry_source": "source/4.wav",
+      "source_sha256": "44a1a64f8eae97f711b83b90a473aa54a4eaca7d0b4fad497be7912d5e8a58b1",
+      "original_source": "source/4.flac",
+      "original_sha256": "c365528c54038e5aab2e65efebdcc0d08099f0e7b80ea525adae90acac15d1e3",
+      "job_id": "8470ed55-5ffc-4fd8-9467-18939e1d0c30",
+      "generation": {
+        "tts.text": "Freeze. Aah.",
+        "tts.instruct": "A clear dry mid-range adult voice, crisp consonants, steady rhythmic delivery, no music, no background ambience. Speak naturally; sustain the final aah vowel when present. Original voice, not an imitation.",
+        "tts.seed": 1503,
+        "tts.language": "English",
+        "save.filename_prefix": "bgirl-dev-4"
+      },
+      "crucible_output_id": "ccbf5b90-0ed5-4deb-8ab1-5bd5598d0bf2",
+      "output_index": 0
+    }
+  ]
+}

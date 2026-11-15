@@ -76,7 +76,7 @@ h1 { color: #ff80bb; font-size: 24px; } h1 small { color: #c3e7f5; font-size: 14
 <body>
 <main>
 <h1>BGIRL <small>Felucca electro edition</small></h1>
-<p>1 · TIGHT KIT / 2 · SQR BASS / 3 · FM6 BELL / 4 · VOX LEAD — robot synth placeholder, no speech or vocoder.</p>
+<p>1 · TIGHT KIT / 2 · SQR BASS / 3 · FM6 BELL / 4 · VOX LEAD — normal electro palette. Load the speech lab below for the sample-fed vocoder.</p>
 <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
 <div class="device" id="device">
   <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>
@@ -100,6 +100,26 @@ h1 { color: #ff80bb; font-size: 24px; } h1 small { color: #c3e7f5; font-size: 14
   </select></span>
 </p>
 
+<section aria-label="Vocoder listening checkpoint">
+<h2>Speech lab · listening checkpoint</h2>
+<p>Replaces the unsaved project; saved slots stay intact. Press PLAY after loading.
+Wet setups keep the electro groove: track 3 sustained ANALOG saw pad feeds track 4 speech.
+Dry pad monitoring starts OFF; switch MON ON to compare the unprocessed carrier.
+The dry speech setup stays isolated. Track 4 keys select phrases at original pitch.
+FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not speech.</p>
+<button id="speech-dry">Load dry speech</button>
+<button id="speech-8">Load 8-band vocoder</button>
+<button id="speech-12">Load 12-band vocoder</button>
+<details><summary>Same sequenced phrases · reference renders</summary>
+<p>Original isolated ANALOG-carrier reference renders (not the live pad groove). Volume differs; start low. Captions identify processing, not listening approval.</p>
+<label>Dry speech <audio controls preload="none" src="listening/dry.flac"></audio></label><br>
+<label>8 bands <audio controls preload="none" src="listening/8-band.flac"></audio></label><br>
+<label>12 bands <audio controls preload="none" src="listening/12-band.flac"></audio></label><br>
+<label>12 + consonants <audio controls preload="none" src="listening/12-consonants.flac"></audio></label><br>
+<label>12 + insert chorus <audio controls preload="none" src="listening/12-chorus.flac"></audio></label>
+</details>
+<p id="vocoder-status" role="status">Human intelligibility approval pending. No hardware-performance claim.</p>
+</section>
 <footer>
   <small class="version">@VERSION@@PREVIEW@</small><br>
   Felucca by Leo Kuroshita, Hügelton Instruments · <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> · browser build after charlesvestal's <a href="https://github.com/charlesvestal/fm1-x0x">X0X</a> · DotGothic16 font, <a href="fonts/OFL.txt">SIL OFL 1.1</a><br>
@@ -165,6 +185,12 @@ angle.MASTER = -135 + 270 * masterValue / 1023;
 const knobs = [], buttons = [], keys = [];
 const btnBy = new Map(), keyBy = new Map();                   // pointer / key code -> label bit or key
 const send = (m) => { if (node) node.port.postMessage(m); };
+["speech-dry","speech-8","speech-12"].forEach((id,mode)=> {
+ document.getElementById(id).onclick=()=> {
+  if(!node) { document.getElementById("vocoder-status").textContent="Switch on first."; return; }
+  if(confirm("Replace the current unsaved project with the speech listening setup? Saved slots are unchanged.")) send({type:"bgirl-vocoder",mode});
+ };
+});
 
 function build(name) {
   const L = LAYOUTS[name];
