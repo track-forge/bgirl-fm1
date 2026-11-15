@@ -1,3 +1,7 @@
+> **Historical prototype only.** Source/assets/tests and old relative paths refer to
+> checkpoint `4cc1e11`, not the active Felucca edition. See [current status](BUILD_STATUS.md)
+> and [provenance](UPSTREAM.md). Vocoder integration is deferred.
+
 # Initial electro slice — build status
 
 Date: 2026-11-15. **Reviewable host/browser prototype, not device-ready firmware.**

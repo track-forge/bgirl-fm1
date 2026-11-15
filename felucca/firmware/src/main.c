@@ -48,7 +48,25 @@ static void fm1_fault(const fm1_crash_t *c)
     fm1_reboot();
 }
 
-/* power-on: the parts with their default sounds (TRK_DEF); the sequencers empty */
+/* BGIRL demo is ordinary editable sequencer data, never a second transport/DSP.
+ * Called at initialization BEFORE autosave restore and on explicit browser reset only. */
+static void bgirl_demo_steps(void)
+{
+    uint32_t i;
+    static const uint8_t reply[16] = {0,0,0,0,0,0,0,0,0,0,0,60,0,0,55,0};
+    for (i = 0; i < 16u; i++) {
+        step_t *s = &trk[0].step[i];
+        s->time = ST_NOTE;
+        s->hit = (uint8_t)((i == 0u || i == 6u || i == 8u || i == 10u ? 1u : 0u) |
+                         (i == 4u || i == 12u ? 6u : 0u) |
+                         (i % 2u ? 8u : 0u) | (i == 15u ? 128u : 0u));
+        s->acc = (uint8_t)(s->hit & 7u);
+    }
+    load_pat16(&trk[3], reply, PATTERNS[6].flags);
+    for (i = 0; i < NTRK; i++) pat_sig[i] = steps_sig(&trk[i]);
+}
+
+/* BGIRL power-on palette and editable demo, restored user music takes precedence. */
 static void felucca_init(void)
 {
     uint32_t i;
@@ -60,16 +78,17 @@ static void felucca_init(void)
     for (i = 0; i < NTRK; i++) {
         track_t *t = &trk[i];
         track_defaults(t);
-        set_engine_of(t, TRK_DEF[i][0]);
-        apply_preset_to(t, TRK_DEF[i][1]);    /* with its sends */
+        set_engine_of(t, BGIRL_TRK_DEF[i][0]);
+        apply_preset_to(t, BGIRL_TRK_DEF[i][1]);    /* with its sends */
         t->engine = t->eng_req;
         eng_mem_claim(t);                     /* (zeros already: no note can come before) */
         track_defaults_steps(t);              /* (a sound load never touches them) */
-        if (TRK_DEF[i][2])
-            load_pat16(t, PATTERNS[TRK_DEF[i][2] - 1u].note, PATTERNS[TRK_DEF[i][2] - 1u].flags);
+        if (BGIRL_TRK_DEF[i][2])
+            load_pat16(t, PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].note, PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].flags);
         pat_sig[i] = steps_sig(t);            /* a default pattern, not the user's */
-        pat_last[i] = TRK_DEF[i][2];
+        pat_last[i] = BGIRL_TRK_DEF[i][2];
     }
+    bgirl_demo_steps();
     undo_depth--;
     song.sel = 0;
     song.master_q12 = 2048;                   /* (the pot's level replaces it before the audio starts: master_boot) */

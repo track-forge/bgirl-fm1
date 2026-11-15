@@ -203,3 +203,12 @@ static const struct {
 static const uint8_t TRK_DEF[NPART][3] = {{0, 4, 0}, {ENGI_FM6, 4, 0}, {3, 0, 0}, {ENGI_DRUM, 0, 0}}; /* ANALOG ACID,
                                                                        * FM6 PAD (was DIGITAL PAD), LOFI PULSE LD, DRUM KIT */
 static uint32_t trk_def_engine(uint32_t i) { return TRK_DEF[i % NPART][0]; }
+
+/* BGIRL roles are separate from TRK_DEF: legacy project migration and upstream
+ * CLEAR ALL keep their original semantics. No engine/preset IDs are renumbered. */
+static const uint8_t BGIRL_TRK_DEF[NPART][3] = {
+    {ENGI_DRUM, 2, 0}, /* TIGHT KIT */
+    {0, 2, 2},        /* ANALOG SQR BASS, OFFBEAT */
+    {ENGI_FM6, 1, 7}, /* BELL, sparse metallic reply */
+    {5, 1, 0},        /* VOX LEAD: robot synth PLACEHOLDER (no speech/vocoder) */
+};

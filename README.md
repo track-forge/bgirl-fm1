@@ -1,115 +1,89 @@
-# BGIRL FM-1
+# BGIRL FM-1 — Felucca electro edition
 
-**Hype classic electro in a box.** A locally playable host/browser slice for the
-M-VAVE FM-1: synthesized kick/snare/closed hat, mono bass, and an experimental
-sample-fed playable vocoder. **Not device firmware ready for installation.**
-
-![BGIRL browser demo](docs/img/browser.png)
+**Felucca behavior intact, BGIRL electro defaults, working browser build.**
+Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
+Browser development milestone only: **do not install on hardware**.
 
 ## Run locally
 
-Requires Git, Bash, Python 3.11+ with Pillow (`python3 -m pip install Pillow`),
-a C99 compiler (`cc`), standard development headers and `libm`.
+Requires Git, Python 3.11+, C compiler/libm, Node 24, Emscripten **6.0.10**.
+Pillow must have FreeType/Raqm support (ordinary Linux wheels do).
 
 ```sh
-git clone --recurse-submodules https://github.com/track-forge/bgirl-fm1.git
+git clone https://github.com/track-forge/bgirl-fm1.git
 cd bgirl-fm1
-# For this unmerged review, check out feat/initial-electro-slice.
+git checkout feat/felucca-electro-baseline # unmerged implementation review
 git submodule update --init --recursive
-./tests/run_tests.sh
-# Build only: ./build.sh --host
-```
-
-### Browser
-
-Use **Emscripten 6.0.10**, matching the pinned platform's template toolchain:
-
-```sh
-git clone https://github.com/emscripten-core/emsdk.git "$HOME/.local/share/bgirl-emsdk"
-"$HOME/.local/share/bgirl-emsdk/emsdk" install 6.0.10
-"$HOME/.local/share/bgirl-emsdk/emsdk" activate 6.0.10
-source "$HOME/.local/share/bgirl-emsdk/emsdk_env.sh"
+python3 -m pip install Pillow==12.1.1 fonttools==4.68.0
+# Install/activate Emscripten 6.0.10 using emsdk; then:
+source /path/to/emsdk/emsdk_env.sh
 ./build.sh --web
-python3 -m http.server 8765 --bind 127.0.0.1 --directory app/build/emu
+./tests/run_tests.sh
+python3 -m http.server 8767 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-If that emsdk clone already exists, skip cloning it. Open `http://127.0.0.1:8765`,
-click **Switch on**, then ARP. Audio requires user interaction; Tab selects controls,
-arrows turn knobs, and holding Space plays a focused key. On a phone, the panel
-scrolls horizontally inside its box; landscape is easier. The web audio is the
-same app DSP running in WebAssembly, not a replacement JavaScript synth.
+Open <http://127.0.0.1:8767> and click **Switch on**. Audio needs this user gesture.
+The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieLi
+SDK, device package, installer, paid service or network-fetched sound is needed.
+Build-time fonts and sample sources are bundled upstream with their notices.
 
-## Controls
+## Starting palette and demo
 
-| Control | Action |
-| --- | --- |
-| ARP | Start/stop; restart from step 1; stop silences notes |
-| K1 / KNOB 1 | Tempo, 60–180 BPM (default 120) |
-| K2 / KNOB 2 | Bass tone, 0–100 (default 45) |
-| FX | Drum mute/return; bass/voice and step clock continue |
-| PRESET / PRESETS | BASS or experimental VOICE; releases held notes, groove continues |
-| Keys / MIDI note input | Last-note-wins mono selected part; release does not resurrect older held notes |
-| OCT− / OCT+ | Octave; releases old outgoing notes before transposing |
-| MASTER | Smoothed master volume |
-| HOME | Panic: silence selected note and stop groove |
-| SAVE | Persist **only octave, part, Bluetooth state** |
-| REC | Inherited Bluetooth controls: tap scan/connect/disconnect; hold on/off |
+| Track | Sound | Pattern |
+| --- | --- | --- |
+| 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
+| 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
+| 3 | FM6 / BELL | Upstream sparse BELL, metallic/icy reply |
+| 4 | VOICE / VOX LEAD | Original sparse reply; **synth placeholder, no words/vocoder** |
 
-Other inherited buttons/knobs report their names but have no musical function.
-MIDI CC120/123 and system reset panic the instrument. Pattern notes stay internal
-(no sequencer MIDI output). Keys still send MIDI/pressure over inherited USB/BLE
-routes. No external clock sync. Panic is consumed at the next audio render block.
+Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
+last-session autosave takes precedence. All engines/presets remain selectable;
+this is a curated starting palette, not a restricted instrument. Shared upstream
+voice limits still apply. Sounds have automated signal evidence, not human taste approval.
 
-In BASS mode, keys override the pattern bass; after release it resumes on the next
-scheduled bass trigger. In VOICE mode, keys play the live carrier over the bass
-groove. A new articulation restarts the phrase; legato changes pitch in place.
-**No automatic voice reply:** the experiment still needs human listening approval.
+**Load electro demo** and **Blank electro template** replace only the current
+unsaved project, after confirmation. Both use Felucca's project reset/sound-load
+machinery, stop transport, release voices and preserve saved slots/user presets.
+The blank template has the four sounds and no steps. Normal Felucca MENU > SYSTEM
+> CLEAR ALL retains its original factory defaults; it is not the BGIRL template button.
 
-## Thirty-second demo
+### Short demo recipe
 
-1. Switch on, set MASTER conservatively, press ARP: machine beat and E bass groove.
-2. At ~8 seconds press FX; hear bass alone. At ~12 seconds return the drums with FX.
-3. At ~16 seconds play a short bass fill; K2 darkens/brightens the bass.
-4. Switch PRESETS to VOICE; hold a key for the phrase, then release. Try another pitch.
-5. Return to BASS. At ~30 seconds press HOME: silence and stopped transport.
+1. Switch on fresh (or explicitly Load electro demo). Start with low MASTER; press PLAY.
+2. Turn **ALGORITHM** (keyboard ←/→) to select each of the four tracks.
+3. Play Z–' / Q–O keyboard notes; release them. Drag/scroll the labeled knobs;
+   focused knob arrows also work. SELECT browses pages, PRESETS browses sounds.
+4. Stop with PLAY. Edit a sound and use Felucca **SAVE**, **OCT+**, **OCT+** to
+   confirm a user preset. Use its normal SAVE > PROJECT page to save/load a project.
+5. Use Blank electro template, edit or load saved material, then optionally reload
+   the demo. Autosave restores changed music after at least 10 quiet seconds and
+   the inherited 60-second write-spacing limit; a page reload immediately after an
+   unsaved edit is **not** a guaranteed save.
+6. Stop, release keys and let effect tails decay. No prototype HOME-panic/ARP-start
+   remappings: these are Felucca's normal controls. Read its [manual](https://github.com/hugelton/Felucca/wiki/Home).
 
-Deterministic host rendition and isolated voice comparisons:
+Portrait uses upstream's tall responsive panel. Desktop/mobile screenshots and
+verification details: [build status](docs/BUILD_STATUS.md).
 
-```sh
-app/build/host/bgirl_host app/tests/demo.txt app/build/host
-# app/build/host/demo-30s.wav (30.000 seconds, stereo PCM 44.1 kHz)
-./tests/render_voice.sh # optional: requires ffmpeg
-# Compare app/assets/phrase.wav with app/build/voice/vocoder-*.wav
-```
+## Architecture, history and licensing
 
-## Verification and limits
+- Active instrument: `felucca/`, ancestry-preserving import of **v1.8.1**. Upstream
+  v1.8.2 removed browser support; it is intentionally not this baseline.
+- Exact pins, license inventory and small upstream delta: [provenance](docs/UPSTREAM.md).
+- Browser flash key `bgirl-felucca-v1-flash` isolates this edition from stock
+  Felucca and the retired prototype. Same Felucca data formats; no device/prototype migration.
+- Prototype source, original speech, vocoder and tests remain reachable at
+  [`4cc1e11`](https://github.com/track-forge/bgirl-fm1/tree/4cc1e11e50ffb1d2a06a50547780b9e828a8b15f).
+  [Prototype build evidence](docs/PROTOTYPE_BUILD_STATUS.md) and
+  [voice findings](docs/VOICE_SPIKE.md) are historical, not shipping features.
+- GPL-3.0-only combined derivative: [LICENSE](LICENSE), upstream
+  [credits](felucca/CREDITS.md), [licensing](felucca/LICENSING.md) and
+  [component texts](felucca/LICENSES). Engines retain MIT; BSP retains MPL-2.0;
+  fonts and CC0/other assets retain their notices. `LICENSE.upstream` is the old
+  prototype's MPL notice, **not** the license of this combined application.
+- Vocoder integration, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
+  device identity/storage review and physical MIDI/clock/performance testing remain follow-ups.
 
-`./tests/run_tests.sh` retains input, MIDI, Bluetooth, saved-state and screen-reader
-checks and adds DSP timing/restart/mute/bounds/release tests and electro integration.
-[Build status](docs/BUILD_STATUS.md) records exact evidence and local artifacts.
-[Voice findings](docs/VOICE_SPIKE.md) separate signal checks from listening judgment.
-[Asset provenance](app/assets/README.md) documents original speech and conversion.
-
-Optional real-browser smoke (Playwright + Chromium installed in your environment,
-local server running): `node tests/browser-smoke.cjs`. For a non-project install,
-set `PLAYWRIGHT_MODULE` to its module path and optionally `CHROMIUM_PATH` to its binary.
-The check measures AudioWorklet output and uses actual keyboard/pointer controls;
-it is **not a human audition**. Screenshots/results go to `app/build/browser/`.
-
-No device build, flashing, package identity allocation, storage-map review, target
-CPU/RAM/xrun validation, releases or published site. The host executable's BSS
-includes simulator storage; it is not a device RAM estimate. Basic oscillators are
-not band-limited; tone and voice quality need listening/tuning. Tempo, tone, mute
-and transport reset at boot. Built-in spoken screen-reader voice is unavailable
-without a separate fm1-reader bundle; system screen-reader text is checked.
-The required words URL is a reserved `.invalid` placeholder, not a live endpoint.
-
-## Project notes
-
-- [Initial build plan](docs/INITIAL_BUILD_PLAN.md)
-- [Contributor instructions](AGENTS.md)
-- [Pinned upstream provenance/licensing](docs/UPSTREAM.md)
-
-The host/web-only wrapper and read-only host CI deliberately cannot publish or
-flash. fm1-base and BSP pins are unchanged. Source files retain MPL-2.0 notices;
-the original speech asset has its own documented dedication.
+No release/site workflow is active. Root CI only builds/tests. Workflows retained
+under `felucca/.github/` are imported source, not GitHub Actions entry points.
+No merging, flashing, releases or site publication is part of this milestone.

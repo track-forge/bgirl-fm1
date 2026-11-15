@@ -92,6 +92,12 @@ if (typeof registerProcessor === "function") {
       else if (m.type === "enc") ex.web_enc(m.role, m.n | 0);
       else if (m.type === "master") ex.web_master(m.value | 0);
       else if (m.type === "midi") ex.web_midi(m.data[0] | 0, m.data[1] | 0, m.data[2] | 0);
+      else if (m.type === "bgirl-project") {
+        // Do not let queued note-ons reappear after the project panic.
+        this.queue.length = 0;
+        ex.web_keys(0); ex.web_buttons(0);
+        this.port.postMessage({ type: "bgirl-project-result", ok: ex.web_bgirl_project(m.demo ? 1 : 0) === 0 });
+      }
       else if (m.type === "visible") this.period = m.on ? 1 / 30 : 1 / 4;
     }
 

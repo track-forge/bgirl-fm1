@@ -495,3 +495,30 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
 EXPORT uint32_t web_now_ms(void) { return fm1_ms; }
 EXPORT uint32_t web_playing(void) { return song.playing; }
 EXPORT uint32_t web_sample_rate(void) { return FS; }
+
+/* BGIRL explicit reset: use upstream project_new (stops, releases, clears the
+ * project), never touch saved slots, and refuse while physical/panel notes held. */
+EXPORT uint32_t web_bgirl_project(uint32_t demo)
+{
+    if (fm1_in.notes || fm1_in.buttons) return 1;
+    if (project_new()) return 1;
+    {
+        uint32_t i;
+        undo_depth++;
+        for (i = 0; i < NTRK; i++) {
+            set_engine_of(&trk[i], BGIRL_TRK_DEF[i][0]);
+            apply_preset_to(&trk[i], BGIRL_TRK_DEF[i][1]);
+        }
+        undo_depth--;
+    }
+    if (demo) {
+        uint32_t i;
+        for (i = 1; i < 3u; i++)
+            load_pat16(&trk[i], PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].note,
+                       PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].flags);
+        bgirl_demo_steps();
+    }
+    ui.home = 1;
+    ui.force = 1;
+    return 0;
+}

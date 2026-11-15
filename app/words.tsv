@@ -1,6 +1,0 @@
-# SPDX-License-Identifier: MPL-2.0
-# Local development words; .invalid is intentionally non-resolving, NOT a published endpoint.
-# url: https://bgirl.invalid/words/
-BGIRL	B girl
-K1 TEMPO	knob 1, tempo
-K2 TONE	knob 2, bass tone

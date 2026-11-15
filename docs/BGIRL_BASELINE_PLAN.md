@@ -1,7 +1,8 @@
 # BGIRL baseline — Felucca foundation
 
-Date: 2026-11-15. Status: **approved direction; implementation not started**.
-This document is a plan, not evidence of a migrated build.
+Date: 2026-11-15. Status: **implementation in review on feat/felucca-electro-baseline**.
+This document retains the agreed plan. Actual source selection, architecture,
+verification and deviations are in UPSTREAM.md and BUILD_STATUS.md.
 
 > **Felucca behavior intact, BGIRL electro defaults, working browser build.**
 
