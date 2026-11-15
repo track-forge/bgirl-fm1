@@ -175,3 +175,22 @@ and PLAY (an already running browser retains its old project until reloaded).
 Select track4, tap FX slowly twice: CARR=T3; fourth knob MON disables the dry bell
 without disabling its feed. Track3 keys play the bell independently of speech.
 For a less busy audition, mute tracks1/2; do not mute track3 to hide the dry bell.
+
+## Sustained-pad listening follow-up (2026-11-15)
+
+Supersedes only the live bell setup above: wet8/12 now use a sustained, open-filter
+detuned ANALOG saw carrier on T3, C3/G3 with tied steps. CARR=T3, MON=OFF.
+T1/T2 patches/patterns, factory startup electro, speech sources, isolated reference
+recordings, DSP, storage and dependency pins unchanged. Refresh the same private
+HTTPS URL, explicitly load8/12 again, then PLAY. MON ON auditions the raw carrier.
+
+- Web build:841820B WASM, SHA256
+  `3ff7d40f1d6b6a1f536a61bc1d83fda8b45c759c0288e19bbcbd18867211ca8e`.
+  Download from actual HTTPS preview matches local output exactly.
+- HTTPS Chromium speech lab: dry/8/12 produce bounded audio; normal Freeze knob,
+ 5 served original references, portrait layout and zero page errors pass.
+  Routing screenshot confirms CARR=T3 / MON=OFF / VOCODER2/10.
+- Host demo regression checks preserved drums/bass, both bands, default MON OFF,
+  tied saw notes and a nonzero actual carrier feed across four seconds per mode
+  (not merely the drum/bass mix). Full host runner results recorded in PR.
+- Human pad intelligibility approval and physical performance remain unverified.

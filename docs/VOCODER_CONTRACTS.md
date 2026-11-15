@@ -93,3 +93,14 @@ Dry speech remains isolated. Diagnostic tests and existing listening references
 retain the old isolated ANALOG setup; they are labeled separately from the live
 bell groove. Bell decay/sparse notes naturally provide a different, less sustained
 carrier; no patch brightening or envelope changes are silently added.
+
+## Listening follow-up: sustained pad carrier
+
+After the bell audition sounded like vocal-gated bells, Doug requested a richer
+pad instead. Live wet8/12 setups now replace T3 with ANALOG dual saws, 10-cent
+detune / equal mix, open low-pass / zero resonance, no noise/drive/filter envelope,
+fast attack, full sustain and release40. C3/G3 alternate every16 steps across64,
+with15 inherited TIE steps per note to maintain the feed through speech. T1/T2
+remain electro drums/bass. CARR=T3, MON=OFF by default to avoid dry-pad masking;
+MON ON remains available. T4 speech, DSP, startup electro, saves and existing
+isolated reference assets are unchanged. Human pad intelligibility still pending.

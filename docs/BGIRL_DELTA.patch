@@ -991,10 +991,10 @@ index b8f30be..d8d449f 100644
 
  The firmware side is `firmware/src/editor.c`. Commands 1-15, track selection, dumps, step reads
 diff --git a/web/emu/felucca_web.c b/web/emu/felucca_web.c
-index 89ef369..9a9d42d 100644
+index 89ef369..c73b889 100644
 --- a/web/emu/felucca_web.c
 +++ b/web/emu/felucca_web.c
-@@ -495,3 +495,73 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
+@@ -495,3 +495,88 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
  EXPORT uint32_t web_now_ms(void) { return fm1_ms; }
  EXPORT uint32_t web_playing(void) { return song.playing; }
  EXPORT uint32_t web_sample_rate(void) { return FS; }
@@ -1027,36 +1027,51 @@ index 89ef369..9a9d42d 100644
 +}
 +
 +/* Existing isolated ANALOG comparison remains reproducible; the live wet buttons
-+ * borrow the electro demo's actual FM6 bell part, including its patch and pattern. */
-+static uint32_t bgirl_vocoder_setup(uint32_t mode, int bell_demo)
++ * retain electro drums/bass and replace the bell with a sustained bright saw pad. */
++static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 +{
 +    uint32_t k;
-+    if(web_bgirl_project(bell_demo ? 1 : 0)) return 1;
++    if(web_bgirl_project(pad_demo ? 1 : 0)) return 1;
 +    undo_depth++;
-+    if(!bell_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
++    if(!pad_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
++    if(pad_demo) { set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0); }
 +    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
 +    undo_depth--;
-+    for(k=0;k<NTRK;k++) if(!bell_demo || k==3) {
++    for(k=0;k<NTRK;k++) if(!pad_demo || k>=2) {
 +        trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
 +        trk[k].p[P_DIST]=0;
 +    }
-+    if(!bell_demo) {
++    if(!pad_demo) {
 +        trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
 +        trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
 +        trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
 +        trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
 +    }
++    if(pad_demo) {
++        /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
++         * keeps phrase consonants covered; tied notes sustain through each phrase. */
++        trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
++        trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
++        trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
++        trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
++        trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
++        memset(trk[2].step,0,sizeof trk[2].step);
++        for(k=0;k<64;k++) {
++            uint8_t note[4]={(uint8_t)(48+(k/16%2)*7),0,0,0};
++            put_step(&trk[2],k,k%16 ? 0 : 1,note,k%16 ? ST_TIE : ST_NOTE,0);
++        }
++    }
 +    trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
 +    trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
 +    trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
-+    trk[3].p[P_VCARR]=mode ? (bell_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=bell_demo ? 1 : 0;
++    trk[3].p[P_VCARR]=mode ? (pad_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=0;
 +    trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
 +    trk[3].p[P_VCONS]=0;
 +    trk[3].p[P_SLEN]=64;
-+    if(!bell_demo) trk[1].p[P_SLEN]=64;
-+    memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply, not the bell part */
++    if(!pad_demo) trk[1].p[P_SLEN]=64;
++    memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply */
 +    for(k=0;k<64;k++) {
-+        if(!bell_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
++        if(!pad_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
 +        if(k%16==0) { uint8_t note[4]={(uint8_t)(60+k/16),0,0,0}; put_step(&trk[3],k,1,note,ST_NOTE,0); }
 +    }
 +    if(!mode) trk[1].p[P_MUTE]=1;
@@ -1069,7 +1084,7 @@ index 89ef369..9a9d42d 100644
 +    return bgirl_vocoder_setup(mode, mode!=0);
 +}
 diff --git a/web/emu/index.html b/web/emu/index.html
-index 2a4a4a2..a7af079 100644
+index 2a4a4a2..2509166 100644
 --- a/web/emu/index.html
 +++ b/web/emu/index.html
 @@ -6,7 +6,7 @@
@@ -1103,15 +1118,15 @@ index 2a4a4a2..a7af079 100644
 +<section aria-label="Vocoder listening checkpoint">
 +<h2>Speech lab · listening checkpoint</h2>
 +<p>Replaces the unsaved project; saved slots stay intact. Press PLAY after loading.
-+Wet setups keep the electro groove: track 3 FM6 BELL feeds track 4 speech.
-+Dry bell monitoring starts ON; switch MON OFF to hear only the vocoded bell.
++Wet setups keep the electro groove: track 3 sustained ANALOG saw pad feeds track 4 speech.
++Dry pad monitoring starts OFF; switch MON ON to compare the unprocessed carrier.
 +The dry speech setup stays isolated. Track 4 keys select phrases at original pitch.
 +FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not speech.</p>
 +<button id="speech-dry">Load dry speech</button>
 +<button id="speech-8">Load 8-band vocoder</button>
 +<button id="speech-12">Load 12-band vocoder</button>
 +<details><summary>Same sequenced phrases · reference renders</summary>
-+<p>Original isolated ANALOG-carrier reference renders (not the live bell groove). Volume differs; start low. Captions identify processing, not listening approval.</p>
++<p>Original isolated ANALOG-carrier reference renders (not the live pad groove). Volume differs; start low. Captions identify processing, not listening approval.</p>
 +<label>Dry speech <audio controls preload="none" src="listening/dry.flac"></audio></label><br>
 +<label>8 bands <audio controls preload="none" src="listening/8-band.flac"></audio></label><br>
 +<label>12 bands <audio controls preload="none" src="listening/12-band.flac"></audio></label><br>

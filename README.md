@@ -44,12 +44,12 @@ source /path/to/emsdk/emsdk_env.sh
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
 vocoder** below the panel; confirm replacing the current unsaved project. Press
-PLAY. The wet setups keep the electro demo drums/bass and borrow **track3 FM6
-BELL** as track4 speech's carrier, with dry bell monitoring ON. The dry-speech
+PLAY. The wet setups keep the electro demo drums/bass and use a **track3 sustained ANALOG saw
+pad** as track4 speech's carrier, with dry pad monitoring OFF. The dry-speech
 button stays isolated. Saved slots are not erased; startup defaults remain.
 
 - Track4 chromatic keys wrap four phrases, at original pitch, one-shot/retrigger.
-- Select track3 (ALGORITHM) and play bell/carrier notes without restarting speech.
+- Select track3 (ALGORITHM) and play pad/carrier notes without restarting speech.
 - Track4 FX pages2–4 (immediately after FX): VOCODER (carrier, bands, wet, dry monitoring), VOC INPUT
   (live HOLD/Freeze, trims, consonants), VOC COLOR (three character groups/release).
   Tap FX **slowly**, or use SELECT after opening FX; quick double-tap locks the
@@ -57,7 +57,7 @@ button stays isolated. Saved slots are not erased; startup defaults remain.
 - MON OFF hides the carrier's direct output/sends while retaining its audio feed.
   Ordinary mute silences the feed. STOP/panic ends speech and live Freeze.
 - Expand **reference renders** for dry/8/12/consonant/chorus comparisons.
-  These original isolated ANALOG references are not the live bell groove.
+  These original isolated ANALOG references are not the live pad groove.
   Unnormalized levels differ. Doug reports the overall vocoder experiment is a win;
   a final band preference/intelligibility curation decision remains open.
 - Save projects normally. Old saves load with vocoder OFF. New FUNB saves keep
