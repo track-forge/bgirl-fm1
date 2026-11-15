@@ -1,0 +1,6 @@
+app/build/
+app/web/words/
+__pycache__/
+# Generated development metadata; curate before release.
+firmware.json
+app/firmware.json
