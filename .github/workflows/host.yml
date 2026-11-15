@@ -1,10 +1,19 @@
-name: Browser and host checks
-on: [push, pull_request]
+name: Browser, host and Pages
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
+# Serialize each ref so an older main build cannot deploy after a newer one.
+# GitHub keeps only the newest pending run; let an active deployment finish.
+concurrency:
+  group: browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 jobs:
   browser-host:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,3 +30,54 @@ jobs:
       - run: python -m pip install Pillow==12.1.1 fonttools==4.68.0
       - run: ./build.sh --web
       - run: ./tests/run_tests.sh
+      - name: Install browser acceptance tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/bgirl-browser" --no-save playwright@1.59.1
+          node "$RUNNER_TEMP/bgirl-browser/node_modules/playwright/cli.js" install --with-deps chromium
+      - name: Check instrument under the GitHub Pages project path
+        env:
+          BGIRL_URL: http://127.0.0.1:8772/bgirl-fm1/
+        run: |
+          mkdir -p "$RUNNER_TEMP/bgirl-pages-site"
+          ln -s "$GITHUB_WORKSPACE/felucca/build/emu" "$RUNNER_TEMP/bgirl-pages-site/bgirl-fm1"
+          python -m http.server 8772 --bind 127.0.0.1 --directory "$RUNNER_TEMP/bgirl-pages-site" > "$RUNNER_TEMP/bgirl-pages-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --fail --silent --retry 10 --retry-connrefused --retry-delay 1 "$BGIRL_URL" > /dev/null
+          export PLAYWRIGHT_MODULE="$RUNNER_TEMP/bgirl-browser/node_modules/playwright"
+          node tests/browser-smoke.cjs
+          node tests/vocoder-browser.cjs
+      - name: Add source revision and license to the published artifact
+        run: |
+          cp LICENSE felucca/build/emu/LICENSE
+          python - <<'PYTHON'
+          import json, os
+          from pathlib import Path
+          sha = os.environ['GITHUB_SHA']
+          Path('felucca/build/emu/build.json').write_text(json.dumps({
+              'commit': sha,
+              'source': f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/tree/{sha}',
+              'license': 'GPL-3.0-only',
+              'kind': 'browser firmware preview, not a hardware release',
+          }, indent=2) + '\n')
+          PYTHON
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          path: felucca/build/emu
+  deploy-pages:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: browser-host
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy tested browser build
+        id: deployment
+        uses: actions/deploy-pages@v4
