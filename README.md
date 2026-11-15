@@ -29,6 +29,17 @@ The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieL
 SDK, device package, installer, paid service or network-fetched sound is needed.
 Build-time fonts and sample sources are bundled upstream with their notices.
 
+If Emscripten is not installed, create a separate SDK checkout (do not clone over
+an existing installation):
+
+```sh
+git clone https://github.com/emscripten-core/emsdk.git /path/to/emsdk
+git -C /path/to/emsdk checkout 708dcbcc9ee23bc7d2dad44fc90db377e38b771c
+/path/to/emsdk/emsdk install 6.0.10
+/path/to/emsdk/emsdk activate 6.0.10
+source /path/to/emsdk/emsdk_env.sh
+```
+
 ## Starting palette and demo
 
 | Track | Sound | Pattern |

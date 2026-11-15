@@ -50,7 +50,7 @@ To compare upstream without prefix noise:
 ```sh
 python3 - <<'PY'
 import subprocess
-up = subprocess.check_output(['git','rev-parse','v1.8.1^{tree}'], text=True).strip()
+up = subprocess.check_output(['git','rev-parse','f4df2964649f301ba5abd0ec6000110068672f25^{tree}'], text=True).strip()
 local = subprocess.check_output(['git','rev-parse','HEAD:felucca'], text=True).strip()
 subprocess.run(['git','diff','--stat',up,local], check=True)
 PY
