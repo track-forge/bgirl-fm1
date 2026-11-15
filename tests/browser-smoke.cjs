@@ -29,13 +29,13 @@ const fs = require('node:fs');
     const artifacts = process.env.BGIRL_ARTIFACTS || 'tmp/browser'; fs.mkdirSync(artifacts, { recursive: true });
     await page.screenshot({ path: `${artifacts}/desktop.png`, fullPage: true });
     // Fresh startup already features the vocoder, without speech-lab loading.
-    for(let i=0;i<3;i++) await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowUp');
+    for(let i=0;i<3;i++) { await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowUp'); await page.waitForTimeout(120); }
     await page.waitForTimeout(200);
     await tap('FX'); await page.waitForTimeout(650);
     await tap('FX'); await page.waitForTimeout(650);
     await page.screenshot({ path: `${artifacts}/default-vocoder.png`, fullPage: true });
     await tap('HOME');
-    for(let i=0;i<3;i++) await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowDown');
+    for(let i=0;i<3;i++) { await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowDown'); await page.waitForTimeout(120); }
     await page.waitForTimeout(200);
     await tap('PLAY / STOP'); await page.waitForTimeout(4500); assert((await peak()) < .0001);
     const screen = () => page.locator('#screen').evaluate(c => c.toDataURL());
