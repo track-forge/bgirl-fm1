@@ -95,3 +95,8 @@ Versilian CC0 attribution under assets/. No commercial-record samples or new
 external sound dependency. Ported DSP retains MIT/Apache/LGPL notices as enumerated
 by upstream LICENSING.md. Optional ADPCM is not enabled by this milestone.
 No claim of trademark endorsement or completed device/distribution review.
+
+The current review-aid patch normalizes whitespace-only context lines after
+`git diff`; `git apply --numstat docs/BGIRL_DELTA.patch` validates its diff syntax.
+This prevents a diff-of-the-diff from reporting blank context markers as newly
+introduced trailing whitespace. It is not a runtime/build dependency.
