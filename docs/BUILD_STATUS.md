@@ -1,129 +1,97 @@
-# Initial electro slice — build status
+# BGIRL Felucca baseline — verification
 
-Date: 2026-11-15. **Reviewable host/browser prototype, not device-ready firmware.**
-Implementation branch: `feat/initial-electro-slice`; review PR linked in the handoff.
-Human listening approval is outstanding; signal output is not proof of intelligibility.
+2026-11-15. **Browser milestone implemented; not installable/device-ready.**
+Tested source revision: **`1bc9d29ebeae69c8bb045e7ca36c541616245fc1`**.
+Later commits only record evidence/screenshots. See [provenance](UPSTREAM.md) for
+upstream/dependency pins and [README](../README.md) for complete build/demo commands.
 
-## Revisions / tools
+## Revisions and tools
 
-- Baseline: main's initial plan/scaffold; baseline reproduced before modifications.
-- Branded baseline: `eff76b1`; original-speech voice spike: `60fe195`.
-- Groove/browser/tests: `7c2b09b`; bounded MIDI intake: `712d241`.
-- fm1-base: `c8e05997ce970875038156d2bbd69e712eac1543` (unchanged).
-- BSP: `18eadadb8c364abd026accd2b1ea1c14ca347f06` (unchanged).
-- GCC `15.3.1 20260722 (Red Hat 15.3.1-1)`; Python `3.14.5`; Pillow `12.1.1`.
-- Emscripten **6.0.10**, compiler revision `d6c521a7f05449857c76bd99e396895583cf2083`.
-  emsdk checkout `708dcbcc9ee23bc7d2dad44fc90db377e38b771c`;
-  SDK resolved to `666337b525e673e769121856d175f6f52b8ead64`.
-- Browser: Playwright Core `1.59.1`, Chromium `149.0.7827.55`, Linux headless.
+| Component | Exact selection |
+| --- | --- |
+| Felucca | v1.8.1 → `f4df2964649f301ba5abd0ec6000110068672f25` |
+| Felucca-Engines | `d0260074ce100a47675814b7f38d61f11176c926` |
+| felucca-bsp | `5942e68b89ab9ccd23f2c541d712ca38fe635f11` |
+| Prototype preserved | `4cc1e11e50ffb1d2a06a50547780b9e828a8b15f` (ancestor) |
+| Unmodified import/control | `59fb7ad` (upstream tree under felucca/) |
+| Emscripten | 6.0.10, compiler `d6c521a7f05449857c76bd99e396895583cf2083` |
+| emsdk checkout | `708dcbcc9ee23bc7d2dad44fc90db377e38b771c` |
+| Native / Python | GCC 15.3.1 (20260722 Red Hat); Python 3.14.5 |
+| Asset generators | Pillow 12.1.1; fonttools 4.68.0 |
+| Browser test tools | Node 24.22.1; Playwright Core 1.59.1; Chromium 149.0.7827.55, Linux headless |
 
-## What exists
+Final WASM: **782271 bytes**, SHA-256
+`d29c1e37d7dce2ddb8926d8929f64cb986e0fa4dc7788c2ef8b5ae12acf7d511`.
+Compiler/tool-specific artifact hash, not a claim of identical binaries across systems.
 
-- Fixed 16-step electro pattern, synthesized kick/snare/closed hat and mono bass.
-- Integer audio-frame fractional clock (no rounded step length or UI-frame timing).
-  60–180 BPM; preserves phase through tempo changes; stop/start resets to step 1.
-- Start/stop, bass tone, drum mute/return, selected bass/voice keyboard part,
-  smoothed master gain, bounded 24-bit mix and panic/release behavior.
-- 12-band **live** sample-fed mono vocoder with original dry speech; not a rendered
-  hook. No automatic sequenced reply until human audition approves it.
-- Branded screen with transport/tempo/part/step/mute state, original platform
-  keyboard/pointer controls, screen-reader announcements and helpful browser guide.
-- Read-only host CI only; no release/tag/site workflow.
-- DSP owns its state; UI sends scalar requests. Incoming MIDI processing is capped
-  at 64 messages/render block. No heap, I/O, logging, locks or decoding in DSP.
+## Results
 
-## Commands and evidence
+| Area | Observed evidence |
+| --- | --- |
+| Unmodified browser baseline | PASS: upstream asset generation, `sh felucca/web/emu/build.sh`, `node felucca/web/emu/emu_test.mjs felucca/build/emu/felucca.wasm`; Chromium switch-on, keys, ALGORITHM, PLAY/STOP, screenshot, zero page errors |
+| Final build | PASS: source emsdk environment; `./build.sh --web` (actual root wrapper) |
+| Final host/browser runner | PASS: `./tests/run_tests.sh` |
+| Unchanged upstream tests | PASS: storage, user presets, input debounce, TRS MIDI parser, legacy/current project formats, persistence, UI, MIDI control/clock, long-run MIDI drift, swing; backup web tests |
+| Audio preservation | PASS: **98 upstream golden renders unchanged**, zero health/voice/routing failures; native and WASM heavy-song output identical for **88200 frames** |
+| Upstream WASM test | PASS: boot/splash/LEDs, silent rest, keys, MIDI note queue, knobs, transport, preset saved via panel and restored into a fresh WASM instance, MIDI CC knob modes, deterministic heavy song |
+| BGIRL delta | PASS: four sounds, editable demo and finite/bounded 8-second mix, ALGORITHM track selection, sound+step project roundtrip, changed autosave restored after startup initialization, blank template, repeatable explicit demo load, held-key track switch/release and final silence |
+| Actual Chromium | PASS: user gesture starts AudioContext, demo signal, stop/tails decay, four distinct track screens, note signal on all three synth roles, panel sound edit/preset save, browser reload retains sectors, confirmed blank/demo operations, cancellation, saved sectors not erased; zero page errors |
+| Visuals | Desktop 1300×1000 and portrait 390×844 screenshots inspected. No horizontal page overflow; portrait is tall and requires vertical scrolling, inherited controls retained |
+| Human listening | **NOT VERIFIED**: signal/musical parameter evidence only, no human audition/intelligibility/taste approval |
+| Physical browser Web MIDI | **NOT TESTED**: no attached controller; queue/CC and USB/TRS/clock host tests passed, unchanged browser channel-message routing retained |
+| Hardware / target | **NOT ATTEMPTED**: no device compile, flash, physical USB/TRS sync, RAM/flash map, latency, CPU deadline, xrun or new-chip compatibility proof |
 
-| Layer | Command | Result |
-| --- | --- | --- |
-| Baseline host | `./tests/run_tests.sh` before changes | PASS; original template input/note/MIDI/Bluetooth/save/accessibility assertions |
-| Final host | `./tests/run_tests.sh` | PASS: retained baseline, focused DSP suite and electro integration script |
-| DSP timing | included in test runner | PASS, 60 seconds each at 60/120/123/137/180 BPM with irregular block sizes; tempo change preserves fractional phase |
-| DSP behavior/bounds | included in test runner | PASS restart, mute/return, full phrase at all 128 MIDI pitches with simultaneous drum/bass envelopes, release/mode switch/panic; ±7470000 maximum permitted output |
-| Input integration | `app/tests/electro.txt` via runner | PASS transport, tempo/tone clamps, mute/return, voice input, outgoing original-note offs across octave/part changes, CC123 and HOME panic, screen reader |
-| Sanitized DSP | command below | PASS AddressSanitizer + UBSan + float-cast-overflow, abort-on-first-error; app DSP only, not entire platform |
-| Voice comparison | `./tests/render_voice.sh` | PASS finite/bounded output and stop check at 110/164.8138/220 Hz; WAVs saved |
-| Web compilation | `source ~/.local/share/bgirl-emsdk/emsdk_env.sh; ./build.sh --web` | PASS pinned 6.0.10; expected missing device install/screenshot metadata warning and missing built-in reader voice notice |
-| Browser | command below, local server | PASS user click starts AudioContext; actual keyboard/pointer keys/knobs/ARP/FX/PRESETS/HOME; signal after play, silence after release/panic; zero page errors |
-| Screenshots | browser smoke at 1300×1150 and 390×844 | Inspected; mobile panel scrolls internally (no page overflow), portrait use is cramped; landscape recommended |
-| Demo | `app/build/host/bgirl_host app/tests/demo.txt app/build/host` | PASS; 30.00018 s stereo 44.1 kHz, −7.44 dBFS peak, zero clipped PCM samples |
-| Source hygiene | `git diff --check`, submodule status | PASS; base/BSP unchanged |
-| Device build / physical | none | **NOT ATTEMPTED** |
-| Listening / musical taste | none | **NOT VERIFIED by human ears** |
+The runner intentionally selects upstream tests that do not require a device
+package. Upstream `felucca/tests/run_tests.sh` as a whole additionally requires a
+JieLi/AC79 SDK firmware build, OTA/loader packages and target disassembly. Those
+checks, optional reference-library comparisons, and the entire upstream matrix
+are **not claimed as run**. GCC renders validate audio/health; instruction-budget
+counters report zero on this host, so **no target CPU-budget claim** is made.
+Upstream tests/goldens are byte-for-byte unchanged (compare `v1.8.1:tests` with
+`HEAD:felucca/tests`); no failures were waived or golden baselines rewritten.
+
+### Reproduce actual-browser acceptance
+
+With the README's server running:
 
 ```sh
-cc -std=c99 -O1 -g -fsanitize=address,undefined,float-cast-overflow \
-  -fno-sanitize-recover=all -fno-omit-frame-pointer -Ibase/include \
-  tests/electro_test.c app/dsp/electro.c app/dsp/vocoder.c -lm \
-  -o app/build/host/electro_sanitized
-app/build/host/electro_sanitized
-
-# With the README's localhost server running:
+# Use an installed Playwright/Chromium, or set these paths for this workspace:
 PLAYWRIGHT_MODULE=/home/dev/.openclaw/npm/projects/askjo-camofox-browser-2f55486f67/node_modules/playwright-core \
 CHROMIUM_PATH=/home/dev/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome \
 node tests/browser-smoke.cjs
 ```
 
-Browser normalized output probes (linear): bass 0.08293, released 0,
-groove 0.06643 (time-dependent), voice 0.02554, panic 0. No human audio
-output/listening device was involved. This proves signal and controls, not taste.
+Screenshot/evidence output defaults to ignored `tmp/browser/`. Headless signal
+values vary with capture timing. No real audio output device was auditioned.
+Build-only CI is checked separately in the PR; local passes are not hosted CI.
 
-Sanitizers initially found a signed-negative shift in pinned `fastmath.h` when
-using A4-relative negative exponents. App-local conversion now uses MIDI-0-relative
-**non-negative** exponents. Base wasn't patched or advanced. Initial sanitizer
-linking also required installing local `libasan`/`libubsan`; no runtime dependency.
-The upstream host compiler still emits two signedness warnings from `sense.c`.
+## Review-sensitive choices / remaining work
 
-## Local artifacts / measurements
+- v1.8.2 no longer has upstream browser support; v1.8.1 is the reproducible browser
+  baseline. This is an independent edition, not an upstream-supported new platform.
+- Factory `TRK_DEF` remains unchanged because legacy imports use it; BGIRL has a
+  separate startup table. Normal CLEAR ALL remains Felucca's blank factory layout.
+  Use **Blank electro template** for the four BGIRL sounds with empty sequences.
+- Browser storage key is separate; no automatic stock/prototype data import. Same
+  Felucca formats and save machinery, not the prototype's BGR1 record/storage layout.
+- Browser edition retains labeled keyboard/slider/button targets. The prototype's
+  spoken screen announcements are not available in this upstream UI; equivalent
+  musical screen-reader access remains an accessibility follow-up, not a parity claim.
+- Track 4 VOX LEAD is explicitly a **robot synth placeholder**. No vocoder or speech
+  assets ship; human sound curation and later vocoder integration remain separate.
+- Device identity, install destinations, storage compatibility, GPL source packaging
+  and actual hardware performance need their own review before distribution.
+- Vocoder findings remain in VOICE_SPIKE.md; dance animation remains issue #2.
+- No merge, device flash/build, release/tag push, site deployment or repository rename.
 
-All ignored unless noted. Paths below are relative to this repo unless absolute:
+## Local receipts
 
-- `app/build/host/demo-30s.wav` — 5,292,076 bytes; demo instructions in README.
-- `app/build/host/{note,master,voice-live}.wav`, host screenshots and demo metrics JSON.
-- `app/assets/phrase.wav` — committed dry modulator, 126068 WAV bytes;
-  125990 PCM bytes, 62995 frames at 22050 Hz / 2.857 seconds.
-- `app/build/voice/vocoder-{110,164.8138,220}.wav`, `signal-check.json`.
-- `app/build/browser/{desktop,mobile}.png`, `results.json`;
-  desktop screenshot also committed as `docs/img/browser.png`.
-- `/home/dev/.openclaw/workspace/tmp/bgirl-baseline/` — original template WAVs and
-  branded-before-electro browser screenshot. Original host boot/key PNGs were not separately preserved before the
-  branded regression overwrote them; baseline WAVs were preserved.
-- `/home/dev/.openclaw/workspace/tmp/bgirl-voice/source.wav` — original TTS download.
-- Exact command logs: `/tmp/bgirl-{brand-tests,final-tests,web,sanitized,demo,browser-final}.log`.
-- Vocoder state 828 bytes; complete engine state **912 bytes** on host, excluding
-  the read-only phrase and platform state. No dynamic DSP buffers.
-- Standalone 8-second voice render + stdio: 12.05/13.35/18.82 ms at three pitches
-  in the recorded run (only 2.857 seconds active). Host regression reports about
-  0.2% render realtime; full DSP suite ~1.8 seconds host CPU. Not device timing.
-- Host binary: 273952 bytes; WASM: 196948 bytes. `size` reported
-  host text 250310, data 924, BSS 2066784 before the MIDI intake cap; simulator
-  storage dominates BSS. **Do not treat this as linker-map/device RAM evidence.**
-
-## Blockers, unverified assumptions and next work
-
-1. **Listen first:** compare dry and three vocoded pitches blind; record surviving
-   words and musical usefulness. Add consonant/noise path or compare 16 bands if
-   needed. Basic saw oscillators are not band-limited. Voice remains experimental;
-   no intelligibility, clipping-free taste or final sound-design claim.
-2. **No target evidence:** package ID uniqueness, radio-off device configuration,
-   inherited flash/settings offsets, linker RAM/flash/XIP fit and SDK/toolchain
-   are unreviewed. 256/44100 ≈ 5.805 ms nominal deadline; worst-case device
-   rendering with MIDI/UI, xruns and latency are unknown. Single-core request
-   publication follows the current platform interrupt model, not tested hardware.
-3. **Browser coverage:** Chromium headless only; real speakers/headphones,
-   physical phones, Safari/Firefox and Web MIDI are untested. System screen-reader
-   text works; separately licensed built-in fm1-reader voice bundle is absent.
-   Words URL intentionally uses reserved `https://bgirl.invalid/words/`; never
-   distribute device firmware pointing at it.
-4. **Persistence:** octave/part/Bluetooth only, new `BGR1` record magic resets the
-   inherited template record. Tempo/tone/mute/run are runtime-only. No new flash
-   allocation or storage redesign.
-5. Hosted CI is checked separately at PR handoff; local checks aren't hosted CI.
-   No merge, flashing, release, site publishing or device package was performed.
-
-Scope/acceptance source: INITIAL_BUILD_PLAN.md. Its listening/hardware uncertainties
-remain open; this is useful implementation evidence, not an all-gates-green claim.
-
-Recorded implementation source HEAD: `712d241cfc042612b0b973052f0f837b856c491c`.
-Baseline plan/scaffold: `f67faa7f97b007cbe82c7fc4dd65aa9ea83489c4`.
-Documentation-only commits may follow these measured source revisions.
+- `/tmp/bgirl-felucca-baseline-{build,test}.log`, control screenshot/build at
+  `tmp/baseline/`; initial generation log `/tmp/bgirl-felucca-generate.log`.
+- `/tmp/bgirl-felucca-final-{build,tests,browser}.log`, `tmp/browser/results.json`.
+- Committed current screenshots: `docs/img/browser.png`, `docs/img/browser-mobile.png`.
+- Initial exploratory failures are not hidden: missing fontTools was installed;
+  changing factory TRK_DEF broke fixtures/legacy assumptions, so that approach was
+  removed and all upstream tests restored unchanged. Focused tests were corrected
+  for upstream mono-legato and one-track-per-encoder-event semantics. Final runner
+  and actual browser checks pass; prototype controls were not reintroduced.
