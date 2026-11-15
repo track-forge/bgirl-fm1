@@ -529,46 +529,34 @@ static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 {
     uint32_t k;
     if(web_bgirl_project(pad_demo ? 1 : 0)) return 1;
+    if(pad_demo) {
+        trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
+        song.sel=3; ui.home=1; ui.force=1; bg_vreset++;
+        return 0;
+    }
     undo_depth++;
-    if(!pad_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
-    if(pad_demo) { set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0); }
+    set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0);
     set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
     undo_depth--;
-    for(k=0;k<NTRK;k++) if(!pad_demo || k>=2) {
+    for(k=0;k<NTRK;k++) {
         trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
         trk[k].p[P_DIST]=0;
     }
-    if(!pad_demo) {
-        trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
-        trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
-        trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
-        trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
-    }
-    if(pad_demo) {
-        /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
-         * keeps phrase consonants covered; tied notes sustain through each phrase. */
-        trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
-        trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
-        trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
-        trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
-        trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
-        memset(trk[2].step,0,sizeof trk[2].step);
-        for(k=0;k<64;k++) {
-            uint8_t note[4]={(uint8_t)(48+(k/16%2)*7),0,0,0};
-            put_step(&trk[2],k,k%16 ? 0 : 1,note,k%16 ? ST_TIE : ST_NOTE,0);
-        }
-    }
+    trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
+    trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
+    trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
+    trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
     trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
     trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
     trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
-    trk[3].p[P_VCARR]=mode ? (pad_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=0;
+    trk[3].p[P_VCARR]=mode ? 2 : 0; trk[3].p[P_VMON]=0;
     trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
     trk[3].p[P_VCONS]=0;
     trk[3].p[P_SLEN]=64;
-    if(!pad_demo) trk[1].p[P_SLEN]=64;
+    trk[1].p[P_SLEN]=64;
     memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply */
     for(k=0;k<64;k++) {
-        if(!pad_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
+        if(k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
         if(k%16==0) { uint8_t note[4]={(uint8_t)(60+k/16),0,0,0}; put_step(&trk[3],k,1,note,ST_NOTE,0); }
     }
     if(!mode) trk[1].p[P_MUTE]=1;

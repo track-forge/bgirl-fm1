@@ -23,3 +23,7 @@ cc -O1 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/vocoder_test ../test
 build/host/vocoder_test
 cc -O2 -w -ffp-contract=off $HALI -Ibuild/gen -pthread -o build/host/vocoder_dual_test ../tests/vocoder_dual_test.c -lm
 build/host/vocoder_dual_test
+
+# Startup vocoder promotion must leave the disabled build's original demo intact.
+cc -O1 -w -ffp-contract=off -DBGIRL_VOCODER=0 $HALI -Ibuild/gen -o build/host/bgirl_disabled_test ../tests/bgirl_test.c -lm
+build/host/bgirl_disabled_test

@@ -104,3 +104,15 @@ with15 inherited TIE steps per note to maintain the feed through speech. T1/T2
 remain electro drums/bass. CARR=T3, MON=OFF by default to avoid dry-pad masking;
 MON ON remains available. T4 speech, DSP, startup electro, saves and existing
 isolated reference assets are unchanged. Human pad intelligibility still pending.
+
+## Main-feature demo promotion (2026-11-15)
+
+Doug accepted the pad-carrier audition and merged the implementation stack.
+The default electro demo now features that12-band T3-pad→T4-speech arrangement,
+with dry carrier MON OFF. Shared initialization owns the arrangement for both
+fresh startup and explicit browser demo load, not separate copies. It runs only
+before autosave restore or an explicit reset, never over a restored session.
+Blank electro template retains its prior palette with empty steps/no routing.
+BGIRL_VOCODER=0 retains the original bell/synth demo. Legacy migration TRK_DEF,
+saves, speech assets and DSP stay unchanged. Separate vocal-overlay issue #8
+tracks dry speech alongside vocoded output, independent of carrier MON.

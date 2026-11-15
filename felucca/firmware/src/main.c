@@ -48,6 +48,46 @@ static void fm1_fault(const fm1_crash_t *c)
     fm1_reboot();
 }
 
+#if BGIRL_VOCODER
+/* Shared startup/explicit demo arrangement. Outside render, before autosave.
+ * Existing project/sound machinery owns resets; this only curates two parts. */
+static void bgirl_demo_vocoder(void)
+{
+    uint32_t k;
+    undo_depth++;
+    set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0);
+    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
+    undo_depth--;
+    for(k=2;k<NTRK;k++) {
+        trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
+        trk[k].p[P_DIST]=0;
+    }
+    /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
+     * keeps phrase consonants covered; tied notes sustain through each phrase. */
+    trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
+    trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
+    trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
+    trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
+    trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
+    memset(trk[2].step,0,sizeof trk[2].step);
+    for(k=0;k<64;k++) {
+        step_t *s=&trk[2].step[k];
+        s->time=k%16 ? ST_TIE : ST_NOTE;
+        if(!(k%16)) { s->n=1; s->note[0]=(uint8_t)(48+(k/16%2)*7); s->vel=100; }
+    }
+    trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
+    trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
+    trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
+    trk[3].p[P_VCARR]=3; trk[3].p[P_VMON]=0; trk[3].p[P_VBANDS]=1;
+    trk[3].p[P_VCONS]=0; trk[3].p[P_SLEN]=64;
+    memset(trk[3].step,0,sizeof trk[3].step);
+    for(k=0;k<64;k+=16) {
+        step_t *s=&trk[3].step[k];
+        s->n=1; s->note[0]=(uint8_t)(60+k/16); s->vel=100; s->time=ST_NOTE;
+    }
+}
+#endif
+
 /* BGIRL demo is ordinary editable sequencer data, never a second transport/DSP.
  * Called at initialization BEFORE autosave restore and on explicit browser reset only. */
 static void bgirl_demo_steps(void)
@@ -63,6 +103,9 @@ static void bgirl_demo_steps(void)
         s->acc = (uint8_t)(s->hit & 7u);
     }
     load_pat16(&trk[3], reply, PATTERNS[6].flags);
+#if BGIRL_VOCODER
+    bgirl_demo_vocoder();
+#endif
     for (i = 0; i < NTRK; i++) pat_sig[i] = steps_sig(&trk[i]);
 }
 

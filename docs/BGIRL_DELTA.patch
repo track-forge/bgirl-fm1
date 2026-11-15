@@ -490,14 +490,54 @@ index d2bcf92..378ae13 100644
      if (perf)
          perf_pre(mix_l, mix_r, send_d, send_r, n);
 diff --git a/firmware/src/main.c b/firmware/src/main.c
-index 69ba568..ab1079d 100644
+index 69ba568..d8c2094 100644
 --- a/firmware/src/main.c
 +++ b/firmware/src/main.c
-@@ -48,7 +48,25 @@ static void fm1_fault(const fm1_crash_t *c)
+@@ -48,7 +48,68 @@ static void fm1_fault(const fm1_crash_t *c)
      fm1_reboot();
  }
 
 -/* power-on: the parts with their default sounds (TRK_DEF); the sequencers empty */
++#if BGIRL_VOCODER
++/* Shared startup/explicit demo arrangement. Outside render, before autosave.
++ * Existing project/sound machinery owns resets; this only curates two parts. */
++static void bgirl_demo_vocoder(void)
++{
++    uint32_t k;
++    undo_depth++;
++    set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0);
++    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
++    undo_depth--;
++    for(k=2;k<NTRK;k++) {
++        trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
++        trk[k].p[P_DIST]=0;
++    }
++    /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
++     * keeps phrase consonants covered; tied notes sustain through each phrase. */
++    trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
++    trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
++    trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
++    trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
++    trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
++    memset(trk[2].step,0,sizeof trk[2].step);
++    for(k=0;k<64;k++) {
++        step_t *s=&trk[2].step[k];
++        s->time=k%16 ? ST_TIE : ST_NOTE;
++        if(!(k%16)) { s->n=1; s->note[0]=(uint8_t)(48+(k/16%2)*7); s->vel=100; }
++    }
++    trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
++    trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
++    trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
++    trk[3].p[P_VCARR]=3; trk[3].p[P_VMON]=0; trk[3].p[P_VBANDS]=1;
++    trk[3].p[P_VCONS]=0; trk[3].p[P_SLEN]=64;
++    memset(trk[3].step,0,sizeof trk[3].step);
++    for(k=0;k<64;k+=16) {
++        step_t *s=&trk[3].step[k];
++        s->n=1; s->note[0]=(uint8_t)(60+k/16); s->vel=100; s->time=ST_NOTE;
++    }
++}
++#endif
++
 +/* BGIRL demo is ordinary editable sequencer data, never a second transport/DSP.
 + * Called at initialization BEFORE autosave restore and on explicit browser reset only. */
 +static void bgirl_demo_steps(void)
@@ -513,6 +553,9 @@ index 69ba568..ab1079d 100644
 +        s->acc = (uint8_t)(s->hit & 7u);
 +    }
 +    load_pat16(&trk[3], reply, PATTERNS[6].flags);
++#if BGIRL_VOCODER
++    bgirl_demo_vocoder();
++#endif
 +    for (i = 0; i < NTRK; i++) pat_sig[i] = steps_sig(&trk[i]);
 +}
 +
@@ -520,7 +563,7 @@ index 69ba568..ab1079d 100644
  static void felucca_init(void)
  {
      uint32_t i;
-@@ -60,16 +78,17 @@ static void felucca_init(void)
+@@ -60,16 +121,17 @@ static void felucca_init(void)
      for (i = 0; i < NTRK; i++) {
          track_t *t = &trk[i];
          track_defaults(t);
@@ -991,10 +1034,10 @@ index b8f30be..d8d449f 100644
 
  The firmware side is `firmware/src/editor.c`. Commands 1-15, track selection, dumps, step reads
 diff --git a/web/emu/felucca_web.c b/web/emu/felucca_web.c
-index 89ef369..c73b889 100644
+index 89ef369..8cffd5e 100644
 --- a/web/emu/felucca_web.c
 +++ b/web/emu/felucca_web.c
-@@ -495,3 +495,88 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
+@@ -495,3 +495,76 @@ EXPORT uint32_t web_screen_draws(void) { return web_draws; }
  EXPORT uint32_t web_now_ms(void) { return fm1_ms; }
  EXPORT uint32_t web_playing(void) { return song.playing; }
  EXPORT uint32_t web_sample_rate(void) { return FS; }
@@ -1032,46 +1075,34 @@ index 89ef369..c73b889 100644
 +{
 +    uint32_t k;
 +    if(web_bgirl_project(pad_demo ? 1 : 0)) return 1;
++    if(pad_demo) {
++        trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
++        song.sel=3; ui.home=1; ui.force=1; bg_vreset++;
++        return 0;
++    }
 +    undo_depth++;
-+    if(!pad_demo) { set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0); }
-+    if(pad_demo) { set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0); }
++    set_engine_of(&trk[1],0); apply_preset_to(&trk[1],0);
 +    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
 +    undo_depth--;
-+    for(k=0;k<NTRK;k++) if(!pad_demo || k>=2) {
++    for(k=0;k<NTRK;k++) {
 +        trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
 +        trk[k].p[P_DIST]=0;
 +    }
-+    if(!pad_demo) {
-+        trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
-+        trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
-+        trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
-+        trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
-+    }
-+    if(pad_demo) {
-+        /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
-+         * keeps phrase consonants covered; tied notes sustain through each phrase. */
-+        trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
-+        trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
-+        trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
-+        trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
-+        trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
-+        memset(trk[2].step,0,sizeof trk[2].step);
-+        for(k=0;k<64;k++) {
-+            uint8_t note[4]={(uint8_t)(48+(k/16%2)*7),0,0,0};
-+            put_step(&trk[2],k,k%16 ? 0 : 1,note,k%16 ? ST_TIE : ST_NOTE,0);
-+        }
-+    }
++    trk[1].p[P_E4]=127; trk[1].p[P_E5]=0; trk[1].p[P_E7]=0;
++    trk[1].p[P_SUS]=127; trk[1].p[P_ATK]=0;
++    trk[1].p[P_ED_FLT]=0; trk[1].p[P_DEC]=0; trk[1].p[P_REL]=20;
++    trk[1].p[P_SGATE]=120; trk[1].p[P_LEVEL]=90;
 +    trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
 +    trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
 +    trk[3].p[P_SUS]=127; trk[3].p[P_DEC]=0; trk[3].p[P_LEVEL]=96;
-+    trk[3].p[P_VCARR]=mode ? (pad_demo ? 3 : 2) : 0; trk[3].p[P_VMON]=0;
++    trk[3].p[P_VCARR]=mode ? 2 : 0; trk[3].p[P_VMON]=0;
 +    trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
 +    trk[3].p[P_VCONS]=0;
 +    trk[3].p[P_SLEN]=64;
-+    if(!pad_demo) trk[1].p[P_SLEN]=64;
++    trk[1].p[P_SLEN]=64;
 +    memset(trk[3].step,0,sizeof trk[3].step); /* replace old VOX reply */
 +    for(k=0;k<64;k++) {
-+        if(!pad_demo && k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
++        if(k%4==0) { uint8_t note[4]={(uint8_t)(48+(k/4%4)*3),0,0,0}; put_step(&trk[1],k,1,note,ST_NOTE,0); }
 +        if(k%16==0) { uint8_t note[4]={(uint8_t)(60+k/16),0,0,0}; put_step(&trk[3],k,1,note,ST_NOTE,0); }
 +    }
 +    if(!mode) trk[1].p[P_MUTE]=1;
@@ -1084,7 +1115,7 @@ index 89ef369..c73b889 100644
 +    return bgirl_vocoder_setup(mode, mode!=0);
 +}
 diff --git a/web/emu/index.html b/web/emu/index.html
-index 2a4a4a2..2509166 100644
+index 2a4a4a2..0180dd7 100644
 --- a/web/emu/index.html
 +++ b/web/emu/index.html
 @@ -6,7 +6,7 @@
@@ -1106,7 +1137,7 @@ index 2a4a4a2..2509166 100644
  <body>
  <main>
 +<h1>BGIRL <small>Felucca electro edition</small></h1>
-+<p>1 · TIGHT KIT / 2 · SQR BASS / 3 · FM6 BELL / 4 · VOX LEAD — normal electro palette. Load the speech lab below for the sample-fed vocoder.</p>
++<p>1 · TIGHT KIT / 2 · SQR BASS / 3 · SAW PAD carrier / 4 · SPEECH → 12-band vocoder — vocoder electro demo. Press PLAY; use the speech lab below to compare 8/12 bands.</p>
 +<p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
  <div class="device" id="device">
    <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>

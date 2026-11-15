@@ -194,3 +194,25 @@ HTTPS URL, explicitly load8/12 again, then PLAY. MON ON auditions the raw carrie
   tied saw notes and a nonzero actual carrier feed across four seconds per mode
   (not merely the drum/bass mix). Full host runner results recorded in PR.
 - Human pad intelligibility approval and physical performance remain unverified.
+
+## Main-feature electro demo follow-up (2026-11-15)
+
+Base: freshly fetched main `f493fddafae61c52dfcc8f5290b8a93c239736ad`,
+merged PR6 stack. Doug called the sustained-pad audition a win.
+Fresh startup and Load electro demo now share the12-band pad+speech arrangement.
+The8/12 speech-lab buttons reuse it with a band override; isolated diagnostics
+and old recordings remain unchanged. Autosaves, saved slots, blank template and
+BGIRL_VOCODER=0 original startup demo are preserved. No new DSP/save format/pins.
+
+Private preview: https://openclaw-fedora.tail549b77.ts.net:8447/ . Refresh, click
+**Load electro demo**, accept replacement of unsaved work, then PLAY. Existing
+autosaves deliberately do not update themselves. T4 second slow FX tap shows
+CARR=T3 / BANDS12 / MON OFF. The blank template remains bell/VOICE, no steps.
+
+Web build842141B SHA256
+`6bca3c4b783caf98be42829c5ddf39888edd05938ce3113beea40e32c577fa2d`.
+Screenshot: `docs/img/electro-vocoder.png`.
+Host tests cover fresh/explicit demo, real processed speech-bus energy (not
+backing-only output), edited project/autosave preservation, blank palette,
+STOP/release and an explicit compile-disabled original-demo run. Exact results
+and revision recorded in the follow-up PR. Physical performance still unverified.
