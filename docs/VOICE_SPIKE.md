@@ -11,8 +11,10 @@ the groove until a human listening pass approves it.
 12 logarithmically spaced constant-peak band-pass pairs, Q=3, 180–6500 Hz;
 rectified envelopes with approximately 0.9 ms attack / 15 ms release;
 sawtooth mono carrier. Same dry phrase for 110, 164.8138 and 220 Hz renders.
-The phrase has audible-data energy in multiple separated bands and speech-time
-envelopes; that is a signal check, **not proof someone understood the words**.
+20 ms output RMS ranges from silence to 0.077/0.107/0.109 at the three pitches
+(with WAV scaling). Autocorrelation estimates 109.98/164.55/220.50 Hz versus
+110/164.81/220 Hz requested (correlations 0.976/0.984/0.989). These are pitch and
+time-envelope checks, **not proof someone understood the words**.
 Initial gain 12 then 3 exceeded unity (measured peak 1.2843 at gain 3); gain 1.5
 reduces that peak to 0.6422 before conservative mix gain/limiting.
 
@@ -31,7 +33,7 @@ if consonants disappear. Do not replace this with a rendered hook silently.
 
 Standalone renders contain 8 seconds (phrase plus silence) and use 24000/32768
 output scaling. Host/browser keys in VOICE mode restart the phrase on each new
-note; legato changes carrier pitch without restarting. Note-off releases;
+articulation; legato changes carrier pitch without restarting. Note-off releases;
 stop and panic silence it. No sample-rate-dependent speech pitch shifting.
 See assets/README.md for source/rights/conversion. No network during build.
 
