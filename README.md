@@ -4,6 +4,8 @@
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 
+![BGIRL browser edition](docs/img/browser.png)
+
 ## Run locally
 
 Requires Git, Python 3.11+, C compiler/libm, Node 24, Emscripten **6.0.10**.
