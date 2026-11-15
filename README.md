@@ -4,6 +4,14 @@
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 
+## Play in your browser
+
+**[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/)**
+
+Click **Switch on**, then **PLAY** to hear the electro groove with vocoded speech.
+No installation needed. The preview updates automatically after successful main
+builds; use **Load electro demo** if a previous session's autosave is restored.
+
 ![BGIRL browser edition](docs/img/browser.png)
 
 ## Run locally
@@ -14,7 +22,7 @@ Pillow must have FreeType/Raqm support (ordinary Linux wheels do).
 ```sh
 git clone https://github.com/track-forge/bgirl-fm1.git
 cd bgirl-fm1
-git checkout feat/sample-fed-vocoder # unmerged review, stacked on planning PR #5
+git checkout main
 git submodule update --init --recursive
 python3 -m pip install Pillow==12.1.1 fonttools==4.68.0
 # Install/activate Emscripten 6.0.10 using emsdk; then:
