@@ -876,44 +876,48 @@ static const uint16_t ENG_VCOST[NENGINES] = {163, FELUCCA_FM4 ? 181 : 0, 162, 67
 };
 #endif
 
-/* one synth part into the dry mix and the sends of sm (mx[0]; mx[1] on the second core); a part with no voice sounding costs
- * the LFO tick and a cleared buffer only (after the DIST tail has run out) */
-static void mix_part(track_t *t, uint32_t n SM_DECL)
+#if BGIRL_VOCODER
+#include "bgirl_vocoder.c"
+static struct {
+    int owner, carrier;
+    int32_t mod[CTL], car[CTL];
+    uint32_t mod_valid, car_valid;
+    uint32_t reset, signature;
+} bg_bus = {.owner=-1, .carrier=-1};
+static void bg_capture_begin(uint32_t n)
 {
-    int32_t *b = SM(b);
+    int owner=-1,carrier=-1; uint32_t k, signature;
+    for(k=0;k<NPART;k++)
+        if(trk[k].engine==13 && trk[k].p[P_VCARR]) { owner=(int)k; break; }
+    if(owner>=0) {
+        carrier=trk[owner].p[P_VCARR]-1;
+        if(carrier<0 || carrier>=NPART || carrier==owner || !eng_ok(trk[carrier].engine)) carrier=-1;
+    }
+    signature=(uint32_t)(owner+1)*19u+(uint32_t)(carrier+1)*257u;
+    if(owner>=0) signature+=trk[owner].p[P_VBANDS]*65536u+trk[owner].p[P_E0]*1048576u;
+    if(carrier>=0) signature+=trk[carrier].engine*8192u+trk[carrier].eng_req*512u;
+    if(bg_bus.signature!=signature || bg_bus.reset!=bg_vreset) {
+        bg_vocoder_reset();
+        if(owner>=0) trk[owner].p[P_VHOLD]=0;
+    }
+    bg_bus.owner=owner; bg_bus.carrier=carrier; bg_bus.signature=signature; bg_bus.reset=bg_vreset;
+    bg_bus.mod_valid=bg_bus.car_valid=0;
+    for(k=0;k<n;k++) bg_bus.mod[k]=bg_bus.car[k]=0;
+}
+#endif
+
+/* Complete a mono part after its tap (or after the speech vocoder), without rerendering. */
+static void mix_finish(track_t *t, int32_t *b, uint32_t n SM_DECL)
+{
     uint32_t i;
-#if FELUCCA_CPU2
-    uint32_t nr;
-#endif
-    mod_begin(t);                                       /* the matrix's per-block values into t->p (mod.c) */
-    T_SPREAD(t) = t->p[P_SPRD] > 0 && (trk_vmode(t) == V_POLY || trk_vmode(t) == V_UNISON);   /* (SPREAD, mix_spread) */
-#if FELUCCA_CPU2
-    nr = track_render(t, b, n);
-    part_cost[(uint32_t)(t - trk) % NTRK] = (uint16_t)(nr * ENG_VCOST[t->engine % NENGINES] + (nr || t->tail ? 60u : 0u));
-    if (nr)
-#else
-    if (track_render(t, b, n))
-#endif
-        t->tail = t->p[P_ITYPE] ? 64 : 16;              /* blocks of DIST / INSERT state to run out after the last
-                                                         * voice (the INSERT's: 46 ms, a flanger's feedback) */
-    else if ((!t->tail || !(t->p[P_DIST] | t->p[P_ITYPE]) || !--t->tail) && !slicer_busy(t)) {
-        slicer_track(t, 0, n);                          /* (the SLICER's step clock runs on) */
-        if (t->ins_run && !t->p[P_ITYPE])
-            ins_rest(t);                                /* TYPE OFF while silent: no fade-out left for the next note */
-        if (MOD(t).on)
-            mod_end(t);
-        return;
+#if BGIRL_VOCODER
+    if ((int)(t-trk)==bg_bus.owner) {
+        if(t->p[P_ITYPE] | t->ins_run) track_insert(t,b,n);
+        slicer_track(t,b,n);
+        if ((pf.mute >> (t-trk)) & 1u) perf_mute((uint32_t)(t-trk),b,n);
+        if(t->p[P_MUTE]) for(i=0;i<n;i++) b[i]=0;
     }
-    if (T_SPREAD(t))
-        mix_spread(t, b, n SM_ARG(sm));
-    else {
-        track_dist(t, b, n);
-        if (t->p[P_ITYPE] | t->ins_run)
-            track_insert(t, b, n);                      /* the INSERT (1.5): off, nothing */
-        slicer_track(t, b, n);                          /* slicer.c: before the level, pan and sends */
-        if ((pf.mute >> (t - trk)) & 1u)
-            perf_mute((uint32_t)(t - trk), b, n);       /* perform.c: a black key in the FX layer */
-    }
+#endif
     if (!T_SPREAD(t)) {                                /* (the mix's values read after the calls: none is held over
                                                          * them, no spill in the loop: the ISR's cost as before 1.5) */
         int32_t lvl = LEVEL_Q12[t->p[P_LEVEL] & 127], pan = t->p[P_PAN];
@@ -941,6 +945,71 @@ static void mix_part(track_t *t, uint32_t n SM_DECL)
         perf_throw(t, b, SM(d), SM(v), n);              /* perform.c: REV / ECHO THROW (1.5.1), the sends towards full */
     if (MOD(t).on)
         mod_end(t);                                     /* the stored values back */
+}
+
+/* one synth part into the dry mix and the sends of sm (mx[0]; mx[1] on the second core); a part with no voice sounding costs
+ * the LFO tick and a cleared buffer only (after the DIST tail has run out) */
+static void mix_part(track_t *t, uint32_t n SM_DECL)
+{
+    int32_t *b = SM(b);
+    uint32_t i;
+#if FELUCCA_CPU2
+    uint32_t nr;
+#endif
+#ifdef BG_RENDER_HOOK
+    BG_RENDER_HOOK(t);
+#endif
+    mod_begin(t);                                       /* the matrix's per-block values into t->p (mod.c) */
+    T_SPREAD(t) = t->p[P_SPRD] > 0 && (trk_vmode(t) == V_POLY || trk_vmode(t) == V_UNISON);   /* (SPREAD, mix_spread) */
+#if BGIRL_VOCODER
+    if ((int)(t-trk)==bg_bus.owner || (int)(t-trk)==bg_bus.carrier) T_SPREAD(t)=0;
+#endif
+#if FELUCCA_CPU2
+    nr = track_render(t, b, n);
+    part_cost[(uint32_t)(t - trk) % NTRK] = (uint16_t)(nr * ENG_VCOST[t->engine % NENGINES] + (nr || t->tail ? 60u : 0u));
+    if (nr)
+#else
+    if (track_render(t, b, n))
+#endif
+        t->tail = t->p[P_ITYPE] ? 64 : 16;              /* blocks of DIST / INSERT state to run out after the last
+                                                         * voice (the INSERT's: 46 ms, a flanger's feedback) */
+    else if (
+#if BGIRL_VOCODER
+             (int)(t-trk)!=bg_bus.owner &&
+#endif
+             (!t->tail || !(t->p[P_DIST] | t->p[P_ITYPE]) || !--t->tail) && !slicer_busy(t)) {
+        slicer_track(t, 0, n);                          /* (the SLICER's step clock runs on) */
+        if (t->ins_run && !t->p[P_ITYPE])
+            ins_rest(t);                                /* TYPE OFF while silent: no fade-out left for the next note */
+        if (MOD(t).on)
+            mod_end(t);
+        return;
+    }
+    if (T_SPREAD(t))
+        mix_spread(t, b, n SM_ARG(sm));
+    else {
+        track_dist(t, b, n);
+#if BGIRL_VOCODER
+        if((int)(t-trk)==bg_bus.owner) {
+            for(i=0;i<n;i++) bg_bus.mod[i]=b[i];
+            bg_bus.mod_valid=1;
+            return; /* keep this track's block-local modulation until post-join finish */
+        }
+#endif
+        if (t->p[P_ITYPE] | t->ins_run)
+            track_insert(t, b, n);                      /* the INSERT (1.5): off, nothing */
+        slicer_track(t, b, n);                          /* slicer.c: before the level, pan and sends */
+#if BGIRL_VOCODER
+        if((int)(t-trk)==bg_bus.carrier) {
+            for(i=0;i<n;i++) bg_bus.car[i]=(t->p[P_MUTE] || ((pf.mute>>(t-trk))&1u)) ? 0 : b[i];
+            bg_bus.car_valid=1;
+            if(!trk[bg_bus.owner].p[P_VMON]) { if(MOD(t).on) mod_end(t); return; }
+        }
+#endif
+        if ((pf.mute >> (t - trk)) & 1u)
+            perf_mute((uint32_t)(t - trk), b, n);       /* perform.c: a black key in the FX layer */
+    }
+    mix_finish(t,b,n SM_ARG(sm));
 }
 
 /* the HOME oscilloscope (ui_graph.c graph_scope): every other sample of the left channel. MENU > DISPLAY > SCOPE (1.2,
@@ -1040,6 +1109,9 @@ static void mix_block(int32_t *out, uint32_t n)
     for (i = 0; i < n; i++)
         send_c[i] = send_d[i] = send_r[i] = mix_l[i] = mix_r[i] = 0;
     events_block(n);
+#if BGIRL_VOCODER
+    bg_capture_begin(n);
+#endif
     perf = perf_begin(n);                               /* the FX hold layer at work (perform.c) */
 #if FELUCCA_CPU2
     uint32_t m = C1_ON() ? C1_SPLIT() & ((1u << NPART) - 1u) : 0u;
@@ -1051,8 +1123,20 @@ static void mix_block(int32_t *out, uint32_t n)
             mix_part(&trk[i], n, &mx[0]);
     if (m) {
         const mixsum_t *sm = &mx[1];
-        if (C1_WAIT())                                  /* it stopped answering (held from now on): its parts here */
-            c1_parts(m | n << 8);
+        if (C1_WAIT()) { /* worker stopped; it may already have advanced state: NEVER replay */
+            for(i=0;i<NPART;i++) if(m>>i&1u) {
+                track_t *t=&trk[i];
+                if(MOD(t).on) mod_end(t);
+                trk_all_off(t);
+                for(uint32_t v=0;v<NVOICE;v++) t->v[v].active=0;
+                ins_rest(t); t->tail=0;
+            }
+#if BGIRL_VOCODER
+            if(bg_bus.owner>=0 && (m>>bg_bus.owner&1u)) bg_bus.mod_valid=0;
+            if(bg_bus.carrier>=0 && (m>>bg_bus.carrier&1u)) bg_bus.car_valid=0;
+#endif
+            for(i=0;i<n;i++) mx[1].l[i]=mx[1].r[i]=mx[1].c[i]=mx[1].d[i]=mx[1].v[i]=0;
+        }
         for (i = 0; i < n; i++) {
             mix_l[i] += sm->l[i];
             mix_r[i] += sm->r[i];
@@ -1061,11 +1145,24 @@ static void mix_block(int32_t *out, uint32_t n)
             send_r[i] += sm->v[i];
         }
     }
-    for (i = 0; i < NPART; i++)                         /* the LFOs' blocks, part by part (voice.c) */
-        track_lfo_end(&trk[i]);
+
 #else
     for (i = 0; i < NPART; i++)                         /* (one core: as 1.6) */
         mix_part(&trk[i], n);
+#endif
+#if BGIRL_VOCODER
+    if(bg_bus.owner>=0 && bg_bus.mod_valid) {
+        if(!bg_bus.car_valid || (bg_bus.carrier>=0 && (trk[bg_bus.carrier].p[P_MUTE] || (pf.mute>>bg_bus.carrier&1u)))) {
+            for(i=0;i<n;i++) bg_bus.car[i]=0;
+            memset(bg_voc.synthesis,0,sizeof bg_voc.synthesis);
+        }
+        bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
+        T_SPREAD(&trk[bg_bus.owner])=0;
+        mix_finish(&trk[bg_bus.owner],bg_bus.mod,n SM_ARG(&mx[0]));
+    }
+#endif
+#if FELUCCA_CPU2
+    for(i=0;i<NPART;i++) track_lfo_end(&trk[i]);
 #endif
     if (perf)
         perf_pre(mix_l, mix_r, send_d, send_r, n);

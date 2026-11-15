@@ -118,6 +118,9 @@ static uint32_t trk_nvoice(const track_t *t)
 /* the part's voice mode: P_VOICE, POLY for an engine of hits (engine_t.oneshot: DRUM) */
 static uint32_t trk_vmode(const track_t *t)
 {
+#if FELUCCA_SLICE
+    if (t->engine == 13 && slc_src_of(t->p) == SLC_SRC_SPEECH) return V_MONO;
+#endif
     return ENGINES[t->engine]->oneshot ? V_POLY : (uint32_t)t->p[P_VOICE];
 }
 
@@ -336,7 +339,7 @@ static void voice_start(track_t *t, voice_t *v, uint32_t note, uint32_t vel, int
  * engine's voice cap, spread by DETUNE over the same width) */
 static void mono_play(track_t *t, uint32_t note, uint32_t vel, int retrig, int glide)
 {
-    uint32_t mode = (uint32_t)t->p[P_VOICE], nv = mode == V_UNISON ? trk_nvoice(t) : 1u, i;
+    uint32_t mode = trk_vmode(t), nv = mode == V_UNISON ? trk_nvoice(t) : 1u, i;
     for (i = 0; i < nv; i++) {
         voice_t *v = &t->v[i];
         int32_t k = 2 * (int32_t)i - (int32_t)(nv - 1u);   /* -7 .. 7 */
@@ -407,6 +410,12 @@ static void trk_note_on(track_t *t, uint32_t note, uint32_t vel)
         t->xp_vel[i] = (uint8_t)vel;
         return;
     }
+#if FELUCCA_SLICE
+    if (t->engine == 13 && slc_src_of(t->p) == SLC_SRC_SPEECH) {
+        t->nmono = 0; t->mono_note = 0; /* no held-phrase fallback / priority */
+        for(i=1;i<NVOICE;i++) t->v[i].active=t->v[i].gate=0;
+    }
+#endif
     vel = mod_note(t, note, vel);                       /* the matrix's VEL / KEY / RAND (1.5.6: VEL as a destination) */
     for (i = 0; i < NVOICE; i++)
         any |= t->v[i].gate;
@@ -475,6 +484,13 @@ static void trk_note_off(track_t *t, uint32_t note)
 static void trk_all_off(track_t *t)
 {
     uint32_t i;
+#if FELUCCA_SLICE
+    if (t->engine == 13 && slc_src_of(t->p) == SLC_SRC_SPEECH) {
+        for (i=0; i<NVOICE; i++) t->v[i].active=0;
+        speech_last[t-trk]=0;
+    }
+#endif
+    t->p[P_VHOLD]=0; bg_vreset++;
     for (i = 0; i < NVOICE; i++) {
         t->v[i].gate = 0;
         t->v[i].stage = t->v[i].active ? 3 : 0;

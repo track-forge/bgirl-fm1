@@ -1,3 +1,11 @@
+> BGIRL vocoder extension: common IDs106..117 are CARR, BANDS, WET, MON,
+> HOLD, SPCH, CGAIN, CONS, LOW, MID, HIGH, REL. P_E0=118, P_COUNT=126.
+> Existing protocol clients must use INFO counts, not pinned Felucca1.8 IDs.
+> New project objects are FUNB/3840bytes, omitting retired DIGITAL OP IDs61..80
+> on wire; parameter/motion IDs remain logical. All old project readers retained.
+> HOLD is live only; no captured envelopes are serialized. See repository vocoder
+> contracts for project vs sound-preset routing and read-only speech bank semantics.
+
 # Felucca editor protocol (SysEx over USB-MIDI)
 
 The firmware side is `firmware/src/editor.c`. Commands 1-15, track selection, dumps, step reads

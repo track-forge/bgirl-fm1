@@ -87,7 +87,21 @@ static const char *const N_SLOT[] = {"A", "B", "C", "D", 0};   /* G_SLOT 1..4 (F
 #define PD(l, f, mn, mx, df) {l, f, mn, mx, df, 0, 0}
 #define PE(l, n, df) {l, F_ENUM, 0, (int16_t)(sizeof(n) / sizeof(n[0]) - 1), df, n, 0}
 
+static const char *const N_VCARR[] = {"OFF", "T1", "T2", "T3", "T4"};
+static const char *const N_VBANDS[] = {"8", "12"};
 static const param_desc_t TP[P_COUNT] = {
+    [P_VCARR] = PE("CARR", N_VCARR, 0),
+    [P_VBANDS] = PE("BANDS", N_VBANDS, 1),
+    [P_VWET] = PD("WET", F_PCT, 0, 127, 127),
+    [P_VMON] = PE("MON", N_ONOFF, 1),
+    [P_VHOLD] = PE("HOLD", N_ONOFF, 0),
+    [P_VMTRIM] = PD("SPCH", F_INT, 0, 127, 64),
+    [P_VCTRIM] = PD("CGAIN", F_INT, 0, 127, 64),
+    [P_VCONS] = PD("CONS", F_INT, 0, 127, 0),
+    [P_VLOW] = PD("LOW", F_INT, 0, 127, 64),
+    [P_VMID] = PD("MID", F_INT, 0, 127, 64),
+    [P_VHIGH] = PD("HIGH", F_INT, 0, 127, 64),
+    [P_VREL] = PD("REL", F_INT, 1, 127, 32),
     [P_LEVEL] = PD("LVL", F_DB, 0, 127, 104),
     [P_ATK] = PD("ATK", F_TIME, 0, 127, 10),
     [P_DEC] = PD("DEC", F_TIME, 0, 127, 70),
@@ -234,8 +248,15 @@ static const param_desc_t GP[G_COUNT] = {
     [G_DRREV] = PD("-", F_INT, 0, 0, 0),
 };
 
+static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,4,0,N_VCARR,0};
+static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,4,0,N_VCARR,0};
 static const param_desc_t *track_desc(const track_t *t, uint32_t id)
 {
+    if(id==P_VCARR && t->p[P_VCARR]) {
+        int c=t->p[P_VCARR]-1;
+        if(t->eng_req!=13 || c<0 || c>=NPART || &trk[c]==t || !eng_ok(trk[c].eng_req)) return &VC_MISSING;
+        for(uint32_t k=0;k<(uint32_t)(t-trk);k++) if(trk[k].eng_req==13 && trk[k].p[P_VCARR]) return &VC_BUSY;
+    }
     if (id >= P_E0 && id <= P_E7) {                   /* the engine asked for (t->engine follows after a fade) */
         const engine_t *e = ENGINES[eng_idx(t->eng_req)];
         const param_desc_t *d = e->desc ? e->desc(t, id - P_E0) : 0;   /* a mode-dependent label / names */
@@ -466,6 +487,9 @@ static const page_t PAGES[] = {
     {"SLICER", FAM_FX, SC_TRACK, GR_SLCR, {P_SLCR, P_SLPAT, P_SLRATE, P_SLDEPTH}},
     {"INSERT", FAM_FX, SC_TRACK, GR_INS, {P_ITYPE, P_IA, P_IB, P_IC}},   /* 1.5: the track's INSERT (fx.c) */
     {"INSERT 2", FAM_FX, SC_TRACK, GR_INS, {P_IMIX, 0xFF, 0xFF, 0xFF}},  /* .. its dry / wet */
+    {"VOCODER", FAM_FX, SC_TRACK, GR_NONE, {P_VCARR, P_VBANDS, P_VWET, P_VMON}},
+    {"VOC INPUT", FAM_FX, SC_TRACK, GR_NONE, {P_VHOLD, P_VMTRIM, P_VCTRIM, P_VCONS}},
+    {"VOC COLOR", FAM_FX, SC_TRACK, GR_NONE, {P_VLOW, P_VMID, P_VHIGH, P_VREL}},
     {"DLY", FAM_FX, SC_GLOBAL, GR_NONE, {G_DTIME, G_DFDBK, G_DCOLOR, G_DMIX}},
     {"REVERB", FAM_FX, SC_GLOBAL, GR_NONE, {G_RTYPE, G_RSIZE, G_RDAMP, 0xFF}},   /* TYPE: ROOM / SPRING / HALL */
     {"CHORUS", FAM_FX, SC_GLOBAL, GR_NONE, {G_CRATE, G_CDEPTH, 0xFF, 0xFF}},

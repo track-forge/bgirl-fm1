@@ -34,7 +34,7 @@ static const slc_src_t *slice_src(uint32_t *src, uint32_t *div)
     uint32_t k = slc_src_of(p);
     const slc_src_t *s = slc_get(k);
     *src = k;
-    *div = (uint32_t)clamp(p[P_E1], 0, SLC_DIV_MAN);
+    *div = k==SLC_SRC_SPEECH ? SLC_DIV_AUTO : (uint32_t)clamp(p[P_E1], 0, SLC_DIV_MAN);
     return s;
 }
 
@@ -82,9 +82,9 @@ static slc_man_t *slice_edit_begin(uint32_t *k)
     uint32_t src, div, n, i, a, b, st;
     const slc_src_t *s = slice_src(&src, &div);
     slc_man_t *m;
-    if (!s || !src || src == SLC_SRC_PIANO) {
+    if (!s || !src || src >= SLC_SRC_PIANO) {
         static const char *const EMPTY[3] = {"USR1 EMPTY", "USR2 EMPTY", "USR3 EMPTY"};
-        ui_message(src && src != SLC_SRC_PIANO ? EMPTY[src - 1u] : "SRC USR1-3 TO EDIT");
+        ui_message(src>0 && src<SLC_SRC_PIANO ? EMPTY[src - 1u] : "SRC USR1-3 TO EDIT");
         return 0;
     }
     *k = src - 1u;

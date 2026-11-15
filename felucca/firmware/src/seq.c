@@ -931,6 +931,13 @@ static void seq_stop(void)
 {
     uint32_t i;
     song.playing = 0;
+    bg_vreset++;
+    for (i=0; i<NTRK; i++) {
+        trk[i].p[P_VHOLD]=0;
+#if FELUCCA_SLICE
+        if (trk[i].engine==13 && slc_src_of(trk[i].p)==SLC_SRC_SPEECH) trk_all_off(&trk[i]);
+#endif
+    }
     cin_left = 0;                                  /* (a count-in: cancelled, nothing recorded) */
     cin_flush = 0;
     memset(cin_n, 0, sizeof cin_n);
