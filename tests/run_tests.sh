@@ -27,3 +27,9 @@ build/host/vocoder_dual_test
 # Startup vocoder promotion must leave the disabled build's original demo intact.
 cc -O1 -w -ffp-contract=off -DBGIRL_VOCODER=0 $HALI -Ibuild/gen -o build/host/bgirl_disabled_test ../tests/bgirl_test.c -lm
 build/host/bgirl_disabled_test
+
+python3 ../tests/test_package_vocals.py
+cc -O1 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/vocal_bank_test ../tests/vocal_bank_test.c -lm
+build/host/vocal_bank_test
+cc -O1 -w -ffp-contract=off -DBGIRL_VOCODER=0 $HALI -Ibuild/gen -o build/host/vocal_bank_disabled_test ../tests/vocal_bank_test.c -lm
+build/host/vocal_bank_disabled_test

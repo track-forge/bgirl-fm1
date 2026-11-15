@@ -47,6 +47,7 @@ jobs:
           export PLAYWRIGHT_MODULE="$RUNNER_TEMP/bgirl-browser/node_modules/playwright"
           node tests/browser-smoke.cjs
           node tests/vocoder-browser.cjs
+          node tests/vocal-browser.cjs
       - name: Add source revision and license to the published artifact
         run: |
           cp LICENSE felucca/build/emu/LICENSE

@@ -564,6 +564,53 @@ static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
     return 0;
 }
 
+/* Explicit, stopped audition project; never overrides restored music on boot.
+ * mode: whole dry/wet, chops dry/wet. group is the stable parent view 1..6. */
+EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
+{
+    if(mode>3 || group<1 || group>=NELEM(BG_VOCAL_GROUPS)) return 1;
+    if(web_bgirl_project(1)) return 1;
+    fm1_irq_off();
+    undo_depth++;
+    set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
+    undo_depth--;
+    trk[0].p[P_MUTE]=trk[1].p[P_MUTE]=1;
+    trk[2].p[P_MUTE]=!(mode&1);
+    trk[3].p[P_E0]=SLC_SRC_VOCALS;
+    trk[3].p[P_E1]=mode<2 ? 0 : (int16_t)group;
+    trk[3].p[P_E2]=0; trk[3].p[P_ROOT]=0;
+    trk[3].p[P_E3]=0; trk[3].p[P_E4]=SLC_ONE;
+    trk[3].p[P_E5]=0; trk[3].p[P_E6]=127;
+    trk[3].p[P_ATK]=0; trk[3].p[P_DEC]=0; trk[3].p[P_SUS]=127;
+    trk[3].p[P_VCARR]=(mode&1) ? 3 : 0;
+    trk[3].p[P_VBANDS]=1; trk[3].p[P_VMON]=0;
+    trk[3].p[P_CHOR]=trk[3].p[P_DLY]=trk[3].p[P_REV]=0;
+    slc_vocal_select(&trk[3]);
+    memset(trk[3].step,0,sizeof trk[3].step);
+    if(mode<2) {
+        uint8_t note[4]={(uint8_t)(60+group-1),0,0,0};
+        put_step(&trk[3],0,1,note,ST_NOTE,0);
+    } else {
+        uint32_t count=BG_VOCAL_GROUPS[group].n;
+        for(uint32_t k=0;k<64;k+=4) {
+            uint8_t note[4]={(uint8_t)(60+(k/4)%count),0,0,0};
+            put_step(&trk[3],k,1,note,ST_NOTE,0);
+        }
+    }
+    song.sel=3; song.octave=0; ui.home=1; ui.force=1; bg_vreset++;
+    fm1_irq_on();
+    return 0;
+}
+
+/* Small read-only status word for bank-info/browser diagnostics; no render state edits. */
+EXPORT uint32_t web_bgirl_vocal_state(void) {
+    return trk[3].eng_req==13 ? ((uint32_t)trk[3].p[P_E0]&15u) |
+        (((uint32_t)trk[3].p[P_E1]&7u)<<4) | (((uint32_t)trk[3].p[P_E2]&31u)<<7) |
+        (slc_vocal_match(&trk[3]) ? 4096u : 0) : 0;
+}
+EXPORT uint32_t web_bgirl_vocal_groups(void) { return NELEM(BG_VOCAL_GROUPS)-1; }
+EXPORT const uint8_t *web_bgirl_vocal_id(void) { return BG_VOCAL_ID; }
+
 EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
 {
     return bgirl_vocoder_setup(mode, mode!=0);

@@ -100,6 +100,25 @@ h1 { color: #ff80bb; font-size: 24px; } h1 small { color: #c3e7f5; font-size: 14
   </select></span>
 </p>
 
+<section aria-label="Vocal one-shot audition">
+<h2>Vocal bank · whole phrases &amp; chops</h2>
+<p>Uses the installed offline bank: public builds use original BGIRL speech fixtures;
+local builds can use your separately prepared recordings. Replaces the unsaved project
+only after confirmation. Press PLAY; STOP ends the shot. Track 4 keys/MIDI select entries.
+EDIT 1: SRC VOCALS, VIEW WHOLE or G1–G6 (parent groups), START entry offset, BANK READY/MISS.
+No pitch shift, warping or looping. Wet uses the existing sustained T3 pad, MON OFF.</p>
+<label>Parent group <select id="vocal-group">
+<option value="1">G1 / whole W01</option><option value="2">G2 / whole W02</option>
+<option value="3">G3 / whole W03</option><option value="4">G4 / whole W04</option>
+<option value="5">G5 / whole W05</option><option value="6">G6 / whole W06</option>
+</select></label>
+<button id="vocal-whole-dry">Load whole · dry</button>
+<button id="vocal-whole-wet">Load whole · vocoded</button>
+<button id="vocal-chops-dry">Load chops · dry</button>
+<button id="vocal-chops-wet">Load chops · vocoded</button>
+<p id="vocal-status" role="status">Installed groups appear after Switch on. Human listening approval pending.</p>
+</section>
+
 <section aria-label="Vocoder listening checkpoint">
 <h2>Speech lab · listening checkpoint</h2>
 <p>Replaces the unsaved project; saved slots stay intact. Press PLAY after loading.
@@ -185,6 +204,13 @@ angle.MASTER = -135 + 270 * masterValue / 1023;
 const knobs = [], buttons = [], keys = [];
 const btnBy = new Map(), keyBy = new Map();                   // pointer / key code -> label bit or key
 const send = (m) => { if (node) node.port.postMessage(m); };
+["vocal-whole-dry","vocal-whole-wet","vocal-chops-dry","vocal-chops-wet"].forEach((id,mode)=> {
+ document.getElementById(id).onclick=()=> {
+  if(!node) { document.getElementById("vocal-status").textContent="Switch on first."; return; }
+  if(confirm("Replace the current unsaved project with the installed vocal-bank audition? Saved slots are unchanged."))
+   send({type:"bgirl-vocals",mode,group:Number(document.getElementById("vocal-group").value)});
+ };
+});
 ["speech-dry","speech-8","speech-12"].forEach((id,mode)=> {
  document.getElementById(id).onclick=()=> {
   if(!node) { document.getElementById("vocoder-status").textContent="Switch on first."; return; }
@@ -531,6 +557,10 @@ async function switchOn() {
       node.port.onmessage = (e) => {
         const m = e.data;
         if (m.type === "ready") res();
+        else if (m.type === "vocal-info") {
+          for(const o of document.querySelectorAll("#vocal-group option")) o.disabled=Number(o.value)>m.groups;
+          document.getElementById("vocal-status").textContent=`Installed bank ${m.id} · ${m.groups} parent groups. Human listening approval pending.`;
+        }
         else if (m.type === "bgirl-project-result") document.getElementById("project-status").textContent = m.ok ? "Loaded, transport stopped. Save via Felucca SAVE; saved slots are unchanged." : "Not loaded; release all controls and retry.";
         else if (m.type === "error") rej(new Error(m.message));
         else if (m.type === "frame") {
@@ -545,6 +575,7 @@ async function switchOn() {
       node.port.postMessage({ type: "load", wasm, sectors: loadFlash(), master: masterValue }, [wasm]);
     });
     await ac.resume();
+    send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;

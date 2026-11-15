@@ -20,16 +20,19 @@ Written before implementation, based on main c3edd75. Host/browser only.
   never a sine or last valid entry. STOP/panic stop voice and pending triggers.
 - Optional immutable compiled bank, offline prepared, no render-time I/O or
   allocation. One ADPCM stream with explicit start/end/checkpoint per entry;
+  plus 128 grid checkpoints for the inherited read-only waveform display;
   no 16-segment/32-onset limit abuse. Whole files and supplied chopped files
   are encoded independently into the stream (their fades may differ).
 - Project parameters already preserve SRC/VIEW/START/ROOT and sequencer notes.
   Use the 32 bytes immediately before FUNB's three MIDI bytes for four 8-byte
   content fingerprints. Zero/mismatch means missing, not permission to adopt
-  another bank. Old FUN1..FUNB remain readable; factory paths ignore this area.
-  A VOCALS preset uses eight spare packed bytes (134..141); old records have
-  zero. Preserve the expected fingerprint even while unavailable. Explicitly
-  selecting SRC VOCALS adopts the installed bank; restored projects/presets
-  do not. No new parameters, count/layout/address/flash extent changes.
+  another bank. Vocal projects write FUNC (same 3840-byte extent/layout) so
+  older firmware refuses SRC 6 instead of clamping to SPEECH. Non-vocal projects
+  still write FUNB. Old FUN1..FUNB remain readable; factory paths ignore IDs.
+  A VOCALS preset uses version 6 and eight spare packed bytes (134..141);
+  older firmware refuses it. Old records have zero. Preserve the expected fingerprint even while unavailable. Explicitly
+  editing SRC to VOCALS adopts the installed bank; restored projects/presets,
+  source automation and triggers do not. No new parameters, count/layout/address/flash extent changes.
 - Default build packages a small reproducible fixture from existing original
   speech WAVs. Private banks require an explicit directory, are ignored and
   offline; never committed, included in CI artifacts or Pages. Default build
@@ -39,7 +42,8 @@ Written before implementation, based on main c3edd75. Host/browser only.
 - Packaging validates full inventory/manifest/bounds and hashes; stable sorted
   parent IDs and slice_index order, no filesystem-order IDs, retrimming or
   detection. Stereo averaged to mono; deterministic 44.1k->22.05k pair-average
-  low-pass/decimation (already 22.05k unchanged), fixed -3dB headroom, original
+  low-pass/decimation (22.05k unchanged; existing 24k fixture linearly resampled),
+  fixed -3dB headroom (float overshoots up to 1.4 permitted), original
   tails preserved, 3ms edge fades on originals only (chops already faded).
   Exact offsets, durations, input SHA256 and full bank SHA256 in metadata.
 

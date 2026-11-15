@@ -109,6 +109,7 @@ static const char *snd_missing(const track_t *t, uint32_t *code)
     if (e == &ENG_SLICE) {
         si = slc_src_of(t->p);
         *code = 64u + si;
+        if(si==SLC_SRC_VOCALS && !slc_vocal_match(t)) return "VOCALS";
         return slc_get(si) ? 0 : N_SLC_SRC[si];
     }
 #endif

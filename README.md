@@ -76,6 +76,24 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
 [speech provenance](assets/speech/README.md). No physical-device performance proof.
 
+## Optional whole-phrase / chopped vocal bank
+
+The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
+each dry or through the existing sustained pad vocoder. The default build uses a
+small fixture from our original speech assets; it does **not** contain Doug's
+recordings. Existing startup/demo and factory SPEECH are unchanged.
+
+Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
+**G1–G6**, START **W01…** / **C01…**. Chromatic keys/MIDI/step notes select entries;
+short taps play to the end, newest trigger replaces, STOP/panic ends playback.
+Projects/presets retain bank identity and selection; a missing/different bank is
+silent (**BANK MISS**), never substituted.
+
+[Packaging, controls and local browser audition](docs/VOCAL_BANKS.md) ·
+[UI/storage contract](docs/VOCAL_BANK_CONTRACT.md) ·
+[host/browser verification](docs/VOCAL_BANK_VERIFICATION.md).
+No warping, tempo fitting, dry overlay or hardware proof.
+
 ## Starting demo and blank palette
 
 | Track | Sound | Pattern |

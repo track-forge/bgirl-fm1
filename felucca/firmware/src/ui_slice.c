@@ -35,6 +35,7 @@ static const slc_src_t *slice_src(uint32_t *src, uint32_t *div)
     const slc_src_t *s = slc_get(k);
     *src = k;
     *div = k==SLC_SRC_SPEECH ? SLC_DIV_AUTO : (uint32_t)clamp(p[P_E1], 0, SLC_DIV_MAN);
+    if(k==SLC_SRC_VOCALS) { *div=(uint32_t)p[P_E1]; if(!slc_vocal_match(TSEL)) return 0; }
     return s;
 }
 
