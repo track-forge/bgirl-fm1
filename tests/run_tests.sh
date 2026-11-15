@@ -19,3 +19,7 @@ node web/emu/emu_test.mjs build/emu/felucca.wasm build/host/emu_native.f32
 cc -O1 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/bgirl_test ../tests/bgirl_test.c -lm
 build/host/bgirl_test
 node web/test_backup.mjs
+cc -O1 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/vocoder_test ../tests/vocoder_test.c -lm
+build/host/vocoder_test
+cc -O2 -w -ffp-contract=off $HALI -Ibuild/gen -pthread -o build/host/vocoder_dual_test ../tests/vocoder_dual_test.c -lm
+build/host/vocoder_dual_test

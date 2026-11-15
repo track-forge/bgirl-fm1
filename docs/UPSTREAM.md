@@ -1,5 +1,17 @@
 # BGIRL migration provenance
 
+## Vocoder follow-up delta
+
+The scoped follow-up implements [VOCODER_CONTRACTS.md](VOCODER_CONTRACTS.md) on this
+same pinned tree: bundled original speech through SLICE, count-mapped controls,
+post-join capture/processing, normal FX pages, bounded worker-failure recovery and
+FUNB compact project writes with all legacy readers. No gitlinks, flash addresses,
+engine numbers, release/install workflows or device identities change. New files
+retain GPL-3.0-only; generated speech has its separate rights/provenance manifest.
+The baseline-only statements below are historical; current evidence is in
+[VOCODER_VERIFICATION.md](VOCODER_VERIFICATION.md).
+
+
 ## Selected source and import
 
 - Felucca **v1.8.1**, annotated tag object `71f1cf70ee2e732f34671c47cc6e83f5104803f3`,

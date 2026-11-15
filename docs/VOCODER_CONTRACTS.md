@@ -54,3 +54,26 @@ Written before implementation; host/browser milestone, not target feasibility.
 Asset rights: original text/described synthetic voice, no real-person reference.
 Model Apache-2.0 metadata is not a blanket rights warranty. Preserve source
 provenance; custom-node license caveat and stochastic generation are documented.
+
+## Storage fit correction (found during first save regression)
+
+FUN10 has only one spare byte after its 3-byte MIDI record; twelve count-mapped
+parameters cannot fit. FUN11 (`FUNB`) therefore keeps the same 3840-byte object,
+addresses, step/chain/motion/FM6 formats, but omits the twenty retired DIGITAL
+operator fields (IDs61..80). Their defaults are restored. They have no function
+in this pinned build (`FELUCCA_FM4=0`); DIGITAL old saves still import/convert before
+writing. New saves cannot represent active DIGITAL/fm4 and explicitly refuse it.
+All FUN1..FUNA readers remain. Old firmware rejects FUNB by magic, not misinterprets
+it. Runtime parameter count126 remains <128; compact wire count106 fits with33
+spare bytes before MIDI. Preset records have capacity and need no format change.
+
+Source switching uses normal SLICE lifetime: an already sounding slice retains its
+captured source/bounds until retrigger/end; routing/filter/Freeze state resets at
+the next block. A former carrier resumes ordinary direct monitoring when it is
+no longer selected. Bundled SPEECH is factory/read-only on SLICES; import a user
+slot to edit slice boundaries. Two participating tracks use mono shaping even if
+their saved SPREAD is nonzero; unrelated tracks retain SPREAD bit-identically.
+
+The failed-worker path resets voices/insert state and drops that block's sums;
+LFO/other engine state is not rolled back. It is bounded recovery with possible
+silence/discontinuity, not transaction rollback or fault-transparent rendering.
