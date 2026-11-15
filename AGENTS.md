@@ -25,7 +25,9 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
   upstream tests plus focused BGIRL tests. Upstream has labeled keyboard/panel
   targets, but no equivalent of the prototype spoken-screen reader: do not claim parity.
 - Prototype assets remain historical at `4cc1e11`. New reference speech is generated
-  via Moltazine/Crucible. Silhouette animation remains out of scope.
+  via Moltazine/Crucible. Arp silhouette work is a separate, explicitly requested
+  milestone scoped by `docs/ARP_DANCE_IMPLEMENTATION_PLAN.md`; it is not part of
+  vocoder work. The planning PR itself authorizes no implementation or generation.
 - Device package identity/storage/target compatibility remain unreviewed. No device
   build/flash, merge, release/tag or repository identity changes. GitHub Pages
   browser-preview deployment on main is explicitly authorized via host.yml; do not

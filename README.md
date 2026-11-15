@@ -156,6 +156,8 @@ verification details: [build status](docs/BUILD_STATUS.md).
   prototype's MPL notice, **not** the license of this combined application.
 - Vocoder sound approval/target validation, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
   device identity/storage review and physical MIDI/clock/performance testing remain follow-ups.
+  The [Arp Dance implementation plan](docs/ARP_DANCE_IMPLEMENTATION_PLAN.md) scopes
+  one twelve-pose move and CRISP/GHOST rendering on an arp-owned page; not implemented yet.
 
 ## GitHub Pages preview
 
