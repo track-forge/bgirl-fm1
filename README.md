@@ -46,7 +46,8 @@ Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
 vocoder** below the panel; confirm replacing the current unsaved project. Press
 PLAY. The wet setups keep the electro demo drums/bass and use a **track3 sustained ANALOG saw
 pad** as track4 speech's carrier, with dry pad monitoring OFF. The dry-speech
-button stays isolated. Saved slots are not erased; startup defaults remain.
+button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
+12-band arrangement; restored autosaves take precedence.
 
 - Track4 chromatic keys wrap four phrases, at original pitch, one-shot/retrigger.
 - Select track3 (ALGORITHM) and play pad/carrier notes without restarting speech.
@@ -67,24 +68,25 @@ button stays isolated. Saved slots are not erased; startup defaults remain.
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
 [speech provenance](assets/speech/README.md). No physical-device performance proof.
 
-## Starting palette and demo
+## Starting demo and blank palette
 
 | Track | Sound | Pattern |
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
-| 3 | FM6 / BELL | Upstream sparse BELL, metallic/icy reply |
-| 4 | VOICE / VOX LEAD | Original sparse reply; **synth placeholder, no words/vocoder** |
+| 3 | ANALOG / sustained saw pad | C3/G3 tied through each phrase; carrier, dry MON OFF |
+| 4 | SLICE / original SPEECH bank | Four phrases across64 steps → 12-band vocoder, carrier T3 |
 
 Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
 last-session autosave takes precedence. All engines/presets remain selectable;
 this is a curated starting palette, not a restricted instrument. Shared upstream
-voice limits still apply. Sounds have automated signal evidence, not human taste approval.
+voice limits still apply. Doug accepted the sustained-carrier vocoder audition as a win; physical performance remains unverified.
 
 **Load electro demo** and **Blank electro template** replace only the current
 unsaved project, after confirmation. Both use Felucca's project reset/sound-load
 machinery, stop transport, release voices and preserve saved slots/user presets.
-The blank template has the four sounds and no steps. Normal Felucca MENU > SYSTEM
+The blank template retains the original TIGHT KIT / SQR BASS / FM6 BELL / VOX LEAD
+palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
 > CLEAR ALL retains its original factory defaults; it is not the BGIRL template button.
 
 ### Short demo recipe
@@ -95,7 +97,9 @@ The blank template has the four sounds and no steps. Normal Felucca MENU > SYSTE
    focused knob arrows also work. SELECT browses pages, PRESETS browses sounds.
 4. Stop with PLAY. Edit a sound and use Felucca **SAVE**, **OCT+**, **OCT+** to
    confirm a user preset. Use its normal SAVE > PROJECT page to save/load a project.
-5. Use Blank electro template, edit or load saved material, then optionally reload
+5. On track4, tap FX slowly twice for VOCODER: CARR=T3,12bands,MON OFF.
+   MON ON adds the dry pad; mute T1/T2 (not T3) for a clearer voice audition.
+6. Use Blank electro template, edit or load saved material, then optionally reload
    the demo. Autosave restores changed music after at least 10 quiet seconds and
    the inherited 60-second write-spacing limit; a page reload immediately after an
    unsaved edit is **not** a guaranteed save.

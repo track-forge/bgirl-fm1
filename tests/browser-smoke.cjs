@@ -17,7 +17,7 @@ const fs = require('node:fs');
     });
     await page.goto(process.env.BGIRL_URL || 'http://127.0.0.1:8767');
     assert.match(await page.title(), /BGIRL/);
-    assert.match(await page.locator('main').innerText(), /normal electro palette/);
+    assert.match(await page.locator('main').innerText(), /vocoder electro demo/);
     const on = async () => { await page.locator('#go').click(); await page.waitForFunction(() => document.querySelector('#start').hidden); await page.waitForTimeout(1100); };
     await on();
     const listen = () => page.evaluate(() => { window.analyser = testAC.createAnalyser(); analyser.fftSize = 4096; testNode.connect(analyser); });
@@ -28,17 +28,26 @@ const fs = require('node:fs');
     await tap('PLAY / STOP'); await page.waitForTimeout(700); const demoPeak = await peak(); assert(demoPeak > .001 && demoPeak <= 1);
     const artifacts = process.env.BGIRL_ARTIFACTS || 'tmp/browser'; fs.mkdirSync(artifacts, { recursive: true });
     await page.screenshot({ path: `${artifacts}/desktop.png`, fullPage: true });
+    // Fresh startup already features the vocoder, without speech-lab loading.
+    for(let i=0;i<3;i++) await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowUp');
+    await page.waitForTimeout(200);
+    await tap('FX'); await page.waitForTimeout(650);
+    await tap('FX'); await page.waitForTimeout(650);
+    await page.screenshot({ path: `${artifacts}/default-vocoder.png`, fullPage: true });
+    await tap('HOME');
+    for(let i=0;i<3;i++) await page.getByRole('slider',{name:'ALGORITHM',exact:true}).press('ArrowDown');
+    await page.waitForTimeout(200);
     await tap('PLAY / STOP'); await page.waitForTimeout(4500); assert((await peak()) < .0001);
     const screen = () => page.locator('#screen').evaluate(c => c.toDataURL());
     const screens = [await screen()];
     for (let i = 0; i < 3; i++) {
       await page.getByRole('slider', { name: 'ALGORITHM', exact: true }).press('ArrowUp');
       await page.waitForTimeout(100); screens.push(await screen());
-      await page.locator('h1').click(); await page.keyboard.down('KeyZ'); await page.waitForTimeout(150); assert((await peak()) > .00001);
+      await page.locator('h1').click(); await page.keyboard.down('KeyZ'); await page.waitForTimeout(150); if(i===0) assert((await peak()) > .00001); // bass is directly monitored; pad/speech need each other
       await page.keyboard.up('KeyZ'); await page.waitForTimeout(3500);
     }
     assert.equal(new Set(screens).size, 4);
-    // Save an edited robot synth using the inherited SAVE panel confirmation.
+    // Save an edited speech sound using the inherited SAVE panel confirmation.
     await page.getByRole('slider', { name: 'KNOB 1', exact: true }).press('ArrowUp');
     await tap('SAVE'); await tap('OCT+'); await tap('OCT+');
     await page.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem('bgirl-felucca-v1-flash') || '{}')).length > 0);
