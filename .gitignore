@@ -1,6 +1,2 @@
-app/build/
-app/web/words/
+tmp/
 __pycache__/
-# Generated development metadata; curate before release.
-firmware.json
-app/firmware.json

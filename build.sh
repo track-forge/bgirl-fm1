@@ -1,10 +1,7 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
 cd "$(dirname "$0")"
-# Device identity/storage are unreviewed: host and web only.
-case "${1:-}" in
-  --host|--web) ;;
-  *) echo "Usage: ./build.sh --host|--web (device/release setup is deferred)" >&2; exit 2 ;;
-esac
-if [[ $# != 1 ]]; then echo "Pass exactly one build target." >&2; exit 2; fi
-exec python3 base/tools/build.py app "$1"
+[ "${1:---web}" = --web ] && [ "$#" -le 1 ] || { echo 'Usage: ./build.sh [--web] (browser only)' >&2; exit 2; }
+python3 tools/generate.py
+exec sh felucca/web/emu/build.sh

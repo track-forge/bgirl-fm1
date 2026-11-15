@@ -1,30 +1,85 @@
-# Upstream provenance
+# BGIRL migration provenance
 
-Scaffold prepared 2026-11-15.
+## Selected source and import
 
-- Platform: https://github.com/charlesvestal/fm1-base
-- Pinned base: `c8e05997ce970875038156d2bbd69e712eac1543`
-- Nested https://github.com/hugelton/felucca-bsp pin: `18eadadb8c364abd026accd2b1ea1c14ca347f06`
-- `app/app.c`, `app/app.h`, `app/fm1.toml`, `app/words.tsv`, and
-  `app/tests/basic.txt` are unchanged copies from that base's `template/`.
-- Upstream MPL-2.0 text is retained in `LICENSE.upstream`; preserve copied-file headers.
-  No blanket license decision for new original project code has been made.
-- Review `base/LICENSING.md` for SDK, font, radio and browser dependencies before
-  distribution; they do not all share one license.
+- Felucca **v1.8.1**, annotated tag object `71f1cf70ee2e732f34671c47cc6e83f5104803f3`,
+  resolved source commit **`f4df2964649f301ba5abd0ec6000110068672f25`**.
+- Source: <https://github.com/hugelton/Felucca/tree/v1.8.1>.
+- Engines: `d0260074ce100a47675814b7f38d61f11176c926` (MIT).
+- BSP: `5942e68b89ab9ccd23f2c541d712ca38fe635f11` (MPL-2.0).
+- Both are upstream's exact gitlinks, not newly selected dependency versions.
+- v1.8.1 includes/documented browser support. Inspected v1.8.2
+  `6162de864075ad9edb8cd35e0e45ba75faa5d0db` removes it and documents FM-1 only.
+  This overrides the planning note's unverified stable-1.8.2 assumption.
 
-Copied config still refers to the upstream template's author/site/package identity.
-This is baseline provenance, not BGIRL release metadata. Rebrand and review identity
-in milestone 1 before generating anything intended for distribution. Generated
-`firmware.json` is ignored until that review; do not publish it as our catalog entry.
+Imported full v1.8.1 tree under `felucca/` with `git merge -s ours --no-commit
+--allow-unrelated-histories v1.8.1` then `git read-tree --prefix=felucca/ -u v1.8.1`.
+Merge commit `59fb7ad` retains both parent histories. Root submodule paths were
+prefixed deliberately. Upstream's internal relative dependency/build paths stay intact.
+The unmodified baseline WASM and Chromium checks passed before BGIRL source edits.
 
-Build/test wrappers and documentation are project setup; no upstream release/site
-workflow, generated assets, firmware binary, or electro engine was copied in.
+Prototype checkpoint `4cc1e11e50ffb1d2a06a50547780b9e828a8b15f` is an ancestor.
+Its app/base/tests were removed from the active tree to avoid two competing apps;
+original vocoder, speech, rights/conversion notes and render harness remain there.
+Historical reports: PROTOTYPE_BUILD_STATUS.md, PROTOTYPE_UPSTREAM.md, VOICE_SPIKE.md.
 
-## Scaffold verification (2026-11-15)
+## Review map
 
-`./tests/run_tests.sh` passed in this independent repository (exit 0), including
-notes/MIDI, save/reboot, audio peak, touch/pressure, screen-reader messages and
-simulated Bluetooth. The five copied files were byte-compared against the pinned
-template. Shell syntax and Git whitespace checks passed. Browser and device builds
-were not attempted. Upstream incomplete-release-metadata warnings are expected at
-this unchanged-template stage; they are not evidence of releasable BGIRL firmware.
+The full upstream import exceeds GitHub's 20,000-line aggregate PR-diff limit.
+Review the import by its tree identity (unmodified `59fb7ad:felucca` equals
+`f4df2964649f301ba5abd0ec6000110068672f25^{tree}`), then review implementation
+commit [`1bc9d29`](https://github.com/track-forge/bgirl-fm1/commit/1bc9d29ebeae69c8bb045e7ca36c541616245fc1).
+The [compact upstream delta](BGIRL_DELTA.patch) contains all five changed upstream
+files (84 insertions, 9 deletions), generated with:
+
+```sh
+git diff f4df2964649f301ba5abd0ec6000110068672f25^{tree} HEAD:felucca
+```
+
+It is a review artifact, not a build-time patch or second source tree. Regenerate
+it after any upstream-source changes. Root wrappers, tests, CI and docs are in the
+implementation commit, separate from the import.
+
+## Delta against v1.8.1
+
+- `firmware/src/engines.c`: separate `BGIRL_TRK_DEF` palette; no factory preset,
+  pattern, engine numbering or `TRK_DEF` edits.
+- `firmware/src/main.c`: startup uses the palette plus ordinary editable demo
+  steps before upstream autosave restore. No change to render/transport/MIDI/clock.
+- `web/emu/felucca_web.c`: explicit blank/demo operation via upstream project_new,
+  engine/preset loaders and sequencer data. No new flash format or project slot overwrite.
+- `web/emu/worklet.js`: handles that explicit action outside process/render, clears
+  queued panel events, returns success/failure. Audio render itself unchanged.
+- `web/emu/index.html`: BGIRL name, header colors/role labels, confirmed project
+  buttons, separate browser storage key, source links instead of installer links.
+  Inherited panel geometry, controls, keyboard, Web MIDI handler, screen/UI retained.
+- Root-only browser build/generator entry point, host subset runner, focused delta
+  and Chromium acceptance tests, build-only CI, documentation/license entry points.
+
+No DSP changes, vocoder, speech/sample additions, animation, protocol or file-format
+changes. Legacy formats using "default sound" still get original Felucca defaults;
+explicit modern projects preserve their sounds. Native CLEAR ALL remains upstream;
+the separate Blank electro template button provides BGIRL roles without demo steps.
+Browser key isolation does not automatically import stock Felucca/prototype data.
+
+To compare upstream without prefix noise:
+
+```sh
+python3 - <<'PY'
+import subprocess
+up = subprocess.check_output(['git','rev-parse','f4df2964649f301ba5abd0ec6000110068672f25^{tree}'], text=True).strip()
+local = subprocess.check_output(['git','rev-parse','HEAD:felucca'], text=True).strip()
+subprocess.run(['git','diff','--stat',up,local], check=True)
+PY
+```
+
+## Notices and assets
+
+Combined derivative GPL-3.0-only; all upstream headers, credits, LICENSING.md,
+LICENSES/, engine/BSP licenses retained. Fonts: bundled Inter Tight, Material
+Symbols and DotGothic16 keep SIL OFL notices; Fukiai's separate notice retained.
+Samples generated by upstream tooling retain upstream CC0 pack and bundled
+Versilian CC0 attribution under assets/. No commercial-record samples or new
+external sound dependency. Ported DSP retains MIT/Apache/LGPL notices as enumerated
+by upstream LICENSING.md. Optional ADPCM is not enabled by this milestone.
+No claim of trademark endorsement or completed device/distribution review.

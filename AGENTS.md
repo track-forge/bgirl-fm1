@@ -1,17 +1,32 @@
-# bgirl-fm1 working instructions
+# BGIRL working instructions
 
-Read `docs/INITIAL_BUILD_PLAN.md` before implementing. This is an independent app
-on pinned fm1-base, not a platform fork.
+Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
+`docs/BUILD_STATUS.md`. Active source is now Felucca under `felucca/`, not fm1-base.
 
-- App changes belong in `app/`; avoid modifying `base/` or advancing its pin incidentally.
-- Keep work in small commits on a feature branch. Preserve source headers and notices.
-- Run `./tests/run_tests.sh` before changes and after relevant changes. Update template-specific
-  assertions deliberately as behavior evolves; retain input, note-off, persistence and accessibility coverage.
-- No allocation, file I/O, logging, or blocking work inside the audio render path.
-- Keep DSP/sequencing independent of UI. Validate output bounds and note-off/panic behavior.
-- Do not copy upstream release workflows or publish tags/sites as part of the initial build.
-- Do not flash hardware. Device testing is a separate, explicitly scheduled step.
-- Treat template package identity and storage addresses as unreviewed for this instrument.
-- Label host, browser, device-build, and physical-device evidence separately.
-- Record source/licensing/conversion details for any audio assets; no sampled commercial records.
-- End with exact commands/results, commit, remaining blockers and a short demo recipe.
+- Goal: Felucca behavior intact, BGIRL electro defaults, working browser build.
+- Preserve upstream ancestry, GPL-3.0-only and component notices. Never advance
+  engine/BSP pins incidentally. `felucca/.gitmodules` is historical upstream source;
+  root `.gitmodules` maps the actual prefixed gitlinks.
+- Keep BGIRL startup roles separate from `TRK_DEF`: the latter is also used by
+  legacy project migration. Autosave restore happens after startup initialization.
+- Reuse normal sequencer, track selection, sound loading and project operations.
+  No remapped prototype controls, parallel sequencer or user-data format change.
+- `./build.sh --web` generates upstream assets and builds WASM; then
+  `./tests/run_tests.sh` runs the documented browser/host subset. Optional actual
+  Chromium acceptance: `node tests/browser-smoke.cjs` with the README server running
+  (set PLAYWRIGHT_MODULE and CHROMIUM_PATH when not installed in the usual place).
+- No allocation, file I/O, logging or blocking in audio render. Project mutations
+  stay outside render, using existing panic/load machinery. Check bounded output,
+  note release and persistence for changes; do not update goldens casually.
+- Old prototype assertions were retired with the prototype, not ported as controls.
+  Preserve relevant input, MIDI/clock, note release, storage and UI coverage using
+  upstream tests plus focused BGIRL tests. Upstream has labeled keyboard/panel
+  targets, but no equivalent of the prototype spoken-screen reader: do not claim parity.
+- Prototype/vocoder assets remain in checkpoint `4cc1e11`; do not integrate voice or
+  silhouette animation in this milestone. Historical evidence is explicitly labeled.
+- Device package identity/storage/target compatibility remain unreviewed. No device
+  build/flash, merge, release/tag/site publishing or repository identity changes.
+  Root build intentionally exposes browser only. Do not activate imported workflows
+  or inherited installer destinations. Label browser/host/physical evidence separately.
+- Keep changes scoped, run `git diff --check`, end with exact revision/results,
+  demo commands and remaining blockers.
