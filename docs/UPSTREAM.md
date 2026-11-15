@@ -23,6 +23,23 @@ Its app/base/tests were removed from the active tree to avoid two competing apps
 original vocoder, speech, rights/conversion notes and render harness remain there.
 Historical reports: PROTOTYPE_BUILD_STATUS.md, PROTOTYPE_UPSTREAM.md, VOICE_SPIKE.md.
 
+## Review map
+
+The full upstream import exceeds GitHub's 20,000-line aggregate PR-diff limit.
+Review the import by its tree identity (unmodified `59fb7ad:felucca` equals
+`f4df2964649f301ba5abd0ec6000110068672f25^{tree}`), then review implementation
+commit [`1bc9d29`](https://github.com/track-forge/bgirl-fm1/commit/1bc9d29ebeae69c8bb045e7ca36c541616245fc1).
+The [compact upstream delta](BGIRL_DELTA.patch) contains all five changed upstream
+files (84 insertions, 9 deletions), generated with:
+
+```sh
+git diff f4df2964649f301ba5abd0ec6000110068672f25^{tree} HEAD:felucca
+```
+
+It is a review artifact, not a build-time patch or second source tree. Regenerate
+it after any upstream-source changes. Root wrappers, tests, CI and docs are in the
+implementation commit, separate from the import.
+
 ## Delta against v1.8.1
 
 - `firmware/src/engines.c`: separate `BGIRL_TRK_DEF` palette; no factory preset,
