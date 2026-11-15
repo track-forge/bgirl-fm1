@@ -92,6 +92,8 @@ The fixture is existing original speech `assets/speech/source/1.wav` (provenance
 and rights in `assets/speech/manifest.json`), kept whole plus two fixed half-file
 chops with3ms edge fades. This proves the same path, not Doug's speech quality.
 
+![Normal EDIT controls using the public original-speech fixture](img/vocal-bank.png)
+
 ## Listen / normal panel workflow
 
 1. Switch on; use **Vocal bank** below the panel. Installed bank identity/group
