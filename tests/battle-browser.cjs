@@ -22,13 +22,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
     const r=e.getBoundingClientRect(),d=document.querySelector('#device').getBoundingClientRect();
     return {name:e.getAttribute('aria-label'),width:r.width,height:r.height,inside:r.left>=d.left&&r.right<=d.right&&r.top>=d.top&&r.bottom<=d.bottom};
    }));
-   assert(await page.locator('#panel').evaluate(panel=>{
-    const mark=panel.querySelector('#circuit-mark');if(!mark)return true;
-    const r=mark.getBoundingClientRect();
-    return [...document.querySelectorAll('#panel text')].filter(t=>t.textContent.startsWith('KNOB ')).every(t=>{
-     const b=t.getBoundingClientRect();return r.right<=b.left||r.left>=b.right||r.bottom<=b.top||r.top>=b.bottom;
-    });
-   }));
+   assert.equal(await page.locator('#circuit-mark').count(),0);
+   assert(!/BG[–-]01\s*\/\s*BATTLE CIRCUIT/i.test(await page.locator('main').innerText()));
    assert.equal(targets.length,49);assert(targets.every(t=>t.inside&&t.width>14&&t.height>14));
    const knob=page.getByRole('slider',{name:'KNOB 1',exact:true});
    await knob.focus();await knob.press('ArrowUp');await page.waitForTimeout(150);

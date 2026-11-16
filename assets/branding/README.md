@@ -46,3 +46,23 @@ commercial-rights claim.
 Before using the mark as a commercial production brand, review the applicable
 workflow/model terms and obtain any required license. Its use here is the selected
 project-preview artwork with explicit provenance and limitations.
+
+## Instrument boot splash
+
+`tools/package_logo.py` derives the 224×145 splash from this same unchanged PNG:
+Lanczos resize, alpha composite over bone (`#d8d2bf`), then 16-color quantization
+and RGB565 conversion. Two 4-bit palette indices fit in each byte; image data plus
+palette is 16,272 bytes. GREY/MONO display a grayscale conversion; other palettes
+retain the artwork's original acid-lime identity. This is an on-device-resolution
+representation, not replacement branding or newly generated artwork.
+
+The root asset generator writes the ignored `felucca/build/gen/bgirl_logo.h`.
+To inspect the exact packed colors:
+
+```sh
+python3 tools/package_logo.py --preview /tmp/bgirl-splash-logo.png
+```
+
+The packager checks the existing PNG SHA-256 before conversion. Original source
+and derivative PNG files, provenance, and separate artwork use terms above remain
+unchanged. No new rights or hardware-distribution approval is implied.
