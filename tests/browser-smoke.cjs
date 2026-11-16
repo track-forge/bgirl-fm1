@@ -18,6 +18,10 @@ const fs = require('node:fs');
     await page.goto(process.env.BGIRL_URL || 'http://127.0.0.1:8767');
     assert.match(await page.title(), /BGIRL/);
     assert.match(await page.locator('main').innerText(), /vocoder electro demo/);
+    const wordmark = page.locator('.wordmark img');
+    assert.equal(await wordmark.getAttribute('alt'), 'BGIRL FM1 acid-lime graffiti wordmark');
+    assert.deepEqual(await wordmark.evaluate(img => ({ complete: img.complete, width: img.naturalWidth, height: img.naturalHeight })),
+      { complete: true, width: 788, height: 509 });
     const on = async () => { await page.locator('#go').click(); await page.waitForFunction(() => document.querySelector('#start').hidden); await page.waitForTimeout(1100); };
     await on();
     const listen = () => page.evaluate(() => { window.analyser = testAC.createAnalyser(); analyser.fftSize = 4096; testNode.connect(analyser); });
