@@ -1,6 +1,6 @@
 # BGIRL FM-1 — Felucca electro edition
 
-**Felucca electro defaults + a sample-fed vocoder listening checkpoint.**
+**Felucca electro defaults + sample-fed vocoder + arp-triggered floorwork.**
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 

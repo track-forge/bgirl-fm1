@@ -1,6 +1,8 @@
 # Arp Dance — one-move implementation plan
 
 Date: 2026-11-15. Status: **plan only; no implementation or device proof**.
+Implementation follow-through: [host/browser verification](ARP_DANCE_VERIFICATION.md)
+(records shipped browser scope separately from this original plan).
 Planning baseline: `c3edd758d6bc12ffb74f0522b4904210816ec93f` (main).
 Related exploration: [issue #2](https://github.com/track-forge/bgirl-fm1/issues/2).
 
