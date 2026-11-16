@@ -102,7 +102,9 @@ static void save_tests(void) {
     project_capture(&saved);assert(!memcmp(saved.vocal_id[3],BG_VOCAL_ID,8));assert(proj_pack(&wire,&saved));
     memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC_VOCAL);
     up_rec(0)->packed[UP_VOCAL_AT]^=1;assert(!up_load(0));tick(1024);assert(!slc_vocal_match(&trk[3]));
-    assert(!web_bgirl_project(1));tick(1024);project_capture(&saved);assert(proj_pack(&wire,&saved));memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
+    assert(!web_bgirl_project(1));tick(1024);project_capture(&saved);assert(proj_pack(&wire,&saved));memcpy(&magic,wire.raw,4);
+    assert(magic==((BGIRL_VOCODER && NELEM(BG_VOCAL_GROUPS)>6) ? PROJ_MAGIC_VOCAL : PROJ_MAGIC));
+    assert(!web_bgirl_project(0));tick(1024);project_capture(&saved);assert(proj_pack(&wire,&saved));memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
     puts("vocal persistence: FUNC exact ID/view/offset/root/steps; version6 presets; mismatch survives save/reload silently; explicit rebinding; factory FUNB unchanged PASS");
 }
 static void sequence_tests(void) {
