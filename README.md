@@ -97,6 +97,28 @@ silent (**BANK MISS**), never substituted.
 [host/browser verification](docs/VOCAL_BANK_VERIFICATION.md).
 No warping, tempo fitting, dry overlay or hardware proof.
 
+## Arp Dance — twelve-pose FLOORWORK
+
+Select a track with ALGORITHM; tap **ARP** slowly to cycle **ARP → ARP2 → ARP
+DANCE**. **K1 MODE / K2 RATE** edit the existing musical arp; **K3 STYLE** selects
+**CRISP / GHOST**, **K4** is unused. ARP2 still owns SWING, PROB, HOLD and ORDER.
+Play/hold a key, or enable HOLD on ARP2 and release it. Each accepted arp trigger
+advances one pose, once per chord; skipped triggers hold. GHOST keeps exactly the
+previous logical pose under the solid current pose. No notes / ARP OFF holds the
+picture; internal-clock held arps can dance even with PLAY stopped.
+
+Leave/re-enter or switch tracks: progression follows each track, with no hidden
+painting or replay queue. Initialization, project load and inherited all-off/panic
+paths reset to pose0/no ghost. STOP resets speech/vocoder tracks through their
+existing all-off behavior; other internally clocked held arps keep playing. Style
+is session-only, not saved with projects. LARGE preserves the96×96 stage and uses
+larger labels. The source has a deliberate hard-cut loop seam, not a seamless video.
+
+[Source, permission,96/64 comparisons, converter and offline preview](assets/dance/README.md) ·
+[Implementation plan](docs/ARP_DANCE_IMPLEMENTATION_PLAN.md) ·
+[Host/browser evidence and limits](docs/ARP_DANCE_VERIFICATION.md).
+No new generation, musical timing/RNG changes or hardware-performance claim.
+
 ## Starting demo and blank palette
 
 | Track | Sound | Pattern |
@@ -157,7 +179,8 @@ verification details: [build status](docs/BUILD_STATUS.md).
 - Vocoder sound approval/target validation, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),
   device identity/storage review and physical MIDI/clock/performance testing remain follow-ups.
   The [Arp Dance implementation plan](docs/ARP_DANCE_IMPLEMENTATION_PLAN.md) scopes
-  one twelve-pose move and CRISP/GHOST rendering on an arp-owned page; not implemented yet.
+  one twelve-pose move and CRISP/GHOST rendering on an arp-owned page; implemented
+  with browser/host evidence above, device validation still deferred.
 
 ## GitHub Pages preview
 

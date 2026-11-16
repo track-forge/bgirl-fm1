@@ -88,7 +88,10 @@ if (typeof registerProcessor === "function") {
       }
       const ex = this.ex;
       if (!ex) return;
-      if (m.type === "vocal-info") {
+      if (m.type === "dance-info") {
+        this.port.postMessage({type:"dance-info",values:Array.from({length:10},(_,i)=>ex.web_bgirl_dance_info(i))});
+      }
+      else if (m.type === "vocal-info") {
         this.port.postMessage({type:"vocal-info",state:ex.web_bgirl_vocal_state(),groups:ex.web_bgirl_vocal_groups(),id:Array.from(new Uint8Array(ex.memory.buffer,ex.web_bgirl_vocal_id(),8)).map(x=>x.toString(16).padStart(2,"0")).join("")});
       }
       else if (m.type === "buttons" || m.type === "keys") this.queue.push(m);

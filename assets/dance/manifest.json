@@ -1,0 +1,65 @@
+{
+  "source_url": "https://www.moltazine.com/post/a559b395-af6b-49c0-b6e9-08b11a202269",
+  "source_sha256": "acb274cd20f88d92a624453eb4b2eb4d1f3d7e2f3c687988e39475b207fd3d51",
+  "source_bytes": 180213,
+  "source_size": [
+    608,
+    352
+  ],
+  "fps": "24/1",
+  "frame_count": 96,
+  "indices": [
+    0,
+    8,
+    16,
+    24,
+    32,
+    40,
+    48,
+    56,
+    64,
+    72,
+    80,
+    88
+  ],
+  "union_bounds": [
+    144,
+    14,
+    459,
+    324
+  ],
+  "stage": [
+    132,
+    -3,
+    339
+  ],
+  "threshold": 96,
+  "cleanup": "3x3 median before resampling",
+  "resize": "LANCZOS then >=128",
+  "bit_order": "MSB first, row-major",
+  "toolchain": {
+    "ffmpeg": "ffmpeg version 7.1.5 Copyright (c) 2000-2026 the FFmpeg developers",
+    "pillow": "12.1.1"
+  },
+  "rights": "Doug Smith authorized public inclusion of derived masks under GPL-3.0-only on 2026-11-16",
+  "sizes": {
+    "64": {
+      "bytes": 6144,
+      "sha256": "8c36a3fa0d4e4c3323bd3ab8d7621e33c418bde19b8110012117c26d9cadf44e",
+      "stride": 8,
+      "anchor": [
+        32,
+        62
+      ]
+    },
+    "96": {
+      "bytes": 13824,
+      "sha256": "53c0dc0810564e78a768ace2de2744824845550fbf92f4efe0a19a4ea897757a",
+      "stride": 12,
+      "anchor": [
+        48,
+        93
+      ]
+    }
+  }
+}

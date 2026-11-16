@@ -1318,6 +1318,10 @@ static void draw_columns(void)
     }
     for (c = 0; c < 4u; c++) {
         int16_t *vp;
+        if (cur_page()->graph == GR_DANCE && c == 2u) {
+            draw_column(c, "STYLE", dance_style ? "GHOST" : "CRISP", "", VAL(c), -1, ICON_NONE);
+            continue;
+        }
         const param_desc_t *d = page_desc(cur_page(), c, &vp);
         if (cur_page()->graph == GR_SLOTS && c == 1u) {   /* PROJECT: ERASE (1.5.5, #199) */
             draw_act_column(1, "ERASE", graph_project_used((uint32_t)song.g[G_SLOT] - 1u) ? T_THEME : T_DIM, ICON_AUTO);

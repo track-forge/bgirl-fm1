@@ -443,6 +443,7 @@ static __attribute__((noinline)) void arp_fire(track_t *t, uint32_t period)
     if (t->arp_note)
         arp_off(t);
     if ((uint32_t)(rng() & 127u) <= (uint32_t)t->p[P_APROB]) {
+        dance_trigger(trk_index(t));           /* once per accepted step, including CHORD */
         t->arp_off = period * (uint32_t)t->p[P_AGATE] / 128u;
         if (t->p[P_AMODE] == AM_CHORD) {            /* CHORD: the first 4 notes, an octave up each step */
             arp_chord(t, list, cnt);
