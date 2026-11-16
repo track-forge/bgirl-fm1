@@ -111,7 +111,7 @@ chops with3ms edge fades. This proves the same path, not Doug's speech quality.
    plays once on step1; it repeats only when the64-step pattern returns. STOP
    ends it. No implicit loop. Saved slots remain intact.
 3. **Load whole · vocoded** uses the same phrase through the existing12-band
-   vocoder and tied sustained T3 saw pad (MON OFF); T1/T2 are muted. PLAY.
+   vocoder and tied T3 GRAIN / CLOUD PAD (C2/G2) (MON OFF); T1/T2 are muted. PLAY.
 4. Repeat with **Load chops · dry/vocoded**: every fourth step triggers the next
    chop in the selected group, wrapping by that group's count. Change global
    BPM60/180 to hear spacing change without altering pitch/duration. A new

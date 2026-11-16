@@ -9,10 +9,11 @@ static void defaults(int demo) {
     assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==V_LEGATO);
 #if BGIRL_VOCODER
     if(demo) {
-        assert(trk[2].eng_req==0 && trk[2].p[P_SUS]==127);
+        assert(trk[2].eng_req==8 && trk[2].preset==0 && trk[2].p[P_SUS]==120);
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==1);
         assert(trk[2].step[1].time==ST_TIE);
+        assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
         if(NELEM(BG_VOCAL_GROUPS)>6) {
             static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
             static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};

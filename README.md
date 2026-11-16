@@ -52,8 +52,9 @@ source /path/to/emsdk/emsdk_env.sh
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
 vocoder** below the panel; confirm replacing the current unsaved project. Press
-PLAY. The wet setups keep the electro demo drums/bass and use a **track3 sustained ANALOG saw
-pad** as track4 speech's carrier, with dry pad monitoring OFF. The dry-speech
+PLAY. The wet setups keep the electro demo drums/bass and use a **track3 GRAIN /
+CLOUD PAD (one octave lower)** as track4 speech's carrier, with dry pad monitoring
+OFF. The dry-speech
 button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
 12-band arrangement; restored autosaves take precedence.
 
@@ -102,7 +103,7 @@ No warping, tempo fitting, dry overlay or hardware proof.
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
-| 3 | ANALOG / sustained saw pad | C3/G3 tied through each phrase; carrier, dry MON OFF |
+| 3 | GRAIN / CLOUD PAD | C2/G2 tied through each phrase; carrier, dry MON OFF |
 | 4 | SLICE / original SPEECH bank | Four phrases across64 steps → 12-band vocoder, carrier T3 |
 
 Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
