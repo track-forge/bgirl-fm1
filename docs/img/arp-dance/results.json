@@ -1,0 +1,24 @@
+{
+  "navigation": "ARP/ARP2/DANCE cycle",
+  "acceptedArp": "HOLD release, hidden progression, track isolation, no-notes idle, rate/mode/swing/prob controls",
+  "persistence": "panel project save and reload; style resets",
+  "loads": [
+    {
+      "style": 0,
+      "samples": [
+        0.028710937500000002,
+        0.026730872844827586
+      ]
+    },
+    {
+      "style": 1,
+      "samples": [
+        0.04455145474137931,
+        0.02970096982758621
+      ]
+    }
+  ],
+  "errors": [],
+  "hardware": "unverified",
+  "humanListening": "not performed"
+}

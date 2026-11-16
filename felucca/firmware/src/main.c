@@ -132,6 +132,7 @@ static void felucca_init(void)
     fm6_init();                               /* every track's FM6 patch: the init voice */
     for (i = 0; i < NTRK; i++) {
         track_t *t = &trk[i];
+        dance_reset(i);
         track_defaults(t);
         set_engine_of(t, BGIRL_TRK_DEF[i][0]);
         apply_preset_to(t, BGIRL_TRK_DEF[i][1]);    /* with its sends */

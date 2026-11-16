@@ -1182,6 +1182,27 @@ static void graph_title(void)
     cv_text_in(0, y, 240, f, ti, T_THEME, T_SURF);
 }
 
+#include "../../../assets/dance/bgirl_dance.h"
+_Static_assert(sizeof bg_dance_masks == 13824u && BG_DANCE_COUNT == 12u && BG_DANCE_SIZE == 96u && BG_DANCE_STRIDE == 12u,
+               "dance pack layout");
+/* Existing canvas + DMA synchronization, no new framebuffer. 96x96 fits the
+ * actual 122px panel at 1x. LARGE retains the stage, enlarging labels only. */
+static void dance_mask(uint32_t pose, uint16_t color)
+{
+    for (uint32_t y=0; y<BG_DANCE_SIZE; y++)
+        for (uint32_t x=0; x<BG_DANCE_SIZE; x++)
+            if (bg_dance_masks[pose][y*BG_DANCE_STRIDE+x/8u] & (128u>>(x&7u)))
+                cv_pset(72+(int32_t)x, 22+(int32_t)y, color);
+}
+static void graph_dance(const track_t *t, uint16_t c)
+{
+    cv_oy=0;
+    cv_text_on(10, 1, &AF_S, "FLOORWORK", T_MID, T_SURF);
+    cv_text_on(143, 1, &AF_S, !t->p[P_AMODE] ? "ARP OFF" : !t->nheld ? "NO NOTES" : "ARP ON", T_DIM, T_SURF);
+    if (dance_style && (dance_snapshot & 256u)) dance_mask((dance_snapshot>>4)&15u, T_DIM);
+    dance_mask(dance_snapshot&15u, c); /* current wins intersections */
+}
+
 static uint32_t graph_signature(void)
 {
     const page_t *pg = cur_page();
@@ -1192,6 +1213,7 @@ static uint32_t graph_signature(void)
     h ^= (uint32_t)pg->graph * 131u + TSEL->eng_req + song.sel * 7777u + ui.page * 1291u;
     if (strip_kind() == SK_TITLE)                    /* MENU > LARGE: the page's title (its engine, its number) */
         return h ^ 0x5A17u;
+    if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
     if (pg->graph == GR_NONE || pg->graph == GR_ARP) h ^= ui.frame / 2u;
     for (i = 0; i < P_COUNT; i++)
         h = (h ^ (uint32_t)t->p[i]) * 16777619u;
@@ -2245,6 +2267,7 @@ static void draw_graph(void)
         return;
     }
     if (!ui.home && pg->scope == SC_ENGINE && ENGINES[t->eng_req % NENGINES] == &ENG_SAMPLE) sample_wave_tick(t);
+    if (!ui.home && pg->graph == GR_DANCE) dance_snapshot = dance_read(song.sel);
     sig = graph_signature();
     if (!ui.force && sig == ui.graph_sig)
         return;
@@ -2267,6 +2290,9 @@ static void draw_graph(void)
         graph_scope(c);
     } else {
         switch (pg->graph) {
+        case GR_DANCE:
+            graph_dance(t, c);
+            break;
         case GR_ADSR:
             graph_adsr(t, c);
             break;

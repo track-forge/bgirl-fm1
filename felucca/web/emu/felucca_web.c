@@ -615,3 +615,21 @@ EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
 {
     return bgirl_vocoder_setup(mode, mode!=0);
 }
+
+/* Read-only browser acceptance/agent diagnostics; never changes music or drawing. */
+EXPORT uint32_t web_bgirl_dance_info(uint32_t field)
+{
+    switch(field) {
+    case 0: return dance_read(song.sel);
+    case 1: return !ui.home && cur_page()->graph==GR_DANCE;
+    case 2: return dance_style;
+    case 3: return song.sel;
+    case 4: return TSEL->p[P_AMODE];
+    case 5: return TSEL->p[P_ARATE];
+    case 6: return TSEL->p[P_APROB];
+    case 7: return TSEL->p[P_AHOLD];
+    case 8: return TSEL->nheld;
+    case 9: return song.playing;
+    default: return 0;
+    }
+}

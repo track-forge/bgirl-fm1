@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>BGIRL offline dance pack review</title>
+<style>body{font:16px monospace;background:#202830;color:#eaf4f0;max-width:700px;margin:2em auto}canvas{image-rendering:pixelated;width:480px;height:480px;max-width:100%}button,select{font:inherit;margin:.4em}</style>
+<h1>Offline mask review</h1><p>Asset preview only: its timer is not the instrument's arp. One move, twelve poses; hard cut 11 → 0. The 240×240 canvas uses the actual 96×96 1× stage.</p>
+<select id="style" aria-label="Style"><option>CRISP</option><option>GHOST</option></select>
+<select id="rate" aria-label="Preview trigger interval"><option value="500">Slow: 500ms/pose</option><option value="125">Fast: 125ms/pose</option></select><button id="play">Play/pause</button><button id="next">Next pose</button><button id="seam">Seam: 11 → 0</button><br><canvas id="panel" width="240" height="240"></canvas>
+<script>
+const masks=Uint8Array.from(atob('@MASK_BASE64@'),c=>c.charCodeAt(0)), canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d');let pose=0,previous=null,timer;
+function mask(p,color){ctx.fillStyle=color;for(let y=0;y<96;y++)for(let x=0;x<96;x++)if(masks[p*1152+y*12+(x>>3)]&(128>>(x&7)))ctx.fillRect(72+x,98+y,1,1);}
+function draw(){ctx.fillStyle='#101418';ctx.fillRect(0,0,240,240);ctx.fillStyle='#202830';ctx.fillRect(3,76,234,122);ctx.fillStyle='#eaf4f0';ctx.font='12px monospace';ctx.fillText('ARP DANCE / FLOORWORK',10,24);ctx.fillText(document.querySelector('#style').value,10,60);ctx.fillText('POSE '+pose+' / 11',10,220);if(previous!==null&&document.querySelector('#style').value==='GHOST')mask(previous,'#586877');mask(pose,'#eaf4f0');}
+function next(){previous=pose;pose=(pose+1)%12;draw();}
+function start(){clearInterval(timer);timer=setInterval(next,+document.querySelector('#rate').value);}
+document.querySelector('#next').onclick=next;document.querySelector('#style').onchange=draw;document.querySelector('#rate').onchange=()=>{if(timer)start();};document.querySelector('#play').onclick=()=>{if(timer){clearInterval(timer);timer=null;}else start();};document.querySelector('#seam').onclick=()=>{previous=11;pose=0;draw();};draw();
+</script>

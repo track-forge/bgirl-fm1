@@ -33,3 +33,6 @@ cc -O1 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/vocal_bank_test ../t
 build/host/vocal_bank_test
 cc -O1 -w -ffp-contract=off -DBGIRL_VOCODER=0 $HALI -Ibuild/gen -o build/host/vocal_bank_disabled_test ../tests/vocal_bank_test.c -lm
 build/host/vocal_bank_disabled_test
+
+cd ..
+./tests/run_dance_tests.sh

@@ -174,6 +174,9 @@ static void ui_power_on(void)
     memset(&chain, 0, sizeof chain);
     chain_defaults(&chain_config);
     memset(&ui, 0, sizeof ui);
+    memset(&sp, 0, sizeof sp);                    /* simulated power-on: no slice cursor from an earlier soak */
+    for (i=0; i<NTRK; i++) dance_reset(i);
+    dance_style=0; dance_snapshot=0;
     page_over = 0;                                /* (no layer's knobs; roll_settle's test page gone) */
     cin_left = cin_total = 0;                     /* (no count-in) */
     memset(&nm, 0, sizeof nm);                    /* NAME closed, no project name */

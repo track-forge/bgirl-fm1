@@ -1008,6 +1008,10 @@ static void edit_param(uint32_t slot, int32_t steps)
         tracks_edit(slot, steps);
         return;
     }
+    if (pg->graph == GR_DANCE && slot >= 2u) {
+        if (slot == 2u) { dance_style = (uint8_t)clamp((int32_t)dance_style + steps, 0, 1); ui.force = 1; }
+        return;
+    }
     if (pg->graph == GR_BROWSE) {                         /* KNOB 1: one preset, KNOB 2: the next / previous engine */
         if (slot == 0u) {
             preset_step(steps);
