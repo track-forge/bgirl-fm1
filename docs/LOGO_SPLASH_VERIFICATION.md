@@ -1,41 +1,32 @@
-# Logo splash and clean browser panel
+# Centered, transparent logo-only splash
 
-Base: main `c2c8fc74a93334a266b8e2a46a5b187baf28789c` (includes the restored
-two-bar demo). Date: 2026-11-16. Host/browser evidence only.
+Base: main `1575872e50d5629a234959f2a651ff5c73134ff7` (merged PR #23).
+Date: 2026-11-16. Host/browser evidence only.
 
 ## Changes
 
-- The shared 240×240 instrument splash now displays the existing PR #19 wordmark,
-  with a small Felucca version/maker credit below it. This is the firmware's actual
-  first framebuffer, not an HTML overlay. Existing boot timing and held-key guard
-  are unchanged; it transitions normally into the instrument.
-- Removed the optional **BG–01 / Battle Circuit** inscription from the SVG synth
-  panel and the redundant catalog text above it. The selected page-header wordmark,
-  source links, credits, layout and all 49 panel hit targets remain.
-- The unchanged source logo is resized to 224×145, composited on bone and packed
-  as 4-bit indices into a 16-color RGB565 palette: **16,272 bytes**. GREY and MONO
-  retain grayscale behavior. No new artwork generation or source PNG edits.
-  [Artwork provenance and conversion](../assets/branding/README.md) remain separate
-  from the GPL code license; no additional rights are asserted.
-- Startup draws five bounded image strips into the existing canvas, plus the two
-  credit lines. No allocation, new framebuffer, audio/DSP/demo, saved setting,
-  storage format, boot-delay, dependency pin or deployment configuration change.
-  CI's existing browser step now also runs the focused splash check.
+- Only the existing BGIRL logo appears on the splash: **no captions, credits,
+  version text or backing rectangle**. Attribution remains in the browser footer,
+  About/source and repository notices.
+- The unchanged 224×145 artwork is centered at **x=8, y=47** on the 240×240 screen:
+  8px margins left/right, 47px above/48px below (nearest pixel for an odd height).
+- RGBA quantization preserves transparency and antialiased edges. A 16-entry alpha
+  table blends colors with the current palette's **single screen background**;
+  no particular background is baked into the artwork. GREY/MONO stay grayscale.
+- Original PNG/checksum/provenance and separate artwork use terms are unchanged.
+  No new artwork generation, extra framebuffer/allocation, boot timing, audio,
+  demo, saved settings, dependencies or publishing changes.
 
-## Screenshots
+## Before / after
 
-| Before | After |
+| Previous logo splash | Centered logo only |
 | --- | --- |
-| ![Original splash](img/logo-splash/before.png) | ![Logo splash](img/logo-splash/after.png) |
+| ![Before](img/logo-splash/before.png) | ![After](img/logo-splash/after.png) |
 
-Both images are native 240×240 framebuffer captures: before from the baseline
-WASM boot in Node, after from the first actual Chromium AudioWorklet framebuffer.
-The after image is exported from that captured packet so slow screenshot runners
-do not miss the brief splash; no test-only boot delay or renderer is used.
+Native 240×240 captures. The after image comes from the **first actual Chromium
+AudioWorklet framebuffer**, without altering splash duration or adding an overlay.
 
-[Desktop panel](img/logo-splash/desktop.png) · [390×844 portrait](img/logo-splash/mobile.png).
-
-## Local verification
+## Verification
 
 ```sh
 ./build.sh --web
@@ -44,40 +35,33 @@ python3 tests/test_package_logo.py
 git diff --check
 ```
 
-- Baseline and final full host suites pass. **98 audio goldens unchanged**;
-  **88,200 native/WASM frames bit-identical**. Current two-bar demo, vocoder,
-  vocal-bank, persistence, MIDI/keys, transport and dance tests remain intact.
-- Two packaging checks pass: deterministic bounded packing and refusal of an
-  unreviewed source-image checksum change. Generated headers stay out of git.
-- Updated native layout audit: **233 scenes × 11 palettes**, including LINE/LARGE
-  and value sweeps; **0** clipping/overlap/invisible-ink/grayscale findings,
-  **0** alignment errors across **3,904,736** measurements. The obsolete text-square
-  splash assertion was replaced with exact logo placement/pixels and corner margins;
-  actual credit text/version and normal text-layout lint remain checked.
-- Actual Chromium: `tests/splash-browser.cjs`, `tests/battle-browser.cjs` and
-  `tests/browser-smoke.cjs` pass. **32,480 first-frame logo pixels match**, normal
-  splash→instrument transition, no inscription at desktop/portrait, all **49** panel
-  targets retained, no horizontal overflow, visible keyboard focus/edit, real audio,
-  release/STOP, preset save/reload and demo/blank confirmations. **Zero page errors**.
-- Local public-bank WASM: **902,450 → 918,843 bytes** (+16,393).
-  SHA-256: `acc7876bca37f15d146034fb14e0f893efb438433323a5227a768c9dc28892c8`.
-  No target RAM/timing/physical display claim; no device build or flash performed.
+- Full host suite passes, with **98 unchanged audio goldens** and **88,200
+  native/WASM frames bit-identical**. Two packaging tests cover determinism,
+  unchanged-source guard, bounded packing and transparent/partial-alpha preservation.
+- Updated native layout audit covers **233 scenes × 11 palettes**, LINE/LARGE and
+  value sweeps. Exact splash image placement and background-only pixels outside
+  the centered rectangle are checked, as is the absence of splash text.
+- Actual Chromium splash check verifies **32,480 composited logo pixels**, including
+  **10,595 fully transparent pixels**, and **25,120 background-only pixels outside
+  the logo rectangle**. No text or plate can occupy that area. Normal boot transition,
+  49 panel targets, desktop/390×844 portrait, no overflow and zero page errors pass.
+  Normal browser audio/edit/save/reload/STOP smoke also passes.
+- Packed image/color/alpha data: **16,288 bytes** (16 bytes more than the opaque
+  representation). Local public-bank WASM: **918,843 → 916,060 bytes**.
+  SHA-256: `db100f89ac83b1fb9d04a8761bd52bfdfad69e8239784da07852ad2052a3100a`.
 
-For the optional native layout audit, use the `ui_render` compile/run commands in
-[BATTLE_CIRCUIT_VERIFICATION.md](BATTLE_CIRCUIT_VERIFICATION.md), with the new source.
+Optional native audit commands are in [Battle Circuit verification](BATTLE_CIRCUIT_VERIFICATION.md).
+No physical-device display/performance claim or hardware build/flash.
 
-## Demo / browser commands
+## Local demo
 
 ```sh
-python3 -m http.server 8782 --bind 127.0.0.1 --directory felucca/build/emu
-# In another terminal (set PLAYWRIGHT_MODULE / CHROMIUM_PATH if needed):
-export BGIRL_URL=http://127.0.0.1:8782
+python3 -m http.server 8783 --bind 127.0.0.1 --directory felucca/build/emu
+export BGIRL_URL=http://127.0.0.1:8783
 node tests/splash-browser.cjs
-node tests/battle-browser.cjs
 node tests/browser-smoke.cjs
 ```
 
-Open http://127.0.0.1:8782 and Switch on to see the brief logo splash, then PLAY
-for the unchanged demo. Remote browser use needs HTTPS or a localhost SSH forward.
-No existing preview service, tailnet proxy or public site was changed. This PR is
-not merged or deployed; physical-device acceptance is still untested.
+Open http://127.0.0.1:8783 and **Switch on**. Remote WebAudio needs HTTPS or a
+localhost SSH forward. Existing preview services, tailnet proxies and public site
+are untouched; this PR is not merged or deployed.

@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'assets/branding/bgirl-fm1-wordmark.png'
 SOURCE_SHA = '0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a'
 WIDTH = 224
-BONE = (216, 210, 191, 255)
 
 
 def package(out=None, preview=None):
@@ -22,12 +21,13 @@ def package(out=None, preview=None):
     with Image.open(SOURCE) as source:
         height = round(source.height * WIDTH / source.width)
         logo = source.convert('RGBA').resize((WIDTH, height), Image.Resampling.LANCZOS)
-    # An opaque bone plate retains the original black outlines on dark palettes.
-    rgb = Image.alpha_composite(Image.new('RGBA', logo.size, BONE), logo).convert('RGB')
-    indexed = rgb.quantize(colors=16, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
-    palette = indexed.getpalette()[:48]
+    # Quantize RGBA together: transparency and antialiased edges survive without
+    # baking any particular screen color into the artwork.
+    indexed = logo.quantize(colors=16, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE)
+    palette = indexed.getpalette('RGBA')[:64]
     colors = [((palette[k] >> 3) << 11) | ((palette[k+1] >> 2) << 5) | (palette[k+2] >> 3)
-              for k in range(0, 48, 3)]
+              for k in range(0, 64, 4)]
+    alpha = palette[3:64:4]
     indices = indexed.tobytes()
     assert len(indices) % 2 == 0 and max(indices) < 16
     packed = bytes((indices[k] << 4) | indices[k+1] for k in range(0, len(indices), 2))
@@ -37,6 +37,8 @@ def package(out=None, preview=None):
              f'#define BG_LOGO_W {WIDTH}u', f'#define BG_LOGO_H {height}u',
              'static const uint16_t BG_LOGO_PALETTE[16] = {',
              '    '+', '.join(f'0x{c:04x}' for c in colors)+'};',
+             'static const uint8_t BG_LOGO_ALPHA[16] = {',
+             '    '+', '.join(f'0x{a:02x}' for a in alpha)+'};',
              f'static const uint8_t BG_LOGO_PIXELS[{len(packed)}] = {{']
     for k in range(0, len(packed), 24):
         lines.append('    '+', '.join(f'0x{v:02x}' for v in packed[k:k+24])+',')
@@ -46,11 +48,11 @@ def package(out=None, preview=None):
     dest.write_text('\n'.join(lines))
     if preview:
         # Preview the exact RGB565 values, not the pre-quantization source.
-        result = Image.new('RGB', indexed.size)
+        result = Image.new('RGBA', indexed.size)
         result.putdata([((colors[i] >> 11)*255//31, ((colors[i] >> 5)&63)*255//63,
-                         (colors[i]&31)*255//31) for i in indices])
+                         (colors[i]&31)*255//31, alpha[i]) for i in indices])
         result.save(preview)
-    print(f'splash logo: {WIDTH}x{height}, {len(packed)+32} B indexed RGB565; source {SOURCE_SHA}')
+    print(f'splash logo: {WIDTH}x{height}, {len(packed)+48} B indexed RGB565 + alpha; source {SOURCE_SHA}')
     return packed, colors
 
 

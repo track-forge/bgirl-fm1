@@ -1671,14 +1671,13 @@ static void draw(int s)
         setup_show("TURN RIGHT", "ALGORITHM");
         return;
     }
-    if (s == S_SPLASH) {                          /* the power-on splash (main.c, before the UI): its lines, the version
-                                                   * shown FELUCCA_VERSION (run_tests.sh: src/felucca.c's) */
-        static const char WANT[] = "Felucca " FELUCCA_VERSION "|H\xFCgelton Instruments";
+    if (s == S_SPLASH) {                          /* centered, transparent logo only: no text */
+        static const char WANT[] = "";
         splash_seen[0] = 0;
         in_splash = 1;
         draw_splash();
         in_splash = 0;
-        {   /* Exact packed-logo placement; credits are linted by the normal text hooks. */
+        {   /* Exact composited logo; everything outside its centered rectangle is BG. */
             uint32_t x, y, bad = 0;
             for (y = 0; y < BG_LOGO_H; y++)
                 for (x = 0; x < BG_LOGO_W; x++) {
@@ -1686,8 +1685,11 @@ static void draw(int s)
                     uint16_t want = swap16(splash_color(pos & 1u ? v & 15u : v >> 4));
                     bad |= host_screen[(SPL_LOGO_Y + y) * 240u + SPL_LOGO_X + x] != want;
                 }
-            bad |= host_screen[0] != swap16(T_BG) || host_screen[239] != swap16(T_BG) ||
-                   host_screen[239u * 240u] != swap16(T_BG) || host_screen[240u * 240u - 1] != swap16(T_BG);
+            for (y = 0; y < 240u; y++)
+                for (x = 0; x < 240u; x++)
+                    if (x < SPL_LOGO_X || x >= SPL_LOGO_X + BG_LOGO_W ||
+                        y < SPL_LOGO_Y || y >= SPL_LOGO_Y + BG_LOGO_H)
+                        bad |= host_screen[y * 240u + x] != swap16(T_BG);
             if (bad) {
                 if (rep) fprintf(rep, "FIND %-26s splash logo pixels/margins differ\n", cur_name);
                 nfind++;
@@ -1698,7 +1700,7 @@ static void draw(int s)
             nfind++;
         } else {
             static uint8_t said;
-            if (!said++) printf("ui_render: the splash shows the version " FELUCCA_VERSION " (FELUCCA_VERSION) and its lines\n");
+            if (!said++) printf("ui_render: centered logo splash has no text or backing rectangle\n");
         }
         return;
     }

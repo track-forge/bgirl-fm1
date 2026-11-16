@@ -49,12 +49,15 @@ project-preview artwork with explicit provenance and limitations.
 
 ## Instrument boot splash
 
-`tools/package_logo.py` derives the 224×145 splash from this same unchanged PNG:
-Lanczos resize, alpha composite over bone (`#d8d2bf`), then 16-color quantization
-and RGB565 conversion. Two 4-bit palette indices fit in each byte; image data plus
-palette is 16,272 bytes. GREY/MONO display a grayscale conversion; other palettes
-retain the artwork's original acid-lime identity. This is an on-device-resolution
-representation, not replacement branding or newly generated artwork.
+`tools/package_logo.py` derives the centered 224×145 splash from this same
+unchanged PNG: Lanczos resize, 16-color RGBA quantization (FASTOCTREE), then RGB565
+color conversion with per-palette alpha. Two 4-bit palette indices fit in each
+byte; image data plus color/alpha palettes is 16,288 bytes. Transparent regions and
+antialiased edges blend directly with the selected screen background—there is no
+backing plate. GREY/MONO preserve grayscale behavior. No caption or credit text is
+shown on the splash; attribution remains in the browser footer, About/source and
+repository notices. This is a display-resolution representation, not replacement
+branding or newly generated artwork.
 
 The root asset generator writes the ignored `felucca/build/gen/bgirl_logo.h`.
 To inspect the exact packed colors:
