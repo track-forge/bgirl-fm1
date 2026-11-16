@@ -1,6 +1,6 @@
 # Battle Circuit — implementation and evidence
 
-Date: 2026-11-16. Implementation: `082acd3` (later evidence-only commits add this report).
+Date: 2026-11-16. Implementation: `082acd3` + LED calibration follow-up `6c57888`.
 Initial captured baseline: main `7f36cdf7c09221342c46d0dd52f6c63bbdfcd48d`.
 Final integration base: main `751c708054c4bd8b8168de8047e86e22f8845387`, including
 branding PR #19, which landed during implementation. Rebased and retained its
@@ -81,6 +81,10 @@ without installing/updating dependencies. No pre-existing test failures remained
   map as before; original palette names/indices and CUSTOM colors/flags round-trip;
   unchanged graph adds no idle drawing. Appending a palette does not reinterpret
   the saved custom-palette index: CUSTOM activation lives in its existing flag.
+- The LED-breath check caught hard-coded old cream/white endpoints and
+  uncalibrated replacement peaks. Corrected mint peaks preserve the original
+  firmware-relative **0.80 HI / 0.58 LO** levels; the test now reads current lit
+  colors from the source CSS and keeps its original **0.06** tolerance.
 - RGB565 contrast generator passes every palette's existing thresholds. CIRCUIT:
   body text/background **17.1:1**, secondary labels/surface **6.7:1**,
   values/surface **10.9:1**, selection text **9.5:1**, REC-chip text **10.5:1**.
