@@ -1,3 +1,44 @@
+> **2026-11-16 demo restoration:** the original issue-13 evidence below is
+> historical. Default/public builds now include the authorized G6-only bank,
+> not the three-entry original-speech fixture. The other five recordings remain
+> private. Current reproduction and mapping: [VOCAL_BANKS.md](VOCAL_BANKS.md),
+> [G6 provenance](../assets/vocals/g6/README.md).
+
+## 2026-11-16 public G6 demo restoration
+
+Root cause: PR #14 merged the right pattern, but it was guarded by the full
+optional bank's group count. Clean/default/Pages builds repackaged the old speech
+fixture, so the guard chose the four-bar phrase demo instead.
+
+Default build now deterministically packages the authorized G6 original and six
+unchanged supplied chops; no other supplied recordings are committed. The G6
+label is independent of packed VIEW position. The twelve-trigger/two-bar groove
+and octave-down CLOUD PAD carrier are shared by startup, explicit demo load and
+wet 8/12-band auditions. Custom banks without G6 retain the rhythm on their first
+group. Autosaves and unrelated saved projects are not reset.
+
+- `./build.sh --web` and full `./tests/run_tests.sh`: PASS, including 98 unchanged
+  golden renders, 88200 bit-identical native/WASM frames, 630 threaded vocoder
+  comparisons, enabled/disabled bank checks, 9 packaging tests, arp dance and
+  Battle Circuit compatibility checks.
+- Real Chromium under `/bgirl-fm1/`: demo-specific startup/explicit G6 label +
+  matching fingerprint, 9-second repeat playback, STOP silence, zero page errors;
+  existing browser-smoke and vocal-browser save/load checks PASS.
+- Additional native integration: full private six-group bank and original-speech
+  fixture PASS with the same updated code; no generated header was reused in the
+  default build.
+- Public bank: 1 whole + 6 chops, 42294 encoded bytes, 84588 decoded samples;
+  bank SHA256 `a0fce7527ad0f979f83be2f5cfc86fc29277db570bc0f870de20744dea9a3757`.
+- Browser WASM: 902450 bytes; SHA256
+  `599fb4770bb6397753f32999b4852609ea833e1f303d2b7391e6df403feaec9e`.
+
+Reproduce from checked-in inputs with `./build.sh --web`, `./tests/run_tests.sh`,
+then serve `felucca/build/emu` and run `node tests/demo-browser.cjs` (set
+`BGIRL_URL`, `PLAYWRIGHT_MODULE`, `CHROMIUM_PATH` as needed). CI includes that
+new browser check. This is browser/host evidence, not physical-device proof.
+The original issue-13 results below describe the earlier fixture/private builds.
+
+
 # Vocal-bank host/browser verification — issue #13
 
 Runtime revision: `8ccf63bd1bf4f22fedb46bf030c8a9b909133d49`.

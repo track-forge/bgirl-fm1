@@ -71,7 +71,8 @@ OFF. The dry-speech
 button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
 12-band arrangement; restored autosaves take precedence.
 
-- Track4 chromatic keys wrap four phrases, at original pitch, one-shot/retrigger.
+- Track4 chromatic keys select original-speed chops in the demo. The isolated
+  dry-speech button still selects the four factory SPEECH phrases.
 - Select track3 (ALGORITHM) and play pad/carrier notes without restarting speech.
 - Track4 FX pages2–4 (immediately after FX): VOCODER (carrier, bands, wet, dry monitoring), VOC INPUT
   (live HOLD/Freeze, trims, consonants), VOC COLOR (three character groups/release).
@@ -83,8 +84,9 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
   These original isolated ANALOG references are not the live pad groove.
   Unnormalized levels differ. Doug reports the overall vocoder experiment is a win;
   a final band preference/intelligibility curation decision remains open.
-- Save projects normally. Old saves load with vocoder OFF. New FUNB saves keep
-  bank/routing/controls but load unfrozen; old firmware rejects this new format.
+- Save projects normally. Old saves load with vocoder OFF. New vocoder saves keep
+  routing/controls but load unfrozen; VOCALS projects use identity-bound FUNC
+  (ordinary SPEECH projects remain FUNB). Old firmware rejects these new formats.
   Sound presets clear project-specific carrier references.
 
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
@@ -93,11 +95,13 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 ## Optional whole-phrase / chopped vocal bank
 
 The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
-each dry or through the existing sustained pad vocoder. The default build uses a
-small fixture from our original speech assets; it does **not** contain Doug's
-recordings. Factory SPEECH is unchanged. With G6 installed, startup and **Load
-electro demo** feature a two-bar G6 chop pattern; builds without G6 retain the
-existing speech demo. Autosaved projects still take precedence.
+each dry or through the existing sustained pad vocoder. Normal builds bundle the
+**G6 recording and its six chops**, authorized by Doug for public redistribution.
+The other five supplied recordings are not bundled. Factory SPEECH is unchanged.
+Startup and **Load electro demo** use the two-bar G6 groove, octave-down CLOUD
+PAD and 12-band routing in public builds too. An explicit custom bank without G6
+uses its first chop group with the same rhythm. Autosaved projects still take
+precedence; refresh and explicitly reload the demo to replace an old arrangement.
 
 Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
 **G1–G6**, START **W01…** / **C01…**. Chromatic keys/MIDI/step notes select entries;
@@ -139,7 +143,7 @@ No new generation, musical timing/RNG changes or hardware-performance claim.
 | 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
 | 3 | GRAIN / CLOUD PAD | C2/G2 tied through each phrase; carrier, dry MON OFF |
-| 4 | SLICE / original SPEECH bank | Four phrases across64 steps → 12-band vocoder, carrier T3 |
+| 4 | SLICE / VOCALS | Two-bar (32-step) chop groove; bundled G6 → 12-band vocoder, carrier T3 |
 
 Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
 last-session autosave takes precedence. All engines/presets remain selectable;

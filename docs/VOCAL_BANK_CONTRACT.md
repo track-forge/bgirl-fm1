@@ -4,7 +4,9 @@ Written before implementation, based on main c3edd75. Host/browser only.
 
 - Append SLICE SRC 6 `VOCALS`; 0..5, especially factory SPEECH, never move.
   EDIT 1: SRC, VIEW, START, BANK. VIEW 0 = WHOLE (up to six originals);
-  1..6 = parent groups in sorted stable source-ID order. START is an entry
+  1..6 = packed parent VIEW indices in sorted source-ID order; display labels
+  may retain an original group number (the public G6-only bank uses VIEW 1).
+  START is an entry
   offset. Bank metadata maps compact display names to source/chop IDs.
   C4 + ROOT selects START; subsequent chromatic notes wrap within that view,
   including negative offsets. OCT +/- changes the usual keyboard octave;
@@ -33,12 +35,12 @@ Written before implementation, based on main c3edd75. Host/browser only.
   older firmware refuses it. Old records have zero. Preserve the expected fingerprint even while unavailable. Explicitly
   editing SRC to VOCALS adopts the installed bank; restored projects/presets,
   source automation and triggers do not. No new parameters, count/layout/address/flash extent changes.
-- Default build packages a small reproducible fixture from existing original
-  speech WAVs. Private banks require an explicit directory, are ignored and
-  offline; never committed, included in CI artifacts or Pages. Default build
-  must choose the public fixture afresh, not reuse a private generated header.
-  Installing a bank means rebuilding with that explicit bank; another machine
-  receives private inputs separately. No hot loading or new slicing editor.
+- Default build packages the checked-in G6 original and six chops authorized by
+  Doug for public distribution on 2026-11-16. Other supplied recordings remain
+  private and require an explicit bank directory; those banks/artifacts stay
+  ignored and out of CI/Pages. Default builds repackage G6 afresh. The original
+  speech fixture remains an explicit offline test option. No hot loading or
+  new slicing editor. Group labels participate in the bank fingerprint.
 - Packaging validates full inventory/manifest/bounds and hashes; stable sorted
   parent IDs and slice_index order, no filesystem-order IDs, retrimming or
   detection. Stereo averaged to mono; deterministic 44.1k->22.05k pair-average

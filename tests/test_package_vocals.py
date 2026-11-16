@@ -74,6 +74,18 @@ class Packaging(unittest.TestCase):
         for f in ('bank.ima', 'bank.json', 'bgirl_vocals.h'):
             self.assertEqual((self.base/'fixture1'/f).read_bytes(), (self.base/'fixture2'/f).read_bytes())
 
+    def test_single_source_keeps_g6_label(self):
+        self.path.write_text(json.dumps(self.manifest))
+        a = pv.package(self.input, self.path, self.base/'g6', group_ids=[6])
+        b = self.package(dest='g1')
+        self.assertEqual(a['groups'][1]['name'], 'G6')
+        self.assertEqual(a['entries'], b['entries'])
+        self.assertEqual((self.base/'g6/bank.ima').read_bytes(), (self.base/'g1/bank.ima').read_bytes())
+        self.assertNotEqual(a['bank_sha256'], b['bank_sha256'])
+        for ids in ([], [0], [7], [1, 2], ['6']):
+            with self.subTest(ids=ids), self.assertRaises(ValueError):
+                pv.package(self.input, self.path, self.base/'bad', group_ids=ids)
+
     def test_missing_inputs_never_substitute(self):
         (self.input/self.name).unlink()
         with self.assertRaisesRegex(ValueError, 'inventory'): self.package()

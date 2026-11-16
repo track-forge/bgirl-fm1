@@ -14,23 +14,24 @@ static void defaults(int demo) {
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==1);
         assert(trk[2].step[1].time==ST_TIE);
         assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
-        if(NELEM(BG_VOCAL_GROUPS)>6) {
-            static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
-            static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
-            assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==6);
-            assert(slc_vocal_match(&trk[3]));
-            assert(trk[2].p[P_SLEN]==32 && trk[3].p[P_SLEN]==32);
-            uint32_t hits=0;
-            for(uint32_t k=0;k<NSTEP;k++) if(trk[3].step[k].n) {
+        static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
+        static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
+        const uint32_t group=NELEM(BG_VOCAL_GROUPS)>6 ? 6 : 1;
+        assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==(int16_t)group);
+        assert(slc_vocal_match(&trk[3]));
+        assert(trk[2].p[P_SLEN]==32 && trk[3].p[P_SLEN]==32);
+        uint32_t hits=0;
+        for(uint32_t k=0;k<NSTEP;k++) {
+            assert(trk[2].step[k].time==(k>=32 ? 0 : k%16 ? ST_TIE : ST_NOTE));
+            if(trk[3].step[k].n) {
                 assert(hits<NELEM(at) && k==at[hits]);
-                assert(trk[3].step[k].note[0]==60+chop[hits]%BG_VOCAL_GROUPS[6].n);
+                assert(trk[3].step[k].time==ST_NOTE);
+                assert(trk[3].step[k].note[0]==60+chop[hits]%BG_VOCAL_GROUPS[group].n);
+                assert(trk[3].step[k].vel==(hits%6==0 ? 110 : 100));
                 hits++;
-            }
-            assert(hits==NELEM(at));
-        } else {
-            assert(trk[3].p[P_E0]==SLC_SRC_SPEECH && trk[2].p[P_SLEN]==64);
-            assert(trk[3].step[48].note[0]==63 && !trk[3].step[11].n);
+            } else assert(!trk[3].step[k].time);
         }
+        assert(hits==NELEM(at));
     } else
 #endif
     {
@@ -63,11 +64,9 @@ int main(void) {
         web_render(128);
 #if BGIRL_VOCODER
         assert(bg_bus.owner==3 && bg_bus.carrier==2);
-        if(NELEM(BG_VOCAL_GROUPS)>6) {
-            assert(trk[3].seq_idx<32);
-            if(trk[3].seq_idx<previousStep) vocalWraps++;
-            previousStep=trk[3].seq_idx;
-        }
+        assert(trk[3].seq_idx<32);
+        if(trk[3].seq_idx<previousStep) vocalWraps++;
+        previousStep=trk[3].seq_idx;
         for(uint32_t k=0;k<CTL;k++)speechEnergy+=(uint64_t)llabs(bg_bus.mod[k]);
 #endif
         for(t=0;t<128;t++) { assert(isfinite(out_l[t]) && isfinite(out_r[t]));
@@ -76,7 +75,7 @@ int main(void) {
     }
 #if BGIRL_VOCODER
     assert(speechEnergy>0); /* backing mix alone cannot pass the demo test */
-    if(NELEM(BG_VOCAL_GROUPS)>6) assert(vocalWraps>=1);
+    assert(vocalWraps>=1);
 #endif
     assert(peak>0.001f); tap(B_PLAY); assert(!song.playing);
     trk[3].p[P_VWET]=81;
