@@ -19,7 +19,7 @@ const fs = require('node:fs');
     assert.match(await page.title(), /BGIRL/);
     assert.match(await page.locator('main').innerText(), /vocoder electro demo/);
     const wordmark = page.locator('.wordmark img');
-    assert.equal(await wordmark.getAttribute('alt'), 'BGIRL FM1 acid-lime graffiti wordmark');
+    assert.equal(await wordmark.getAttribute('alt'), 'BGIRL FM1 graffiti wordmark');
     assert.deepEqual(await wordmark.evaluate(img => ({ complete: img.complete, width: img.naturalWidth, height: img.naturalHeight })),
       { complete: true, width: 788, height: 509 });
     const on = async () => { await page.locator('#go').click(); await page.waitForFunction(() => document.querySelector('#start').hidden); await page.waitForTimeout(1100); };

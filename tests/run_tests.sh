@@ -36,3 +36,8 @@ build/host/vocal_bank_disabled_test
 
 cd ..
 ./tests/run_dance_tests.sh
+
+# Battle Circuit settings/ID and framebuffer compatibility (host only).
+cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/battle_ui_test tests/battle-ui-test.c -lm
+felucca/build/host/battle_ui_test
+python3 felucca/tools/gen_ui_palettes.py --report

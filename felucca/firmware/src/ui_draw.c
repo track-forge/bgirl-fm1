@@ -427,7 +427,7 @@ static void lcd_rule(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 static void gap_rows(uint32_t y0, uint32_t y1)
 {
     uint32_t r = (y0 + y1) / 2u;
-    if (!ux.style) {
+    if (!ux.style && !ux.circuit) {
         lcd_fill(0, y0, 240, y1 - y0, T_BG);
         return;
     }
@@ -444,7 +444,7 @@ static void draw_gaps(uint32_t y, uint32_t h)
     lcd_fill(0, y, (uint32_t)CARD_X(0), h, T_BG);
     for (i = 0; i < 4u; i++) {                          /* right of each column */
         uint32_t x = (uint32_t)(CARD_X(i) + CARD_W), w = i < 3u ? (uint32_t)CARD_X(i + 1u) - x : 240u - x;
-        if (ux.style && i < 3u) {
+        if ((ux.style || ux.circuit) && i < 3u) {
             lcd_rule(x, y, 1, h);
             lcd_fill(x + 1u, y, w - 1u, h, T_BG);
         } else {
@@ -594,7 +594,7 @@ static void draw_column_tall(uint32_t c, const char *label, const char *val, con
             ly = LG_LY + AF_M_CAP_Y + HALF_UP(AF_M_CAP_H - AF_S_CAP_H) - AF_S_CAP_Y;
             lw = ink_w(lf, label);
         }
-        if (hot && T_ACCENT == T_MID) {                 /* MONO: the label inverted, the chip 2 px round its ink */
+        if (hot && (T_ACCENT == T_MID || ux.circuit)) {                 /* MONO / CIRCUIT: reverse-video focus, 2 px around ink */
             int32_t cy = ly + (lf == &AF_M ? AF_M_CAP_Y : AF_S_CAP_Y), chh = lf == &AF_M ? AF_M_CAP_H : AF_S_CAP_H;
             int32_t x0 = HALF_UP(COL_W - lw) - 2;
             cv_rrect(x0, cy - 3, lw + 4, chh + 6, 3, T_ACCENT, T_SURF);
@@ -719,6 +719,7 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
         }
         cv_begin(COL_W, COL_H, T_BG);
         cv_rrect(0, 0, COL_W, COL_H, 4, T_SURF, T_BG);
+        if (ux.circuit) cv_rect(4, 19, COL_W - 8, 1, T_LINE); /* label/value register */
     }
     if (label[0] || val[0]) {
         if (!strip && label[0]) {
@@ -737,7 +738,7 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
             }
             else if (mot)                               /* the label from x 19 (5 + 12 + 2) */
                 lc = hot ? T_ACCENT : T_THEME;          /* no room for MOTION's icon: the label says it */
-            if (hot && T_ACCENT == T_MID) {             /* MONO: no colour tells the hot knob: its label inverted, */
+            if (hot && (T_ACCENT == T_MID || ux.circuit)) {             /* MONO / CIRCUIT: shape distinguishes the hot knob, */
                 int32_t b[4], w;                        /* the chip 2 px round its ink (M: 3 above, 2 below) */
                 text_ink(lf, label, b);
                 w = b[2] - b[0] + 4;
