@@ -94,6 +94,7 @@
  *
  * Built on the Mac too (tests/project_test.c, -DPROJ_HOST): the part above the #ifndef
  * PROJ_HOST needs core.h, params.c (TP) and engines.c. */
+#define PROJ_MAGIC_SIGNATURE 0x46554E44u /* FUND: standalone drums; includes FUNC IDs */
 #define PROJ_MAGIC_VOCAL 0x46554E43u /* FUNC: optional bank IDs; older firmware refuses */
 #define PROJ_MAGIC_V10 0x46554E41u /* original FUNA, 114 parameters in Felucca1.8 */
 #define PROJ_NP_V11 126u
@@ -514,7 +515,7 @@ static int proj_import(project_t *q, const void *b, int n)
 }
 static int proj_import_any(project_t *q, const void *b, int n)
 {
-    if (n == PROJ_STORE_SIZE && (((const uint32_t *)b)[0] == PROJ_MAGIC_VOCAL || ((const uint32_t *)b)[0] == PROJ_MAGIC || ((const uint32_t *)b)[0] == PROJ_MAGIC_V10))
+    if (n == PROJ_STORE_SIZE && (((const uint32_t *)b)[0] == PROJ_MAGIC_SIGNATURE || ((const uint32_t *)b)[0] == PROJ_MAGIC_VOCAL || ((const uint32_t *)b)[0] == PROJ_MAGIC || ((const uint32_t *)b)[0] == PROJ_MAGIC_V10))
         return proj_unpack(q, b, PROJ_STORE_SIZE);
     if (n == PROJ_STORE_SIZE && ((const uint32_t *)b)[1] >= 8u && ((const uint32_t *)b)[1] < PROJ_STORE_SIZE)
         n = (int)((const uint32_t *)b)[1];      /* a retained slot holding an older, shorter record: its own size
@@ -635,6 +636,11 @@ static int proj_pack(project_store_t *out, const project_t *q)
         if(q->t[t].engine==13 && q->t[t].p[P_E0]==6) magic=PROJ_MAGIC_VOCAL;
         for(i=0;i<8;i++) if(q->vocal_id[t][i]) magic=PROJ_MAGIC_VOCAL;
     }
+    for (t=0;t<NTRK;t++)
+        if(q->t[t].engine==ENGI_DRUM && q->t[t].p[P_E0]>=12) magic=PROJ_MAGIC_SIGNATURE;
+    /* A source automation can select a new mode while its base remains a kit. */
+    for(i=0;i<q->motion.count;i++)
+        if(MOTION_ID(&q->motion.event[i])==P_E0 && q->motion.event[i].value>=12) magic=PROJ_MAGIC_SIGNATURE;
     memset(out, 0, sizeof *out); memcpy(b, &magic, 4); memcpy(b + 4, &size, 4);
     memcpy(b + 8, q->g, sizeof q->g); b[62] = q->sel; b[63] = q->parts; b[64] = q->phys; b[66] = P_COUNT;
     for (t = 0; t < NTRK; t++) {
@@ -718,13 +724,13 @@ static int proj_unpack(project_t *q, const uint8_t *b, uint32_t st)
     uint32_t name_off = st - 4u - PROJ_NAME_LEN, end = v7 ? name_off : name_off - NTRK * FM6_PACKED;
     uint32_t mot = v10 ? sizeof q->motion : PROJ_MOTION_V9, chn = v10 ? sizeof q->chain : sizeof(chain_v9_t);
     memcpy(&magic, b, 4); memcpy(&size, b + 4, 4); memcpy(&sum, b + st - 4u, 4);
-    uint32_t compact = magic == PROJ_MAGIC || magic == PROJ_MAGIC_VOCAL;
+    uint32_t compact = magic == PROJ_MAGIC || magic == PROJ_MAGIC_VOCAL || magic == PROJ_MAGIC_SIGNATURE;
     if ((compact ? (!v10 || np < PROJ_NP_V11) : magic != (v7 ? PROJ_MAGIC_V7 : st == PROJ_STORE_V8 ? PROJ_MAGIC_V8 : st == PROJ_STORE_V9 ? PROJ_MAGIC_V9 : PROJ_MAGIC_V10)) ||
         size != st || sum != proj_hash(b, st - 4u) ||
         np < 8u || np > P_COUNT || 68u + NTRK * ((compact ? np-20u : np) + 2u + NSTEP * 9u) + chn + mot > end)
         return 0;
     memset(q, 0, sizeof *q); q->magic = PROJ_MAGIC; q->size = sizeof *q;
-    if(magic==PROJ_MAGIC_VOCAL) memcpy(q->vocal_id,b+PROJ_VOCAL_OFF,sizeof q->vocal_id);
+    if(magic==PROJ_MAGIC_VOCAL || magic==PROJ_MAGIC_SIGNATURE) memcpy(q->vocal_id,b+PROJ_VOCAL_OFF,sizeof q->vocal_id);
     memcpy(q->g, b + 8, sizeof q->g); q->sel = b[62]; q->parts = b[63]; q->phys = b[64];
     if (v7 && (q->g[G_RTYPE] < 0 || q->g[G_RTYPE] > 1))   /* a FUN7 may still hold the old drum channel there */
         proj_rtype_room(q->g);

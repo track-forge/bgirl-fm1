@@ -489,6 +489,10 @@ static void trk_all_off(track_t *t)
 {
     uint32_t i;
     dance_reset((uint32_t)(t - trk));
+    if (t->engine == ENGI_DRUM && drum_solo(t->p)) {
+        memset(drum_kit_of(t),0,sizeof(drum_lane_t)*DV_NLANE);
+        for (i=0;i<NVOICE;i++) t->v[i].active=0;
+    }
 #if FELUCCA_SLICE
     if (t->engine == 13 && (slc_vocal_source(slc_src_of(t->p)) || slc_vocal_playing(t) || t->p[P_VCARR])) {
         for (i=0; i<NVOICE; i++) t->v[i].active=0;

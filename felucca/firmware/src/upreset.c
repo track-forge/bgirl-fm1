@@ -49,6 +49,8 @@
 #define UP_PMAX 72u                              /* room for P_COUNT to grow */
 #define UP_USED 0xA5u
 #define UP_VER 4u                                /* 2 since 1.0; 1 is read too (PHYS MODEL 2 was DUST) */
+#define UP_VER_SIGNATURE 7u
+#define UP_VER_SIGNATURE_GRID 8u
 #define UP_VER_VOCAL 6u                          /* identity-aware VOCALS; old firmware refuses */
 #define UP_VOCAL_AT 134u
 _Static_assert(P_COUNT <= UP_VOCAL_AT, "vocal preset identity fits");
@@ -110,16 +112,22 @@ static void up_set_cat(up_rec_t *r, uint32_t c)  /* c CAT_BASS..CAT_OTHER; a rec
 
 static int up_valid(const up_rec_t *r)
 {
-    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_VOCAL && r->engine < NENGINES &&
+    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_SIGNATURE_GRID && r->engine < NENGINES &&
           r->np >= 8u && r->np <= (r->ver >= 4u ? UP_PMAX * 2u : UP_PMAX) && r->name[0])) return 0;
     if(r->ver==UP_VER_VOCAL && (r->engine!=13 || r->np>UP_VOCAL_AT || r->packed[r->np-8u] != 6u+64u)) return 0;
     if (r->ver >= 4u) for (uint32_t i = 0; i < r->np; i++) if (r->packed[i] > 191u) return 0;
     return 1;
 }
 
+/* Select the rejecting format after note/grid decisions, including editor PUT. */
+static void up_signature_guard(up_rec_t *r) {
+    if (r->engine==ENGI_DRUM && r->np>=8u && r->packed[r->np-8u]>=12u+64u)
+        r->ver = (r->ver==UP_VER_GRID || r->ver==UP_VER_SIGNATURE_GRID) ? UP_VER_SIGNATURE_GRID : UP_VER_SIGNATURE;
+}
+
 static int up_used(uint32_t k) { return k < UP_SLOTS && up_valid(up_rec(k)); }
 
-static int up_grid(const up_rec_t *r) { return r->ver == 3u || r->ver == UP_VER_GRID; }
+static int up_grid(const up_rec_t *r) { return r->ver == 3u || r->ver == UP_VER_GRID || r->ver == UP_VER_SIGNATURE_GRID; }
 static int16_t up_value(const up_rec_t *r, uint32_t k) { return r->ver >= 4u ? (int16_t)r->packed[k] - 64 : r->p[k]; }
 static void up_set_value(up_rec_t *r, uint32_t k, int16_t v)
 {
@@ -259,6 +267,7 @@ static int up_parse(const uint8_t *a, uint32_t na, up_rec_t *r, uint32_t *slot)
         }
         if (na == end + 18u)
             up_set_cat(r, a[end + 17u]);
+        up_signature_guard(r);
         *target = *r;
         return 0;
     }
@@ -270,6 +279,7 @@ static int up_parse(const uint8_t *a, uint32_t na, up_rec_t *r, uint32_t *slot)
     if (na == end + 18u)
         up_set_cat(r, a[end + 17u]);
     up_migrate(r);                               /* (an editor of before the DRUM engine) */
+    up_signature_guard(r);
     *target = *r;
     return 0;
 }
@@ -434,6 +444,7 @@ static int up_store_cat(uint32_t k, const char *name, uint32_t cat)
         }
     }
     {
+        up_signature_guard(&r);
         int rc = up_put(k, &r);                         /* the record first, then its FM6 patch (up_fm6.c) */
         if ((rc == 0 || rc == 3) && r.engine == ENGI_FM6) {
             int u = upf_store(k, (uint32_t)(TSEL - trk));
@@ -493,6 +504,9 @@ static int up_load(uint32_t k)
         memset(bg_vocal_expected[t-trk],0,8);
         if(r->ver==UP_VER_VOCAL && r->np<=UP_VOCAL_AT)
             memcpy(bg_vocal_expected[t-trk],r->packed+UP_VOCAL_AT,8);
+        if (up_cat_of(r)==CAT_SIGNATURE) {
+            t->p[P_CHRD]=v[P_CHRD]; t->p[P_VOIC]=v[P_VOIC];
+        }
         t->preset = 0;
         fm1_irq_on();
         upf_track_load(t, k);                           /* FM6: the preset's own patch (up_fm6.c) */
