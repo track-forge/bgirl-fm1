@@ -90,15 +90,15 @@ PASS (full selected host matrix, no rewritten audio goldens):
 - Real firmware USB-MIDI queue: external START/pulses advance, STOP/pulses hold,
   CONTINUE/pulses resume. Browser's inherited Web MIDI interface handles channel
   messages only; **external realtime clock was host-tested, not browser/hardware**.
--480 exact96×96 pixel compositions (10 palettes × FLAT/LINE ×12 poses ×2 styles):
+- 480 exact96×96 pixel compositions (10 palettes × FLAT/LINE ×12 poses ×2 styles):
   foreground intersections win, old ghost pixels clear, previous logical pose
   survives skipped paints, reset removes ghost. LARGE preserves graph geometry.
--1,000 triggers/100 paints →100 graph blits;100 idle attempts →0;25 hidden dance
+- 1,000 triggers/100 paints →100 graph blits;100 idle attempts →0;25 hidden dance
   updates →0 extra graph blits. Per changed graph:58,560 RGB565 pixel bytes.
--512,000 stereo frames plus4,000 RNG-state/note snapshots **byte identical** across
+- 512,000 stereo frames plus4,000 RNG-state/note snapshots **byte identical** across
   compile-disabled telemetry, hidden page, CRISP and GHOST; actual four-track demo
   with vocoder, RANDOM arp, probability and swing. No musical timing/RNG rewrite.
--1,000,000 producer trigger/reset updates with concurrent coherent snapshot reads;
+- 1,000,000 producer trigger/reset updates with concurrent coherent snapshot reads;
   all packed-state invariants hold. Host pthread stress, not a target race detector.
 - Normal panel/project wire round trip retains arp MODE/RATE; project load resets
   progression without serializing style. Track1856B and project store3840B unchanged.
