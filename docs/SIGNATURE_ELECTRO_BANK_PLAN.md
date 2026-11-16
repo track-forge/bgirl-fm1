@@ -53,16 +53,16 @@ remain accessible under their existing identities.
 
 | ID / working name | Musical contract | First implementation route | Controls to expose through existing UI |
 | --- | --- | --- | --- |
-| sub-clean / SUB CLEAN | Stable mono fundamental; punchy articulated or held bass | FM6 single carrier or ANALOG sine | level, release, restrained tone; no default pitch sweep |
-| sub-drive / SUB DRIVE | Same stable foundation with audible upper harmonics | FM6 carrier/modulator or clean core + existing drive | brightness, decay/release, drive, level |
-| bd-round / KICK | Rounded body, short downward pitch transient, controllable onset | DRUM voice via dedicated-voice selection | tune, decay, attack/click if supported, drive |
-| sd-snap / SNARE | Crisp noise attack with body, distinct from clap | DRUM snare | tone/body, decay, snap if supported, level |
-| cp-layer / CLAP | Single-trigger clap with supporting snare/body layer | DRUM clap + snare lanes behind one trigger | layer balance, decay, tone, level |
-| hh-closed / CLOSED HAT | Short, articulate high-frequency timekeeper | DRUM closed hat | color/tune, decay, level, accent |
-| hh-open / OPEN HAT | Complementary open tail, defined choke behavior | DRUM open hat | color/tune, decay, level, accent |
-| stab-iron / IRON STAB | Inharmonic metallic punctuation with useful brightness sweep | FM6 serial pair plus existing drive | brightness, release, drive, delay send |
-| chord-electro / ELECTRO CHORD | One-root minor chord hit, controlled tail and voice use | ANALOG + existing chord mode; FM6 alternative | brightness/filter, release, drive, space |
-| chirp / CHIRP | Short pitch accent, useful without ambience | FM6 carrier + pitch envelope | sweep depth, decay, level, delay send |
+| sub-clean / BG SUB CLEAN | Stable mono fundamental; punchy articulated or held bass | FM6 single carrier or ANALOG sine | level, release, restrained tone; no default pitch sweep |
+| sub-drive / BG SUB DRIVE | Same stable foundation with audible upper harmonics | FM6 carrier/modulator or clean core + existing drive | brightness, decay/release, drive, level |
+| bd-round / BG KICK | Rounded body, short downward pitch transient, controllable onset | DRUM voice via dedicated-voice selection | tune, decay, attack/click if supported, drive |
+| sd-snap / BG SNARE | Crisp noise attack with body, distinct from clap | DRUM snare | tone/body, decay, snap if supported, level |
+| cp-layer / BG CLAP | Single-trigger clap with supporting snare/body layer | DRUM clap + snare lanes behind one trigger | layer balance, decay, tone, level |
+| hh-closed / BG CLSD HAT | Short, articulate high-frequency timekeeper | DRUM closed hat | color/tune, decay, level, accent |
+| hh-open / BG OPEN HAT | Complementary open tail, defined choke behavior | DRUM open hat | color/tune, decay, level, accent |
+| stab-iron / BG IRON STAB | Inharmonic metallic punctuation with useful brightness sweep | FM6 serial pair plus existing drive | brightness, release, drive, delay send |
+| chord-electro / BG EL CHORD | One-root minor chord hit, controlled tail and voice use | ANALOG + existing chord mode; FM6 alternative | brightness/filter, release, drive, space |
+| chirp / BG CHIRP | Short pitch accent, useful without ambience | FM6 carrier + pitch envelope | sweep depth, decay, level, delay send |
 
 Ten required identities. Optional second hollow stab and siren are excluded from
 v1 completion criteria; add only if listening establishes a distinct role. Do not
@@ -255,3 +255,13 @@ continue independent implementation and never label a kit-note workaround comple
 - Technical findings, exact final commands/revision and listening artifacts live
   in SIGNATURE_ELECTRO_BANK_VERIFICATION.md. All sound names/levels remain
   reviewable; **Doug listening verdict pending for every family**.
+
+### BGirl ownership prefix
+
+All ten original Signature factory names begin with `BG ` in the normal preset
+browser, track labels and web selector. Factory labels
+fit the existing 12-character name field (`BG CLSD HAT` abbreviates CLOSED).
+Embedded FM6 voice names use the existing 10-character field (`BG SUB CLN`,
+`BG SUB DRV`, `BG IRON`, `BG CHORD`, `BG CHIRP`). Stable IDs, preset indices,
+MIDI mappings and synthesis parameters are unchanged; inherited presets and
+existing user-supplied saved names are not renamed.

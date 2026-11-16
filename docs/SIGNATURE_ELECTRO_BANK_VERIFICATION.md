@@ -141,16 +141,16 @@ a comparison aid (subs and transient crest factors differ), not a loudness verdi
 
 | Dry reference at velocity100 | Peak | Last sample above relative−60dB |
 | --- | ---: | ---: |
-| SUB CLEAN / MIDI36 |0.0696 |8.058s (8s held) |
-| SUB DRIVE / MIDI36 |0.0645 |8.058s |
-| KICK |0.0883 |0.450s |
-| SNARE |0.1346 |0.319s |
-| CLAP |0.0984 |0.343s |
-| CLOSED HAT |0.1255 |0.097s |
-| OPEN HAT |0.1141 |0.444s |
-| IRON STAB |0.0921 |0.182s |
-| EL CHORD |0.0799 |0.178s |
-| CHIRP |0.0767 |0.194s |
+| BG SUB CLEAN / MIDI36 |0.0696 |8.058s (8s held) |
+| BG SUB DRIVE / MIDI36 |0.0645 |8.058s |
+| BG KICK |0.0883 |0.450s |
+| BG SNARE |0.1346 |0.319s |
+| BG CLAP |0.0984 |0.343s |
+| BG CLSD HAT |0.1255 |0.097s |
+| BG OPEN HAT |0.1141 |0.444s |
+| BG IRON STAB |0.0921 |0.182s |
+| BG EL CHORD |0.0799 |0.178s |
+| BG CHIRP |0.0767 |0.194s |
 
 Subs measure65.404Hz near expected65.406Hz at MIDI36. Second harmonic/fundamental
 is0.0000037 for clean versus0.379 for drive, with comparable peaks: harmonic
@@ -204,3 +204,26 @@ release revisions from that feedback, physical-device fit/performance and actual
 hardware MIDI/choke/output checks. No resonance extension justified by listening
 has been identified. No Ableton changes, hardware build/flash, merge, release,
 new generation, private-asset redistribution or public deployment performed.
+
+## Follow-up: BGirl patch ownership labels
+
+Doug reported being overall happy with the audition and requested a `BG ` prefix
+to distinguish our patches from inherited sounds. All ten Signature factory
+labels and the web selector now use that prefix; CLOSED HAT is `BG CLSD HAT`
+to fit the existing 12-character field. Embedded FM6 voice names are also
+BG-prefixed within their existing 10-character field. Existing saved user names
+are preserved, not migrated.
+
+Verified: all ten labels fit; manifest IDs, indices, mixer/effect settings and
+FM6 synthesis bytes0..144 are identical to the preceding revision. The audio
+golden keys were renamed to follow the factory labels; **no golden hash changed**.
+Root browser build passes, all108 renders are unchanged, and native/WASM output
+is identical for88200 frames. Actual Chromium through HTTP8771 → HTTPS8448
+passes all ten sound loads/audio, confirmation, stopped templates, demo/STOP,
+panel selection, saved flash/reload, vocal coexistence and mobile checks with
+zero page errors. Separately checked all ten web labels and visually inspected
+the normal panel's BG OPEN HAT label.
+
+Local receipts: `/tmp/bgirl-prefix-{build,rebuild,tests,browser}.log`;
+`/tmp/bgirl-prefix-preset-browser.png` and
+`local/signature/bg-prefix-browser/{desktop,mobile}.png`.

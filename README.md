@@ -139,8 +139,8 @@ No new generation, musical timing/RNG changes or hardware-performance claim.
 ## Signature Electro · ten original factory sounds
 
 On the normal panel: **PRESETS → LIST (KNOB4) → SIGNATURE**. The collection
-appends SUB CLEAN, SUB DRIVE, KICK, SNARE, CLAP, CLOSED HAT, OPEN HAT, IRON STAB,
-EL CHORD and CHIRP; legacy kits/presets and all32 user slots remain available.
+appends BG SUB CLEAN, BG SUB DRIVE, BG KICK, BG SNARE, BG CLAP, BG CLSD HAT,
+BG OPEN HAT, BG IRON STAB, BG EL CHORD and BG CHIRP; legacy kits/presets and all32 user slots remain available.
 The browser's **Signature Electro** section also loads these normal factory
 sounds onto the selected track. Factory selection applies curated levels;
 subsequent user-preset loads retain the normal track mixer settings.

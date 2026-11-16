@@ -13,17 +13,18 @@ def pair(name, carrier, mod=None, **kw):
 held = dict(r=(88, 65, 65, 75), l=(99, 99, 99, 0))
 hit = dict(r=(99, 56, 50, 72), l=(99, 50, 0, 0))
 PATCHES = [
-    pair('SUB CLEAN', op(ol=96, **held)),
-    pair('SUB DRIVE', op(ol=94, **held), op(ol=65, fc=1, **held)),
-    pair('IRON STAB', op(ol=96, **hit), op(ol=82, fc=3, ff=41, **hit)),
-    pair('EL CHORD', op(ol=88, **hit), op(ol=65, fc=2, **hit)),
-    pair('CHIRP', op(ol=94, r=(99,60,55,70), l=(99,0,0,0)),
+    pair('BG SUB CLN', op(ol=96, **held)),
+    pair('BG SUB DRV', op(ol=94, **held), op(ol=65, fc=1, **held)),
+    pair('BG IRON', op(ol=96, **hit), op(ol=82, fc=3, ff=41, **hit)),
+    pair('BG CHORD', op(ol=88, **hit), op(ol=65, fc=2, **hit)),
+    pair('BG CHIRP', op(ol=94, r=(99,60,55,70), l=(99,0,0,0)),
          pr=(80,65,99,99), pl=(50,50,50,74)),
 ]
 IDS = ['sub-clean','sub-drive','stab-iron','chord-electro','chirp']
-NAMES = ['SUB CLEAN','SUB DRIVE','IRON STAB','EL CHORD','CHIRP']
-DRUMS = [('bd-round','KICK',12),('sd-snap','SNARE',13),('cp-layer','CLAP',14),
-         ('hh-closed','CLOSED HAT',15),('hh-open','OPEN HAT',16)]
+# Full factory labels fit the 12-character browser/save field; FM6 embeds 10.
+NAMES = ['BG SUB CLEAN','BG SUB DRIVE','BG IRON STAB','BG EL CHORD','BG CHIRP']
+DRUMS = [('bd-round','BG KICK',12),('sd-snap','BG SNARE',13),('cp-layer','BG CLAP',14),
+         ('hh-closed','BG CLSD HAT',15),('hh-open','BG OPEN HAT',16)]
 def emit(path,content):
     if '--check' in sys.argv:
         assert path.read_text()==content, f'{path}: regenerate with tools/signature_bank.py'
