@@ -112,7 +112,10 @@ check("FX held: its button and the effects' keys breathe, none lit; let go: noth
     const m = html.match(new RegExp(`@keyframes ${name} \\{ 0%, 100% \\{ fill: (#[0-9a-f]{6}); \\} 50% \\{ fill: (#[0-9a-f]{6})`));
     return (red(m[2]) - red(m[1])) / (lit - red(m[1]));
   };
-  const hi = srgb(pk("FM1_LED_BREATH_PK")), lo = srgb(pk("FM1_LED_BREATH_PK_LO")), litBtn = 0xff, litSlit = 0xec;
+  // Read the current skin's lit endpoints; keep the firmware-relative peak tolerance unchanged.
+  const litBtn = red(html.match(/--lit: (#[0-9a-f]{6})/)[1]);
+  const litSlit = red(html.match(/\.lit \.slit \{ fill: (#[0-9a-f]{6})/)[1]);
+  const hi = srgb(pk("FM1_LED_BREATH_PK")), lo = srgb(pk("FM1_LED_BREATH_PK_LO"));
   const got = [share("breath-btn", litBtn), share("breath-slit", litSlit), share("breath-btn-lo", litBtn), share("breath-slit-lo", litSlit)];
   check(`the page's breath peaks ${got.map((x) => x.toFixed(2)).join(" ")} ~ ${hi.toFixed(2)} (HI) ${lo.toFixed(2)} (LO)`,
         Math.abs(got[0] - hi) <= 0.06 && Math.abs(got[1] - hi) <= 0.06 && Math.abs(got[2] - lo) <= 0.06 &&

@@ -52,6 +52,15 @@ git -C /path/to/emsdk checkout 708dcbcc9ee23bc7d2dad44fc90db377e38b771c
 source /path/to/emsdk/emsdk_env.sh
 ```
 
+## Battle Circuit visual identity
+
+The fresh-state UI now uses **CIRCUIT**: crisp mint/near-black display, squared
+technical cells, reverse-video focus, and a bone/black browser shell. Existing
+saved COLOR / STYLE / LARGE / CUSTOM choices are preserved. To opt in on a saved
+session, hold HOME → COLOR → CIRCUIT; HOME exits. No musical behavior changes.
+
+[Before/after screenshots, verification and local demo](docs/BATTLE_CIRCUIT_VERIFICATION.md).
+
 ## Sample-fed vocoder / early listening demo
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band

@@ -7,9 +7,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BGIRL — Felucca electro edition</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%230b0b0d%22/%3E%3Cpath d=%22M3 3h7L7 7h6l-8 6 2-5H3z%22 fill=%22%23c8ff00%22/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%230b0b0d%22/%3E%3Cpath d=%22M3 3h7L7 7h6l-8 6 2-5H3z%22 fill=%22%2375f5be%22/%3E%3C/svg%3E">
 <meta name="description" content="BGIRL FM1: open-source classic electro in your browser—drums, bass, vocoded speech and arp-driven floorwork on Felucca.">
-<meta name="theme-color" content="#0b0b0d">
+<meta name="theme-color" content="#d8d2bf">
 <meta property="og:title" content="BGIRL FM1 — Felucca electro edition">
 <meta property="og:description" content="Classic electro in a box. Play the open-source browser instrument.">
 <meta property="og:type" content="website">
@@ -18,58 +18,14 @@
 <style>
 /* DotGothic16 (SIL OFL 1.1, fonts/OFL.txt), cut to printable ASCII, for the knob labels */
 @font-face { font-family: "DotGothic16"; src: url("fonts/DotGothic16-subset.woff") format("woff"); font-display: swap; }
-:root { --bg: #0b0b0d; --fg: #f6f4ed; --dim: #b8b6ae; --rule: #3c3d36;
-        --body: #1d1d1f; --tray: #141415; --part: #2a2a2d; --edge: #3a3a3e; --label: #d6d6d8;
-        --lit: #fff4d6; --green: #c8ff00; --coral: #ff7d79; --card: #151517;
-        color-scheme: dark; }
+:root { --bg: #d8d2bf; --fg: #151a17; --dim: #414a43; --rule: #73796b;
+        --body: #151a17; --tray: #091310; --part: #25372f; --edge: #597064; --label: #d7f9e7;
+        --lit: #75f5be; --green: #75f5be; --orange: #ff7847; color-scheme: light; }
 html, body { background: var(--bg); }
-html { scroll-behavior: smooth; }
-body { margin: 0; color: var(--fg); font: 14px/1.65 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-       background: radial-gradient(circle at 12% 5%, rgba(200,255,0,.12), transparent 26rem),
-                   radial-gradient(circle at 88% 18%, rgba(255,125,121,.09), transparent 24rem), var(--bg); }
-main { max-width: 1100px; margin: 0 auto; padding: 24px 18px 42px; }
-a { color: var(--green); text-underline-offset: .18em; }
-.hero { min-height: min(690px, 82vh); display: grid; place-items: center; align-content: center;
-        text-align: center; padding: 28px 0 42px; }
-.eyebrow { margin: 0 0 8px; color: var(--green); font: 700 12px/1.2 ui-monospace, Menlo, monospace;
-           letter-spacing: .2em; text-transform: uppercase; }
-.wordmark { margin: 0; line-height: 0; }
-.wordmark img { width: min(720px, 92vw); height: auto; filter: drop-shadow(0 20px 28px rgba(0,0,0,.4)); }
-.tagline { max-width: 780px; margin: -4px auto 20px; font-size: clamp(20px, 3vw, 34px); line-height: 1.15;
-           font-weight: 750; letter-spacing: -.025em; }
-.hero-copy { max-width: 670px; margin: 0 auto 24px; color: var(--dim); font-size: 16px; }
-.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-.cta { display: inline-block; padding: 11px 18px; border: 1px solid var(--green); border-radius: 999px;
-       background: var(--green); color: #0b0b0d; font-weight: 750; text-decoration: none; }
-.cta.secondary { background: transparent; color: var(--fg); border-color: #595b50; }
-.feature-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 20px; }
-.feature-chips span { padding: 4px 10px; border: 1px solid #34352f; border-radius: 999px; color: var(--dim);
-                      font: 600 11px/1.6 ui-monospace, Menlo, monospace; text-transform: uppercase; }
-.intro-card, section.lab { margin: 22px 0; padding: 18px 20px; border: 1px solid #2d2e29; border-radius: 18px;
-                           background: linear-gradient(145deg, rgba(27,27,30,.97), rgba(18,18,20,.97));
-                           box-shadow: 0 18px 50px rgba(0,0,0,.2); }
-.intro-card { text-align: center; }
-.intro-card p { margin: 5px auto 12px; max-width: 850px; }
-.device { scroll-margin-top: 18px; border: 1px solid #3c3d36; border-radius: 4% / 6%;
-          box-shadow: 0 24px 70px rgba(0,0,0,.42), 0 0 0 6px rgba(200,255,0,.035); }
-button, select { font: inherit; }
-button { margin: 3px 2px; padding: 8px 12px; border: 1px solid #4d4e46; border-radius: 8px;
-         background: #222326; color: var(--fg); cursor: pointer; }
-button:hover:not(:disabled), button:focus-visible { border-color: var(--green); color: var(--green); }
-button:disabled { opacity: .45; cursor: not-allowed; }
-select { border: 1px solid #4d4e46; border-radius: 7px; background: #202124; color: var(--fg); padding: 4px 7px; }
-section.lab h2 { margin: 0 0 6px; color: var(--green); font-size: 20px; }
-section.lab p { color: var(--dim); }
-section.lab audio { max-width: min(100%, 420px); vertical-align: middle; }
-details { margin: 12px 0; padding: 10px 12px; border: 1px solid #33342f; border-radius: 10px; }
-summary { cursor: pointer; font-weight: 700; }
-@media (orientation: portrait) and (max-width: 700px) {
-  main { padding: 8px 8px 24px; }
-  .hero { min-height: auto; padding: 28px 8px 32px; }
-  .wordmark img { width: 100%; }
-  .tagline { margin-top: 2px; }
-  .intro-card, section.lab { padding: 14px 12px; border-radius: 13px; }
-}
+body { margin: 0; color: var(--fg); font: 13px/1.6 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 32px; }
+@media (orientation: portrait) and (max-width: 700px) { main { padding: 8px 8px 24px; } }
+a { color: inherit; }
 .device { position: relative; width: 100%; aspect-ratio: 1000 / 624; user-select: none; -webkit-user-select: none;
           -webkit-touch-callout: none; touch-action: manipulation; }
 .device svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -78,55 +34,104 @@ summary { cursor: pointer; font-weight: 700; }
 .hit.knob { cursor: ns-resize; border-radius: 50%; }
 .hit:focus-visible { outline: 2px solid var(--lit); outline-offset: 2px; }
 .face { transition: fill .05s; }
-.dim .face.btn { fill: #3a3934; }
+.dim .face.btn { fill: #30473c; }
 .lit .face.btn { fill: var(--lit); }
-.lit text { fill: #1d1d1f; }
+.lit text { fill: #091310; }
 .green .face.btn { fill: var(--green); }
 .green text { fill: #0d2414; }
-.face.key { fill: #0c0c0d; stroke: var(--edge); stroke-width: 1.5; }
-.slit { fill: #3a3a3c; transition: fill .05s; }
-.dim .slit { fill: #77777b; }
-.lit .slit { fill: #ececee; filter: drop-shadow(0 0 3px rgba(255, 255, 255, .6)); }
+.face.key { fill: #091310; stroke: var(--edge); stroke-width: 1.5; }
+.slit { fill: #30473c; transition: fill .05s; }
+.dim .slit { fill: #78998a; }
+.lit .slit { fill: #d7f9e7;  }
 /* #119: what can be pressed breathes, dark .. ~60 % of lit and back (bsp/boards/fm1/fm1_input.h fm1_led_breath, ~1.1 s; MENU >
  * LEDS DIM LO ~30 %): the peaks between dark and lit at ~0.8 / ~0.58 on screen (the LED's share, gamma-encoded) */
-@keyframes breath-btn { 0%, 100% { fill: #3a3934; } 50% { fill: #d8cfb6; } }
-@keyframes breath-slit { 0%, 100% { fill: #3a3a3c; } 50% { fill: #c8c8ca; } }
-@keyframes breath-btn-lo { 0%, 100% { fill: #3a3934; } 50% { fill: #aca592; } }
-@keyframes breath-slit-lo { 0%, 100% { fill: #3a3a3c; } 50% { fill: #a1a1a3; } }
+@keyframes breath-btn { 0%, 100% { fill: #30473c; } 50% { fill: #67d2a4; } }
+@keyframes breath-slit { 0%, 100% { fill: #30473c; } 50% { fill: #b6d5c5; } }
+@keyframes breath-btn-lo { 0%, 100% { fill: #30473c; } 50% { fill: #58ac87; } }
+@keyframes breath-slit-lo { 0%, 100% { fill: #30473c; } 50% { fill: #91ae9f; } }
 .breath .face.btn { animation: breath-btn 1.13s ease-in-out infinite; }
 .breath .slit { animation: breath-slit 1.13s ease-in-out infinite; }
 .dimlo .breath .face.btn { animation-name: breath-btn-lo; }
 .dimlo .breath .slit { animation-name: breath-slit-lo; }
 @media (prefers-reduced-motion: reduce) {
   .breath .face.btn, .breath .slit { animation: none; }
-  .breath .face.btn { fill: #aca592; }
-  .breath .slit { fill: #a1a1a3; }
+  .breath .face.btn { fill: #58ac87; }
+  .breath .slit { fill: #91ae9f; }
 }
 /* the DRUM grid's beats (bsp/boards/fm1/fm1_input.h fm1_led_mid): a steady level between the glow and lit, ~15 % (DIM LO ~10 %) */
-.mid .slit { fill: #9a9a9e; }
-.dimlo .mid .slit { fill: #8a8a8e; }
+.mid .slit { fill: #9cbeac; }
+.dimlo .mid .slit { fill: #91ae9f; }
 .held .face { stroke: var(--lit); stroke-width: 3; }
-.latched .face { stroke: #79b8ff; stroke-width: 3; }
+.latched .face { stroke: var(--orange); stroke-width: 3; }
 .start { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px;
-         background: rgba(0, 0, 0, .5); border-radius: 4% / 6%; }
+         background: rgba(9, 19, 16, .92); border-radius: 0; }
 .start[hidden] { display: none; }
-.start button { font: inherit; font-size: 18px; padding: 12px 28px; background: #fff; color: #000; border: 0; cursor: pointer; }
+.start button { font: inherit; font-size: 18px; padding: 12px 28px; background: var(--lit); color: #091310; border: 0; cursor: pointer; }
 .start button:disabled { opacity: .4; cursor: progress; }
 .start p { margin: 0; max-width: 32em; text-align: center; color: #fff; }
 .keys, footer { margin: 16px 0 0; color: var(--dim); text-align: center; }
 .keys span { white-space: nowrap; margin: 0 8px; }
 .keys select { font: inherit; font-size: 12px; }
-kbd { font: 600 11px ui-monospace, Menlo, monospace; border: 1px solid var(--rule); border-radius: 3px; padding: 0 4px; color: var(--fg); background: #171719; }
+kbd { font: 600 11px ui-monospace, Menlo, monospace; border: 1px solid var(--rule); padding: 0 4px; color: var(--fg); }
 footer { margin-top: 12px; font-size: 12px; }
 footer nav a { margin: 0 6px; }
 footer small { font-size: 11px; opacity: .8; }
+/* Battle Circuit: equipment typography, cassette identifiers, no external assets. */
+.masthead { display: flex; align-items: end; justify-content: space-between; gap: 16px;
+  border-top: 8px solid var(--fg); border-bottom: 2px solid var(--fg); padding: 18px 0 14px; }
+h1 { margin: 0; font: 950 clamp(64px, 12vw, 132px)/.8 Impact, 'Arial Narrow', sans-serif;
+  letter-spacing: -.045em; color: var(--fg); }
+.catalog { margin: 0; text-align: right; font: 700 12px/1.7 ui-monospace, monospace; text-transform: uppercase; }
+.catalog strong { display: inline-block; background: var(--fg); color: var(--bg); padding: 2px 8px; }
+.catalog span { display: block; }
+.deckline { font: 700 11px/1.6 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.deckline::before { content: ''; display: inline-block; width: 10px; height: 10px; margin-right: 8px; background: #a33616; }
+button, select, summary { font: 600 12px/1.5 ui-monospace, monospace; }
+button, select { max-width: 100%; border: 1px solid var(--fg); border-radius: 0; padding: 9px 12px;
+  background: transparent; color: var(--fg); }
+button { cursor: pointer; margin: 3px 3px 3px 0; min-height: 40px; }
+button:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible {
+  outline: 3px solid #276149; outline-offset: 3px; }
+.hit:focus-visible { outline: 3px solid var(--lit); }
+section { border-top: 2px solid var(--fg); padding: 18px 0 22px; margin-top: 24px; }
+h2 { font: 800 20px/1.2 ui-monospace, monospace; letter-spacing: -.04em; margin: 0 0 12px; }
+section h2::before { content: attr(data-id); font-size: 12px; border: 1px solid; padding: 4px 6px; margin-right: 10px; vertical-align: middle; }
+section p { max-width: 78ch; }
+summary { cursor: pointer; padding: 12px 0; }
+audio { max-width: 100%; vertical-align: middle; margin: 4px 0; }
+.keys { padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
+footer { border-top: 2px solid var(--fg); padding-top: 18px; }
+@media (max-width: 500px) {
+  .masthead { gap: 8px; padding-top: 14px; }
+  .catalog { font-size: 9px; }
+  .deckline { font-size: 10px; }
+  section button { min-height: 44px; }
+}
+/* Preserve the selected wordmark and marketing content from main's branding PR.
+   Monochrome treatment is CSS only; original image and provenance stay intact. */
+.wordmark { line-height: 0; }
+.wordmark img { display: block; width: clamp(150px, 36vw, 420px); max-width: 100%; height: auto;
+  filter: grayscale(1); mix-blend-mode: multiply; }
+.hero { padding-bottom: 12px; }
+.tagline { font-size: clamp(20px, 3vw, 32px); line-height: 1.2; font-weight: 800; max-width: 30ch; margin: 20px 0 10px; }
+.hero-copy { max-width: 76ch; }
+.hero-actions, .feature-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.cta { display: inline-block; border: 1px solid var(--fg); padding: 10px 16px; background: var(--fg);
+  color: var(--bg); font-weight: 700; text-decoration: none; }
+.cta.secondary { background: transparent; color: var(--fg); }
+.feature-chips span { border: 1px solid var(--rule); padding: 4px 8px; font: 600 11px/1.6 ui-monospace, monospace; text-transform: uppercase; }
+.intro-card { border-top: 2px solid var(--fg); padding: 16px 0; margin-top: 0; }
+.intro-card p { margin: 6px 0; }
 </style>
 </head>
 <body>
 <main>
 <header class="hero">
-  <p class="eyebrow">Open-source browser instrument · Felucca electro edition</p>
-  <h1 class="wordmark"><img src="branding/bgirl-fm1-wordmark.png" width="788" height="509" alt="BGIRL FM1 acid-lime graffiti wordmark"></h1>
+<div class="masthead">  <h1 class="wordmark"><img src="branding/bgirl-fm1-wordmark.png" width="788" height="509" alt="BGIRL FM1 graffiti wordmark"></h1><p class="catalog"><strong>BG–01 / Battle Circuit</strong><span>Felucca electro edition</span><span>Rhythm · Voice · Motion</span></p></div>
+  <p class="deckline">Open-source browser instrument · Felucca electro edition</p>
+
   <p class="tagline">Classic electro in a box. Breaks in your browser.</p>
   <p class="hero-copy">A playable FM-1 experiment with tight drums, mono bass, sample-fed vocoder speech and arp-triggered floorwork. No install. No account. Just switch on.</p>
   <div class="hero-actions">
@@ -164,7 +169,7 @@ footer small { font-size: 11px; opacity: .8; }
 </p>
 
 <section class="lab" aria-label="Vocal one-shot audition">
-<h2>Vocal bank · whole phrases &amp; chops</h2>
+<h2 data-id="01">Vocal bank · whole phrases &amp; chops</h2>
 <p>Uses the installed offline bank: public builds use original BGIRL speech fixtures;
 local builds can use your separately prepared recordings. Replaces the unsaved project
 only after confirmation. Press PLAY; STOP ends the shot. Track 4 keys/MIDI select entries.
@@ -183,7 +188,7 @@ No pitch shift, warping or looping. Wet uses the existing sustained T3 pad, MON 
 </section>
 
 <section class="lab" aria-label="Vocoder listening checkpoint">
-<h2>Speech lab · listening checkpoint</h2>
+<h2 data-id="02">Speech lab · listening checkpoint</h2>
 <p>Replaces the unsaved project; saved slots stay intact. Press PLAY after loading.
 Wet setups keep the electro groove: track 3 sustained ANALOG saw pad feeds track 4 speech.
 Dry pad monitoring starts OFF; switch MON ON to compare the unprocessed carrier.
@@ -289,13 +294,19 @@ function build(name) {
   device.style.aspectRatio = `${L.w} / ${L.h}`;
   for (const d of device.querySelectorAll(".hit")) d.remove();
   knobs.length = buttons.length = keys.length = 0;
-  el("rect", { x: 4, y: 4, width: L.w - 8, height: L.h - 8, rx: 40, fill: "var(--body)" });
-  for (const [x, y, w, h] of L.trays) el("rect", { x, y, width: w, height: h, rx: 14, fill: "var(--tray)" });
+  el("rect", { x: 4, y: 4, width: L.w - 8, height: L.h - 8, rx: 2, fill: "var(--body)" });
+  for (const [x, y, w, h] of L.trays) el("rect", { x, y, width: w, height: h, rx: 0, fill: "var(--tray)" });
   const [sx, sy, ss] = L.screen;
-  el("rect", { x: sx, y: sy, width: ss, height: ss, rx: 18, fill: "#0b0b0c" });
+  el("rect", { x: sx, y: sy, width: ss, height: ss, rx: 0, fill: "#091310" });
   const inset = ss / 32;                                         // the 240 x 240 panel inside its bezel
   Object.assign(canvas.style, { left: `${(sx + inset) / L.w * 100}%`, top: `${(sy + inset) / L.h * 100}%`,
                                 width: `${(ss - 2 * inset) / L.w * 100}%`, height: `${(ss - 2 * inset) / L.h * 100}%` });
+  if (name === "wide") {
+    const mark = label(svg, 650, 32, "BG–01 / BATTLE CIRCUIT", 13, SANS, "var(--lit)");
+    mark.setAttribute("letter-spacing", ".16em");
+    mark.id = "circuit-mark";
+    el("rect", {x: 940, y: 24, width: 24, height: 5, fill: "var(--orange)"});
+  }
   KNOBS.forEach((n, i) => {
     const [x, y, r] = L.knobs[i], g = el("g", {});
     el("circle", { cx: x, cy: y, r: r + 5, fill: "var(--tray)" }, g);
@@ -307,8 +318,8 @@ function build(name) {
   });
   const button = ([x, y, w, h], n, sub) => {
     const g = el("g", {});
-    el("rect", { x, y, width: w, height: h, rx: 8, fill: "var(--part)", stroke: "var(--edge)", "stroke-width": 1.5, class: "face btn" }, g);
-    const ink = n === "REC" ? "#ff453a" : undefined;
+    el("rect", { x, y, width: w, height: h, rx: 1, fill: "var(--part)", stroke: "var(--edge)", "stroke-width": 1.5, class: "face btn" }, g);
+    const ink = n === "REC" ? "var(--orange)" : undefined;
     if (sub) { label(g, x + w / 2, y + h / 2 - 2, n, 10.8, SANS, ink); label(g, x + w / 2, y + h / 2 + 11, sub, 9.9); }
     else label(g, x + w / 2, y + h / 2 + 4.5, n, 12.6, SANS, ink);
     buttons.push({ g, bit: B[n], name: sub ? `${n} / ${sub}` : n });
@@ -321,13 +332,13 @@ function build(name) {
     button([gx + i * dx, gy + dy, gw, gh], ROW2[i], ROW2[i] === "PLAY" ? "STOP" : "");
   }
   const [x0, y0, w, h] = L.keybed;
-  el("rect", { x: x0, y: y0, width: w, height: h, rx: 18, fill: "var(--tray)" });
+  el("rect", { x: x0, y: y0, width: w, height: h, rx: 0, fill: "var(--tray)" });
   // the keys: two rows of the same black keys, each with a slit down its middle that lights
   const pitch = (w - 24) / 16, kw = pitch * 0.78, kh = h * 0.425, sw = Math.max(3, kw * 0.14);
   const key = (cx, cy, k) => {
     const g = el("g", {}), y = cy - kh / 2;
-    el("rect", { x: cx - kw / 2, y, width: kw, height: kh, rx: kw / 2, class: "face key" }, g);
-    el("rect", { x: cx - sw / 2, y: y + kw * 0.4, width: sw, height: kh - kw * 0.8, rx: sw / 2, class: "slit" }, g);
+    el("rect", { x: cx - kw / 2, y, width: kw, height: kh, rx: 1, class: "face key" }, g);
+    el("rect", { x: cx - sw / 2, y: y + kw * 0.4, width: sw, height: kh - kw * 0.8, rx: 0, class: "slit" }, g);
     el("rect", { x: cx - pitch / 2, y: cy - h * 0.24, width: pitch, height: h * 0.48, fill: "transparent" }, g);   // its target
     keys[k] = { g, name: keyName(k) };
   };
@@ -506,7 +517,7 @@ function drawScreen(fb) {
 // the power-on sweep (bsp/boards/fm1/fm1_led_anim.h): a level per LED, lit frames /64 (| 128: the glow under them), drawn as the
 // LED's share of lit between its dark (or glowing) colour and the lit one, mixed in linear light
 const lin = (h) => [1, 3, 5].map((i) => (parseInt(h.slice(i, i + 2), 16) / 255) ** 2.2);
-const ANIM = { btn: [lin("#3a3934"), lin("#3a3934"), lin("#fff4d6")], slit: [lin("#3a3a3c"), lin("#77777b"), lin("#ececee")] };
+const ANIM = { btn: [lin("#30473c"), lin("#30473c"), lin("#75f5be")], slit: [lin("#30473c"), lin("#78998a"), lin("#d7f9e7")] };
 function animFill(kind, q) {
   const [dark, glow, lit] = ANIM[kind], s = Math.min(q & 127, 64) / 64, base = q & 128 ? glow : dark;
   const c = base.map((v, i) => Math.round(255 * (v + (lit[i] - v) * s) ** (1 / 2.2)));

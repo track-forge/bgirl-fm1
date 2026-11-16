@@ -85,7 +85,7 @@ static struct {
     uint16_t pal[5];             /* the five as stored: color1 color2 color3 primary secondary (the editor shows them) */
     uint16_t bg, surf, text, theme, accent;
     uint16_t mid, dim, line, sel, tint, ink, rec, raise, key, lane, grid, ok;
-    uint8_t light, mono;
+    uint8_t light, mono, circuit; /* CIRCUIT geometry; never stored in settings */
     uint8_t style;               /* MENU > STYLE (ui.c style_apply): ST_FLAT, ST_LINE */
     uint32_t gen;                /* bumped by palette_set (the text ramps follow) */
 } ux;
@@ -158,6 +158,7 @@ static void palette_set(uint32_t i)
     i %= NPALETTES;
     ux.mono = !cust && i == UI_GREY_INDEX;
     ux.pal[0] = p->c1; ux.pal[1] = p->c2; ux.pal[2] = p->c3; ux.pal[3] = p->primary; ux.pal[4] = p->secondary;
+    ux.circuit = !cust && i == UI_CIRCUIT_INDEX;
     ux.bg = p->c1; ux.text = p->c3; ux.theme = p->c2; ux.accent = p->secondary; ux.rec = p->primary;
     ux.mono = !cust && i == UI_GREY_INDEX;
     ux.mid = ux_mix(ux.bg, ux.text, UI_MID_PCT);
@@ -313,6 +314,7 @@ static void cv_rrect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, uint
 {
     int32_t i, j;
     GFX_HOOK_CELL(x, y + cv_oy, x + w, y + h + cv_oy);   /* (the lint: what is drawn on it stays inside it) */
+    if (ux.circuit) r = 0;                     /* Battle Circuit: square cells, including cushions */
     if (r < 0) r = -r;                           /* (-r: rounded in every style: a keycap-like cushion) */
     else if (ux.style == ST_LINE) r = 0;         /* LINE: square cursors, selections and fills (FLAT: rounded) */
     if (r > w / 2) r = w / 2;

@@ -31,7 +31,7 @@ static void composition(void) {
     assert(web_draws==draws); /* hidden dance causes no extra graph drawing */
     ui.page=page_graph(GR_DANCE);draw_graph();assert(dance_snapshot==dance_read(0));
     song.sel=1;draw_graph();assert(dance_snapshot==dance_read(1));
-    puts("dance pixels: 480 compositions (10 palettes x FLAT/LINE x 12 poses x 2 styles) incl. wrap, CRISP erasure, GHOST intersection/previous, style redraw, LARGE, no hidden/idle drawing PASS");
+    puts("dance pixels: 528 compositions (11 palettes x FLAT/LINE x 12 poses x 2 styles) incl. wrap, CRISP erasure, GHOST intersection/previous, style redraw, LARGE, no hidden/idle drawing PASS");
 }
 int main(int argc,char **argv) {
     web_nor_erase();web_boot();advance(1200);
