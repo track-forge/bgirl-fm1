@@ -1486,6 +1486,15 @@ static void midi_pc_load(track_t *t, uint32_t n)
             t->p[P_E0] = (int16_t)k;
         return;
     }
+    /* Keep existing FM6 PC8..39 bank identities, independent of new factory
+     * count. Appended Signature factory programs occupy40..44. */
+    if (e==ENGI_FM6 && n>=8u) {
+        if(n<8u+FM6_NBANK) {
+            int32_t slot=(int32_t)(FM6_OWN+1u+n-8u);
+            if(fm6_slot_ok(slot))t->p[P_E7]=(int16_t)slot;
+        } else if(n<8u+FM6_NBANK+5u) apply_preset_to(t,8u+n-(8u+FM6_NBANK));
+        return;
+    }
     if (n >= preset_shown(e)) {
         int32_t s = (int32_t)(FM6_OWN + 1u + n - preset_shown(e));
         if (e == ENGI_FM6 && fm6_bank_slot(s) >= 0 && fm6_slot_ok(s))

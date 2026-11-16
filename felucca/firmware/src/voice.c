@@ -489,7 +489,7 @@ static void trk_all_off(track_t *t)
 {
     uint32_t i;
     dance_reset((uint32_t)(t - trk));
-    if (t->engine == ENGI_DRUM && drum_solo(t->p)) {
+    if (t->engine == ENGI_DRUM && (drum_solo(t->p) || drum_solo_played[t-trk])) {
         memset(drum_kit_of(t),0,sizeof(drum_lane_t)*DV_NLANE);
         for (i=0;i<NVOICE;i++) t->v[i].active=0;
     }
@@ -499,6 +499,7 @@ static void trk_all_off(track_t *t)
         speech_last[t-trk]=0;
     }
 #endif
+    drum_solo_played[t-trk]=0;
     t->p[P_VHOLD]=0; bg_vreset++;
     for (i = 0; i < NVOICE; i++) {
         t->v[i].gate = 0;

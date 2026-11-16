@@ -106,6 +106,14 @@ if (typeof registerProcessor === "function") {
         this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
         this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_vocoder(m.mode|0)===0});
       }
+      else if (m.type === "signature-info") {
+        this.port.postMessage({type:"signature-info",tracks:[0,1,2,3].map(t=>[0,1,2,3,4,5,6].map(f=>ex.web_bgirl_signature_info(t,f)))});
+      }
+      else if (m.type === "signature-project" || m.type === "signature-sound") {
+        this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
+        const result=m.type==="signature-project" ? ex.web_bgirl_signature(m.mode|0) : ex.web_bgirl_signature_sound(m.sound|0);
+        this.port.postMessage({type:"bgirl-project-result",ok:result===0});
+      }
       else if (m.type === "bgirl-project") {
         // Do not let queued note-ons reappear after the project panic.
         this.queue.length = 0;

@@ -164,6 +164,23 @@
         78,
         32
       ],
+      "level": 112,
+      "engine_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
       "behavior": "mono retrigger",
       "midi_range": [
         24,
@@ -334,6 +351,23 @@
         86,
         69,
         32
+      ],
+      "level": 114,
+      "engine_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
       ],
       "behavior": "mono retrigger",
       "midi_range": [
@@ -506,6 +540,23 @@
         66,
         32
       ],
+      "level": 118,
+      "engine_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
       "behavior": "poly",
       "midi_range": [
         48,
@@ -677,6 +728,23 @@
         32,
         32
       ],
+      "level": 104,
+      "engine_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
       "behavior": "minor/+oct four-tone chord",
       "midi_range": [
         48,
@@ -798,9 +866,9 @@
         0,
         7,
         99,
-        65,
+        60,
         55,
-        80,
+        70,
         99,
         0,
         0,
@@ -848,6 +916,23 @@
         32,
         32
       ],
+      "level": 118,
+      "engine_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
       "behavior": "poly",
       "midi_range": [
         48,
@@ -863,6 +948,24 @@
       "engine": 10,
       "preset": 4,
       "kit": 12,
+      "level": 100,
+      "engine_values": [
+        12,
+        64,
+        58,
+        44,
+        64,
+        80,
+        0,
+        0
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "clap_body_balance": null,
       "behavior": "fixed pitch one-shot",
       "tune_semitones": 5,
       "voices": 1,
@@ -875,6 +978,24 @@
       "engine": 10,
       "preset": 5,
       "kit": 13,
+      "level": 100,
+      "engine_values": [
+        13,
+        64,
+        70,
+        38,
+        64,
+        80,
+        0,
+        0
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "clap_body_balance": null,
       "behavior": "fixed pitch one-shot",
       "tune_semitones": 3,
       "voices": 1,
@@ -887,6 +1008,24 @@
       "engine": 10,
       "preset": 6,
       "kit": 14,
+      "level": 100,
+      "engine_values": [
+        14,
+        64,
+        64,
+        54,
+        64,
+        80,
+        0,
+        0
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "clap_body_balance": 32,
       "behavior": "fixed pitch one-shot",
       "tune_semitones": 3,
       "voices": 1,
@@ -899,6 +1038,24 @@
       "engine": 10,
       "preset": 7,
       "kit": 15,
+      "level": 100,
+      "engine_values": [
+        15,
+        64,
+        68,
+        48,
+        64,
+        80,
+        0,
+        0
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "clap_body_balance": null,
       "behavior": "fixed pitch one-shot; shared choke group 1",
       "tune_semitones": 5,
       "voices": 1,
@@ -911,6 +1068,24 @@
       "engine": 10,
       "preset": 8,
       "kit": 16,
+      "level": 100,
+      "engine_values": [
+        16,
+        64,
+        66,
+        44,
+        64,
+        80,
+        0,
+        0
+      ],
+      "effects": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "clap_body_balance": null,
       "behavior": "fixed pitch one-shot; shared choke group 1",
       "tune_semitones": 5,
       "voices": 1,

@@ -1440,7 +1440,7 @@ static int test_categories(void)
         if (!eng_ok(e) || e == ENGI_DIGITAL) continue;    /* (DIGITAL: FELUCCA_FM4 builds only, its sounds no category) */
         ok &= str_len(c) == ENGINES[e]->npresets;
         for (k = 0; k < ENGINES[e]->npresets; k++)
-            ok &= preset_cat(e, k) >= CAT_BASS && preset_cat(e, k) <= CAT_OTHER;
+            ok &= preset_cat(e, k) >= CAT_BASS && preset_cat(e, k) < CAT_N;
     }
     bad += check("categories: every factory preset of every engine has one (the table's strings == the preset counts)",
                  ok && preset_cat(0, 2) == CAT_BASS && preset_cat(ENGI_DRUM, 0) == CAT_DRUM && preset_cat(ENGI_FM6, 0) == CAT_KEYS &&
@@ -1476,9 +1476,10 @@ static int test_categories(void)
     }
     bad += check("  the PRESETS knob steps through basses only (every engine), and round", ok && preset_pos(&total) == total - 1u);
     turn(EN_K4, 20);
-    bad += check("  .. right to OTHER and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "OTHER"));
+    bad += check("  .. right to SIGNATURE and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "SIGNATURE"));
 #if !FELUCCA_FM4                                           /* (DIGITAL's presets: OTHER's) */
     {
+        turn(EN_K4,-1); /* OTHER still exists before appended SIGNATURE. */
         track_t before = *TSEL;
         ui.msg_t = 0;
         turn(EN_PRESET, 1);

@@ -1,6 +1,6 @@
 # BGIRL FM-1 — Signature Electro Bank build spec
 
-Date: 2026-11-16. Status: **planning stub; implementation and listening pending**.
+Date: 2026-11-16. Status: **implemented on the existing PR; final verification in progress; Doug listening pending**.
 
 ## 1. Purpose and authority
 
@@ -228,3 +228,30 @@ at 90/120/140 BPM. Provide a playable browser recipe and a compact comparison se
 No new Live mutations or hardware actions are necessary. If listening or an
 essential design extension blocks completion, report that exact gap in this PR;
 continue independent implementation and never label a kit-note workaround complete.
+
+
+## 9. Implementation decisions / progress
+
+- Baseline root web build and full host suite passed at8e3ad05; main had no drift.
+- Original FM6 OWN recipes appended at presets8..12; DRUM presets4..8.
+  New PRESETS category SIGNATURE contains exactly ten entries. Legacy IDs and
+  F1..F8/B1..B32 SLOT numbering stay fixed. MIDI PC8..39 retains the FM6 bank;
+  new Signature FM6 presets append at PC40..44. DRUM PC0..8 keeps its kits;
+  new selector modes append at9..15.
+- Standalone KIT12..18 is the smallest persisted behavior mechanism. Grouped
+  hats are15/16 (group1);17/18 FREE opts out. No new common parameter IDs.
+  FUND guards projects containing these selections or DRUM KIT motion; it
+  carries FUNC fingerprints too. Presets use7/8 (notes/grid). Old readers stay.
+- CLAP mixes its clap and snare states inside one shared allocation; existing
+  LANES SNARE level is the body blend, factory32/127. No dependency fork.
+- FM6 chord is the permitted alternative: one live root → MIN/+OCT (four tones),
+  explicit four-tone sequencer steps. No sequence double expansion. FM6 caps
+  at six voices per track; global eight-voice stealing is inherited.
+- No post-FM resonant filter added without an identified listening deficiency.
+  Existing MLVL is modulation brightness, not a filter. OP ENV owns amplitude.
+- Explicit browser template, kit-context demo, standalone demo and hat exercise
+  use normal project reset/load paths, confirmation and stopped transport.
+  Existing vocal startup/demo, autosave precedence, kits and user slots retained.
+- Technical findings, exact final commands/revision and listening artifacts live
+  in SIGNATURE_ELECTRO_BANK_VERIFICATION.md. All sound names/levels remain
+  reviewable; **Doug listening verdict pending for every family**.

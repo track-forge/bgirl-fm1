@@ -640,7 +640,7 @@ static int proj_pack(project_store_t *out, const project_t *q)
         if(q->t[t].engine==ENGI_DRUM && q->t[t].p[P_E0]>=12) magic=PROJ_MAGIC_SIGNATURE;
     /* A source automation can select a new mode while its base remains a kit. */
     for(i=0;i<q->motion.count;i++)
-        if(MOTION_ID(&q->motion.event[i])==P_E0 && q->motion.event[i].value>=12) magic=PROJ_MAGIC_SIGNATURE;
+        if(q->t[q->motion.event[i].place>>6].engine==ENGI_DRUM && MOTION_ID(&q->motion.event[i])==P_E0 && q->motion.event[i].value>=12) magic=PROJ_MAGIC_SIGNATURE;
     memset(out, 0, sizeof *out); memcpy(b, &magic, 4); memcpy(b + 4, &size, 4);
     memcpy(b + 8, q->g, sizeof q->g); b[62] = q->sel; b[63] = q->parts; b[64] = q->phys; b[66] = P_COUNT;
     for (t = 0; t < NTRK; t++) {

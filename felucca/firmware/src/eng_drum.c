@@ -71,6 +71,7 @@ static uint8_t drum_mute[NPART];
 /* Written only in serial events, then read by parallel renderers. Group1 is
  * explicit in KIT CH G1 / OH G1; FREE opts out; legacy kits never participate. */
 static uint8_t drum_closed_block;
+static uint8_t drum_solo_played[NPART]; /* origin survives parameter replacement until panic */
 static int drum_solo(const int16_t *p) { return p[P_E0] >= DK_SIG_KICK && p[P_E0] < DK_COUNT; }
 static uint32_t drum_selected_lane(const int16_t *p) {
     static const uint8_t lanes[] = {DV_KICK,DV_SNARE,DV_CLAP,DV_HATC,DV_HATO,DV_HATC,DV_HATO};
@@ -230,6 +231,7 @@ static void drum_note_on(track_t *t, voice_t *v)
     int32_t st;
     if (!K || i >= NVOICE)
         return;
+    drum_solo_played[t-trk] |= (uint8_t)drum_solo(t->p);
     role = drum_gm(t->p, v->note, &st);
     lane = drum_solo(t->p) ? drum_selected_lane(t->p) : drum_lane(v->note);
     L = &K[(uint32_t)v->s[0] & (DV_NLANE - 1u)];
@@ -364,11 +366,11 @@ static const preset_t DRUM_PRESETS[] = {
     {"DEEP KIT", {DK_DEEP, 64, 64, 64, 64, 100, 0, 0}, {0, 100, 127, 100}, 0, 0, FX(0, 0, 0, 28), PAT(12)},
     {"TIGHT KIT", {DK_TIGHT, 64, 64, 56, 64, 100, 0, 16}, {0, 100, 127, 100}, 0, 0, FX(0, 0, 0, 8), PAT(12)},
     {"PERC KIT", {DK_PERC, 64, 64, 64, 64, 100, 0, 0}, {0, 100, 127, 100}, 0, 0, FX(0, 0, 0, 24), PAT(12)},
-    {"KICK", {DK_SIG_KICK,64,58,52,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
-    {"SNARE", {DK_SIG_SNARE,64,70,52,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
-    {"CLAP", {DK_SIG_CLAP,64,64,58,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
+    {"KICK", {DK_SIG_KICK,64,58,44,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
+    {"SNARE", {DK_SIG_SNARE,64,70,38,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
+    {"CLAP", {DK_SIG_CLAP,64,64,54,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
     {"CLOSED HAT", {DK_SIG_CLOSED,64,68,48,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
-    {"OPEN HAT", {DK_SIG_OPEN,64,66,60,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
+    {"OPEN HAT", {DK_SIG_OPEN,64,66,44,64,80,0,0}, {0,100,127,100}, 0,0, FX(0,0,0,0), PAT(0)},
 };
 
 static const engine_t ENG_DRUM = {

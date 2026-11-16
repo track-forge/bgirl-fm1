@@ -455,10 +455,14 @@ static void signature_factory_loaded(track_t *t) {
     if (t->eng_req == ENGI_FM6 && pi >= 8u && pi < 13u) {
         fm6_set_patch(tr, BG_SIGNATURE_FM[pi - 8u]);
         fm6_adopt(tr);
-        t->p[P_LEVEL] = pi == 11u ? 82 : 100;
+        static const uint8_t levels[5]={112,114,118,104,118};
+        t->p[P_LEVEL] = levels[pi-8u];
         t->p[P_CHRD] = pi == 11u ? 4 : 0; /* existing CH_MIN, chord.c follows engines */
         t->p[P_VOIC] = pi == 11u ? 4 : 0; /* existing VC_BASS */
         if (pi < 10u) t->p[P_VOICE] = V_MONO;
     }
-    if (t->eng_req == ENGI_DRUM && pi == 6u) t->p[P_LN1] = 32;
+    if (t->eng_req == ENGI_DRUM && pi>=4u && pi<9u) {
+        t->p[P_LEVEL]=100;
+        if(pi==6u)t->p[P_LN1] = 32;
+    }
 }

@@ -60,6 +60,8 @@ static void percussion(void) {
         seq_start();tick(1024);assert(active(&trk[0])==1);seq_stop();tick(512);
         memset(trk[0].step,0,sizeof trk[0].step);
     }
+    sound(0,10,8);trk_note_on(&trk[0],60,100);tick(1024);assert(active(&trk[0]));
+    apply_preset_to(&trk[0],0);tick(1024);assert(!active(&trk[0]));
     puts("drums: all128 pitches x5 identities, tap/velocity/extremes/retrigger/clap/MIDI/keys/sequence/STOP PASS");
 }
 static void choke(void) {
@@ -110,6 +112,52 @@ static void persistence(void) {
     assert(!project_restore_runtime(&decoded));tick(512);assert(slc_vocal_match(&trk[3]));
     puts("persistence: ten edited project/user sounds, OWN patches, FUND + vocal fingerprints PASS");
 }
+static void extra_contracts(void) {
+    assert(!web_bgirl_signature(0));tick(4096);song.sel=0;
+    for(uint32_t p=8;p<10;p++) {
+        sound(0,12,p);
+        for(uint32_t k=0;k<64;k++) {
+            trk_note_on(&trk[0],32+k%12,32+(k%4)*31);tick(256);
+            assert(active(&trk[0])==1);trk_note_off(&trk[0],32+k%12);
+        }
+        tick(FS);assert(!active(&trk[0]));
+    }
+    sound(0,12,11);web_midi(0x90,60,100);tick(1024);assert(active(&trk[0])==4);
+    web_midi(0x90,65,100);tick(1024);assert(active(&trk[0])<=6 && voices_busy()<=8);
+    web_midi(0x80,60,0);web_midi(0x80,65,0);tick(FS*2);assert(!active(&trk[0]));
+    /* Shared-budget overload: protect musical owners, bounded stealing, no stuck tail. */
+    sound(0,10,2);sound(1,12,8);sound(2,12,11);sound(3,10,6);
+    uint32_t kills=voice_kills;
+    for(uint32_t roll=0;roll<32;roll++) {
+        trk_note_on(&trk[1],36,100);
+        for(uint32_t l=0;l<8;l++)trk_note_on(&trk[0],DRUM_LANE_NOTE[l],100);
+        for(uint32_t n=60;n<64;n++)trk_note_on(&trk[2],n+roll%3,100);
+        trk_note_on(&trk[3],60,110);energy(512);assert(voices_busy()<=8);
+        for(uint32_t t=0;t<4;t++)for(uint32_t n=0;n<128;n++)trk_note_off(&trk[t],n);
+    }
+    assert(voice_kills>kills);panic_req=15;tick(FS*3);assert(!voices_busy());
+    /* Actual FM pitch-envelope contour: starts9st up, falls monotonically to root. */
+    fm6_penv_t e;fm6_penv_init(&e,BG_SIGNATURE_FM[4]);
+    int32_t previous=e.level;assert(previous==(1<<24)*3/4);
+    uint32_t blocks=0;
+    while(e.ix==0) { int32_t value=fm6_penv_get(&e,BG_SIGNATURE_FM[4]);assert(value<=previous);previous=value;blocks++;assert(blocks<FS/CTL); }
+    printf("chirp sweep9st->root in %.3f ms\n",1000.*blocks*CTL/FS);
+    assert(previous==0);
+    /* Autosave preserves the edited standalone selector, takes precedence at boot. */
+    sound(0,10,8);trk[0].p[P_E1]=47;song.sel=0;
+    tick(FS*70);felucca_init();assert(autosave_boot(1));tick(2048);
+    assert(trk[0].eng_req==10 && trk[0].p[P_E0]==DK_SIG_OPEN && trk[0].p[P_E1]==47);
+    /* Template and demos never replace the user's saved preset slot. */
+    assert(!up_store(3,"KEEP"));up_rec_t keep=*up_rec(3);
+    for(uint32_t mode=0;mode<4;mode++) {
+        assert(!web_bgirl_signature(mode));tick(1024);assert(!song.playing);
+        assert(!memcmp(&keep,up_rec(3),sizeof keep));
+        uint32_t n=0;for(uint32_t t=0;t<4;t++)for(uint32_t k=0;k<NSTEP;k++)n+=!!(trk[t].step[k].n || trk[t].step[k].hit);
+        assert(mode?n>0:n==0);
+    }
+    puts("rapid mono retriggers, four-note live chord/stacking/release, pitch contour, autosave precedence, slot isolation PASS");
+}
+
 int main(void) {
     web_nor_erase();web_boot();tick(FS);assert(!web_bgirl_project(0));tick(4096);
     for(uint32_t i=0;i<NTRK;i++){trk_all_off(&trk[i]);trk[i].p[P_LEVEL]=0;}
@@ -125,6 +173,6 @@ int main(void) {
         }
     }
     puts("FM: sustained 8s every MIDI24..52 bass, every MIDI48..72 character, bounded/release PASS");
-    persistence();
+    persistence();extra_contracts();
     puts("signature bank PASS");return 0;
 }

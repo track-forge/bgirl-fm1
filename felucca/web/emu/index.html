@@ -141,6 +141,21 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   <div class="feature-chips" aria-label="Project highlights"><span>12-band vocoder</span><span>Arp dance</span><span>Editable groove</span><span>GPL code</span></div>
 </header>
 
+<section class="intro-card" aria-label="Signature Electro bank">
+  <h2>Signature Electro</h2>
+  <p>Ten original sounds. On the panel: PRESETS → LIST → SIGNATURE. Listening review pending.</p>
+  <p><label>Sound <select id="signature-sound">
+    <option>SUB CLEAN</option><option>SUB DRIVE</option><option>KICK</option><option>SNARE</option><option>CLAP</option>
+    <option>CLOSED HAT</option><option>OPEN HAT</option><option>IRON STAB</option><option>EL CHORD</option><option>CHIRP</option>
+  </select></label> <button id="signature-load" disabled>Load sound on selected track</button></p>
+  <p>Sound loading keeps steps. To audition alone, load the blank template first, then select a track with ALGORITHM.
+  Subs: MIDI28–52. Stab/chord/chirp: MIDI48–72. Drums: every key plays the selected identity.
+  Clap body balance: EDIT → LANES → SNARE level. Hats CH G1 / OH G1 share choke; KIT → FREE opts out.</p>
+  <p><button id="signature-blank" disabled>Signature blank template</button>
+  <button id="signature-a" disabled>Signature demo A · kit + voices</button>
+  <button id="signature-b" disabled>Signature demo B · standalone</button>
+  <button id="signature-choke" disabled>Signature hat choke audition</button></p>
+</section>
 <section class="intro-card" aria-label="Live demo controls">
   <strong>1 · TIGHT KIT / 2 · SQR BASS / 3 · CLOUD PAD / 4 · SPEECH → 12-band vocoder</strong>
   <p>Press PLAY for the vocoder electro demo. Use the labs below for vocal chops and 8/12-band comparisons.</p>
@@ -648,6 +663,7 @@ async function switchOn() {
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
+    for (const id of ["signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();
@@ -667,6 +683,18 @@ for (const [id, demo] of [["demo", true], ["blank", false]]) {
     btnBy.clear(); keyBy.clear(); latched = 0;
     syncButtons(); syncKeys();
     send({ type: "bgirl-project", demo });
+  });
+}
+document.getElementById("signature-load").addEventListener("click",()=>{
+  if(!node)return;
+  btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
+  send({type:"signature-sound",sound:document.getElementById("signature-sound").selectedIndex});
+});
+for (const [id,mode] of [["signature-blank",0],["signature-a",1],["signature-b",2],["signature-choke",3]]) {
+  document.getElementById(id).addEventListener("click",()=>{
+    if(!node || !confirm("Replace the current unsaved project? Saved slots and user presets are kept."))return;
+    btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
+    send({type:"signature-project",mode});
   });
 }
 document.getElementById("go").addEventListener("click", switchOn);

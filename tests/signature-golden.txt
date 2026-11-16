@@ -1,0 +1,11 @@
+# Original Signature presets only; inherited 98 renders remain unchanged.
+preset/DRUM/04_KICK 7a7969702a3fdd1c
+preset/DRUM/05_SNARE 3e0712baf73b723c
+preset/DRUM/06_CLAP 2956f635980c2e20
+preset/DRUM/07_CLOSED_HAT 3c4d8880c2e1d488
+preset/DRUM/08_OPEN_HAT 93bff25e55ad8124
+preset/FM6/08_SUB_CLEAN ec5c63f48b40fea0
+preset/FM6/09_SUB_DRIVE 24591bd038cb2e40
+preset/FM6/10_IRON_STAB 014c88111a91ec4c
+preset/FM6/11_EL_CHORD 2ee8d3585752b5fc
+preset/FM6/12_CHIRP aad00a24c9803e84
