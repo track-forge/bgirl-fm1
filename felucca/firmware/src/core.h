@@ -46,6 +46,7 @@
 #ifndef BGIRL_VOCODER
 #define BGIRL_VOCODER FELUCCA_SLICE
 #endif
+static uint8_t bg_vocal_expected[NTRK][8];
 static uint32_t bg_vreset; /* events/loads increment, post-join processor consumes */
 /* ------------------------------------------------------- parameters --- */
 /* the engine interface (Felucca-Engines, MIT: engines/, a git submodule): param_desc_t and F_*, voice_t,

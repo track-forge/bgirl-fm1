@@ -219,6 +219,11 @@ static uint32_t motion_clear_locks(track_t *t, uint32_t step)
 static int motion_capture(track_t *t, uint32_t id, int16_t value)
 {
     uint32_t k = trk_index(t), idx, len, period, f;
+#if FELUCCA_SLICE
+    if(t->eng_req==13 && id==P_E0 && value==SLC_SRC_VOCALS) {
+        f=motion_guard(); slc_vocal_select(t); motion_unguard(f);
+    }
+#endif
     if (!motion_param(id)) return 0;
     if (!rec_on(t) || t != TSEL) {
         /* A live edit becomes a new base, even when an earlier motion value is

@@ -52,8 +52,9 @@ source /path/to/emsdk/emsdk_env.sh
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
 vocoder** below the panel; confirm replacing the current unsaved project. Press
-PLAY. The wet setups keep the electro demo drums/bass and use a **track3 sustained ANALOG saw
-pad** as track4 speech's carrier, with dry pad monitoring OFF. The dry-speech
+PLAY. The wet setups keep the electro demo drums/bass and use a **track3 GRAIN /
+CLOUD PAD (one octave lower)** as track4 speech's carrier, with dry pad monitoring
+OFF. The dry-speech
 button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
 12-band arrangement; restored autosaves take precedence.
 
@@ -76,13 +77,33 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
 [speech provenance](assets/speech/README.md). No physical-device performance proof.
 
+## Optional whole-phrase / chopped vocal bank
+
+The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
+each dry or through the existing sustained pad vocoder. The default build uses a
+small fixture from our original speech assets; it does **not** contain Doug's
+recordings. Factory SPEECH is unchanged. With G6 installed, startup and **Load
+electro demo** feature a two-bar G6 chop pattern; builds without G6 retain the
+existing speech demo. Autosaved projects still take precedence.
+
+Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
+**G1–G6**, START **W01…** / **C01…**. Chromatic keys/MIDI/step notes select entries;
+short taps play to the end, newest trigger replaces, STOP/panic ends playback.
+Projects/presets retain bank identity and selection; a missing/different bank is
+silent (**BANK MISS**), never substituted.
+
+[Packaging, controls and local browser audition](docs/VOCAL_BANKS.md) ·
+[UI/storage contract](docs/VOCAL_BANK_CONTRACT.md) ·
+[host/browser verification](docs/VOCAL_BANK_VERIFICATION.md).
+No warping, tempo fitting, dry overlay or hardware proof.
+
 ## Starting demo and blank palette
 
 | Track | Sound | Pattern |
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
-| 3 | ANALOG / sustained saw pad | C3/G3 tied through each phrase; carrier, dry MON OFF |
+| 3 | GRAIN / CLOUD PAD | C2/G2 tied through each phrase; carrier, dry MON OFF |
 | 4 | SLICE / original SPEECH bank | Four phrases across64 steps → 12-band vocoder, carrier T3 |
 
 Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid

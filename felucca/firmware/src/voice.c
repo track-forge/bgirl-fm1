@@ -119,7 +119,7 @@ static uint32_t trk_nvoice(const track_t *t)
 static uint32_t trk_vmode(const track_t *t)
 {
 #if FELUCCA_SLICE
-    if (t->engine == 13 && (slc_src_of(t->p) == SLC_SRC_SPEECH || t->p[P_VCARR])) return V_MONO;
+    if (t->engine == 13 && (slc_vocal_source(slc_src_of(t->p)) || t->p[P_VCARR])) return V_MONO;
 #endif
     return ENGINES[t->engine]->oneshot ? V_POLY : (uint32_t)t->p[P_VOICE];
 }
@@ -411,7 +411,7 @@ static void trk_note_on(track_t *t, uint32_t note, uint32_t vel)
         return;
     }
 #if FELUCCA_SLICE
-    if (t->engine == 13 && (slc_src_of(t->p) == SLC_SRC_SPEECH || t->p[P_VCARR])) {
+    if (t->engine == 13 && (slc_vocal_source(slc_src_of(t->p)) || t->p[P_VCARR])) {
         t->nmono = 0; t->mono_note = 0; /* no held-phrase fallback / priority */
         for(i=1;i<NVOICE;i++) t->v[i].active=t->v[i].gate=0;
     }
@@ -453,7 +453,7 @@ static void trk_note_off(track_t *t, uint32_t note)
     uint32_t i, k = 0, mode = trk_vmode(t);
     int speech_one=0;
 #if FELUCCA_SLICE
-    speech_one=t->eng_req==13 && (slc_src_of(t->p)==SLC_SRC_SPEECH || (t->p[P_VCARR] && t->p[P_E4]==SLC_ONE));
+    speech_one=t->eng_req==13 && (slc_vocal_source(slc_src_of(t->p)) || slc_vocal_playing(t) || (t->p[P_VCARR] && t->p[P_E4]==SLC_ONE));
 #endif
     for (i = 0; i < t->xp_n; i++)                       /* not sounding yet (engine switch): forget it */
         if (speech_one || t->xp_note[i] != note) {
@@ -489,7 +489,7 @@ static void trk_all_off(track_t *t)
 {
     uint32_t i;
 #if FELUCCA_SLICE
-    if (t->engine == 13 && (slc_src_of(t->p) == SLC_SRC_SPEECH || t->p[P_VCARR])) {
+    if (t->engine == 13 && (slc_vocal_source(slc_src_of(t->p)) || slc_vocal_playing(t) || t->p[P_VCARR])) {
         for (i=0; i<NVOICE; i++) t->v[i].active=0;
         speech_last[t-trk]=0;
     }

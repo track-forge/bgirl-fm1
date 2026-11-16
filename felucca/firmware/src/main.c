@@ -55,25 +55,20 @@ static void bgirl_demo_vocoder(void)
 {
     uint32_t k;
     undo_depth++;
-    set_engine_of(&trk[2],0); apply_preset_to(&trk[2],0);
+    set_engine_of(&trk[2],8); apply_preset_to(&trk[2],0);
     set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
     undo_depth--;
     for(k=2;k<NTRK;k++) {
         trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
         trk[k].p[P_DIST]=0;
     }
-    /* Open-filter detuned saws, no filter envelope/noise/drive. Fast onset
-     * keeps phrase consonants covered; tied notes sustain through each phrase. */
-    trk[2].p[P_E0]=0; trk[2].p[P_E1]=10; trk[2].p[P_E2]=64; trk[2].p[P_E3]=0;
-    trk[2].p[P_E4]=127; trk[2].p[P_E5]=0; trk[2].p[P_E6]=0; trk[2].p[P_E7]=0;
-    trk[2].p[P_ED_FLT]=0; trk[2].p[P_ATK]=0; trk[2].p[P_DEC]=0;
-    trk[2].p[P_SUS]=127; trk[2].p[P_REL]=40; trk[2].p[P_SGATE]=127;
+    /* Factory GRAIN / CLOUD PAD timbre and envelope, tied one octave lower. */
     trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
     memset(trk[2].step,0,sizeof trk[2].step);
     for(k=0;k<64;k++) {
         step_t *s=&trk[2].step[k];
         s->time=k%16 ? ST_TIE : ST_NOTE;
-        if(!(k%16)) { s->n=1; s->note[0]=(uint8_t)(48+(k/16%2)*7); s->vel=100; }
+        if(!(k%16)) { s->n=1; s->note[0]=(uint8_t)(36+(k/16%2)*7); s->vel=100; }
     }
     trk[3].p[P_E0]=SLC_SRC_SPEECH; trk[3].p[P_E1]=SLC_DIV_AUTO;
     trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;
@@ -84,6 +79,23 @@ static void bgirl_demo_vocoder(void)
     for(k=0;k<64;k+=16) {
         step_t *s=&trk[3].step[k];
         s->n=1; s->note[0]=(uint8_t)(60+k/16); s->vel=100; s->time=ST_NOTE;
+    }
+    /* Optional G6 bank: two bars of editable chops, with a second-bar reply.
+     * Public fixture builds lack G6 and retain the factory speech demo. */
+    if(NELEM(BG_VOCAL_GROUPS)>6) {
+        static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
+        static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
+        trk[3].p[P_E0]=SLC_SRC_VOCALS; trk[3].p[P_E1]=6;
+        trk[3].p[P_E2]=0; trk[3].p[P_ROOT]=0;
+        slc_vocal_select(&trk[3]);
+        trk[2].p[P_SLEN]=trk[3].p[P_SLEN]=32;
+        memset(&trk[2].step[32],0,32*sizeof(step_t));
+        memset(trk[3].step,0,sizeof trk[3].step);
+        for(k=0;k<NELEM(at);k++) {
+            step_t *s=&trk[3].step[at[k]];
+            s->n=1; s->note[0]=(uint8_t)(60+chop[k]%BG_VOCAL_GROUPS[6].n);
+            s->vel=k%6==0 ? 110 : 100; s->time=ST_NOTE;
+        }
     }
 }
 #endif

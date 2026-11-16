@@ -1,2 +1,5 @@
 tmp/
 __pycache__/
+
+# Private optional audio banks and acceptance artifacts (never publish).
+local/

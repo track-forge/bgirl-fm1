@@ -17,6 +17,7 @@ static uint64_t scene(int owner,int carrier,int mask,int bands,const char *failu
         trk[carrier].p[P_CHOR]=trk[carrier].p[P_DLY]=trk[carrier].p[P_REV]=0;
     }
     trk[owner].p[P_E0]=5;trk[owner].p[P_E4]=0;trk[owner].p[P_VCARR]=carrier+1;trk[owner].p[P_VBANDS]=bands;trk[owner].p[P_VMON]=0;
+    if(getenv("VOCAL_VIEW")) {trk[owner].p[P_E0]=6;trk[owner].p[P_E1]=atoi(getenv("VOCAL_VIEW"));slc_vocal_select(&trk[owner]);}
     trk[owner].p[P_M1SRC]=MS_LFO;trk[owner].p[P_M1DST]=MD_PAN;trk[owner].p[P_M1AMT]=30;
     trk[carrier].p[P_M2SRC]=MS_SH;trk[carrier].p[P_M2DST]=MD_DIST;trk[carrier].p[P_M2AMT]=10;
     trk_note_on(&trk[owner],60,110);trk_note_on(&trk[carrier],48,110);
@@ -41,6 +42,18 @@ int main(void) {
         uint64_t h=isolated(o,c,0,b,0);
         for(int m=1;m<15;m++){assert(h==isolated(o,c,m,b,0));comparisons++;}
     }
+    int vocalComparisons=0;
+    for(int view=0;view<2;view++) {
+        setenv("VOCAL_VIEW",view ? "1" : "0",1);
+        for(int b=0;b<2;b++)for(int o=0;o<=3;o+=3) {
+            int c=3-o;uint64_t ref=isolated(o,c,0,b,0);
+            for(int m=1;m<15;m++){assert(ref==isolated(o,c,m,b,0));vocalComparisons++;}
+            assert(ref==isolated(o,c,15,b,"reject"));
+            isolated(o,c,15,b,"partial");isolated(o,c,15,b,"complete");
+        }
+    }
+    unsetenv("VOCAL_VIEW");
+    printf("vocal whole/chop dual: %d bit-identical ordered-pair/mask comparisons, 8 each reject/partial/complete failures PASS\n",vocalComparisons);
     int engineComparisons=0;
     for(int e=0;e<NENGINES;e++) if(eng_ok(e)) {
         char ev[8];snprintf(ev,sizeof ev,"%d",e);setenv("CARRIER_ENGINE",ev,1);

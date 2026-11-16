@@ -871,6 +871,7 @@ static struct {
     uint8_t keep;                /* the track is as the last load left it (undo.after): a next load keeps the copy */
     uint8_t what;                /* UNDO_SOUND | UNDO_PAT: what the loads since the copy changed (undo_swap) */
     uint8_t eng, preset, user, patn;
+    uint8_t vocal_id[8];
     uint8_t fm6_slot;            /* the track's FM6 patch and its SLOT (eng_fm6.c): an edited or a project's */
     uint8_t fm6[FP_SIZE + 1u];   /* patch is the track's own, not a factory one */
     int16_t p[P_COUNT];
@@ -907,6 +908,7 @@ static uint32_t track_sig(const track_t *t)      /* the sound (an FM6 track's pa
 {
     uint8_t id[3] = {t->eng_req, t->preset, t->user};
     uint32_t h = fnv(fnv(steps_sig(t), t->p, sizeof t->p), id, 3), k = trk_index(t);
+    if(t->eng_req==13) h=fnv(h,bg_vocal_expected[k],8);
     h = fnv(h, fm6_patch[k], sizeof fm6_patch[k]); /* (a patch the editor sent between two loads) */
     for (uint32_t j = 0; j < motion.count; j++)
         if ((motion.event[j].place >> 6) == k) h = fnv(h, &motion.event[j], sizeof motion.event[j]);
@@ -996,6 +998,7 @@ static void load_begin(track_t *t, uint32_t what)
     undo.eng = t->eng_req;
     undo.preset = t->preset;
     undo.user = t->user;
+    memcpy(undo.vocal_id,bg_vocal_expected[t-trk],8);
     memcpy(undo.p, t->p, sizeof undo.p);
     memcpy(undo.step, t->step, sizeof undo.step);
     memcpy(undo.fm6, fm6_patch[i], FP_SIZE);
@@ -1054,6 +1057,7 @@ static void edit_undo_take(track_t *t, uint32_t tag, uint32_t what)
     undo.eng = t->eng_req;
     undo.preset = t->preset;
     undo.user = t->user;
+    memcpy(undo.vocal_id,bg_vocal_expected[t-trk],8);
     memcpy(undo.p, t->p, sizeof undo.p);
     memcpy(undo.step, t->step, sizeof undo.step);
     memcpy(undo.fm6, fm6_patch[i], FP_SIZE);
@@ -1109,6 +1113,10 @@ static void undo_swap(void)
         undo.eng = e;
         undo.preset = pr;
         undo.user = u;
+        for(i=0;i<8;i++) {
+            uint8_t old=bg_vocal_expected[t-trk][i];
+            bg_vocal_expected[t-trk][i]=undo.vocal_id[i]; undo.vocal_id[i]=old;
+        }
         for (i = 0; i < P_COUNT; i++)
             if (!param_kept(i)) {
                 int16_t v = t->p[i];

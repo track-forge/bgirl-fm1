@@ -85,12 +85,15 @@ int main(int argc,char **argv)
     for(uint32_t t=0;t<3;t++){memcpy(electroSteps[t],trk[t].step,sizeof trk[t].step);memcpy(electroSound[t],trk[t].p,sizeof trk[t].p);}
     for(uint32_t mode=1;mode<=2;mode++) {
         assert(!web_bgirl_vocoder(mode));tick(4410);
-        assert(trk[2].engine==0 && trk[2].p[P_E0]==0 && trk[2].p[P_E4]==127 && trk[2].p[P_SUS]==127 && trk[3].engine==13);
+        assert(trk[2].engine==8 && trk[2].preset==0 && trk[2].p[P_E0]==2 && trk[2].p[P_SUS]==120 && trk[3].engine==13);
         assert(trk[3].p[P_VCARR]==3 && trk[3].p[P_VMON]==0 && trk[3].p[P_VBANDS]==(mode==2));
         for(uint32_t t=0;t<2;t++){assert(!memcmp(electroSteps[t],trk[t].step,sizeof trk[t].step));assert(!memcmp(electroSound[t],trk[t].p,sizeof trk[t].p));}
-        for(uint32_t k=0;k<64;k++) assert(trk[2].step[k].time==(k%16 ? ST_TIE : ST_NOTE));
-        assert(trk[2].step[0].note[0]==48 && trk[2].step[16].note[0]==55);
-        assert(trk[3].step[0].note[0]==60 && trk[3].step[16].note[0]==61 && !trk[3].step[11].n);
+        for(uint32_t k=0;k<(uint32_t)trk[2].p[P_SLEN];k++) assert(trk[2].step[k].time==(k%16 ? ST_TIE : ST_NOTE));
+        assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
+        if(NELEM(BG_VOCAL_GROUPS)>6) {
+            assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==6 && slc_vocal_match(&trk[3]));
+            assert(trk[3].p[P_SLEN]==32 && trk[3].step[16].note[0]==60 && trk[3].step[11].n);
+        } else assert(trk[3].step[0].note[0]==60 && trk[3].step[16].note[0]==61 && !trk[3].step[11].n);
         transport_req=1;tick(4410);
         /* Check the actual feed across tied steps and phrase/note boundaries,
          * not just a nonzero full mix (drums/bass could hide a dead carrier). */
@@ -104,6 +107,6 @@ int main(int argc,char **argv)
     }
     uint32_t fx[4],nf=0;for(uint32_t i=0;i<NPAGES && nf<4;i++)if(PAGES[i].fam==FAM_FX)fx[nf++]=i;
     assert(nf==4 && !strcmp(PAGES[fx[0]].title,"FX") && !strcmp(PAGES[fx[1]].title,"VOCODER") && !strcmp(PAGES[fx[2]].title,"VOC INPUT") && !strcmp(PAGES[fx[3]].title,"VOC COLOR"));
-    puts("demo: FX pages2-4 vocoder; electro drums/bass preserved, T3 sustained saw pad/dry monitor OFF, old VOX replaced PASS");
+    puts("demo: FX pages2-4 vocoder; electro drums/bass preserved, T3 GRAIN CLOUD PAD octave down/dry monitor OFF, old VOX replaced PASS");
     return 0;
 }

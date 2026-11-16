@@ -49,6 +49,9 @@
 #define UP_PMAX 72u                              /* room for P_COUNT to grow */
 #define UP_USED 0xA5u
 #define UP_VER 4u                                /* 2 since 1.0; 1 is read too (PHYS MODEL 2 was DUST) */
+#define UP_VER_VOCAL 6u                          /* identity-aware VOCALS; old firmware refuses */
+#define UP_VOCAL_AT 134u
+_Static_assert(P_COUNT <= UP_VOCAL_AT, "vocal preset identity fits");
 #define UP_VER_GRID 5u                           /* 2 with a drum grid as the pattern (see the top) */
 #define UP_BANK_MAGIC 0x31425055u                /* "UPB1" */
 typedef struct {
@@ -107,8 +110,9 @@ static void up_set_cat(up_rec_t *r, uint32_t c)  /* c CAT_BASS..CAT_OTHER; a rec
 
 static int up_valid(const up_rec_t *r)
 {
-    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_GRID && r->engine < NENGINES &&
+    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_VOCAL && r->engine < NENGINES &&
           r->np >= 8u && r->np <= (r->ver >= 4u ? UP_PMAX * 2u : UP_PMAX) && r->name[0])) return 0;
+    if(r->ver==UP_VER_VOCAL && (r->engine!=13 || r->np>UP_VOCAL_AT || r->packed[r->np-8u] != 6u+64u)) return 0;
     if (r->ver >= 4u) for (uint32_t i = 0; i < r->np; i++) if (r->packed[i] > 191u) return 0;
     return 1;
 }
@@ -408,6 +412,12 @@ static int up_store_cat(uint32_t k, const char *name, uint32_t cat)
     up_set_name(&r, k, name);
     for (i = 0; i < P_COUNT; i++)
         up_set_value(&r, i, motion_base_value(TSEL, i));
+#if FELUCCA_SLICE
+    if(r.engine==13 && up_value(&r,P_E0)==SLC_SRC_VOCALS) {
+        r.ver=UP_VER_VOCAL;
+        memcpy(r.packed+UP_VOCAL_AT,bg_vocal_expected[TSEL-trk],8);
+    }
+#endif
     up_set_value(&r, P_VCARR, 0); up_set_value(&r, P_VHOLD, 0);
     up_pat_from(&r, TSEL->step);
     up_set_cat(&r, cat ? cat : track_cat(TSEL));
@@ -480,6 +490,9 @@ static int up_load(uint32_t k)
         for (i = 0; i < P_COUNT; i++)
             if (!param_kept(i))
                 t->p[i] = v[i];
+        memset(bg_vocal_expected[t-trk],0,8);
+        if(r->ver==UP_VER_VOCAL && r->np<=UP_VOCAL_AT)
+            memcpy(bg_vocal_expected[t-trk],r->packed+UP_VOCAL_AT,8);
         t->preset = 0;
         fm1_irq_on();
         upf_track_load(t, k);                           /* FM6: the preset's own patch (up_fm6.c) */

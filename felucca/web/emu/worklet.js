@@ -88,10 +88,17 @@ if (typeof registerProcessor === "function") {
       }
       const ex = this.ex;
       if (!ex) return;
-      if (m.type === "buttons" || m.type === "keys") this.queue.push(m);
+      if (m.type === "vocal-info") {
+        this.port.postMessage({type:"vocal-info",state:ex.web_bgirl_vocal_state(),groups:ex.web_bgirl_vocal_groups(),id:Array.from(new Uint8Array(ex.memory.buffer,ex.web_bgirl_vocal_id(),8)).map(x=>x.toString(16).padStart(2,"0")).join("")});
+      }
+      else if (m.type === "buttons" || m.type === "keys") this.queue.push(m);
       else if (m.type === "enc") ex.web_enc(m.role, m.n | 0);
       else if (m.type === "master") ex.web_master(m.value | 0);
       else if (m.type === "midi") ex.web_midi(m.data[0] | 0, m.data[1] | 0, m.data[2] | 0);
+      else if (m.type === "bgirl-vocals") {
+        this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
+        this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_vocals(m.mode|0,m.group|0)===0});
+      }
       else if (m.type === "bgirl-vocoder") {
         this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
         this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_vocoder(m.mode|0)===0});
@@ -144,7 +151,10 @@ if (typeof registerProcessor === "function") {
       const ex = this.ex, now = ex.web_now_ms();
       while (this.queue.length && now - this.nextOk >= 0) {
         const m = this.queue.shift();
-        if (m.type === "buttons") ex.web_buttons(m.mask >>> 0);
+        if (m.type === "vocal-info") {
+        this.port.postMessage({type:"vocal-info",state:ex.web_bgirl_vocal_state(),groups:ex.web_bgirl_vocal_groups(),id:Array.from(new Uint8Array(ex.memory.buffer,ex.web_bgirl_vocal_id(),8)).map(x=>x.toString(16).padStart(2,"0")).join("")});
+      }
+      else if (m.type === "buttons") ex.web_buttons(m.mask >>> 0);
         else ex.web_keys(m.mask >>> 0);
         this.nextOk = now + HOLD_MS;
       }
