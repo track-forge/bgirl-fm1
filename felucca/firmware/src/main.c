@@ -85,6 +85,23 @@ static void bgirl_demo_vocoder(void)
         step_t *s=&trk[3].step[k];
         s->n=1; s->note[0]=(uint8_t)(60+k/16); s->vel=100; s->time=ST_NOTE;
     }
+    /* Optional G6 bank: two bars of editable chops, with a second-bar reply.
+     * Public fixture builds lack G6 and retain the factory speech demo. */
+    if(NELEM(BG_VOCAL_GROUPS)>6) {
+        static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
+        static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
+        trk[3].p[P_E0]=SLC_SRC_VOCALS; trk[3].p[P_E1]=6;
+        trk[3].p[P_E2]=0; trk[3].p[P_ROOT]=0;
+        slc_vocal_select(&trk[3]);
+        trk[2].p[P_SLEN]=trk[3].p[P_SLEN]=32;
+        memset(&trk[2].step[32],0,32*sizeof(step_t));
+        memset(trk[3].step,0,sizeof trk[3].step);
+        for(k=0;k<NELEM(at);k++) {
+            step_t *s=&trk[3].step[at[k]];
+            s->n=1; s->note[0]=(uint8_t)(60+chop[k]%BG_VOCAL_GROUPS[6].n);
+            s->vel=k%6==0 ? 110 : 100; s->time=ST_NOTE;
+        }
+    }
 }
 #endif
 

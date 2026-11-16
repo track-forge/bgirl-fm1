@@ -81,7 +81,9 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
 each dry or through the existing sustained pad vocoder. The default build uses a
 small fixture from our original speech assets; it does **not** contain Doug's
-recordings. Existing startup/demo and factory SPEECH are unchanged.
+recordings. Factory SPEECH is unchanged. With G6 installed, startup and **Load
+electro demo** feature a two-bar G6 chop pattern; builds without G6 retain the
+existing speech demo. Autosaved projects still take precedence.
 
 Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
 **G1–G6**, START **W01…** / **C01…**. Chromatic keys/MIDI/step notes select entries;

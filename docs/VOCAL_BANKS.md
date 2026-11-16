@@ -2,10 +2,19 @@
 
 Issue #13. One optional immutable bank per build, using the existing SLICE
 engine/IMA decoder, sequencer, keys, MIDI and vocoder. No network at runtime.
-Factory SPEECH and default electro demo are not replaced. Input recordings are
+Factory SPEECH is not replaced. When G6 is installed, startup and **Load electro
+demo** use a two-bar (32-step) G6 chop pattern through the sustained pad vocoder,
+with drums/bass retained. Bar two varies the chop order/rhythm; autosaved music
+still takes precedence. Builds without G6 retain the factory-speech demo.
+Input recordings are
 **not licensed for redistribution**: do not commit/upload their WAVs, prepared
 banks, listening renders or the WASM that embeds them. Local artifacts belong
 in ignored `local/`; CI/Pages builds use the public original-speech fixture.
+
+G6 demo at 120 BPM (sixteenth-note steps, one-based): bar one triggers chops
+1/2/3/4/5/6 at steps 1/4/7/9/12/15; bar two replies with 1/3/2/4/6/5 at
+17/19/23/25/28/31. T3/T4 loop at 32 steps; the original 16-step drums/bass
+repeat underneath. Shorter custom G6 groups wrap the chop indices by count.
 
 ## Package explicit local inputs
 
