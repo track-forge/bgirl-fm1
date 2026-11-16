@@ -608,6 +608,10 @@ EXPORT uint32_t web_bgirl_vocal_state(void) {
         (((uint32_t)trk[3].p[P_E1]&7u)<<4) | (((uint32_t)trk[3].p[P_E2]&31u)<<7) |
         (slc_vocal_match(&trk[3]) ? 4096u : 0) : 0;
 }
+/* Public group label can differ from this bank's packed VIEW index. */
+EXPORT uint32_t web_bgirl_vocal_group_number(uint32_t view) {
+    return view>0 && view<NELEM(BG_VOCAL_GROUPS) ? (uint32_t)(BG_VOCAL_VIEWS[view][1]-'0') : 0;
+}
 EXPORT uint32_t web_bgirl_vocal_groups(void) { return NELEM(BG_VOCAL_GROUPS)-1; }
 EXPORT const uint8_t *web_bgirl_vocal_id(void) { return BG_VOCAL_ID; }
 

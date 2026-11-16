@@ -60,13 +60,18 @@ def safe_file(base, name):
     return path
 
 
-def package(input_dir, manifest_path, output):
+def package(input_dir, manifest_path, output, group_ids=None):
     input_dir, manifest_path, output = map(Path, (input_dir, manifest_path, output))
     manifest = json.loads(manifest_path.read_text())
     chops = manifest['slices']
     sources = sorted({c['source'] for c in chops})
     if not 1 <= len(sources) <= 6 or manifest['source_count'] != len(sources) or manifest['slice_count'] != len(chops):
         raise ValueError('manifest source/slice count mismatch (1..6 parents required)')
+    if group_ids is None:
+        group_ids = list(range(1, len(sources)+1))
+    if (len(group_ids) != len(sources) or len(set(group_ids)) != len(group_ids)
+            or any(type(g) is not int or not 1 <= g <= 6 for g in group_ids)):
+        raise ValueError('group IDs must be unique integers in 1..6, one per source')
     originals = sorted(p.name for p in input_dir.glob('*_candidate_float.wav'))
     if originals != sources:
         raise ValueError('original WAV inventory differs from manifest')
@@ -126,7 +131,7 @@ def package(input_dir, manifest_path, output):
             end = b
         if end != len(original):
             raise ValueError('chops do not cover the whole original including tail')
-        groups.append(dict(name=f'G{i+1}', first=first, count=len(rows), source_id=source))
+        groups.append(dict(name=f'G{group_ids[i]}', first=first, count=len(rows), source_id=source))
     blob, _ = sampleio.ima_encode(pcm, None)
     blob = bytes(blob)
     grid = [k * len(pcm) // 128 for k in range(128)]
@@ -204,14 +209,15 @@ def main():
     p.add_argument('--manifest', type=Path)
     p.add_argument('--output', required=True, type=Path)
     p.add_argument('--fixture', action='store_true')
+    p.add_argument('--group-id', type=int, action='append', help='public label per sorted source (1..6)')
     a = p.parse_args()
     try:
         if a.fixture:
-            if a.input_dir or a.manifest: p.error('--fixture cannot use private inputs')
+            if a.input_dir or a.manifest or a.group_id: p.error('--fixture cannot use explicit inputs/group IDs')
             fixture(a.output)
         else:
             if not a.input_dir or not a.manifest: p.error('explicit --input-dir and --manifest required')
-            package(a.input_dir, a.manifest, a.output)
+            package(a.input_dir, a.manifest, a.output, a.group_id)
     except (ValueError, KeyError, OSError, struct.error) as e:
         p.exit(1, f'vocal packaging failed: {e}\n')
 

@@ -2,19 +2,29 @@
 
 Issue #13. One optional immutable bank per build, using the existing SLICE
 engine/IMA decoder, sequencer, keys, MIDI and vocoder. No network at runtime.
-Factory SPEECH is not replaced. When G6 is installed, startup and **Load electro
-demo** use a two-bar (32-step) G6 chop pattern through the sustained pad vocoder,
-with drums/bass retained. Bar two varies the chop order/rhythm; autosaved music
-still takes precedence. Builds without G6 retain the factory-speech demo.
-Input recordings are
-**not licensed for redistribution**: do not commit/upload their WAVs, prepared
-banks, listening renders or the WASM that embeds them. Local artifacts belong
-in ignored `local/`; CI/Pages builds use the public original-speech fixture.
+Factory SPEECH is not replaced. Startup and **Load electro demo** use the two-bar
+(32-step) G6 groove through the octave-down GRAIN / CLOUD PAD vocoder, with
+original drums/bass retained. Bar two varies the chop order/rhythm. Autosaved
+music still takes precedence; explicitly reload the demo after refreshing.
 
-G6 demo at 120 BPM (sixteenth-note steps, one-based): bar one triggers chops
+Normal builds now bundle only the G6 original and six supplied chops from
+[`assets/vocals/g6`](../assets/vocals/g6/README.md), authorized by Doug for public
+redistribution on 2026-11-16. The other five supplied recordings remain private:
+do not commit/upload those WAVs, full prepared banks, or WASM embedding them.
+Private artifacts belong in ignored `local/`. CI/Pages packages G6 from checked-in
+inputs afresh, never a previously generated private header.
+
+At 120 BPM (sixteenth-note steps, one-based), bar one triggers chops
 1/2/3/4/5/6 at steps 1/4/7/9/12/15; bar two replies with 1/3/2/4/6/5 at
 17/19/23/25/28/31. T3/T4 loop at 32 steps; the original 16-step drums/bass
-repeat underneath. Shorter custom G6 groups wrap the chop indices by count.
+repeat underneath. The shared wet 8/12-band lab buttons use this arrangement too.
+
+The compact public bank has WHOLE (W01 = G6 original) and G6 (C01..C06).
+Its G6 VIEW index is 1; a full six-parent bank's G6 VIEW index is 6. Public labels,
+not positions, select the demo. Project fingerprints keep these banks distinct;
+loading a project for the other bank correctly reports BANK MISS, not substitution.
+Explicit custom banks without a G6 label use their first chop group and wrap the
+same chop sequence by its count. The browser selector uses installed group labels.
 
 ## Package explicit local inputs
 
@@ -87,26 +97,26 @@ Installing/matching a bank means rebuilding with the same explicit package.
 There is no browser upload or hot-swap manager. Audio is compiled read-only, not
 copied into a PCM runtime buffer. The prepared bank need not stay on a network.
 
-Default/public builds deliberately regenerate the rights-cleared fixture each
-time, even after a private build:
+Default/public builds regenerate the distributable G6 package each time, even
+after a private build:
 
 ```sh
 unset BGIRL_VOCAL_BANK
 ./build.sh --web
-# Or reproduce the fixture package alone:
+# Reproduce just the public package:
+python3 tools/package_vocals.py --input-dir assets/vocals/g6 \
+  --manifest assets/vocals/g6/slices/manifest.json --group-id 6 \
+  --output local/public-g6
+# The old original-speech fixture remains available for isolated tests:
 python3 tools/package_vocals.py --fixture --output local/public-fixture
 ```
-
-The fixture is existing original speech `assets/speech/source/1.wav` (provenance
-and rights in `assets/speech/manifest.json`), kept whole plus two fixed half-file
-chops with3ms edge fades. This proves the same path, not Doug's speech quality.
 
 ![Normal EDIT controls using the public original-speech fixture](img/vocal-bank.png)
 
 ## Listen / normal panel workflow
 
 1. Switch on; use **Vocal bank** below the panel. Installed bank identity/group
-   count is shown. Choose a parent; unavailable fixture groups are disabled.
+   count is shown. Choose a parent; only installed groups are listed.
 2. **Load whole · dry**, confirm, PLAY. The selected parent's **full original**
    plays once on step1; it repeats only when the64-step pattern returns. STOP
    ends it. No implicit loop. Saved slots remain intact.

@@ -170,8 +170,8 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
 
 <section class="lab" aria-label="Vocal one-shot audition">
 <h2 data-id="01">Vocal bank · whole phrases &amp; chops</h2>
-<p>Uses the installed offline bank: public builds use original BGIRL speech fixtures;
-local builds can use your separately prepared recordings. Replaces the unsaved project
+<p>Uses the installed offline bank: public builds include the G6 recording and its six chops;
+local builds can use a separately prepared multi-recording bank. Replaces the unsaved project
 only after confirmation. Press PLAY; STOP ends the shot. Track 4 keys/MIDI select entries.
 EDIT 1: SRC VOCALS, VIEW WHOLE or G1–G6 (parent groups), START entry offset, BANK READY/MISS.
 No pitch shift, warping or looping. Wet uses the existing sustained T3 pad, MON OFF.</p>
@@ -632,7 +632,9 @@ async function switchOn() {
         const m = e.data;
         if (m.type === "ready") res();
         else if (m.type === "vocal-info") {
-          for(const o of document.querySelectorAll("#vocal-group option")) o.disabled=Number(o.value)>m.groups;
+          const groups=document.getElementById("vocal-group"), selected=groups.value;
+          groups.replaceChildren(...m.groupNumbers.map((number,i)=>new Option(`G${number} / whole W${String(i+1).padStart(2,"0")}`,String(i+1))));
+          if([...groups.options].some(o=>o.value===selected)) groups.value=selected;
           document.getElementById("vocal-status").textContent=`Installed bank ${m.id} · ${m.groups} parent groups. Human listening approval pending.`;
         }
         else if (m.type === "bgirl-project-result") document.getElementById("project-status").textContent = m.ok ? "Loaded, transport stopped. Save via Felucca SAVE; saved slots are unchanged." : "Not loaded; release all controls and retry.";

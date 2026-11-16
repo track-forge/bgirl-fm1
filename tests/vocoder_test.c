@@ -90,10 +90,10 @@ int main(int argc,char **argv)
         for(uint32_t t=0;t<2;t++){assert(!memcmp(electroSteps[t],trk[t].step,sizeof trk[t].step));assert(!memcmp(electroSound[t],trk[t].p,sizeof trk[t].p));}
         for(uint32_t k=0;k<(uint32_t)trk[2].p[P_SLEN];k++) assert(trk[2].step[k].time==(k%16 ? ST_TIE : ST_NOTE));
         assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
-        if(NELEM(BG_VOCAL_GROUPS)>6) {
-            assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==6 && slc_vocal_match(&trk[3]));
-            assert(trk[3].p[P_SLEN]==32 && trk[3].step[16].note[0]==60 && trk[3].step[11].n);
-        } else assert(trk[3].step[0].note[0]==60 && trk[3].step[16].note[0]==61 && !trk[3].step[11].n);
+        assert(trk[3].p[P_E0]==SLC_SRC_VOCALS);
+        assert(trk[3].p[P_E1]==(NELEM(BG_VOCAL_GROUPS)>6 ? 6 : 1) && slc_vocal_match(&trk[3]));
+        assert(trk[2].p[P_SLEN]==32 && trk[3].p[P_SLEN]==32);
+        assert(trk[3].step[16].note[0]==60 && trk[3].step[11].n);
         transport_req=1;tick(4410);
         /* Check the actual feed across tied steps and phrase/note boundaries,
          * not just a nonzero full mix (drums/bass could hide a dead carrier). */
