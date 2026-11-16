@@ -1359,14 +1359,14 @@ static void draw_columns(void)
  * no allocation or extra framebuffer. Boot timing and audio code are unchanged. */
 #include "bgirl_logo.h"
 #define SPL_LOGO_X ((240u - BG_LOGO_W) / 2u)
-#define SPL_LOGO_Y 28u
+#define SPL_LOGO_Y ((240u - BG_LOGO_H) / 2u)
 static uint16_t splash_color(uint32_t index)
 {
     uint16_t c = BG_LOGO_PALETTE[index];
     /* Preserve the grayscale palettes' contract, including the splash artwork. */
     if (ux.mono || (!cpal_on() && settings.palette == UI_BW_INDEX))
-        return ux_gray(ux_luma(c) >> 3);
-    return c;
+        c = ux_gray(ux_luma(c) >> 3);
+    return ux_mix(T_BG, c, (BG_LOGO_ALPHA[index] * 100u + 127u) / 255u);
 }
 static void draw_splash(void)
 {
@@ -1385,8 +1385,6 @@ static void draw_splash(void)
             }
         cv_blit(SPL_LOGO_X, SPL_LOGO_Y + y);
     }
-    draw_text_line(0, 192, 240, &AF_S, "Felucca " FELUCCA_VERSION, T_MID, T_BG, 1);
-    draw_text_line(0, 212, 240, &AF_S, "H\xFCgelton Instruments", T_MID, T_BG, 1);
     lcd_sync();
 }
 
