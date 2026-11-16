@@ -415,6 +415,11 @@ static const preset_t FM6_PRESETS[] = {
     {"MARIMBA", {0, 0, 0, 0, 0, 0, 0, 5}, {0, 0, 127, 0}, 0, 0, FX(0, 0, 25, 40), PAT(3)},
     {"ORGAN", {0, 0, 0, 0, 0, 0, 0, 6}, {0, 0, 127, 0}, 0, 0, FX(10, 40, 0, 30), PAT(6)},
     {"PLUCK", {0, 0, 0, 0, 0, 0, 0, 7}, {0, 0, 127, 0}, 0, 0, FX(0, 20, 35, 30), PAT(13)},
+    {"SUB CLEAN", {0,0,0,0,0,0,0,FM6_OWN}, {0,0,127,0}, 0,0, FX(0,0,0,0), PAT(8)},
+    {"SUB DRIVE", {0,0,0,0,0,0,0,FM6_OWN}, {0,0,127,0}, 0,0, FX(0,0,0,0), PAT(8)},
+    {"IRON STAB", {0,0,0,0,0,0,0,FM6_OWN}, {0,0,127,0}, 0,0, FX(0,0,0,0), PAT(8)},
+    {"EL CHORD", {0,0,0,0,0,0,0,FM6_OWN}, {0,0,127,0}, 0,0, FX(0,0,0,0), PAT(8)},
+    {"CHIRP", {0,0,0,0,0,0,0,FM6_OWN}, {0,0,127,0}, 0,0, FX(0,0,0,0), PAT(8)},
 };
 
 static const engine_t ENG_FM6 = {
@@ -441,3 +446,19 @@ static const engine_t ENG_FM6 = {
     .done = fm6_done,
     .mem = sizeof(fm6_note_t) * FM6_POLY,
 };
+
+#include "signature_patches.h"
+
+/* Explicit factory selection only. Restores use fm6_set_patch/adopt, not this. */
+static void signature_factory_loaded(track_t *t) {
+    uint32_t pi=t->preset, tr=(uint32_t)(t-trk);
+    if (t->eng_req == ENGI_FM6 && pi >= 8u && pi < 13u) {
+        fm6_set_patch(tr, BG_SIGNATURE_FM[pi - 8u]);
+        fm6_adopt(tr);
+        t->p[P_LEVEL] = pi == 11u ? 82 : 100;
+        t->p[P_CHRD] = pi == 11u ? 4 : 0; /* existing CH_MIN, chord.c follows engines */
+        t->p[P_VOIC] = pi == 11u ? 4 : 0; /* existing VC_BASS */
+        if (pi < 10u) t->p[P_VOICE] = V_MONO;
+    }
+    if (t->eng_req == ENGI_DRUM && pi == 6u) t->p[P_LN1] = 32;
+}
