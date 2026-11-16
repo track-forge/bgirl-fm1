@@ -41,3 +41,5 @@ cd ..
 cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/battle_ui_test tests/battle-ui-test.c -lm
 felucca/build/host/battle_ui_test
 python3 felucca/tools/gen_ui_palettes.py --report
+
+python3 tests/test_package_logo.py

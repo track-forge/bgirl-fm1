@@ -129,7 +129,7 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
 <body>
 <main>
 <header class="hero">
-<div class="masthead">  <h1 class="wordmark"><img src="branding/bgirl-fm1-wordmark.png" width="788" height="509" alt="BGIRL FM1 graffiti wordmark"></h1><p class="catalog"><strong>BG–01 / Battle Circuit</strong><span>Felucca electro edition</span><span>Rhythm · Voice · Motion</span></p></div>
+<div class="masthead">  <h1 class="wordmark"><img src="branding/bgirl-fm1-wordmark.png" width="788" height="509" alt="BGIRL FM1 graffiti wordmark"></h1><p class="catalog"><span>Felucca electro edition</span><span>Rhythm · Voice · Motion</span></p></div>
   <p class="deckline">Open-source browser instrument · Felucca electro edition</p>
 
   <p class="tagline">Classic electro in a box. Breaks in your browser.</p>
@@ -301,12 +301,6 @@ function build(name) {
   const inset = ss / 32;                                         // the 240 x 240 panel inside its bezel
   Object.assign(canvas.style, { left: `${(sx + inset) / L.w * 100}%`, top: `${(sy + inset) / L.h * 100}%`,
                                 width: `${(ss - 2 * inset) / L.w * 100}%`, height: `${(ss - 2 * inset) / L.h * 100}%` });
-  if (name === "wide") {
-    const mark = label(svg, 650, 32, "BG–01 / BATTLE CIRCUIT", 13, SANS, "var(--lit)");
-    mark.setAttribute("letter-spacing", ".16em");
-    mark.id = "circuit-mark";
-    el("rect", {x: 940, y: 24, width: 24, height: 5, fill: "var(--orange)"});
-  }
   KNOBS.forEach((n, i) => {
     const [x, y, r] = L.knobs[i], g = el("g", {});
     el("circle", { cx: x, cy: y, r: r + 5, fill: "var(--tray)" }, g);

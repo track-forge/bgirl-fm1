@@ -30,3 +30,6 @@ else:
     package_vocals.package(public, public/'slices/manifest.json', vocal_dest, group_ids=[6])
 listening = Path(__file__).resolve().parents[1] / 'assets/listening'
 shutil.copytree(listening, Path(__file__).resolve().parents[1] / 'felucca/build/emu/listening', dirs_exist_ok=True)
+
+import package_logo
+package_logo.package()
