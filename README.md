@@ -136,6 +136,48 @@ larger labels. The source has a deliberate hard-cut loop seam, not a seamless vi
 [Host/browser evidence and limits](docs/ARP_DANCE_VERIFICATION.md).
 No new generation, musical timing/RNG changes or hardware-performance claim.
 
+## Signature Electro · ten original factory sounds
+
+On the normal panel: **PRESETS → LIST (KNOB4) → SIGNATURE**. The collection
+appends BG SUB CLEAN, BG SUB DRIVE, BG KICK, BG SNARE, BG CLAP, BG CLSD HAT,
+BG OPEN HAT, BG IRON STAB, BG EL CHORD and BG CHIRP; legacy kits/presets and all32 user slots remain available.
+The browser's **Signature Electro** section also loads these normal factory
+sounds onto the selected track. Factory selection applies curated levels;
+subsequent user-preset loads retain the normal track mixer settings.
+The normal FM6 preset group lists the five `BG ` originals first, followed by
+the inherited presets. Saved preset IDs and MIDI program numbers are unchanged.
+
+- Subs: mono retrigger, MIDI28–52 (24 also tested), no default space/detune/sweep.
+- Standalone drums: every key/MIDI/step note plays the selected identity at fixed
+  pitch. TUNE spans ±5st (kick/hats), ±3st (snare/clap). Note-off does not cut
+  the decay; STOP/panic/sound replacement clear it. A new hit reuses its lane.
+- CLAP fires clap+body on one note, using one shared voice. **EDIT → LANES →
+  SNARE level** is its body blend (factory32/127); TONE/DECY/SNAP remain useful.
+- Hats: **KIT CH G1 / OH G1** opt into shared group1. Closed chokes open across
+  tracks, including simultaneous hits; open never kills closed. **CH FREE /
+  OH FREE** opts out. Legacy kit choke behavior is unchanged.
+- FM6: **MLVL** is modulation brightness, not a resonant filter. **OP ENV** owns
+  amplitude/decay/release; common ADSR is not the FM6 amplitude envelope. CHIRP's
+  patch pitch envelope falls9semitones to root in139ms. EL CHORD expands one
+  live root to minor/+oct (four tones), six voices/track maximum.
+
+**Signature blank template**, **demo A · kit + voices**, **demo B · standalone**
+and **hat choke audition** replace the unsaved project only after confirmation,
+load stopped, and keep saved slots. PLAY starts the editable demo. Startup and
+Load electro demo still use the vocal arrangement; autosave still takes priority.
+FM6 MIDI PC0–7 and bank PC8–39 retain their meanings; Signature factory voices
+append at40–44. DRUM PC0–8 retains kits;9–15 selects standalone modes.
+
+New standalone projects use guarded **FUND** (including vocal fingerprints), and
+standalone sound presets use versions7/8. Older firmware rejects them; old project
+readers and ordinary save formats remain. No manual user-slot installation needed.
+
+[Versioned original recipes](assets/signature/manifest.json) ·
+[Implementation contract](docs/SIGNATURE_ELECTRO_BANK_PLAN.md) ·
+[Verification, local audition and reproducible recordings](docs/SIGNATURE_ELECTRO_BANK_VERIFICATION.md).
+**Doug's listening approval is pending for every family.** Host/browser checks do
+not establish musical approval or physical-device fit/performance.
+
 ## Starting demo and blank palette
 
 | Track | Sound | Pattern |

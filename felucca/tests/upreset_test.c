@@ -134,7 +134,7 @@ int main(void)
     up_bank[1].rsize = sizeof(up_rec_t);
     up_bank[1].nslot = UP_PER_BANK;
     *up_rec(17) = r;
-    up_rec(17)->ver = UP_VER_GRID + 1u;
+    up_rec(17)->ver = UP_VER_SIGNATURE_GRID + 1u;
     bad += check("record with another version -> empty", !up_used(17));
     up_rec(17)->ver = UP_VER_GRID;
     bad += check("a version 3 record (a drum grid) is used", up_used(17));
@@ -143,6 +143,9 @@ int main(void)
     {
         uint8_t g[640];
         uint32_t k, m = put_frame(g, 9, ENGI_DRUM, "My Beat", 0), at = m - 32u;
+        /* This is the legacy-kit grid fixture, not an invalid KIT118 that
+         * now correctly needs a rejecting standalone-capable record. */
+        g[10u+2u*P_E0]=0;g[11u+2u*P_E0]=64;
         for (k = 0; k < 16u; k++) {
             g[at + 2u * k] = (uint8_t)(k % 4u ? 0x08u : 0x09u);    /* HAT CL, the kick on the beats */
             g[at + 2u * k + 1u] = (uint8_t)(k == 0u ? 0x7Fu : 0u);  /* step 1: every lane's accent (one too many) */

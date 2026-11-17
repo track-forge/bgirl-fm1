@@ -872,7 +872,7 @@ static int pc_test(void)
     /* every engine: program n = the n-th sound PRESETS shows, then nothing */
     ok = 1;
     for (e = 0; e < NENGINES; e++) {
-        if (!eng_ok(e) || e == ENGI_DRUM || !preset_shown(e))
+        if (!eng_ok(e) || e == ENGI_DRUM || e == ENGI_FM6 || !preset_shown(e))
             continue;
         set_engine_of(t, e);
         for (n = 0, last = -1; n < preset_shown(e); n++) {
@@ -909,10 +909,10 @@ static int pc_test(void)
                 ok &= k == P_E0 || dr->p[k] == was.p[k];
             last = dr->p[P_E0];
         }
-        ok &= n == 9u && last == d->max;                 /* (1.5.6, #216: DEEP TIGHT PERC 6..8) */
+        ok &= n == 16u && last == d->max;                 /* (1.5.6, #216: DEEP TIGHT PERC 6..8) */
         pc(3, DK_COUNT + 2u); frame();
         ok &= dr->p[P_E0] == last;
-        bad += check("  DRUM: 0..8 the nine kits (STD 80 10 66 55 77 DEEP TIGHT PERC; HAND CYM H+CYM skipped), only KIT; 9.. ignored", ok);
+        bad += check("  DRUM: 0..8 the nine kits (STD 80 10 66 55 77 DEEP TIGHT PERC; HAND CYM H+CYM skipped), then seven standalone modes; only KIT; 16.. ignored", ok);
     }
 
     /* FM6: its presets, then the bank's voices */
@@ -935,12 +935,15 @@ static int pc_test(void)
         ok &= f->p[P_E7] == (int16_t)(FM6_OWN + 1u);
         pc(1, 13); frame();
         ok &= f->p[P_E7] == (int16_t)(FM6_OWN + 6u) && pc_bank_k == 5u;
-        pc(1, 8u + FM6_NBANK); frame();
+        pc(1, 8u + FM6_NBANK + 5u); frame();
         ok &= f->p[P_E7] == (int16_t)(FM6_OWN + 6u);
         pc(1, 0); frame();
         ok &= f->p[P_E7] == 0 && fm6_slot[1] == 0u && f->p[P_E6] == 0;
         fm6_bank_used = 0;
         fm6_bank_read = 0;
+        for(uint32_t sig=0;sig<5;sig++) {
+            pc(1,40u+sig);frame();ok &= f->preset==8u+sig && f->p[P_E7]==FM6_OWN;
+        }
         bad += check("  FM6: 8.. the voice bank B1..B32 through SLOT (the rest stays), an empty or no bank ignored", ok);
     }
 

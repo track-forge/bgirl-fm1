@@ -523,6 +523,73 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
     return 0;
 }
 
+/* Normal factory selections, also reachable through PRESETS / SIGNATURE. */
+static const uint8_t BG_SIGNATURE_SELECT[10][2] = {
+    {12,8},{12,9},{10,4},{10,5},{10,6},{10,7},{10,8},{12,10},{12,11},{12,12}
+};
+EXPORT uint32_t web_bgirl_signature_sound(uint32_t sound) {
+    if (sound>=10 || fm1_in.notes || fm1_in.buttons) return 1;
+    track_t *t=TSEL;
+    set_engine_of(t,BG_SIGNATURE_SELECT[sound][0]);
+    apply_preset_to(t,BG_SIGNATURE_SELECT[sound][1]);
+    ui.force=1;
+    return 0;
+}
+/* Explicit project operations only: startup/autosave/vocal demo untouched.
+ * mode0 blank standalone template, 1 retained-kit context, 2 standalone groove,
+ * 3 cross-track choke exercise. All load stopped. */
+EXPORT uint32_t web_bgirl_signature(uint32_t mode) {
+    static const uint8_t sounds[4][4]={{2,4,5,0},{255,1,7,8},{2,4,5,0},{5,6,2,1}};
+    if (mode>3 || web_bgirl_project(0)) return 1;
+    undo_depth++;
+    for(uint32_t t=0;t<4;t++) {
+        uint32_t v=sounds[mode][t];
+        set_engine_of(&trk[t],v==255?10:BG_SIGNATURE_SELECT[v][0]);
+        apply_preset_to(&trk[t],v==255?2:BG_SIGNATURE_SELECT[v][1]);
+        if(v==255)trk[t].p[P_LEVEL]=100;
+        trk[t].p[P_CHRD]=v==8?CH_MIN:CH_OFF;
+        trk[t].p[P_SLEN]=16;
+        memset(trk[t].step,0,sizeof trk[t].step);
+    }
+    undo_depth--;
+    if(mode) for(uint32_t t=0;t<4;t++) for(uint32_t k=0;k<16;k++) {
+        step_t *st=&trk[t].step[k];uint32_t note=60,hit=0;
+        if(mode==1) {
+            if(t==0) { st->hit=(k%4==0?1:0)|(k%8==4?6:0)|(k%2==0?8:0);hit=st->hit; }
+            if(t==1) { hit=k%4==2 || k==15;note=k==15?43:36; }
+            if(t==2) { hit=k==3 || k==11;note=k==3?60:67; }
+            if(t==3) { hit=k==6 || k==14; note=k==6?60:65; }
+        } else if(mode==2) {
+            hit=t==0?(k%4==0 || k==11):t==1?k%8==4:t==2?k%2==0:k%4==2;
+            note=t==3?(k==14?43:36):60;
+        } else {
+            hit=t==0?(k==4 || k==8 || k==12):t==1?(k==0 || k==4 || k==10):t==2?k%4==0:k%4==2;
+            note=t==3?36:60;
+        }
+        if(!hit)continue;
+        st->time=ST_NOTE;st->vel=k%8==0?110:90;
+        if(!st->hit) { st->n=1;st->note[0]=(uint8_t)note; }
+        /* Sequence stores final chord tones; live root expansion remains CHRD MIN/+OCT. */
+        if(mode==1 && t==3) { st->n=4;st->note[1]=note+3;st->note[2]=note+7;st->note[3]=note-12; }
+    }
+    song.sel=0;ui.home=1;ui.force=1;
+    return 0;
+}
+
+/* Read-only inspection for host/browser parity checks, no alternate loading. */
+EXPORT uint32_t web_bgirl_signature_info(uint32_t track, uint32_t field) {
+    const track_t *t=&trk[track%NTRK];
+    switch(field) {
+    case 0:return t->eng_req;
+    case 1:return t->preset;
+    case 2:return t->p[P_E0];
+    case 3:return t->p[P_LEVEL];
+    case 4:return t->p[P_CHRD];
+    case 5:{uint32_t hits=0;for(uint32_t i=0;i<NSTEP;i++)hits+=!!(t->step[i].n || t->step[i].hit);return hits;}
+    default:return song.playing;
+    }
+}
+
 /* Existing isolated ANALOG comparison remains reproducible; the live wet buttons
  * retain electro drums/bass and replace the bell with a sustained bright saw pad. */
 static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
