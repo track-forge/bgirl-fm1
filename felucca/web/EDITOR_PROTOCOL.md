@@ -1,3 +1,16 @@
+> **BGIRL six-track edition (B6S1)** uses `F0 7D 46 36` (`F6` namespace),
+> not the old `F0 7D 46 4C` (`FL`) packets below. Old-header clients are ignored.
+> INFO/TRACK advertise six full tracks, eight shared voices, 64 steps and 128
+> motion events. SONG lane rows are seven bytes (six slots + repeat); old
+> fixed-four lane packets are rejected. Existing per-track commands remain
+> bounds-checked. MENU channels T1–T6 live in CHANS; new editor menu IDs 33/34
+> are T5/T6 CHANNEL (old IDs retained). Project backup payloads remain 3840 B,
+> but only B6S1 projects import; old formats cannot be restored or migrated.
+> See `docs/SIX_TRACK_VERIFICATION.md` for the new wire/storage contract.
+>
+> The inherited protocol history below documents original upstream versions;
+> use the new namespace even where historical example packets still say FL.
+
 > BGIRL vocoder extension: common IDs106..117 are CARR, BANDS, WET, MON,
 > HOLD, SPCH, CGAIN, CONS, LOW, MID, HIGH, REL. P_E0=118, P_COUNT=126.
 > Existing protocol clients must use INFO counts, not pinned Felucca1.8 IDs.

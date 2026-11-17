@@ -9,7 +9,7 @@
 
 /* ------------------------------------------------------------ sizes --- */
 #define NVOICE 8                 /* voices per part, and the budget shared by all parts */
-#define NPART 4                  /* synth parts: tracks 1..4 */
+#define NPART 6                  /* synth parts: tracks 1..6 */
 #define NTRK NPART               /* tracks (the formats and the protocol count these): every track is a part */
 #define NSTEP 64
 #define HALF_FRAMES 128          /* I2S half buffer: 2.9 ms at 44.1 kHz (a key waits 0..1 half, then plays 1 half later) */
@@ -237,15 +237,20 @@ static void step_set_nudge(step_t *s, int32_t v)
     s->flags = (uint8_t)((s->flags & ~SF_NUDGE) | (u & 7u) << 5 | (u >> 1 & 4u));
 }
 #define MOTION_MAX 128u          /* 1.2 (FUN10): 64 before */
-/* Four tracks x64 steps fit one byte. Values retain their signed parameter range (-64..127: an int8_t, 1.2).
+/* Six tracks x64 steps require nine bits; B6S1 writes place explicitly as LE16. Values retain their signed parameter range (-64..127: an int8_t, 1.2).
  * param: the P_* id (< 128: P_COUNT is at most 127, project.c), bit 7 (MOTION_LOCK, 1.1) a parameter lock: the value
  * sounds on that step only and goes back after it (motion.c motion_step); without it an automation event, the
  * value holds until another one changes it. One record per (track, step, id), of either kind */
 #define MOTION_LOCK 0x80u
 #define MOTION_ID(e) ((uint32_t)(e)->param & 0x7Fu)
-typedef struct { uint8_t place, param; int8_t value; } motion_event_t;
+typedef struct { uint16_t place; uint8_t param; int8_t value; } motion_event_t;
+static uint16_t motion_place(uint32_t track, uint32_t step) {
+    return track < NTRK && step < NSTEP ? (uint16_t)(track * NSTEP + step) : UINT16_MAX;
+}
+static uint32_t motion_track(const motion_event_t *e) { return e->place / NSTEP; }
+static uint32_t motion_step_index(const motion_event_t *e) { return e->place % NSTEP; }
 typedef struct { uint8_t count, on, rsv[2]; motion_event_t event[MOTION_MAX]; } motion_store_t;
-_Static_assert(sizeof(motion_store_t) == 388u, "motion disk layout (FUN10)");
+_Static_assert(sizeof(motion_store_t) == 516u, "B6S1 decoded motion size");
 #define CHAIN_ROWS 16u
 /* A song section (1.2, FUN10): the PROJECT slot each track plays (0..3, A..D; CHAIN_SILENT "-": that track plays
  * nothing there) and its repeats (1..16). Up to 1.1 a row was {slot, repeat}, all four tracks on that slot
@@ -261,7 +266,7 @@ typedef struct {
     uint8_t count, rsv[3];
     chain_row_v9_t row[CHAIN_ROWS];
 } chain_v9_t;
-_Static_assert(sizeof(chain_config_t) == 84u && sizeof(chain_v9_t) == 36u, "song chain layouts (FUN10 / FUN6..FUN9)");
+_Static_assert(sizeof(chain_config_t) == 116u && sizeof(chain_v9_t) == 36u, "six-track chain / historical two-byte row sizes");
 
 typedef struct track {
     int16_t p[P_COUNT];
@@ -373,7 +378,7 @@ typedef struct {
 #define MCH_OFF 17u
 #define MCH_N 18u                    /* channels 1..16, OMNI, OFF */
 
-static track_t trk[NTRK];        /* the instrument: four parts */
+static track_t trk[NTRK];        /* the instrument: six ordinary parts */
 static song_t song;
 #define TSEL (&trk[song.sel])    /* the selected track */
 /* MIDI IN TRACK: track i's channel 0..15, MCH_OMNI or MCH_OFF (song.mch), and set */

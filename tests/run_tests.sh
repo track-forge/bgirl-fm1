@@ -51,3 +51,9 @@ cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -
 felucca/build/host/signature_test
 cc -O2 -w -ffp-contract=off -pthread -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/signature_dual_test tests/signature_dual_test.c -lm
 felucca/build/host/signature_dual_test
+
+# Six-track fixed storage/addressing and editor protocol (host/browser only).
+cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/six_track_test tests/six_track_test.c -lm
+felucca/build/host/six_track_test
+cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/editor_test felucca/tests/editor_test.c -lm
+felucca/build/host/editor_test

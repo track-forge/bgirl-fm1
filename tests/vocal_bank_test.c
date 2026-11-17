@@ -82,7 +82,7 @@ static void save_tests(void) {
     trk[3].step[4].note[0]=63;
     static project_t saved,decoded;project_store_t wire;
     project_capture(&saved);assert(!memcmp(saved.vocal_id[3],BG_VOCAL_ID,8));
-    assert(proj_pack(&wire,&saved));uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC_VOCAL);
+    assert(proj_pack(&wire,&saved));uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
     assert(proj_import(&decoded,&wire,sizeof wire));assert(!memcmp(decoded.vocal_id[3],BG_VOCAL_ID,8));
     assert(!project_restore_runtime(&decoded));tick(1024);assert(trk[3].p[P_E0]==6 && trk[3].p[P_E1]==1 && trk[3].p[P_E2]==1 && trk[3].p[P_ROOT]==5 && trk[3].step[4].note[0]==63);
     assert(!up_store_cat(0,"VOCAL",0));assert(up_rec(0)->ver==UP_VER_VOCAL);
@@ -100,12 +100,12 @@ static void save_tests(void) {
     /* Base BREAK + a VOCALS source event retains the bank identity as well. */
     trk[3].p[P_E0]=0;assert(!motion_set_event(&trk[3],0,P_E0,6));
     project_capture(&saved);assert(!memcmp(saved.vocal_id[3],BG_VOCAL_ID,8));assert(proj_pack(&wire,&saved));
-    memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC_VOCAL);
+    memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
     up_rec(0)->packed[UP_VOCAL_AT]^=1;assert(!up_load(0));tick(1024);assert(!slc_vocal_match(&trk[3]));
     assert(!web_bgirl_project(1));tick(1024);project_capture(&saved);assert(proj_pack(&wire,&saved));memcpy(&magic,wire.raw,4);
-    assert(magic==(BGIRL_VOCODER ? PROJ_MAGIC_VOCAL : PROJ_MAGIC));
+    assert(magic==PROJ_MAGIC);
     assert(!web_bgirl_project(0));tick(1024);project_capture(&saved);assert(proj_pack(&wire,&saved));memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
-    puts("vocal persistence: FUNC exact ID/view/offset/root/steps; version6 presets; mismatch survives save/reload silently; explicit rebinding; factory FUNB unchanged PASS");
+    puts("vocal persistence: B6S1 exact ID/view/offset/root/steps; version6 presets; mismatch survives save/reload silently; explicit rebinding; factory non-vocal semantics retained PASS");
 }
 static void sequence_tests(void) {
     for(uint32_t bpm=60;bpm<=180;bpm+=120) {

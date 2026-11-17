@@ -9,16 +9,18 @@
  * with the settings, saved as each one changes); one CC sets one parameter, a parameter has one CC: learning one again
  * replaces both. The editor reads and edits it (editor_learn.c). Its state: ui.ml (ui.c) */
 typedef char ml_row_free[FAV_ENGINES <= 14 ? 1 : -1];   /* (factory[14]: no engine's favourites; favorites.c) */
+static uint32_t *const ml_high = &favorites.learn_hi;
 static uint8_t *const ml_tab = favorites.factory[14];
 static volatile uint8_t *const ml_io = ui.ml.io;         /* (midi_control.c ml_arm, ml_heard) */
 
 static uint32_t ml_code(uint32_t id) { return id >= P_E0 ? ML_E0 + id - P_E0 : id + 1u; }
-static uint32_t ml_get(uint32_t i) { return ml_tab[2u * i] | (uint32_t)ml_tab[2u * i + 1u] << 8; }
+static uint32_t ml_get(uint32_t i) { return ml_tab[2u * i] | (uint32_t)ml_tab[2u * i + 1u] << 8 | ((*ml_high >> i) & 1u) << 16; }
 static void ml_put(uint32_t i, uint32_t e)       /* (the ISR reads the two bytes: never half of one) */
 {
     fm1_irq_off();
     ml_tab[2u * i] = (uint8_t)e;
     ml_tab[2u * i + 1u] = (uint8_t)(e >> 8);
+    *ml_high = (*ml_high & ~(1u << i)) | ((e >> 16) & 1u) << i;
     fm1_irq_on();
 }
 /* the CC of parameter id on track k, + 1; 0 none */
@@ -26,7 +28,7 @@ static uint32_t ml_cc_of(uint32_t k, uint32_t id)
 {
     uint32_t i, e;
     for (i = 0; i < ML_N; i++)
-        if (((e = ml_get(i)) >> 9) == ml_code(id) && ((e >> 7) & 3u) == k)
+        if (((e = ml_get(i)) >> 10) == ml_code(id) && ((e >> 7) & 7u) == k)
             return (e & 127u) + 1u;
     return 0;
 }
@@ -34,7 +36,7 @@ static uint32_t ml_count(void)
 {
     uint32_t i, n = 0;
     for (i = 0; i < ML_N; i++)
-        n += (ml_get(i) >> 9) != 0u;
+        n += (ml_get(i) >> 10) != 0u;
     return n;
 }
 /* takes away cc's entry and parameter id of track k's (either: ML_N / P_COUNT for none); 1 = one went */
@@ -43,9 +45,9 @@ static int ml_drop(uint32_t cc, uint32_t k, uint32_t id)
 {
     uint32_t i, e, gone = 0;
     for (i = 0; i < ML_N; i++) {
-        if (!((e = ml_get(i)) >> 9))
+        if (!((e = ml_get(i)) >> 10))
             continue;
-        if ((e & 127u) == cc || ((e >> 9) == ml_code(id) && ((e >> 7) & 3u) == k)) {
+        if ((e & 127u) == cc || ((e >> 10) == ml_code(id) && ((e >> 7) & 7u) == k)) {
             ml_put(i, 0);
             gone = 1;
         }
@@ -60,8 +62,8 @@ static uint32_t ml_learn(uint32_t cc, uint32_t k, uint32_t id)
         return 2;
     (void)ml_drop(cc, k, id);
     for (i = 0; i < ML_N; i++)
-        if (!(ml_get(i) >> 9)) {
-            ml_put(i, cc | k << 7 | ml_code(id) << 9);
+        if (!(ml_get(i) >> 10)) {
+            ml_put(i, cc | k << 7 | ml_code(id) << 10);
             return 1;
         }
     return 0;

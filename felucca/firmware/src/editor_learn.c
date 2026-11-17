@@ -12,12 +12,12 @@ static void ed_learn_list(void)
     ed_b(ML_N);
     for (i = 0; i < ML_N; i++) {
         e = ml_get(i);
-        id = ml_id(e >> 9);
-        if (!(e >> 9) || id >= P_COUNT) {
+        id = ml_id(e >> 10);
+        if (!(e >> 10) || id >= P_COUNT) {
             ed_b(0); ed_b(0); ed_b(0); ed_b(0);
             continue;
         }
-        ed_b(1); ed_b(e & 127u); ed_b((e >> 7) & 3u); ed_b(id);
+        ed_b(1); ed_b(e & 127u); ed_b((e >> 7) & 7u); ed_b(id);
     }
 }
 static int ed_learn_handle(uint32_t cmd, const uint8_t *a, uint32_t n)

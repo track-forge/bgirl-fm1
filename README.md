@@ -52,6 +52,45 @@ git -C /path/to/emsdk checkout 708dcbcc9ee23bc7d2dad44fc90db377e38b771c
 source /path/to/emsdk/emsdk_env.sh
 ```
 
+## Six full tracks · eight shared voices
+
+ALGORITHM selects **T1–T6** and wraps. T5 starts as FM6 and T6 as DRUM, both
+with empty editable patterns; either can use every normal engine, vocals/vocoder,
+64 steps, automation, locks, recording and song-chain lanes. The original four
+startup roles stay intact. The shared voice budget is still **eight**, not48.
+
+For levels, select T1–4 or T5–6 with ALGORITHM, then hold **GLO** (or use
+MENU → DISPLAY → HOME → LEVELS). K1–4 follow the selected bank: **T1–4**, then
+**T5/T6/--/--**. Inactive knobs/solo/mute cells do nothing. GLO's first four white
+keys solo and first four black keys mute the bank's tracks; ALL/LEARN/FILL/TAP
+retain their keys. The ordinary MIXER still edits the selected track's four
+LEVEL/PAN/REV/MUTE controls; its display follows the same bank. Sound-edit pages
+still have four parameter knobs. MENU → **CHANS** exposes all six MIDI channels;
+MIDI IN → TRACK defaults to channels1–6. Historical four-channel block modes remain.
+
+**Six-track electro audition** loads a stopped, editable four-bar groove using
+six Signature sounds. Press PLAY. **Dense save-capacity stress fixture** is an
+intentionally oversized editable pattern, useful for overload/full-save checks.
+Both ask before replacing current unsaved music and preserve saved slots.
+
+Projects use new **B6S1** with the existing four slots and3840-byte A/B objects.
+PROJECT's SAVE card shows bytes/3840 or **FULL**. The audition uses1358 bytes;
+an adversarial fixture needs6686 and is refused, never truncated. Full manual
+save/export/autosave leaves live music and the last committed copy intact.
+Autosave does not retry an unchanged full state.
+
+**No old-project migration.** Old project/autosave formats are rejected; startup
+stays stopped on fresh defaults with OLD FORMAT notice. Use **Blank electro
+template** or load a new audition, edit, and let normal autosave replace the old
+session; explicitly SAVE over an old slot to reuse it. No full-origin reset is
+needed. Existing presets/samples/banks/preferences stay; incompatible old learned
+MIDI mappings are cleared, not reinterpreted. Agent/editor clients must use the
+new **F6** SysEx namespace (`7D 46 36`) and advertised counts.
+
+[Capacity/wire contract](docs/SIX_TRACK_CODEC_SPIKE.md) ·
+[Exact host/browser checks, RAM findings, and audition recipe](docs/SIX_TRACK_VERIFICATION.md).
+No hardware RAM/deadline/flash-compatibility claim.
+
 ## Battle Circuit visual identity
 
 The fresh-state UI now uses **CIRCUIT**: crisp mint/near-black display, squared
@@ -84,9 +123,9 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
   These original isolated ANALOG references are not the live pad groove.
   Unnormalized levels differ. Doug reports the overall vocoder experiment is a win;
   a final band preference/intelligibility curation decision remains open.
-- Save projects normally. Old saves load with vocoder OFF. New vocoder saves keep
-  routing/controls but load unfrozen; VOCALS projects use identity-bound FUNC
-  (ordinary SPEECH projects remain FUNB). Old firmware rejects these new formats.
+- Save projects normally. B6S1 saves keep
+  routing/controls but load unfrozen, including identity-bound VOCALS. Old firmware
+  rejects B6S1 and this edition rejects old project formats.
   Sound presets clear project-specific carrier references.
 
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
@@ -168,9 +207,8 @@ Load electro demo still use the vocal arrangement; autosave still takes priority
 FM6 MIDI PC0–7 and bank PC8–39 retain their meanings; Signature factory voices
 append at40–44. DRUM PC0–8 retains kits;9–15 selects standalone modes.
 
-New standalone projects use guarded **FUND** (including vocal fingerprints), and
-standalone sound presets use versions7/8. Older firmware rejects them; old project
-readers and ordinary save formats remain. No manual user-slot installation needed.
+Standalone projects now use **B6S1** (including vocal fingerprints), and
+standalone sound presets use versions7/8. Older firmware rejects them; this edition does not migrate old projects. No manual user-slot installation needed.
 
 [Versioned original recipes](assets/signature/manifest.json) ·
 [Implementation contract](docs/SIGNATURE_ELECTRO_BANK_PLAN.md) ·
@@ -186,6 +224,8 @@ not establish musical approval or physical-device fit/performance.
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
 | 3 | GRAIN / CLOUD PAD | C2/G2 tied through each phrase; carrier, dry MON OFF |
 | 4 | SLICE / VOCALS | Two-bar (32-step) chop groove; bundled G6 → 12-band vocoder, carrier T3 |
+| 5 | FM6 / TINE EP | Empty; unrestricted track |
+| 6 | DRUM / TIGHT KIT | Empty; unrestricted track |
 
 Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
 last-session autosave takes precedence. All engines/presets remain selectable;
@@ -202,7 +242,7 @@ palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
 ### Short demo recipe
 
 1. Switch on fresh (or explicitly Load electro demo). Start with low MASTER; press PLAY.
-2. Turn **ALGORITHM** (keyboard ←/→) to select each of the four tracks.
+2. Turn **ALGORITHM** (keyboard ←/→) to select each of the six tracks.
 3. Play Z–' / Q–O keyboard notes; release them. Drag/scroll the labeled knobs;
    focused knob arrows also work. SELECT browses pages, PRESETS browses sounds.
 4. Stop with PLAY. Edit a sound and use Felucca **SAVE**, **OCT+**, **OCT+** to
@@ -225,7 +265,7 @@ verification details: [build status](docs/BUILD_STATUS.md).
   v1.8.2 removed browser support; it is intentionally not this baseline.
 - Exact pins, license inventory and small upstream delta: [provenance](docs/UPSTREAM.md).
 - Browser flash key `bgirl-felucca-v1-flash` isolates this edition from stock
-  Felucca and the retired prototype. Same Felucca data formats; no device/prototype migration.
+  Felucca and the retired prototype. B6S1 projects; no legacy project/device/prototype migration.
 - Prototype source, original speech, vocoder and tests remain reachable at
   [`4cc1e11`](https://github.com/track-forge/bgirl-fm1/tree/4cc1e11e50ffb1d2a06a50547780b9e828a8b15f).
   [Prototype build evidence](docs/PROTOTYPE_BUILD_STATUS.md) and

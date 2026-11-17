@@ -201,7 +201,7 @@ static const struct {
 #define NPATTERNS (sizeof PATTERNS / sizeof PATTERNS[0])
 
 /* the parts at power-on (engine, preset, PATTERNS[n - 1] in the sequencer, 0 = empty: all are): bass, pad, lead, drums */
-static const uint8_t TRK_DEF[NPART][3] = {{0, 4, 0}, {ENGI_FM6, 4, 0}, {3, 0, 0}, {ENGI_DRUM, 0, 0}}; /* ANALOG ACID,
+static const uint8_t TRK_DEF[NPART][3] = {{0, 4, 0}, {ENGI_FM6, 4, 0}, {3, 0, 0}, {ENGI_DRUM, 0, 0}, {ENGI_FM6, 0, 0}, {ENGI_DRUM, 2, 0}}; /* ANALOG ACID,
                                                                        * FM6 PAD (was DIGITAL PAD), LOFI PULSE LD, DRUM KIT */
 static uint32_t trk_def_engine(uint32_t i) { return TRK_DEF[i % NPART][0]; }
 
@@ -212,4 +212,6 @@ static const uint8_t BGIRL_TRK_DEF[NPART][3] = {
     {0, 2, 2},        /* ANALOG SQR BASS, OFFBEAT */
     {ENGI_FM6, 1, 7}, /* BELL, sparse metallic reply */
     {5, 1, 0},        /* VOX LEAD: robot synth PLACEHOLDER (no speech/vocoder) */
+    {ENGI_FM6, 0, 0}, /* T5: full FM6 track, empty pattern */
+    {ENGI_DRUM, 2, 0},/* T6: full DRUM track, empty pattern */
 };

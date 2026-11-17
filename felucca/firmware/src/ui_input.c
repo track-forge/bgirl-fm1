@@ -85,6 +85,7 @@ static int mom_turn(uint32_t k, int32_t s)
     uint32_t i, g;
     const track_t *t = ui.home ? home_trk(k) : TSEL;     /* (HOME LEVELS: KNOB k is track k's) */
     if (ui.home) {
+        if (home_levels() && mix_track(k)>=NTRK) return 0;
         d = home_param(k, &vp);
     } else if (pg->scope == SC_TRK && !lock_held()) {  /* MIXER (#195): the selected track's LEVEL PAN REV MUTE */
         static const uint8_t MIX_ID[4] = {P_LEVEL, P_PAN, P_REV, P_MUTE};   /* (tracks_edit's knobs) */
@@ -1805,7 +1806,7 @@ static void ui_input(void)
     if (!lay && (s = panel_enc(EN_PRESET)) != 0)
         presets_turn(s);
     if (!lay && (s = panel_enc(EN_ALGO)) != 0)     /* ALGORITHM: the selected track, on every page */
-        track_select((uint32_t)clamp((int32_t)song.sel + (s > 0 ? 1 : -1), 0, NTRK - 1));
+        track_select((song.sel + (s > 0 ? 1u : NTRK - 1u)) % NTRK);
     if ((s = glo ? sel : panel_enc(EN_SELECT)) != 0) {   /* SELECT knob = global tempo; */
         if (!glo && sel_mode() >= SEL_MODW) {         /* MENU > SELECT MODW / VEL (1.5.6, #84): it plays */
             sel_play(sel_mode(), s);
@@ -1852,6 +1853,7 @@ static void ui_input(void)
             ui.hot_t = 40;
         }
         if (ui.home) {
+            if (home_levels() && mix_track(k)>=NTRK) continue;
             int16_t *vp;
             const param_desc_t *d = home_param(k, &vp);
             *vp = (int16_t)param_turn(d, *vp, accel(EN_K1 + k, s, d->fmt == F_ENUM ? 0 : d->max - d->min));

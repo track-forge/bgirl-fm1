@@ -83,6 +83,7 @@ static uint32_t nm_black(uint32_t k)                   /* black key k's function
 
 static void name_open(uint32_t kind, uint32_t slot)
 {
+    if (kind == NK_PROJ_SAVE && project_bytes() > 3840u) { ui_message("PROJECT FULL"); return; }
     char b[16];
     nm.kind = (uint8_t)kind;
     nm.slot = (uint8_t)slot;

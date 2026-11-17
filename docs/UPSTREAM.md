@@ -100,3 +100,35 @@ The current review-aid patch normalizes whitespace-only context lines after
 `git diff`; `git apply --numstat docs/BGIRL_DELTA.patch` validates its diff syntax.
 This prevents a diff-of-the-diff from reporting blank context markers as newly
 introduced trailing whitespace. It is not a runtime/build dependency.
+
+## Six-track compact format and control study (2026-11-17)
+
+- JIANT: <https://github.com/juanjiant-bit/JIANT/tree/da8baa1eed7c4e75f1ed9bcf433797b3aeace107>,
+  GPL-3.0-only. Inspected `firmware/src/project.c` (`proj_packed_size`,
+  `proj_step_empty`, `proj_step_x/size`, `proj_fm_kept`, `proj_pack`,
+  `proj_unpack_c`, `proj_full`) and `tests/project_test.c` six-track round-trip,
+  dormant-note, damaged-record and full-section tests; also persistence tests.
+  Originating six-track commit:
+  [`ee130ccac084e85ff660a7ae21dfcee5ea91335f`](https://github.com/juanjiant-bit/JIANT/commit/ee130ccac084e85ff660a7ae21dfcee5ea91335f).
+  Adapted sparse bitmap/conditional-field/patch and preflight-before-write ideas
+  into BGIRL's `project.c`, plus exact-round-trip/full/fuzz test ideas in
+  `tests/six_codec_test.c`. Retained Leo Kuroshita and Juan Ignacio Antonucci
+  portions copyright/SPDX. New explicit LE records, B6S1 magic, frozen defaults,
+  full dormant flags/notes, wider motion and two-pass atomic decoder are
+  BGIRL-specific. No JIANT migration readers, engine IDs, extensions or storage
+  addresses imported. Its FUNC magic is deliberately not reused.
+- Skiff: <https://github.com/illuminus5/skiff/tree/b257ddf6a15a21f6c5956abc9c19c0571daa8e15>,
+  GPL-3.0-only, Leo Kuroshita copyright retained in our existing derivative files.
+  Studied `firmware/src/ui.c` six-track selection/four-knob conventions and
+  `firmware/src/project.c` (`proj_old`, explicit OLD FORMAT refusal).
+  Adapted the explicit-refusal UX principle, not its converter or pattern pool.
+  BGIRL uses two selection-following banks, six ordinary engines/track, and
+  eight shared voices; no Skiff light-track restrictions or voice budgets.
+- `project_defaults.h` is a frozen snapshot of the existing pinned BGIRL
+  parameter descriptors and generated FM6 INIT. No dependency pin, sample,
+  artwork, branding, workflow installer or device identity was imported.
+
+The obsolete FUN1–FUND project converters are intentionally removed for this
+explicitly authorized clean break. Earlier provenance sections describe the
+historical four-track versions, not current project-format compatibility.
+[Capacity decision](SIX_TRACK_CODEC_SPIKE.md) · [verification](SIX_TRACK_VERIFICATION.md).

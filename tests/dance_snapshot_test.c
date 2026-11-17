@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <stdio.h>
-#define NTRK 4
+#define NTRK 6
 #include "../felucca/firmware/src/arp_dance.h"
 static uint32_t done;
 static void *produce(void *unused) {

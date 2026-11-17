@@ -502,6 +502,7 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
 {
     if (fm1_in.notes || fm1_in.buttons) return 1;
     if (project_new()) return 1;
+    name_close();ui.confirm=0;ui.menu=0;ui.lock=ui.ly=ui.layer=0;go_home();
     {
         uint32_t i;
         undo_depth++;
@@ -703,4 +704,49 @@ EXPORT uint32_t web_bgirl_dance_info(uint32_t field)
     case 9: return song.playing;
     default: return 0;
     }
+}
+
+/* Explicit editable six-track fixtures. Never startup/autosave replacement. */
+EXPORT uint32_t web_bgirl_six_project(uint32_t dense)
+{
+    static const uint8_t sounds[6]={2,3,5,1,7,9};
+    if(dense>1 || web_bgirl_project(0))return 1;
+    song.g[G_ROUTE]=ROUTE_TRACK;song.g[G_BPM]=120;
+    undo_depth++;
+    for(uint32_t t=0;t<NTRK;t++) {
+        set_engine_of(&trk[t],BG_SIGNATURE_SELECT[sounds[t]][0]);
+        apply_preset_to(&trk[t],BG_SIGNATURE_SELECT[sounds[t]][1]);
+        trk[t].p[P_SLEN]=64;trk[t].p[P_SDIV]=2;trk[t].p[P_CHRD]=CH_OFF;
+        trk[t].p[P_LEVEL]=t<3?94:78;
+        track_defaults_steps(&trk[t]);trk[t].p[P_SLEN]=64;
+        for(uint32_t k=0;k<NSTEP;k++) {
+            step_t *st=&trk[t].step[k];
+            uint32_t hit=t==0?k%4==0:t==1?k%8==4:t==2?k%2==0:t==3?k%4==2:t==4?k%16==3:k%16==14;
+            if(!dense && !hit)continue;
+            st->time=ST_NOTE;st->n=dense?4:1;st->vel=100;
+            st->note[0]=t==3?(k%16==14?43:36):t==4?60:72;
+            if(dense){st->note[1]=64;st->note[2]=67;st->note[3]=72;st->flags=255;st->hit=st->acc=255;st->probability=100;}
+        }
+    }
+    undo_depth--;song.sel=0;ui_home_view=HV_TRACKS;ui.home=1;ui.force=1;
+    ui_message(dense?"DENSE: PROJECT FULL":"SIX TRACK ELECTRO");return 0;
+}
+EXPORT uint32_t web_bgirl_six_info(uint32_t field,uint32_t t)
+{
+    if(field==0)return NTRK;
+    if(field==1)return NVOICE;
+    if(field==2)return song.sel;
+    if(field==3)return project_bytes();
+    if(field==4)return as.writes;
+    if(field==5)return as.full_blocked;
+    if(field==6)return proj_rd(proj_slot[0].raw,4)==PROJ_MAGIC;
+    if(field==7)return song.playing;
+    if(field==8)return mix_base();
+    if(t>=NTRK)return 0xFFFFFFFFu;
+    if(field==9)return trk[t].eng_req;
+    if(field==10)return trk[t].p[P_LEVEL];
+    if(field==11)return trk[t].p[P_SLEN];
+    if(field==12)return trk[t].p[P_MUTE];
+    if(field==13){uint32_t n=0;for(uint32_t i=0;i<NVOICE;i++)n+=trk[t].v[i].active && trk[t].v[i].stage!=4;return n;}
+    return 0xFFFFFFFFu;
 }

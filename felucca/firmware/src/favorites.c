@@ -9,6 +9,7 @@
 typedef struct {
     uint8_t factory[16][32]; /* engine 0..15, preset 0..255 */
     uint32_t user, filter;
+    uint32_t learn_hi; /* PER5: bit i is bit16 of 17-bit learned mapping i */
 } favorites_t;
 static favorites_t favorites __attribute__((section(".pool")));
 static uint8_t *fav_bit(uint32_t engine, uint32_t preset, uint8_t *mask)   /* the byte and bit of a factory preset */

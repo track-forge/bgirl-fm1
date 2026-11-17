@@ -24,18 +24,19 @@ typedef struct {
     uint32_t magic, palette, lowcut, zoom;
     panel_t panel;
     uint32_t bold;
-    struct { uint8_t factory[16][32]; uint32_t user, filter; } favorites;
+    struct { uint8_t factory[16][32]; uint32_t user, filter, learn_hi; } favorites;
 } persist_t;
-#define PERSIST_MAGIC 0x50455234u
+#define PERSIST_MAGIC 0x50455235u
 
 /* Normalize in place; 1 = current, 2 = migrated, 0 = invalid. */
 static int settings_import(persist_t *p, int n)
 {
     int current = n == (int)sizeof *p && p->magic == PERSIST_MAGIC;
+    int old4 = n == (int)(sizeof *p - 4u) && p->magic == 0x50455234u;
     int old3 = n == (int)(sizeof *p - sizeof p->favorites) && p->magic == 0x50455233u;
     int old2 = n == (int)(sizeof *p - sizeof p->favorites - sizeof p->bold) && p->magic == 0x50455232u;
     int old1 = n == (int)(8u + sizeof(panel_t)) && p->magic == 0x50455231u;
-    if (!(current || old3 || old2 || old1)) return 0;
+    if (!(current || old4 || old3 || old2 || old1)) return 0;
     if (old1) {
         panel_t old;
         memcpy(&old, (uint8_t *)p + 8, sizeof old);
@@ -43,7 +44,8 @@ static int settings_import(persist_t *p, int n)
         p->lowcut = p->zoom = 0;
     }
     if (old1 || old2) p->bold = 0;
-    if (!current) memset(&p->favorites, 0, sizeof p->favorites);
+    if (!current && !old4) memset(&p->favorites, 0, sizeof p->favorites);
+    if (old4) { memset(p->favorites.factory[14], 0, 32); p->favorites.learn_hi = 0; } /* never reinterpret old two-bit tracks */
     if (p->favorites.factory[15][29] > 1u)        /* STYLE (ui.c ui_style): 2, the retired PIXEL = LINE; unknown = FLAT */
         p->favorites.factory[15][29] = p->favorites.factory[15][29] == 2u ? 1u : 0u;
     {   /* CLICK, CLICK LEVEL, COUNT-IN (ui.c ui_rec_prefs): two bits each, 3 is no value: the default (0) */

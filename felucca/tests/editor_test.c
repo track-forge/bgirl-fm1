@@ -11,7 +11,7 @@ static unsigned char host_samples[3][0x14000];
 #define main hostsim_main
 #include "hostsim.c"
 #undef main
-#define MENU_N (32u + FELUCCA_CPU2)                  /* 1.6.1 (core.h FELUCCA_CPU2, the default): 2ND CORE, id 32 */
+#define MENU_N (34u + FELUCCA_CPU2)                  /* 1.6.1 (core.h FELUCCA_CPU2, the default): 2ND CORE, id 32 */
 
 static uint32_t host_progress = 1, host_erases, host_writes;
 static uint8_t host_wire[4096];
@@ -227,8 +227,8 @@ static int preferences(void)
 static int framing(void)
 {
     uint32_t i, bad = 0;
-    static const uint8_t rt[] = {0xF0, 0x7D, 0xF8, 0x46, 0xFE, 0x4C, ED_PING, 0xFF, 0xF7};
-    static const uint8_t aborted[] = {0xF0, 0x7D, 0x46, 0x4C, ED_SET, 0, P_LEVEL, 0x90, 0, 64, 0xF7};
+    static const uint8_t rt[] = {0xF0, 0x7D, 0xF8, 0x46, 0xFE, ED_HDR2, ED_PING, 0xFF, 0xF7};
+    static const uint8_t aborted[] = {0xF0, 0x7D, 0x46, ED_HDR2, ED_SET, 0, P_LEVEL, 0x90, 0, 64, 0xF7};
     reset();
     for (i = 0; i < sizeof rt; i++) sysex_byte(rt[i]);
     ed_service(); host_drain();
@@ -262,6 +262,13 @@ static int framing(void)
     bad += check("USB rejects new messages until the audio consumer clears overflow", mi_w == mi_r);
     midi_in_overflow = 0; midi_in_event(0x643C9009u);
     bad += check("USB resumes after the audio consumer clears overflow", mi_w - mi_r == 1u);
+    { const uint8_t old[]={0x7D,0x46,0x4C,ED_TRACK,5};
+      song.sel=0;ota_frame_done();host_wire_n=0;sysex_byte(0xF0);for(uint32_t i=0;i<sizeof old;i++)sysex_byte(old[i]);sysex_byte(0xF7);ed_service();host_drain();
+      bad+=check("old fixed-four FL namespace refused with no mutation/reply",!host_wire_n && !song.sel);
+      const uint8_t select[]={5};request(ED_TRACK,select,1);
+      bad+=check("F6 namespace selects track6 and rejects track7",song.sel==5);
+      const uint8_t invalid[]={6};request(ED_TRACK,invalid,1);bad+=check("invalid track selection leaves track6 selected",song.sel==5);
+    }
     return bad;
 }
 
@@ -456,28 +463,28 @@ static int song_protocol(void)
     chain.armed = 0; a[0] = 2;
     bad += check("SONG PLAY refuses extra argument bytes", !request(ED_SONG, a, 2) && !transport_req);
     {   /* 1.2 (`57 01 04`): sections with a slot per track, ops 4..7; the v6 ops see each section's clock lane */
-        static const uint8_t set[] = {5, 2, 0, 1, CHAIN_SILENT, 0, 3, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, 1};
-        static const uint8_t q4[] = {4}, q0[] = {0}, bad5[] = {5, 1, 0, 0, 5, 0, 1}, old4[] = {1, 1, CHAIN_SILENT, 1};
+        static const uint8_t set[] = {5, 2, 0, 1, CHAIN_SILENT, 0, 0, 0, 3, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, CHAIN_SILENT, 1};
+        static const uint8_t q4[] = {4}, q0[] = {0}, bad5[] = {5, 1, 0, 0, 5, 0, 0, 0, 1}, old4[] = {1, 1, CHAIN_SILENT, 1};
         static const uint8_t info[] = {0};
         uint32_t n, i, tag = 0;
         reset();
         n = request(ED_SONG, set, sizeof set);
         bad += check("SONG op 5 sets sections (T1 A, T2 B, T3 -, T4 A x3; all - x1), the reply in lanes",
-                     n == 5u + 6u + 2u * 5u + 1u && host_wire[5] == 5 && !host_wire[6] && host_wire[7] == 2 &&
-                     !memcmp(host_wire + 11, set + 2, 10) && chain_config.count == 2 &&
-                     !memcmp(&chain_config.row[0], &(chain_row_t){{0, 1, CHAIN_SILENT, 0}, 3}, sizeof(chain_row_t)) &&
+                     n == 5u + 6u + 2u * 7u + 1u && host_wire[5] == 5 && !host_wire[6] && host_wire[7] == 2 &&
+                     !memcmp(host_wire + 11, set + 2, 14) && chain_config.count == 2 &&
+                     !memcmp(&chain_config.row[0], &(chain_row_t){{0, 1, CHAIN_SILENT, 0, 0, 0}, 3}, sizeof(chain_row_t)) &&
                      chain_config.row[1].slot[0] == CHAIN_SILENT && chain_config.row[1].repeat == 1);
         n = request(ED_SONG, q4, 1);
-        bad += check("SONG op 4 queries them as set", n == 22u && host_wire[5] == 4 && !memcmp(host_wire + 11, set + 2, 10));
+        bad += check("SONG op 4 queries them as set", n == 26u && host_wire[5] == 4 && !memcmp(host_wire + 11, set + 2, 14));
         n = request(ED_SONG, q0, 1);
         bad += check("SONG op 0 (v6 editors): a row per section, its clock lane's slot (T1 A; all - : A)",
                      n == 16u && host_wire[11] == 0 && host_wire[12] == 3 && host_wire[13] == 0 && host_wire[14] == 1);
         bad += check("SONG op 5: a slot past - (5) refused, the sections kept",
-                     request(ED_SONG, bad5, sizeof bad5) == 22u && host_wire[6] == 1 && chain_config.count == 2);
+                     request(ED_SONG, bad5, sizeof bad5) == 26u && host_wire[6] == 1 && chain_config.count == 2);
         bad += check("SONG op 1 (v6): no - in a row of one slot", request(ED_SONG, old4, sizeof old4) == 16u &&
                      host_wire[6] == 1 && chain_config.count == 2);
         chain.armed = 1;
-        bad += check("SONG op 5 waits for a pending start (rc 2)", request(ED_SONG, set, sizeof set) == 22u && host_wire[6] == 2);
+        bad += check("SONG op 5 waits for a pending start (rc 2)", request(ED_SONG, set, sizeof set) == 26u && host_wire[6] == 2);
         chain.armed = 0;
         n = request(ED_INFO, info, 0);
         for (i = 5; i + 2u < n; i++)
@@ -621,7 +628,7 @@ static int fm6_patches(void)
     a[1] = 5;
     request(ED_FM6_GET, a, 2);
     bad += check("an erased preset's patch is gone (GET rc 2)", host_wire[7] == 2u);
-    a[0] = ED_FM6_TRACK; a[1] = 4;
+    a[0] = ED_FM6_TRACK; a[1] = 6;
     request(ED_FM6_PUT, a, sizeof a);
     i = host_wire[7];
     request(ED_FM6_PUT, a, 20);
@@ -897,7 +904,7 @@ static uint32_t menu_set(uint32_t id, int32_t v)            /* -> rc; host_wire[
 #define TCH_NAMES "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,OMNI,OFF"
 static int menu_protocol(void)
 {
-    static const char *const WANT[33][2] = {
+    static const char *const WANT[35][2] = {
         {"COLOR", 0}, {"STYLE", "FLAT,LINE"}, {"LARGE", "OFF,ON"}, {"ANIM", "ON,OFF,IDLE"}, {"LEDS", "OFF,DIM LO,DIM HI,INV,INV LO,INV HI"},
         {"HOLD", "0.3 s,0.4 s,0.5 s,0.6 s"}, {"KNOB ACCEL", "OFF,ON"}, {"FX LATCH", "OFF,ON"}, {"BPM LOCK", "OFF,ON"},
         {"SPEAKER EQ", "FLAT,LOWCUT,BASS+"}, {"USB LEVEL", "MASTER,FIXED"}, {"USB SERIAL", "ON,OFF"},
@@ -911,11 +918,11 @@ static int menu_protocol(void)
         {"SELECT", "BPM,PAGE,MODW,VEL"},                                                             /* (1.5.5; 1.5.6 MODW VEL) */
         {"T1 CHANNEL", TCH_NAMES}, {"T2 CHANNEL", TCH_NAMES}, {"T3 CHANNEL", TCH_NAMES}, {"T4 CHANNEL", TCH_NAMES},   /* (1.5.5) */
         {"AUTO SELECT", "OFF,ON"}, {"SCREEN WAKE", "+MIDI,PANEL"},                                   /* (1.5.5) */
-        {"2ND CORE", "OFF,ON (BETA)"}};                                                           /* (1.6.1; OFF the default) */
-    static const int32_t DEF[33] = {-1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0};   /* (COLOR: the default palette) */
-    static const uint8_t TAB[33] = {0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 4, 2, 2, 2, 4, 1, 0, 0, 1, 1, 3, 2, 0, 4, 1, 3, 3, 3, 3, 3, 3, 4};   /* DISPLAY CONTROL AUDIO
+        {"2ND CORE", "OFF,ON (BETA)"}, {"T5 CHANNEL",TCH_NAMES}, {"T6 CHANNEL",TCH_NAMES}};                                                           /* (1.6.1; OFF the default) */
+    static const int32_t DEF[35] = {-1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 4, 5};   /* (COLOR: the default palette) */
+    static const uint8_t TAB[35] = {0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 5, 2, 2, 2, 5, 1, 0, 0, 1, 1, 3, 2, 0, 5, 1, 4, 4, 4, 4, 3, 3, 5, 4, 4};   /* DISPLAY CONTROL AUDIO
                                                                                                          * MIDI SYSTEM (1.2) */
-    static const char *const TABN[5] = {"DISPLAY", "CONTROL", "AUDIO", "MIDI", "SYSTEM"};
+    static const char *const TABN[6] = {"DISPLAY", "CONTROL", "AUDIO", "MIDI", "CHANS", "SYSTEM"};
     int bad = 0, ok = 1;
     uint32_t i, k, n;
     menu_item_t it;
@@ -1015,7 +1022,7 @@ static int menu_protocol(void)
     ok &= menu_set(32, 1) == 1 && ui_prefs2 == 0x3Fu;   /* (no 2ND CORE in a FELUCCA_CPU2=0 build: an unknown id, nothing set) */
 #endif
     for (i = 0; i < MENU_N; i++) {                         /* MENU_DESC reads them back */
-        static const int32_t SET[33] = {2, 1, 1, 1, 1, 3, 1, 1, 1, 2, 1, 0, 2, 0, 2, 1, 1, 2, 1, 1, 1, 2, -13, 1, 1, 1, 9, 16, 17, 0, 1, 1, 1};
+        static const int32_t SET[35] = {2, 1, 1, 1, 1, 3, 1, 1, 1, 2, 1, 0, 2, 0, 2, 1, 1, 2, 1, 1, 1, 2, -13, 1, 1, 1, 9, 16, 17, 0, 1, 1, 1, 4, 5};
         menu_desc(i, &it);
         ok &= it.value == SET[i];
     }
@@ -1133,18 +1140,18 @@ static int drum_kit_retired(void)
     bad += check("a user preset of DRUM KIT 3 (H+CYM) loads as 77", up_used(5) && got[P_E0] == 8);
     {   /* a project whose DRUM tracks hold KIT 0..3: loaded (and bounded, as from flash) as STD 66 10 77 */
         static project_t p;
-        for (r = 0; r < NTRK; r++) {
+        for (r = 0; r < 4u; r++) {
             set_engine_of(&trk[r], ENGI_DRUM); apply_preset_to(&trk[r], 0);
             trk[r].engine = trk[r].eng_req;
         }
         project_capture(&p);
-        for (r = 0; r < NTRK; r++) p.t[r].p[P_E0] = (int16_t)r;
+        for (r = 0; r < 4u; r++) p.t[r].p[P_E0] = (int16_t)r;
         p.sum = proj_sum(&p);
         ok = !project_restore_runtime(&p);
-        for (r = 0; r < NTRK; r++) ok &= trk[r].p[P_E0] == MAP[r];
-        for (r = 0; r < NTRK; r++) p.t[r].p[P_E0] = (int16_t)r;
+        for (r = 0; r < 4u; r++) ok &= trk[r].p[P_E0] == MAP[r];
+        for (r = 0; r < 4u; r++) p.t[r].p[P_E0] = (int16_t)r;
         proj_bound(&p);
-        for (r = 0; r < NTRK; r++) ok &= p.t[r].p[P_E0] == MAP[r];
+        for (r = 0; r < 4u; r++) ok &= p.t[r].p[P_E0] == MAP[r];
         bad += check("a project of DRUM KIT 1..3 loads as 66 10 77 (STD stays)", ok);
     }
     return bad;
@@ -1179,7 +1186,7 @@ static int learn_protocol(void)
         bad += check("LEARN_SET op 0: learns (DRUM's TONE on CC74); CC20 again replaces its parameter", ok);
     }
     {
-        const uint8_t bad1[] = {0, 64, 0, 1}, bad2[] = {0, 21, 4, 1}, bad3[] = {0, 21, 0, P_COUNT}, bad4[] = {0, 120, 0, 1};
+        const uint8_t bad1[] = {0, 64, 0, 1}, bad2[] = {0, 21, 6, 1}, bad3[] = {0, 21, 0, P_COUNT}, bad4[] = {0, 120, 0, 1};
         ok = request(ED_LEARN_SET, bad1, 4) && host_wire[5] == 1u;
         ok &= request(ED_LEARN_SET, bad2, 4) && host_wire[5] == 1u;
         ok &= request(ED_LEARN_SET, bad3, 4) && host_wire[5] == 1u;

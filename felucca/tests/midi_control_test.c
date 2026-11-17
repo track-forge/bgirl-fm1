@@ -367,12 +367,13 @@ static int route_track_test(void)
     ok = mch_get(0) == 0u && mch_get(1) == 1u && mch_get(2) == 2u && mch_get(3) == 3u && !song.mch[0] && !song.mch[3];
     ok &= menu_n(MI_TCH1) == 18u && str_eq(menu_vname(MI_TCH1, 0), "1") && str_eq(menu_vname(MI_TCH1, 15), "16") &&
           str_eq(menu_vname(MI_TCH1, MCH_OMNI), "OMNI") && str_eq(menu_vname(MI_TCH1, MCH_OFF), "OFF") &&
-          str_eq(MI_NAME[MI_TCH1], "T1 CHANNEL") && str_eq(MI_NAME[MI_TCH4], "T4 CHANNEL") && MI_TAB[MI_TCH3] == MTAB_MIDI &&
+          str_eq(MI_NAME[MI_TCH1], "T1 CHANNEL") && str_eq(MI_NAME[MI_TCH4], "T4 CHANNEL") && MI_TAB[MI_TCH3] == MTAB_CHANNELS &&
           menu_get(MI_TCH2) == 1u && MI_PROJECT(MI_TCH1) && MI_PROJECT(MI_TCH4) && !MI_PROJECT(MI_LCLEAR);
     bad += check("TRACK: T1..T4 CHANNEL (MENU > MIDI) 1..16 OMNI OFF, channels 1..4 by default (song.mch all 0)", ok);
     /* the defaults: TRACK plays as CH1-4, note for note */
     for (r = 0; r < 2u; r++) {
         midi_test_reset(); song.sel = 2; song.g[G_ROUTE] = r ? ROUTE_TRACK : 0; trk[3].eng_req = trk[3].engine = 0u;
+        tch(4,MCH_OFF);tch(5,MCH_OFF); /* isolate the original four-channel comparison */
         events_block(CTL);
         ok = 1;
         for (ch = 0; ch < 16u; ch++) {
@@ -381,12 +382,13 @@ static int route_track_test(void)
                 ok &= gate_note(&trk[i], 40u + ch) == (ch < 4u && i == ch);
             ok &= midi_slot(ch) == (ch < 4u ? (int32_t)ch : -1);
         }
-        bad += check(r ? "TRACK, the default channels: channels 1..4 play tracks 1..4, 5..16 nothing (as CH1-4)" :
+        bad += check(r ? "TRACK with T5/T6 OFF: first four channels retain CH1-4 behavior" :
                          "CH1-4 (for the comparison): channels 1..4 play tracks 1..4, 5..16 nothing", ok);
     }
     /* drums on 10, bass on 2, OMNI, OFF */
     midi_test_reset(); song.sel = 3; song.g[G_ROUTE] = ROUTE_TRACK; trk[0].p[P_VOICE] = trk[2].p[P_VOICE] = V_POLY;
     events_block(CTL);
+    tch(4,MCH_OFF);tch(5,MCH_OFF);
     tch(0, 9); tch(1, 1); tch(2, MCH_OMNI); tch(3, MCH_OFF);
     ok = mch_get(0) == 9u && mch_get(1) == 1u && mch_get(2) == MCH_OMNI && mch_get(3) == MCH_OFF &&
          song.mch[0] == 9u && song.mch[1] == 0u && song.mch[2] == MCH_OMNI;
@@ -405,7 +407,7 @@ static int route_track_test(void)
     bad += check("TRACK: bend, CC1, aftertouch, the CC map (CC7) and All Notes Off on channel 10 reach T1 only", ok);
     /* MIDI LEARN: a learned CC sets its own track, from any heard channel; a channel no track hears stays ignored */
     {
-        uint32_t e = 20u | 2u << 7 | (P_PAN + 1u) << 9;
+        uint32_t e = 20u | 2u << 7 | (P_PAN + 1u) << 10;
         uint8_t keep[2] = {ml_tab[0], ml_tab[1]};
         ml_tab[0] = (uint8_t)e; ml_tab[1] = (uint8_t)(e >> 8);
         trk[2].p[P_PAN] = 0;
@@ -801,8 +803,8 @@ static int learn_test(void)
     ok &= ml_id(0) == P_COUNT && ml_id(P_E0 + 1u) == P_COUNT && ml_id(ML_E0 - 1u) == P_COUNT;   /* (no such parameter) */
     memset(favorites.factory[14], 0, 32);
     ok &= ml_learn(30, 1, P_IMIX) == 1u && ml_learn(31, 2, P_ESYNC) == 1u && ml_learn(33, 3, P_E0 + 3u) == 1u;
-    ok &= ml_get(0) == (30u | 1u << 7 | (P_IMIX + 1u) << 9) && ml_get(1) == (31u | 2u << 7 | (P_ESYNC + 1u) << 9) &&
-          ml_get(2) == (33u | 3u << 7 | (ML_E0 + 3u) << 9);
+    ok &= ml_get(0) == (30u | 1u << 7 | (P_IMIX + 1u) << 10) && ml_get(1) == (31u | 2u << 7 | (P_ESYNC + 1u) << 10) &&
+          ml_get(2) == (33u | 3u << 7 | (ML_E0 + 3u) << 10);
     queued(0xB0, 30, 0, 1);
     queued(0xB0, 31, 127, 1);
     queued(0xB0, 33, 127, 1);
