@@ -12,7 +12,7 @@ for t in storage_test upreset_test input_test midi_uart_test project_test persis
     "build/host/$t"
 done
 cc -O2 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/regress tests/regress.c -lm
-cat tests/golden.txt ../tests/signature-golden.txt > build/host/bgirl-golden.txt
+cat tests/golden.txt ../tests/signature-golden.txt ../tests/clarity-golden.txt > build/host/bgirl-golden.txt
 build/host/regress build/host/bgirl-golden.txt tests/cpu_baseline.txt
 cc -O2 -w -ffp-contract=off $HALI -Ibuild/gen -o build/host/emu_native web/emu/native_check.c -lm
 build/host/emu_native build/host/emu_native.f32
@@ -65,3 +65,4 @@ felucca/build/host/clarity_test
 cc -O2 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/clarity_native tests/clarity_native.c -lm
 felucca/build/host/clarity_native felucca/build/host/clarity-native.f32
 node tests/clarity-wasm.mjs
+node tests/clarity-editor.mjs

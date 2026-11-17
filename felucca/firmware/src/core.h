@@ -337,7 +337,7 @@ typedef struct track {
     uint8_t spread_on;           /* SPREAD this block (fx.c mix_part, voice.c track_render) */
     uint8_t rsv_sz[3];          /* (sizeof(track_t) a multiple of 16: below; 1.8's AFTERTOUCH grew it by 14) */
 #else
-    uint8_t rsv_sz[16];          /* (sizeof(track_t) a multiple of 16: below; 1.8's AFTERTOUCH took 2 of it) */
+    /* Clarity common parameter fills the single-core padding; no pad needed. */
 #endif
     int16_t armp, aholdp;        /* P_AMODE / P_AHOLD as last seen by the ISR */
     /* engine switch (voice.c engine_block): the old engine's voices fade out, then it switches */

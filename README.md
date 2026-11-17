@@ -131,6 +131,28 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 [Contracts](docs/VOCODER_CONTRACTS.md), [verification / exact commands and limits](docs/VOCODER_VERIFICATION.md),
 [speech provenance](assets/speech/README.md). No physical-device performance proof.
 
+## Vocoder clarity · 8/12/24 bands
+
+The **Vocoder clarity** lab loads stopped whole-phrase/chopped auditions,
+**BG CARR SAW** or existing GRAIN / CLOUD PAD, a fully wet/92.126% blend, and
+an editable four-bar electro arrangement. The current startup/electro demo stays
+unchanged. Old saved release values retain their meaning; on normal T4 FX →
+VOC TIME choose **LOG** for 5–500ms, or **LEGACY** for the existing map. REL now
+shows milliseconds; nearest 150ms is 151.107ms. All three bands remain selectable.
+
+For reproducible raw + level-matched comparisons:
+
+```sh
+python3 tools/clarity_audition.py  # after web build; optional NumPy required
+python3 -m http.server 8794 --bind 127.0.0.1 --directory felucca/build/emu
+```
+
+Open <http://127.0.0.1:8794/> → **Switch on** → **Clarity whole phrase** → PLAY,
+or <http://127.0.0.1:8794/listening/clarity/> for the offline comparison players.
+Generated audio stays ignored/local; public builds need no private inputs.
+[Exact audition recipe, compatibility, measurements and verification](docs/VOCODER_CLARITY_VERIFICATION.md).
+**Human musical approval pending; hardware feasibility unverified.**
+
 ## Optional whole-phrase / chopped vocal bank
 
 The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,

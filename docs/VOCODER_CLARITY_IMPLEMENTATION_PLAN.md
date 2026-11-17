@@ -1,6 +1,6 @@
 # Vocoder clarity tranche: 24 bands, release range, and audition presets
 
-Status: **plan only; implementation and human listening pending**.
+Status: **implemented on this draft PR; see VOCODER_CLARITY_VERIFICATION.md. Human listening and hardware feasibility remain open**.
 Date: 2026-11-17.
 Planning base: `4c7628420b8dd8db7eb2ff81759105794ec80650` (main, six-track PR #26 merged).
 

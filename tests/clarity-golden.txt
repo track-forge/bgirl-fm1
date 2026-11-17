@@ -1,0 +1,2 @@
+# Only the new appended BG CARR SAW preset; all108 inherited/signature hashes unchanged.
+preset/ANALOG/12_BG_CARR_SAW f9741419e7e783b8

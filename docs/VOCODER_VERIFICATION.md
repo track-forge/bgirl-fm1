@@ -1,3 +1,5 @@
+> Current 24-band/release/whole-phrase tranche: [clarity verification](VOCODER_CLARITY_VERIFICATION.md). The dated evidence below is historical.
+
 # Vocoder host/browser verification
 
 2026-11-15. [Draft implementation PR #6](https://github.com/track-forge/bgirl-fm1/pull/6). Implementation review on `feat/sample-fed-vocoder`, stacked on open
