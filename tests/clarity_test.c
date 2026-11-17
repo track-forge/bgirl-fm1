@@ -23,8 +23,10 @@ int main(void) {
    bg_vocoder_process(m,c,32,p);for(int i=0;i<32;i++){h^=(uint32_t)m[i];h*=16777619u;}}
   assert(h==(b?0xee7cbd4fu:0x875ba8e9u));
  }
- for(int mode=0;mode<5;mode++)for(int b=0;b<3;b++)for(int c=0;c<2;c++) {
+ for(int mode=0;mode<5;mode++)for(int b=0;b<3;b++)for(int c=0;c<3;c++) {
   assert(!web_bgirl_clarity(mode,b,bg_release_value(150),c,117));tick(3000);
+  assert(trk[2].eng_req==(c==0 ? 0 : c==1 ? 8 : 6));
+  if(c==2)assert(trk[2].preset==0 && trk[2].p[P_SUS]==60 && trk[2].p[P_E2]==-12);
   assert(!song.playing && trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==117 && trk[3].p[P_VBANDS]==b);
   assert(!project_save_as(0,"CLARITY"));assert(!web_bgirl_project(0));project_load(0);tick(3000);
   assert(trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==117 && trk[3].p[P_VREL]==bg_release_value(150));
@@ -50,5 +52,5 @@ int main(void) {
  param_format(track_desc(&trk[3],P_VREL),0,val,&unit);assert(!strcmp(val,"5") && !strcmp(unit,"ms"));
  param_format(track_desc(&trk[3],P_VREL),127,val,&unit);assert(!strcmp(val,"500"));
  trk[3].p[P_VRANGE]=0;param_format(track_desc(&trk[3],P_VREL),32,val,&unit);assert(!strcmp(val,"33"));
- printf("clarity: legacy fixture + exact8/12 hashes, release tables, 30 saved auditions, preset, motion/locks, transitions, bounded output PASS; DSP=%zu track=%zu project=%zu\n",sizeof bg_voc,sizeof(track_t),sizeof(project_t));
+ printf("clarity: legacy fixture + exact8/12 hashes, release tables, 45 saved auditions, preset, motion/locks, transitions, bounded output PASS; DSP=%zu track=%zu project=%zu\n",sizeof bg_voc,sizeof(track_t),sizeof(project_t));
 }

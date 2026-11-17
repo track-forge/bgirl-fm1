@@ -28,6 +28,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    for(let i=0;i<10;i++){await page.waitForTimeout(100);p=Math.max(p,await peak());}assert(p>.00001&&p<=1);peaks[id]=p;
    await tap('PLAY / STOP');assert.equal((await info())[8],0);
   }
+  await page.locator('#clarity-carrier').selectOption('2');
+  await fixture('clarity-whole');q=await info();assert.equal(q[4],6);assert.equal(q[9],0);
+  await tap('PLAY / STOP');await page.waitForTimeout(700);assert(await peak()>.00001);await tap('PLAY / STOP');
+  await page.locator('#clarity-carrier').selectOption('0');
   await fixture('clarity-whole');await tap('FX');await tap('FX');
   await turn('KNOB 2',-2);assert.equal((await info())[0],0);await turn('KNOB 2',1);assert.equal((await info())[0],1);await turn('KNOB 2',1);assert.equal((await info())[0],2);
   await tap('PLAY / STOP');await tap('FX'); // input

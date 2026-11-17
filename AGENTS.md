@@ -62,3 +62,8 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
   No engine/BSP pin edits. BG CARR SAW appends ANALOG preset 12.
 - tools/clarity_audition.py produces ignored local audio/gallery/measurements;
   technical success never means Doug listening approval or physical-device fit.
+
+- Live vocoder demos now use TRIO / FAT BASS (engine6/preset0), per Doug's listening.
+  Clarity carrier IDs:0 saw,1 archived GRAIN for old gallery reproduction,2 TRIO.
+  Browser exposes saw/TRIO only. Do not relabel or re-render the archived gallery
+  as TRIO without a new explicit rendering task.

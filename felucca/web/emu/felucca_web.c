@@ -592,7 +592,7 @@ EXPORT uint32_t web_bgirl_signature_info(uint32_t track, uint32_t field) {
 }
 
 /* Existing isolated ANALOG comparison remains reproducible; the live wet buttons
- * retain electro drums/bass and replace the bell with a sustained bright saw pad. */
+ * retain electro drums/bass and use the factory TRIO / FAT BASS carrier. */
 static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 {
     uint32_t k;
@@ -672,10 +672,11 @@ EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
 
 /* Independent, editable auditions. No startup/autosave hook. All synthesis is
  * through normal engines, tracks, sequencer and the existing two-input vocoder.
- * mode0 whole,1 chops,2 arrangement,3 carrier-only,4 dry whole. */
+ * mode0 whole,1 chops,2 arrangement,3 carrier-only,4 dry whole.
+ * carrier0 saw,1 historical GRAIN (offline comparisons),2 factory TRIO FAT BASS. */
 EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,uint32_t carrier,uint32_t wet)
 {
-    if(mode>4 || bands>2 || release>127 || carrier>1 || wet>127) return 1;
+    if(mode>4 || bands>2 || release>127 || carrier>2 || wet>127) return 1;
     uint32_t group=1;
     for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
         if(!strcmp(BG_VOCAL_VIEWS[i],"G6")) group=i;
@@ -683,6 +684,9 @@ EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,
     fm1_irq_off();undo_depth++;
     if(!carrier) {
         set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
+    } else if(carrier==1) {
+        /* Preserve existing recorded-comparison API identity; not a live UI choice. */
+        set_engine_of(&trk[2],8);apply_preset_to(&trk[2],0);
     }
     trk[2].p[P_LEVEL]=90;
     trk[2].p[P_SLEN]=64;trk[2].p[P_SDIV]=2;

@@ -1,5 +1,37 @@
 # Vocoder clarity — host/browser evidence and audition
 
+## Current live-demo carrier follow-up
+
+Doug auditioned the comparison gallery and found **TRIO / FAT BASS** preferable
+to GRAIN / CLOUD PAD for the live carrier. Fresh startup, Load electro demo,
+speech-lab wet loaders and the vocal-bank wet loaders now use TRIO engine6,
+factory preset0. Existing C2/G2 carrier notes, articulation, mix/routing, band and
+release settings remain; no oscillator/envelope retuning or factory preset edit.
+Clarity's second browser carrier choice is now TRIO / FAT BASS (API value2);
+BG CARR SAW remains available. Existing saves and autosaves are not rewritten.
+Refresh and explicitly reload a demo to adopt the new carrier.
+
+**The listening gallery WAVs and measured results below remain historical and
+unchanged**, as Doug requested. Carrier API value1 explicitly retains GRAIN for
+reproducing those controlled old comparisons; it is no longer a browser demo
+choice. Do not read archived GRAIN timings/levels as new TRIO measurements.
+
+Release50/100 are normal UI REL settings, not hard-coded audio-only effects:
+T4 → slow FX taps → VOC COLOR → K4 REL edits live in milliseconds. VOC TIME
+K1 RANGE=LOG enables5–500ms; K2 is the same REL. Clarity loaders already use LOG.
+Nearest50/100ms values are49.102/101.404ms. The lab dropdown applies when loading
+an audition; the normal knobs edit the current sound without reloading.
+
+Follow-up checks: root web build/full host suite,109 unchanged goldens,
+45 saved audition combinations (including TRIO factory engine/preset/envelope),
+heavy-song and clarity native/WASM parity, and actual clarity/demo/vocal/vocoder
+Chromium suites pass. All existing gallery audio/manifest SHA256 values remain
+unchanged. Updated preview revision and served WASM SHA are in build.json.
+
+Remaining sections document the original9639532 implementation/measurements;
+this follow-up does not imply blanket musical approval or hardware feasibility.
+
+
 2026-11-17 · draft [PR27](https://github.com/track-forge/bgirl-fm1/pull/27),
 branch `plan/vocoder-clarity`, main base
 `4c7628420b8dd8db7eb2ff81759105794ec80650` (six tracks).

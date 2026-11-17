@@ -104,15 +104,15 @@ session, hold HOME → COLOR → CIRCUIT; HOME exits. No musical behavior change
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band
 vocoder** below the panel; confirm replacing the current unsaved project. Press
-PLAY. The wet setups keep the electro demo drums/bass and use a **track3 GRAIN /
-CLOUD PAD (one octave lower)** as track4 speech's carrier, with dry pad monitoring
+PLAY. The wet setups keep the electro demo drums/bass and use a **track3 TRIO /
+FAT BASS** as track4 speech's carrier, with dry carrier monitoring
 OFF. The dry-speech
 button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
 12-band arrangement; restored autosaves take precedence.
 
 - Track4 chromatic keys select original-speed chops in the demo. The isolated
   dry-speech button still selects the four factory SPEECH phrases.
-- Select track3 (ALGORITHM) and play pad/carrier notes without restarting speech.
+- Select track3 (ALGORITHM) and play carrier notes without restarting speech.
 - Track4 FX pages2–4 (immediately after FX): VOCODER (carrier, bands, wet, dry monitoring), VOC INPUT
   (live HOLD/Freeze, trims, consonants), VOC COLOR (three character groups/release).
   Tap FX **slowly**, or use SELECT after opening FX; quick double-tap locks the
@@ -120,7 +120,7 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 - MON OFF hides the carrier's direct output/sends while retaining its audio feed.
   Ordinary mute silences the feed. STOP/panic ends speech and live Freeze.
 - Expand **reference renders** for dry/8/12/consonant/chorus comparisons.
-  These original isolated ANALOG references are not the live pad groove.
+  These original isolated ANALOG references are not the live TRIO groove.
   Unnormalized levels differ. Doug reports the overall vocoder experiment is a win;
   a final band preference/intelligibility curation decision remains open.
 - Save projects normally. B6S1 saves keep
@@ -134,7 +134,7 @@ button stays isolated. Saved slots are not erased. Fresh startup and Load electr
 ## Vocoder clarity · 8/12/24 bands
 
 The **Vocoder clarity** lab loads stopped whole-phrase/chopped auditions,
-**BG CARR SAW** or existing GRAIN / CLOUD PAD, a fully wet/92.126% blend, and
+**BG CARR SAW** or factory TRIO / FAT BASS, a fully wet/92.126% blend, and
 an editable four-bar electro arrangement. The current startup/electro demo stays
 unchanged. Old saved release values retain their meaning; on normal T4 FX →
 VOC TIME choose **LOG** for 5–500ms, or **LEGACY** for the existing map. REL now
@@ -156,11 +156,10 @@ Generated audio stays ignored/local; public builds need no private inputs.
 ## Optional whole-phrase / chopped vocal bank
 
 The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
-each dry or through the existing sustained pad vocoder. Normal builds bundle the
+each dry or through the TRIO / FAT BASS vocoder. Normal builds bundle the
 **G6 recording and its six chops**, authorized by Doug for public redistribution.
 The other five supplied recordings are not bundled. Factory SPEECH is unchanged.
-Startup and **Load electro demo** use the two-bar G6 groove, octave-down CLOUD
-PAD and 12-band routing in public builds too. An explicit custom bank without G6
+Startup and **Load electro demo** use the two-bar G6 groove, TRIO / FAT BASS and 12-band routing in public builds too. An explicit custom bank without G6
 uses its first chop group with the same rhythm. Autosaved projects still take
 precedence; refresh and explicitly reload the demo to replace an old arrangement.
 
@@ -244,7 +243,7 @@ not establish musical approval or physical-device fit/performance.
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
 | 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
-| 3 | GRAIN / CLOUD PAD | C2/G2 tied through each phrase; carrier, dry MON OFF |
+| 3 | TRIO / FAT BASS | C2/G2 tied through each phrase; carrier, dry MON OFF |
 | 4 | SLICE / VOCALS | Two-bar (32-step) chop groove; bundled G6 → 12-band vocoder, carrier T3 |
 | 5 | FM6 / TINE EP | Empty; unrestricted track |
 | 6 | DRUM / TIGHT KIT | Empty; unrestricted track |
@@ -270,7 +269,7 @@ palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
 4. Stop with PLAY. Edit a sound and use Felucca **SAVE**, **OCT+**, **OCT+** to
    confirm a user preset. Use its normal SAVE > PROJECT page to save/load a project.
 5. On track4, tap FX slowly twice for VOCODER: CARR=T3,12bands,MON OFF.
-   MON ON adds the dry pad; mute T1/T2 (not T3) for a clearer voice audition.
+   MON ON adds the dry carrier; mute T1/T2 (not T3) for a clearer voice audition.
 6. Use Blank electro template, edit or load saved material, then optionally reload
    the demo. Autosave restores changed music after at least 10 quiet seconds and
    the inherited 60-second write-spacing limit; a page reload immediately after an
