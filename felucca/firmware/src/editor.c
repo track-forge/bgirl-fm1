@@ -177,7 +177,7 @@ static void ed_load_before(ed_load_t *b)
     memcpy(b->p, TSEL->p, sizeof b->p);
     b->eng = (uint8_t)ed_eng(TSEL);
     b->preset = TSEL->preset;
-    b->due = sync_reload || b->eng != ed_w.eng || b->preset != ed_w.preset || song.sel != ed_w.sel;
+    b->due = sync_reload || ed_w.v[P_VRANGE]!=TSEL->p[P_VRANGE] || b->eng != ed_w.eng || b->preset != ed_w.preset || song.sel != ed_w.sel;
 }
 static void ed_load_after(const ed_load_t *b)
 {
@@ -214,7 +214,7 @@ static void ed_sync(void)                                /* main loop */
         ed_w.on = 0;                                     /* no host, USB reset, or 3 s without a request */
         return;
     }
-    if (sync_reload || ed_eng(TSEL) != ed_w.eng || TSEL->preset != ed_w.preset || song.sel != ed_w.sel) {
+    if (sync_reload || ed_w.v[P_VRANGE]!=TSEL->p[P_VRANGE] || ed_eng(TSEL) != ed_w.eng || TSEL->preset != ed_w.preset || song.sel != ed_w.sel) {
         if (!ed_room())
             return;
         ed_shadow();
@@ -276,7 +276,7 @@ static void ed_sync(void)                                /* main loop */
 
 /* descriptor of parameter id of track t: the engine parameters of the engine it asked for
  * (t->engine follows in the audio ISR, after a short fade) */
-static const param_desc_t *ed_tdesc(const track_t *t, uint32_t id) { return param_desc_of(t->eng_req % NENGINES, id); }
+static const param_desc_t *ed_tdesc(const track_t *t, uint32_t id) { return id==P_VREL ? track_desc(t,id) : param_desc_of(t->eng_req % NENGINES, id); }
 /* descriptor and value slot of (scope, id): scope 0 = the selected track, 1 = global */
 static const param_desc_t *ed_desc(uint32_t scope, uint32_t id, int16_t **vp)
 {
@@ -507,6 +507,7 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
             } else if (d->max > d->min) {
                 *vp = (int16_t)enum_orig(d, clamp(ed_rv(a + 2), d->min, d->max));
                 if (a[0] == 0) {
+                    if(a[1]==P_VRANGE)sync_reload=1;
                     (void)motion_capture(TSEL, a[1], *vp);
                     load_extend(TSEL);                      /* (ui.c undo: an audition's values after G_ENGSEL) */
                 }

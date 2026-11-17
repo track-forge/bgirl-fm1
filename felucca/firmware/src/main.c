@@ -55,14 +55,14 @@ static void bgirl_demo_vocoder(void)
 {
     uint32_t k;
     undo_depth++;
-    set_engine_of(&trk[2],8); apply_preset_to(&trk[2],0);
+    set_engine_of(&trk[2],6); apply_preset_to(&trk[2],0);
     set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);
     undo_depth--;
     for(k=2;k<NTRK;k++) {
         trk[k].p[P_CHOR]=trk[k].p[P_DLY]=trk[k].p[P_REV]=0;
         trk[k].p[P_DIST]=0;
     }
-    /* Factory GRAIN / CLOUD PAD timbre and envelope, tied one octave lower. */
+    /* Factory TRIO / FAT BASS timbre/envelope; retain the existing C2/G2 line. */
     trk[2].p[P_LEVEL]=90; trk[2].p[P_SLEN]=64;
     memset(trk[2].step,0,sizeof trk[2].step);
     for(k=0;k<64;k++) {

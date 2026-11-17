@@ -51,3 +51,19 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
   nothing. MIXER retains its selected-track LEVEL/PAN/REV/MUTE knobs.
 - Editor uses `7D 46 36`, not fixed-four `7D 46 4C`. Run six_codec/six_track and
   editor host tests plus `tests/six-browser.cjs`. See six-track verification.
+
+## Vocoder clarity lane
+
+- Read docs/VOCODER_CLARITY_CONTRACT.md and VOCODER_CLARITY_VERIFICATION.md.
+- BANDS 0/1/2 = 8/12/24. RANGE 0 preserves legacy REL; RANGE 1 is generated 5–500ms.
+- B6S1 accepts 126/127 counts via explicit engine/motion ID adapter. Do not edit
+  frozen default values. Log sound presets use versions 9/10, preserving VOCALS IDs.
+- Regenerate time/coeff/carrier headers with tools (root web build does this).
+  No engine/BSP pin edits. BG CARR SAW appends ANALOG preset 12.
+- tools/clarity_audition.py produces ignored local audio/gallery/measurements;
+  technical success never means Doug listening approval or physical-device fit.
+
+- Live vocoder demos now use TRIO / FAT BASS (engine6/preset0), per Doug's listening.
+  Clarity carrier IDs:0 saw,1 archived GRAIN for old gallery reproduction,2 TRIO.
+  Browser exposes saw/TRIO only. Do not relabel or re-render the archived gallery
+  as TRIO without a new explicit rendering task.

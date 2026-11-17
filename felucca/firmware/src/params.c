@@ -88,7 +88,10 @@ static const char *const N_SLOT[] = {"A", "B", "C", "D", 0};   /* G_SLOT 1..4 (F
 #define PE(l, n, df) {l, F_ENUM, 0, (int16_t)(sizeof(n) / sizeof(n[0]) - 1), df, n, 0}
 
 static const char *const N_VCARR[] = {"OFF", "T1", "T2", "T3", "T4", "T5", "T6"};
-static const char *const N_VBANDS[] = {"8", "12"};
+#include "bgirl_vocoder_time.h"
+static const char *const N_VRANGE[] = {"LEGACY", "LOG"};
+static const param_desc_t VC_LEGACY_REL = {"REL", F_VOCLEG, 1, 127, 32, 0, "ms"};
+static const char *const N_VBANDS[] = {"8", "12", "24"};
 static const param_desc_t TP[P_COUNT] = {
     [P_VCARR] = PE("CARR", N_VCARR, 0),
     [P_VBANDS] = PE("BANDS", N_VBANDS, 1),
@@ -101,7 +104,8 @@ static const param_desc_t TP[P_COUNT] = {
     [P_VLOW] = PD("LOW", F_INT, 0, 127, 64),
     [P_VMID] = PD("MID", F_INT, 0, 127, 64),
     [P_VHIGH] = PD("HIGH", F_INT, 0, 127, 64),
-    [P_VREL] = PD("REL", F_INT, 1, 127, 32),
+    [P_VREL] = {"REL", F_VOCREL, 0, 127, 32, 0, "ms"},
+    [P_VRANGE] = PE("RANGE", N_VRANGE, 0),
     [P_LEVEL] = PD("LVL", F_DB, 0, 127, 104),
     [P_ATK] = PD("ATK", F_TIME, 0, 127, 10),
     [P_DEC] = PD("DEC", F_TIME, 0, 127, 70),
@@ -252,6 +256,7 @@ static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t *track_desc(const track_t *t, uint32_t id)
 {
+    if(id==P_VREL && !t->p[P_VRANGE]) return &VC_LEGACY_REL;
     if(id==P_VCARR && t->p[P_VCARR]) {
         int c=t->p[P_VCARR]-1;
         if(t->eng_req!=13 || c<0 || c>=NPART || &trk[c]==t || !eng_ok(trk[c].eng_req)) return &VC_MISSING;
@@ -389,6 +394,8 @@ static void param_format(const param_desc_t *d, int32_t v, char *val, const char
         }
         break;
     }
+    case F_VOCREL: fmt_int(val,(int32_t)(BG_REL_MS[clamp(v,0,127)]+.5f)); *unit="ms"; break;
+    case F_VOCLEG: fmt_int(val,v+1); *unit="ms"; break;
     case F_LFOHZ: {
         uint32_t h = LFO_HZ_X100[v & 127];
         if (h < 1000u)
@@ -487,6 +494,7 @@ static const page_t PAGES[] = {
     {"VOCODER", FAM_FX, SC_TRACK, GR_NONE, {P_VCARR, P_VBANDS, P_VWET, P_VMON}},
     {"VOC INPUT", FAM_FX, SC_TRACK, GR_NONE, {P_VHOLD, P_VMTRIM, P_VCTRIM, P_VCONS}},
     {"VOC COLOR", FAM_FX, SC_TRACK, GR_NONE, {P_VLOW, P_VMID, P_VHIGH, P_VREL}},
+    {"VOC TIME", FAM_FX, SC_TRACK, GR_NONE, {P_VRANGE, P_VREL, P_VCONS, P_VWET}},
     {"SLICER", FAM_FX, SC_TRACK, GR_SLCR, {P_SLCR, P_SLPAT, P_SLRATE, P_SLDEPTH}},
     {"INSERT", FAM_FX, SC_TRACK, GR_INS, {P_ITYPE, P_IA, P_IB, P_IC}},   /* 1.5: the track's INSERT (fx.c) */
     {"INSERT 2", FAM_FX, SC_TRACK, GR_INS, {P_IMIX, 0xFF, 0xFF, 0xFF}},  /* .. its dry / wet */

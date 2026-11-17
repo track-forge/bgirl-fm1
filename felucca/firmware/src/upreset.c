@@ -51,6 +51,8 @@
 #define UP_VER 4u                                /* 2 since 1.0; 1 is read too (PHYS MODEL 2 was DUST) */
 #define UP_VER_SIGNATURE 7u
 #define UP_VER_SIGNATURE_GRID 8u
+#define UP_VER_CLARITY 9u
+#define UP_VER_CLARITY_GRID 10u
 #define UP_VER_VOCAL 6u                          /* identity-aware VOCALS; old firmware refuses */
 #define UP_VOCAL_AT 134u
 _Static_assert(P_COUNT <= UP_VOCAL_AT, "vocal preset identity fits");
@@ -112,8 +114,9 @@ static void up_set_cat(up_rec_t *r, uint32_t c)  /* c CAT_BASS..CAT_OTHER; a rec
 
 static int up_valid(const up_rec_t *r)
 {
-    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_SIGNATURE_GRID && r->engine < NENGINES &&
+    if (!(r->used == UP_USED && r->ver >= 1u && r->ver <= UP_VER_CLARITY_GRID && r->engine < NENGINES &&
           r->np >= 8u && r->np <= (r->ver >= 4u ? UP_PMAX * 2u : UP_PMAX) && r->name[0])) return 0;
+    if(r->ver>=UP_VER_CLARITY && (r->np!=P_COUNT || r->packed[P_VRANGE]!=65u))return 0;
     if(r->ver==UP_VER_VOCAL && (r->engine!=13 || r->np>UP_VOCAL_AT || r->packed[r->np-8u] != 6u+64u)) return 0;
     if((r->ver==UP_VER_SIGNATURE || r->ver==UP_VER_SIGNATURE_GRID) &&
        (r->engine!=ENGI_DRUM || r->np<8u || r->packed[r->np-8u]<12u+64u || r->packed[r->np-8u]>18u+64u)) return 0;
@@ -125,11 +128,13 @@ static int up_valid(const up_rec_t *r)
 static void up_signature_guard(up_rec_t *r) {
     if (r->engine==ENGI_DRUM && r->np>=8u && r->packed[r->np-8u]>=12u+64u)
         r->ver = (r->ver==UP_VER_GRID || r->ver==UP_VER_SIGNATURE_GRID) ? UP_VER_SIGNATURE_GRID : UP_VER_SIGNATURE;
+    if(r->np==P_COUNT && r->packed[P_VRANGE]==65u)
+        r->ver=(r->ver==UP_VER_GRID || r->ver==UP_VER_SIGNATURE_GRID || r->ver==UP_VER_CLARITY_GRID) ? UP_VER_CLARITY_GRID : UP_VER_CLARITY;
 }
 
 static int up_used(uint32_t k) { return k < UP_SLOTS && up_valid(up_rec(k)); }
 
-static int up_grid(const up_rec_t *r) { return r->ver == 3u || r->ver == UP_VER_GRID || r->ver == UP_VER_SIGNATURE_GRID; }
+static int up_grid(const up_rec_t *r) { return r->ver == 3u || r->ver == UP_VER_GRID || r->ver == UP_VER_SIGNATURE_GRID || r->ver == UP_VER_CLARITY_GRID; }
 static int16_t up_value(const up_rec_t *r, uint32_t k) { return r->ver >= 4u ? (int16_t)r->packed[k] - 64 : r->p[k]; }
 static void up_set_value(up_rec_t *r, uint32_t k, int16_t v)
 {
@@ -504,7 +509,7 @@ static int up_load(uint32_t k)
             if (!param_kept(i))
                 t->p[i] = v[i];
         memset(bg_vocal_expected[t-trk],0,8);
-        if(r->ver==UP_VER_VOCAL && r->np<=UP_VOCAL_AT)
+        if((r->ver==UP_VER_VOCAL || (r->ver>=UP_VER_CLARITY && r->engine==13 && r->packed[r->np-8u]==SLC_SRC_VOCALS+64u)) && r->np<=UP_VOCAL_AT)
             memcpy(bg_vocal_expected[t-trk],r->packed+UP_VOCAL_AT,8);
         if (up_cat_of(r)==CAT_SIGNATURE) {
             t->p[P_CHRD]=v[P_CHRD]; t->p[P_VOIC]=v[P_VOIC];

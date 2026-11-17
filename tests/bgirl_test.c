@@ -9,7 +9,7 @@ static void defaults(int demo) {
     assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==V_LEGATO);
 #if BGIRL_VOCODER
     if(demo) {
-        assert(trk[2].eng_req==8 && trk[2].preset==0 && trk[2].p[P_SUS]==120);
+        assert(trk[2].eng_req==6 && trk[2].preset==0 && trk[2].p[P_SUS]==60);
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==1);
         assert(trk[2].step[1].time==ST_TIE);
