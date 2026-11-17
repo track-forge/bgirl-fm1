@@ -237,6 +237,7 @@ static void midi_cc_set(track_t *t, uint32_t id, uint32_t value)
     /* Global wire range includes VIEW6, but ordinary SLICE CC DIV remains0..5. */
     if(t->eng_req==13 && (id==P_E1 || id==P_E2)) d=track_desc(t,id);
 #endif
+    if(id==P_VREL)d=track_desc(t,id);
     int32_t v = d->min + ((int32_t)value * (d->max - d->min) + 63) / 127;
     if (d->max <= d->min || t->p[id] == v)
         return;

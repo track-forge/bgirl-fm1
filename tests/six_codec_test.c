@@ -37,7 +37,7 @@ int main(void) {
     }
     for (unsigned i = 10; i < 20; i++) {
         wire = kept;
-        wire.raw[i] = 127;
+        wire.raw[i] = i==12 ? 125 : 127;
         hash();
         bad();
     }
@@ -124,7 +124,7 @@ tune:;
                 }
                 hit[n - 3839] = 1;
             }
-            if (original.t[t].p[p] == BG6_DEFAULTS[original.t[t].engine][p])
+            if (original.t[t].p[p] == proj_default(original.t[t].engine,p))
                 original.t[t].p[p] = original.t[t].p[p] == 127 ? 126 : original.t[t].p[p] + 1;
             if (n > 3841)
                 goto finished;

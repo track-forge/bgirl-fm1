@@ -36,7 +36,7 @@ typedef union {
 static uint8_t proj_old_slots; /* recognized incompatible NOR slots; never erase on read */
 project_store_t proj_slot[4] __attribute__((section(".noinit")));
 #include "project_defaults.h"
-_Static_assert(P_COUNT == 126 && G_COUNT == 27 && NSTEP == 64, "B6S1 field IDs frozen; bump format on change");
+_Static_assert(P_COUNT == 127 && G_COUNT == 27 && NSTEP == 64, "B6S1 clarity count adapter must be reviewed on change");
 static uint8_t proj_full;
 static uint32_t proj_hash(const void *p, uint32_t n) {
     const uint8_t *b = p;
@@ -99,6 +99,13 @@ static uint32_t proj_step_size(const step_t *s) {
     uint32_t nn, x = proj_step_x(s, &nn);
     return 2 + nn + (x ? 1 : 0) + (x & 1 ? 2 : 0) + (x & 2 ? 1 : 0) + (x & 8 ? 1 : 0);
 }
+/* Frozen v1 defaults: only the additive range discriminator is new. */
+static int16_t proj_default(uint32_t e, uint32_t id) {
+    return id == P_VRANGE ? 0 : BG6_DEFAULTS[e][id > P_VRANGE ? id-1 : id];
+}
+static uint32_t proj_clarity_id(uint32_t id, uint32_t count) {
+    return count == 126 && id >= P_VRANGE ? id+1 : id;
+}
 static int proj_fm_kept(const project_t *q, uint32_t t) { return memcmp(q->fm6[t], BG6_FM6_INIT, FM6_PACKED) != 0; }
 static uint32_t proj_packed_size(const project_t *q) {
     uint32_t n = 20 + G_COUNT * 2 + PROJ_NAME_LEN + 4 + CHAIN_ROWS * (NTRK + 1) + 4 + q->motion.count * 4 + 4;
@@ -108,7 +115,7 @@ static uint32_t proj_packed_size(const project_t *q) {
         if (e >= NENGINES)
             return PROJ_STORE_SIZE + 1;
         for (uint32_t i = 0; i < P_COUNT; i++)
-            n += q->t[t].p[i] != BG6_DEFAULTS[e][i];
+            n += q->t[t].p[i] != proj_default(e,i);
         for (uint32_t i = 0; i < NSTEP; i++)
             if (!proj_step_empty(&q->t[t].step[i]))
                 n += proj_step_size(&q->t[t].step[i]);
@@ -182,7 +189,7 @@ static int proj_pack(project_store_t *out, const project_t *q) {
         uint32_t map = pos;
         pos += PROJ_MAP;
         for (uint32_t i = 0; i < P_COUNT; i++)
-            if (q->t[t].p[i] != BG6_DEFAULTS[e][i]) {
+            if (q->t[t].p[i] != proj_default(e,i)) {
                 b[map + i / 8] |= 1u << (i & 7);
                 b[pos++] = q->t[t].p[i] + 64;
             }
@@ -236,9 +243,10 @@ static int proj_pack(project_store_t *out, const project_t *q) {
  * Only one decoded project scratch is needed (the caller's); no project on stack. */
 static int proj_decode(project_t *q, const uint8_t *b, uint32_t st) {
     if (st != PROJ_STORE_SIZE || proj_rd(b, 4) != PROJ_MAGIC || proj_rd(b + 4, 4) != st || b[10] != 1 ||
-        b[11] != NTRK || b[12] != P_COUNT || b[13] != G_COUNT || b[14] >= NTRK || b[15] != NPART ||
+        b[11] != NTRK || (b[12] != P_COUNT && b[12] != 126) || b[13] != G_COUNT || b[14] >= NTRK || b[15] != NPART ||
         b[16] != PROJ_PHYS || b[17] || b[18] || b[19] || proj_rd(b + PROJ_END, 4) != proj_hash(b, PROJ_END))
         return 0;
+    uint32_t count=b[12], pmap=(count+7u)/8u;
     uint32_t used = proj_rd(b + 8, 2), pos = 20;
     if (used < 24 || used > PROJ_STORE_SIZE)
         return 0;
@@ -278,7 +286,7 @@ static int proj_decode(project_t *q, const uint8_t *b, uint32_t st) {
             q->t[t].preset = preset;
             memcpy(q->fm6[t], BG6_FM6_INIT, FM6_PACKED);
             for (uint32_t i = 0; i < P_COUNT; i++)
-                q->t[t].p[i] = BG6_DEFAULTS[e][i];
+                q->t[t].p[i] = proj_default(e,i);
         }
         if (fm) {
             TAKE(FM6_PACKED);
@@ -289,7 +297,7 @@ static int proj_decode(project_t *q, const uint8_t *b, uint32_t st) {
                 memcpy(q->fm6[t], b + pos, FM6_PACKED);
             pos += FM6_PACKED;
         }
-        TAKE(9 + PROJ_MAP);
+        TAKE(9 + pmap);
         if (q)
             memcpy(q->vocal_id[t], b + pos, 8);
         pos += 8;
@@ -299,17 +307,17 @@ static int proj_decode(project_t *q, const uint8_t *b, uint32_t st) {
             q->mch[t] = b[pos];
         pos++;
         uint32_t map = pos;
-        pos += PROJ_MAP;
-        for (uint32_t i = P_COUNT; i < PROJ_MAP * 8; i++)
+        pos += pmap;
+        for (uint32_t i = count; i < pmap * 8; i++)
             if (b[map + i / 8] & (1u << (i & 7)))
                 return 0;
-        for (uint32_t i = 0; i < P_COUNT; i++)
+        for (uint32_t i = 0; i < count; i++)
             if (b[map + i / 8] & (1u << (i & 7))) {
                 TAKE(1);
                 if (b[pos] > 191)
                     return 0;
                 if (q)
-                    q->t[t].p[i] = (int16_t)b[pos] - 64;
+                    q->t[t].p[proj_clarity_id(i,count)] = (int16_t)b[pos] - 64;
                 pos++;
             }
         TAKE(8);
@@ -389,7 +397,9 @@ static int proj_decode(project_t *q, const uint8_t *b, uint32_t st) {
     for (uint32_t i = 0; i < mo.count; i++) {
         mo.event[i].place = proj_rd(b + pos, 2);
         pos += 2;
-        mo.event[i].param = b[pos++];
+        uint32_t raw=b[pos++];
+        if ((raw & 127u) >= count) return 0;
+        mo.event[i].param = proj_clarity_id(raw & 127u,count) | (raw & MOTION_LOCK);
         mo.event[i].value = (int8_t)b[pos++];
     }
     if (pos != end || !chain_valid(&chain) || !motion_valid(&mo))

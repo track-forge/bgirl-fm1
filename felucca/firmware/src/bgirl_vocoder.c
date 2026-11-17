@@ -4,11 +4,12 @@
 #ifndef BGIRL_VOCODER_DSP
 #define BGIRL_VOCODER_DSP
 #include "bgirl_vocoder_coeff.h"
+#include "bgirl_vocoder_time.h"
 typedef struct { float z1, z2; } bg_bq_t;
 typedef struct {
-    bg_bq_t analysis[12], synthesis[12];
-    float env[12], held[12], applied[12], hp, carrier_env;
-    uint32_t hold;
+    bg_bq_t analysis[24], synthesis[24];
+    float env[24], held[24], applied[24], hp, carrier_env;
+    uint32_t hold, mode;
 } bg_vocoder_t;
 static bg_vocoder_t bg_voc;
 static float bg_abs(float x) { return x < 0 ? -x : x; }
@@ -22,10 +23,19 @@ static float bg_filter(bg_bq_t *s, const float *c, float x)
 static void bg_vocoder_reset(void) { memset(&bg_voc,0,sizeof bg_voc); }
 static void bg_vocoder_process(int32_t *mod, const int32_t *car, uint32_t n, const int16_t *p)
 {
-    uint32_t i,j,bands=p[P_VBANDS] ? 12 : 8;
-    const float (*coef)[5]=p[P_VBANDS] ? BG_COEF12 : BG_COEF8;
+    uint32_t mode=p[P_VBANDS]>=2 ? 2 : p[P_VBANDS]>0 ? 1 : 0;
+    uint32_t i,j,bands=mode==2 ? 24 : mode ? 12 : 8;
+    const float (*coef)[5]=mode==2 ?
+#ifdef BGIRL_VOCODER_NARROW24
+        BG_COEF24 :
+#else
+        BG_COEF24_WIDE :
+#endif
+        mode ? BG_COEF12 : BG_COEF8;
+    /* A bank change invalidates all held and recursive state, even while frozen. */
+    if(bg_voc.mode!=mode) { bg_vocoder_reset(); bg_voc.mode=mode; }
     float mr=p[P_VMTRIM]/64.f, cr=p[P_VCTRIM]/64.f, wet=p[P_VWET]/127.f;
-    float release=1.f/(44.1f*(p[P_VREL]+1));
+    float release=p[P_VRANGE] ? 1.f/(44.1f*BG_REL_MS[p[P_VREL]<0 ? 0 : p[P_VREL]>127 ? 127 : p[P_VREL]]) : 1.f/(44.1f*(p[P_VREL]+1));
     if (p[P_VHOLD] && !bg_voc.hold)
         for (j=0;j<bands;j++) bg_voc.held[j]=bg_voc.env[j];
     bg_voc.hold=p[P_VHOLD]!=0;

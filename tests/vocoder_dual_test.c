@@ -41,12 +41,12 @@ static uint64_t isolated(int o,int c,int mask,int b,const char *failure) {
 }
 int main(void) {
     int comparisons=0;
-    for(int b=0;b<2;b++) for(int o=0;o<4;o++)for(int c=0;c<4;c++)if(o!=c) {
+    for(int b=0;b<3;b++) for(int o=0;o<4;o++)for(int c=0;c<4;c++)if(o!=c) {
         uint64_t h=isolated(o,c,0,b,0);
         for(int m=1;m<15;m++){assert(h==isolated(o,c,m,b,0));comparisons++;}
     }
     int extraComparisons=0;
-    for(int b=0;b<2;b++)for(int o=0;o<6;o++)for(int c=0;c<6;c++)if(o!=c && (o>=4 || c>=4)) {
+    for(int b=0;b<3;b++)for(int o=0;o<6;o++)for(int c=0;c<6;c++)if(o!=c && (o>=4 || c>=4)) {
         uint64_t ref=isolated(o,c,0,b,0);int masks[]={1,16,32,48,63};
         for(int m=0;m<5;m++){assert(ref==isolated(o,c,masks[m],b,0));extraComparisons++;}
         assert(ref==isolated(o,c,63,b,"reject"));isolated(o,c,63,b,"partial");isolated(o,c,63,b,"complete");
@@ -55,7 +55,7 @@ int main(void) {
     int vocalComparisons=0;
     for(int view=0;view<2;view++) {
         setenv("VOCAL_VIEW",view ? "1" : "0",1);
-        for(int b=0;b<2;b++)for(int o=0;o<6;o++) {
+        for(int b=0;b<3;b++)for(int o=0;o<6;o++) {
             if(o==1 || o==2)continue;
             int c=o<4?3-o:9-o;uint64_t ref=isolated(o,c,0,b,0);
             int masks[]={16,32,48,63};
@@ -78,5 +78,5 @@ int main(void) {
         assert(isolated(o,c,0,1,0)==isolated(o,c,15,1,"reject"));
         isolated(o,c,15,1,"partial");isolated(o,c,15,1,"complete");
     }
-    printf("vocoder dual: %d bit-identical 8/12-band ordered-pair/mask comparisons; 12 each rejected/partial/completed-failed jobs; <=1 render/track/block PASS\n",comparisons);
+    printf("vocoder dual: %d bit-identical 8/12/24-band ordered-pair/mask comparisons; 12 each rejected/partial/completed-failed jobs; <=1 render/track/block PASS\n",comparisons);
 }

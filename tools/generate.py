@@ -7,6 +7,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'felucca/tools'))
 import build
 build.generate()
 
+import subprocess
+for gen in ("vocoder_time.py", "vocoder_coeff.py", "carrier_bank.py"):
+    subprocess.run([sys.executable, str(Path(__file__).resolve().parent/gen)], check=True)
+
 import package_speech
 package_speech.package()
 

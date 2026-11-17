@@ -1352,9 +1352,20 @@ static int custom_palette(void)
 }
 
 #ifndef EDITOR_TEST_NO_MAIN                              /* (robust_test.c, fuzz_*.c: this file is their base) */
+static int clarity_protocol(void) {
+    reset();uint8_t a[4]={0,P_VBANDS,0,0};
+    request(ED_DESC,a,2);int ok=host_wire[7]==F_ENUM && ed_rv(host_wire+10)==2;
+    TSEL->p[P_VRANGE]=0;a[1]=P_VREL;request(ED_DESC,a,2);
+    ok &= host_wire[7]==F_VOCLEG && ed_rv(host_wire+8)==1;
+    a[1]=P_VRANGE;a[2]=1;a[3]=64;request(ED_SET,a,4);
+    ok &= TSEL->p[P_VRANGE]==1 && sync_reload;
+    a[1]=P_VREL;request(ED_DESC,a,2);ok &= host_wire[7]==F_VOCREL && ed_rv(host_wire+8)==0;
+    a[2]=0;a[3]=64;request(ED_SET,a,4);ok &= TSEL->p[P_VREL]==0;
+    return check("clarity DESC/SET:8/12/24, legacy/log ms formats, range reload and5ms endpoint",ok);
+}
 int main(void)
 {
-    int bad = preferences() + motion_locks() + framing() + uart_recovery() + steps() + samples() + song_protocol() + malformed_saves() +
+    int bad = clarity_protocol() + preferences() + motion_locks() + framing() + uart_recovery() + steps() + samples() + song_protocol() + malformed_saves() +
               fm6_patches() + user_preset_roundtrip() + live_sync() + usb_burst() + menu_protocol() + drum_kit_retired() +
               learn_protocol() + custom_palette();
     printf("%s\n", bad ? "EDITOR TEST FAILED" : "editor test passed");

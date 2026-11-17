@@ -217,7 +217,7 @@ int main(void) {
                 s->note[j] = 60 + j;
         }
     capacity("dense six x64 x4", &q);
-    for(unsigned t=0;t<NTRK;t++)for(unsigned i=0;i<P_COUNT;i++)q.t[t].p[i]=BG6_DEFAULTS[q.t[t].engine][i]==127?126:127;
+    for(unsigned t=0;t<NTRK;t++)for(unsigned i=0;i<P_COUNT;i++)q.t[t].p[i]=proj_default(q.t[t].engine,i)==127?126:127;
     capacity("dense + all params", &q);
     printf("RAM track_t=%zu tracks=%zu engine_pool=%zu project=%zu motion=%zu chain=%zu wire=%zu\n", sizeof(track_t),
            sizeof trk, sizeof eng_mem, sizeof(project_t), sizeof(motion_store_t), sizeof(chain_config_t),
