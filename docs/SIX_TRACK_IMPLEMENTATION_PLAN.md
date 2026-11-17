@@ -1,6 +1,6 @@
 # Six full tracks — implementation plan
 
-Date: 2026-11-17. Status: **plan only; implementation not started**.
+Date: 2026-11-17. Status: **implemented and host/browser verified; draft review pending**.
 Baseline: `4a5f1fbc414a32cd907b2b215060dca503004e6c` (main, Signature bank merged).
 Work branch: `plan/six-tracks`. Continue this branch and PR for implementation.
 
@@ -20,7 +20,7 @@ or dual writers. Safely identify/refuse incompatible data; document how to reset
 old local emulator data or explicitly overwrite an old slot. Do not automatically
 erase unrelated presets, samples, banks or settings. Unaffected formats can remain.
 
-This stub changes only this plan. A follow-on implementation agent may implement,
+The original stub changed only this plan. Implementation continues on this branch; an agent may implement,
 test locally, commit and push to this same PR. No merge, Pages/public deployment,
 release, device build or flashing is part of the handoff. Other AGENTS safeguards
 still apply. This is currently a host/browser instrument, not verified hardware firmware.
@@ -232,3 +232,16 @@ Do not merge, publish previews, modify running audition services or flash hardwa
 > it; never silently drop state. No merge, deployment, device build or flashing.
 > Push implementation commits to this PR and return exact tests, revision, audition
 > recipe, capacity/RAM findings and remaining device-only limitations.
+
+## Implemented choice and departures
+
+See [capacity decision](SIX_TRACK_CODEC_SPIKE.md) and
+[verification report](SIX_TRACK_VERIFICATION.md). B6S1 keeps the existing storage
+map and rejects old project formats, retaining the explicit PROJECT FULL path.
+Frozen parameter/INIT defaults avoid future sound changes from sparse omissions.
+Six tracks use nine-bit motion places, 16-entry/three-bit-track MIDI learn,
+selection-following level banks and a dedicated six-row CHANS menu. Editor
+namespace F6 rejects fixed-four clients. Undo remains native and independent of
+packing. Ordinary MIXER knobs retain selected-track LEVEL/PAN/REV/MUTE behavior;
+GLO/HOME LEVELS supply the four-knob banks. No extra navigation chord was needed:
+ALGORITHM selection is the bank gesture. No light tracks or hardware work.
