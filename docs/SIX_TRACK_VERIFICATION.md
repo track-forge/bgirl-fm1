@@ -2,8 +2,8 @@
 
 2026-11-17 · branch `plan/six-tracks` · draft [PR26](https://github.com/track-forge/bgirl-fm1/pull/26).
 Baseline main: `4a5f1fbc414a32cd907b2b215060dca503004e6c`.
-Implementation: [`d6991eae6b945c7d5c57d02a7ef65400435a4191`](https://github.com/track-forge/bgirl-fm1/commit/d6991eae6b945c7d5c57d02a7ef65400435a4191).
-Final documentation-only head and CI receipts are recorded in the PR handoff.
+Core implementation: [`d6991eae6b945c7d5c57d02a7ef65400435a4191`](https://github.com/track-forge/bgirl-fm1/commit/d6991eae6b945c7d5c57d02a7ef65400435a4191).
+Final PR head, browser acceptance follow-ups and CI receipts are recorded in the PR handoff.
 No merge, deployment, release, device build, flashing or existing audition-service change.
 
 ## Delivered
@@ -88,7 +88,8 @@ No public preview is published. Existing audition services/ports are untouched;
   retain28 bit-identical serial/threaded comparisons. No duplicate part render.
 - Actual Chromium: all eight suites PASS, zero page errors. Six-track acceptance
   exercises six distinct screens/wrap, live audio after gesture, banked editing,
-  inactive cells, autosave fresh-instance restore, manual slot saving, unchanged
+  inactive cells, accepted-template latched-control reset/cancel preservation,
+  autosave fresh-instance restore, manual slot saving, unchanged
   stored flash after dense refusal, and mobile no-horizontal-overflow. Screenshots
   were visually inspected. Signature's ten sounds and BG-first browsing, default
   G6 vocal groove, vocoder and dance browser checks remain green.
@@ -194,3 +195,11 @@ No device compiler/build/flash, merge, public preview, release or deployment.
 Physical RAM placement, real-time deadlines/xruns, physical MIDI/clock and hardware
 flash compatibility remain a separately authorized milestone. No bigger storage
 layout is proposed or silently assumed here. This is verified host/browser work.
+
+### Browser closure follow-up
+
+Final review reproduced a Shift-latched GLO remaining lit after a new six-track
+fixture replaced the project. The new buttons now clear browser button/key maps
+and latch state only after confirmation, matching the existing template actions.
+A real Chromium regression proves cancel preserves the latch and acceptance
+releases it. No DSP/codec change; WASM hash above remains unchanged.

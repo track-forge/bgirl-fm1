@@ -706,7 +706,8 @@ document.addEventListener("visibilitychange", () => send({ type: "visible", on: 
 
 for (const [id,dense] of [["six-demo",false],["six-dense",true]]) {
   document.getElementById(id).addEventListener("click",()=>{
-    if(!confirm("Replace current unsaved project with the six-track fixture? Saved slots stay."))return;
+    if(!node || !confirm("Replace current unsaved project with the six-track fixture? Saved slots stay."))return;
+    btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
     send({type:"six-project",dense});
   });
 }

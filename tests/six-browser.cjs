@@ -17,7 +17,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const tap=async name=>{await page.getByRole('button',{name,exact:true}).click({delay:90});await page.waitForTimeout(350);};
   const turn=async(name,up=true)=>{await page.getByRole('slider',{name,exact:true}).press(up?'ArrowUp':'ArrowDown');await page.waitForTimeout(150);};
   const fixture=async id=>{page.once('dialog',d=>d.accept());await page.locator(id).click();await page.waitForTimeout(500);};
-  await on();await fixture('#six-demo');let q=await info();assert.equal(q[0][0],6);assert.equal(q[1][0],8);assert(q[11].every(x=>x===64));assert(q[3][0]<3840);
+  await on();
+  await page.getByRole('button',{name:'GLO',exact:true}).click({modifiers:['Shift']});
+  assert.equal(await page.locator('.latched .face.btn').count(),1);
+  page.once('dialog',d=>d.dismiss());await page.locator('#six-demo').click();
+  assert.equal(await page.locator('.latched .face.btn').count(),1,'cancel preserves panel state');
+  await fixture('#six-demo');
+  assert.equal(await page.locator('.latched .face.btn').count(),0,'accepted fixture releases latched controls');let q=await info();assert.equal(q[0][0],6);assert.equal(q[1][0],8);assert(q[11].every(x=>x===64));assert(q[3][0]<3840);
   const screens=[];
   for(let t=0;t<6;t++){q=await info();assert.equal(q[2][0],t);screens.push(await page.locator('#screen').evaluate(c=>c.toDataURL()));await turn('ALGORITHM');}
   assert.equal(new Set(screens).size,6);assert.equal((await info())[2][0],0);await turn('ALGORITHM',false);assert.equal((await info())[2][0],5);
@@ -45,7 +51,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.screenshot({path:`${artifacts}/project-full.png`,fullPage:true});
   await fixture('#six-demo');await tap('GLO');await page.screenshot({path:`${artifacts}/six-song.png`,fullPage:true});await tap('HOME');await page.setViewportSize({width:390,height:844});await page.screenshot({path:`${artifacts}/mobile.png`,fullPage:true});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);
-  const result={tracks:6,voiceBudget:8,distinctScreens:new Set(screens).size,auditionPeak,autosaveReload:true,manualSlotSaved:true,fullPreservesFlash:true,errors,humanListening:'not performed'};
+  const result={tracks:6,voiceBudget:8,distinctScreens:new Set(screens).size,auditionPeak,autosaveReload:true,manualSlotSaved:true,fullPreservesFlash:true,latchedControlReset:true,cancelPreservesPanel:true,errors,humanListening:'not performed'};
   fs.writeFileSync(`${artifacts}/results.json`,JSON.stringify(result,null,2)+'\n');console.log(result);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
