@@ -14,7 +14,8 @@ static void drift_packet(uint32_t source, uint32_t status, uint32_t ms)
 }
 static void drift_setup(uint32_t source, uint32_t bpm)
 {
-    static const int16_t len[] = {16,17,23,64}, div[] = {2,3,5,6}, rate[] = {2,3,5,0};
+    static const int16_t len[] = {16,17,23,64,31,48}, div[] = {2,3,5,6,7,9}, rate[] = {2,3,5,0,1,6};
+    _Static_assert(sizeof len/sizeof *len==NTRK,"a clock fixture per track");
     ui_power_on(); memset(&midi_clock,0,sizeof midi_clock); memset(&um,0,sizeof um);
     mi_r=mi_w=0; midi_beat_samples=0; fm1_ms=0;
     song.g[G_CLOCK]=(int16_t)source; song.g[G_BPM]=(int16_t)bpm;
@@ -63,7 +64,7 @@ static int drift_run(uint32_t source, uint32_t bpm, uint32_t jitter, uint32_t in
                source,bpm,jitter,interpolate,k+1u,seq_ms,arp_ms);
         bad+=check("sequencer phase stays within 2 ms of counted wire pulses",fabs(seq_ms)<2.);
         bad+=check("ARP phase stays within 2 ms without loop resets",fabs(arp_ms)<2.);
-        bad+=check("polymetric lengths, rates and held ARP chords are retained",t->p[P_SLEN]==(int16_t[]){16,17,23,64}[k] && t->nheld==2u);
+        bad+=check("polymetric lengths, rates and held ARP chords are retained",t->p[P_SLEN]==(int16_t[]){16,17,23,64,31,48}[k] && t->nheld==2u);
     }
     bad+=check("long-run transport keeps running without input overflow",song.playing && !midi_in_overflow);
     return bad;

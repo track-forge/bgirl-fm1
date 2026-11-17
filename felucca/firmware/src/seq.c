@@ -705,7 +705,7 @@ static void input_off(track_t *t, uint32_t note)
 static uint32_t perf_key(uint32_t k)
 {
     uint32_t p = key_place(k);
-    return !key_black(k) ? (p < PF_KEYS ? perf_map[p] : PF_N) : p < NTRK ? PF_M1 + p : PF_N;
+    return !key_black(k) ? (p < PF_KEYS ? perf_map[p] : PF_N) : p < 4u ? PF_M1 + p : PF_N;
 }
 
 /* a key of the FX layer down (FX held) / up: the effect it holds. kb_fx: the one it took (+ 1, 0 none), so a key
@@ -1285,7 +1285,7 @@ static int32_t midi_slot(uint32_t ch)      /* the track channel ch plays, -1 non
     int32_t b = midi_base(), omni = -1;
     uint32_t i;
     if (b != -2)
-        return b >= 0 && ch - (uint32_t)b < NPART ? (int32_t)(ch - (uint32_t)b) : -1;
+        return b >= 0 && ch - (uint32_t)b < 4u ? (int32_t)(ch - (uint32_t)b) : -1;
     for (i = 0; i < NPART; i++) {
         uint32_t c = mch_get(i);
         if (c == ch)

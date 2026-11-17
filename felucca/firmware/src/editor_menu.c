@@ -40,6 +40,7 @@ static const uint8_t ED_MENU[][2] = {
     {MI_CPU2, 32},                                     /* 1.6.1, the second core (Discussion #141): 2ND CORE OFF / ON (BETA),
                                                         * SYSTEM, from the next power-on (a FELUCCA_CPU2=0 build: 0..31) */
 #endif
+    {MI_TCH5, 33}, {MI_TCH6, 34}, /* B6 namespace: same routes as the panel */
 };
 #define ED_MENU_N NELEM(ED_MENU)
 

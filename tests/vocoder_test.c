@@ -52,11 +52,10 @@ int main(int argc,char **argv)
     FILE *legacy=fopen("tests/fixtures/bgirl-FUNA.bin","rb");
     if(!legacy)legacy=fopen("../tests/fixtures/bgirl-FUNA.bin","rb");assert(legacy);
     project_store_t old;assert(fread(&old,1,sizeof old,legacy)==sizeof old);fclose(legacy);
-    assert(proj_import(&saved,&old,sizeof old));
-    assert(!saved.t[3].p[P_VCARR] && !saved.t[3].p[P_VHOLD]);
-    assert(!project_restore_runtime(&saved));tick(4410);
-    assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && !trk[3].p[P_VCARR]);
-    puts("compatibility: authentic baseline FUNA fixture restores sounds/steps with vocoder OFF PASS");
+    project_capture(&saved);project_t untouched=saved;
+    assert(!proj_import(&saved,&old,sizeof old));
+    assert(!memcmp(&saved,&untouched,sizeof saved));
+    puts("clean break: authentic baseline FUNA fixture rejected without decoded/live state mutation PASS");
     int32_t stressMod[CTL],stressCar[CTL];int16_t stress[P_COUNT];
     for(uint32_t k=0;k<P_COUNT;k++)stress[k]=TP[k].def;
     stress[P_VMTRIM]=stress[P_VCTRIM]=stress[P_VLOW]=stress[P_VMID]=stress[P_VHIGH]=127;

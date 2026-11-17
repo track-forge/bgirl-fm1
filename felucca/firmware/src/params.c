@@ -87,7 +87,7 @@ static const char *const N_SLOT[] = {"A", "B", "C", "D", 0};   /* G_SLOT 1..4 (F
 #define PD(l, f, mn, mx, df) {l, f, mn, mx, df, 0, 0}
 #define PE(l, n, df) {l, F_ENUM, 0, (int16_t)(sizeof(n) / sizeof(n[0]) - 1), df, n, 0}
 
-static const char *const N_VCARR[] = {"OFF", "T1", "T2", "T3", "T4"};
+static const char *const N_VCARR[] = {"OFF", "T1", "T2", "T3", "T4", "T5", "T6"};
 static const char *const N_VBANDS[] = {"8", "12"};
 static const param_desc_t TP[P_COUNT] = {
     [P_VCARR] = PE("CARR", N_VCARR, 0),
@@ -248,8 +248,8 @@ static const param_desc_t GP[G_COUNT] = {
     [G_DRREV] = PD("-", F_INT, 0, 0, 0),
 };
 
-static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,4,0,N_VCARR,0};
-static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,4,0,N_VCARR,0};
+static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,6,0,N_VCARR,0};
+static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t *track_desc(const track_t *t, uint32_t id)
 {
     if(id==P_VCARR && t->p[P_VCARR]) {

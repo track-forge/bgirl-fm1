@@ -159,6 +159,10 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
 <section class="intro-card" aria-label="Live demo controls">
   <strong>1 · TIGHT KIT / 2 · SQR BASS / 3 · CLOUD PAD / 4 · SPEECH → 12-band vocoder</strong>
   <p>Press PLAY for the vocoder electro demo. Use the labs below for vocal chops and 8/12-band comparisons.</p>
+  <p><button id="six-demo" disabled>Six-track electro audition</button>
+  <button id="six-dense" disabled>Dense save-capacity stress fixture</button></p>
+  <p>Six full tracks / eight shared voices. ALGORITHM selects T1–T6 and follows mixer banks T1–4 / T5–6.
+  PROJECT SAVE shows bytes / 3840; FULL leaves the last save intact. Old project formats are not migrated.</p>
   <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
 </section>
 <div class="device" id="device">
@@ -663,7 +667,7 @@ async function switchOn() {
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
-    for (const id of ["signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
+    for (const id of ["six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();
@@ -699,6 +703,13 @@ for (const [id,mode] of [["signature-blank",0],["signature-a",1],["signature-b",
 }
 document.getElementById("go").addEventListener("click", switchOn);
 document.addEventListener("visibilitychange", () => send({ type: "visible", on: !document.hidden }));
+
+for (const [id,dense] of [["six-demo",false],["six-dense",true]]) {
+  document.getElementById(id).addEventListener("click",()=>{
+    if(!confirm("Replace current unsaved project with the six-track fixture? Saved slots stay."))return;
+    send({type:"six-project",dense});
+  });
+}
 </script>
 </body>
 </html>

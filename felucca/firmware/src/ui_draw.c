@@ -981,13 +981,14 @@ static void draw_columns(void)
     (void)motion_mask(song.sel, card_mot_mask);       /* (PLAY OFF: no scan) */
     if (ui.home) {
         for (c = 0; c < 4u; c++) {
+            if (home_levels() && mix_track(c)>=NTRK) { draw_column(c,"--","","",T_DIM,-1,ICON_NONE); continue; }
             int16_t *vp;
             const param_desc_t *d = home_param(c, &vp);
             param_format(d, *vp, val, &unit);
             card_mot_of(vp);
             card_span_of(d);
             if (home_levels())                         /* 1.5: T1..T4 LEVEL, the track's cushion, muted: DIM */
-                draw_column(c, "LEVEL", val, unit, trk[c].p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(c, 1));
+                draw_column(c, mix_base()?"T5-6":"T1-4", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
             else
                 draw_column(c, d->label, val, unit, VAL(c), RATIO(d, enum_rank(d, *vp)), param_icon(d, *vp));
         }
@@ -1324,6 +1325,12 @@ static void draw_columns(void)
             continue;
         }
         const param_desc_t *d = page_desc(cur_page(), c, &vp);
+        if (cur_page()->graph == GR_SLOTS && c == 3u) {
+            uint32_t bytes=project_bytes();
+            fmt_int(val,(int32_t)bytes);
+            draw_column(c,bytes>3840u?"FULL":"SAVE",val,"/3840",bytes>3840u?T_REC:VAL(c),-1,ICON_AUTO);
+            continue;
+        }
         if (cur_page()->graph == GR_SLOTS && c == 1u) {   /* PROJECT: ERASE (1.5.5, #199) */
             draw_act_column(1, "ERASE", graph_project_used((uint32_t)song.g[G_SLOT] - 1u) ? T_THEME : T_DIM, ICON_AUTO);
             continue;

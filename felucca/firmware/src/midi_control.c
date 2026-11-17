@@ -246,7 +246,8 @@ static void midi_cc_set(track_t *t, uint32_t id, uint32_t value)
 /* MIDI LEARN (1.5, Discussion #170): up to ML_N CCs, each set to one parameter of one track, whatever channel it
  * comes on (a channel ROUT ignores stays ignored) and whichever track that channel plays. Kept with the settings in
  * the 32 bytes of favorites.factory[14] (no engine 14: favorites.c; all 0 in every older setting = nothing learned),
- * an entry two bytes, as a 16-bit value LSB first: bits 0..6 the CC, 7..8 the track, 9..15 the parameter's code, 0 =
+ * an entry 17 bits: low16 LSB first in the row, bit16 in favorites.learn_hi. Bits 0..6 CC,
+ * 7..9 track, 10..16 parameter code; PER5 resets old learned mappings, 0 =
  * an empty entry: a common parameter its P_* id + 1 (1 .. ML_E0 - 1: their ids never move, new ones go before P_E0),
  * an engine parameter ML_E0 + k for P_E0 + k (P_E0 moves when common ones are added). A learned CC no longer reaches
  * the standard map (#103) on any channel: the controller is the user's now. The CCs with a meaning of their own
@@ -255,6 +256,7 @@ static void midi_cc_set(track_t *t, uint32_t id, uint32_t value)
 #define ML_N 16u
 #define ML_E0 120u
 typedef char ml_ids_fit[P_E0 < ML_E0 && P_COUNT - P_E0 == 8 ? 1 : -1];
+static uint32_t *const ml_high;
 static uint8_t *const ml_tab;               /* favorites.factory[14] (midi_learn.c: a build without the UI, none) */
 static volatile uint8_t *const ml_io;       /* ui.ml.io (midi_learn.c; not globals here: the ISR's data keeps its layout) */
 #define ml_arm (ml_io[0])                   /* the UI waits for a CC (MIDI LEARN with a parameter picked) */
@@ -280,10 +282,10 @@ static int __attribute__((noinline)) midi_learned(uint32_t cc, uint32_t value)
         return 1;
     }
     for (i = 0; i < ML_N; i++) {
-        e = ml_tab[2u * i] | (uint32_t)ml_tab[2u * i + 1u] << 8;
-        if ((e >> 9) && (e & 127u) == cc) {
-            if ((id = ml_id(e >> 9)) < P_COUNT)
-                midi_cc_set(&trk[(e >> 7) & 3u], id, value);
+        e = ml_tab[2u * i] | (uint32_t)ml_tab[2u * i + 1u] << 8 | ((*ml_high >> i) & 1u) << 16;
+        if ((e >> 10) && (e & 127u) == cc) {
+            if (((e >> 7) & 7u) < NTRK && (id = ml_id(e >> 10)) < P_COUNT)
+                midi_cc_set(&trk[(e >> 7) & 7u], id, value);
             hit = 1;
         }
     }

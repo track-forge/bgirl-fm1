@@ -351,7 +351,7 @@
 "use strict";
 /*PROTO-BEGIN*/
 /* ---------------------------------------------------------------- protocol --- */
-const HDR = [0x7D, 0x46, 0x4C];
+const HDR = [0x7D, 0x46, 0x36];
 const CMD = { INFO: 1, GET: 2, SET: 3, DUMP: 4, DESC: 5, STEP_GET: 6, STEP_SET: 7, PRESET: 8, PROJECT: 9, NAMES: 10,
   SMP_BEGIN: 11, SMP_WRITE: 12, SMP_END: 13, SMP_ERASE: 14, SMP_INFO: 15,
   UP_LIST: 16, UP_GET: 17, UP_PUT: 18, UP_STORE: 19, UP_LOAD: 20, UP_ERASE: 21,
@@ -1810,13 +1810,13 @@ function makeMockDevice(opt = {}) {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const enumOrig = (d, v) => d.fmt === F.ENUM && d.names ? aliasOf(d.names, v - d.min) + d.min : v;   /* params.c enum_orig */
   /* four tracks (firmware v3), four synth parts (1.0); engine / preset / p / step below are the selected track's */
-  const NTRK = 4;
+  const NTRK = 6;
   const newTrack = () => ({ engine: 0, preset: 0, fm6: FM6.INIT_PK.slice(),
     p: TP.map((d) => d.def).concat(new Array(8).fill(0)),
     motion: {on: true, events: []},
     step: Array.from({ length: NSTEP }, () => ({ chance: 100, ratchet: 1, n: 0, notes: [0, 0, 0, 0], time: 2, flags: 0, vel: 0, hit: 0, acc: 0 })) });
   const st = {
-    tracks: [0, 1, 2, 3].map(newTrack), sel: 0, rec: 0,
+    tracks: [0, 1, 2, 3, 4, 5].map(newTrack), sel: 0, rec: 0,
     g: GP.map((d) => d.def),
     slots: [null, null, null, null], songRows: [], chainPlaying: false, chainRow: 0, chainRemaining: 0,
     smp: [0, 1, 2].map(() => ({ flash: new Uint8Array(SMP.SLOT_SIZE).fill(0xFF), zones: 0, name: "", len: 0, next: SMP.DATA_OFF })),

@@ -97,7 +97,7 @@ static void persistence(void) {
             if(engine==12) { fm6_patch[0][FP_NAME]='X';fm6_pgen[0]++;fm6_adopt(0); }
             int16_t edited=trk[0].p[P_E2];uint8_t patch[155];memcpy(patch,fm6_patch[0],155);
             project_capture(&saved);assert(proj_pack(&wire,&saved));
-            uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==(engine==10?PROJ_MAGIC_SIGNATURE:PROJ_MAGIC));
+            uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
             assert(proj_import(&decoded,&wire,sizeof wire));assert(!project_restore_runtime(&decoded));tick(512);
             assert(trk[0].p[P_E2]==edited && trk[0].preset==p);
             assert(!memcmp(patch,fm6_patch[0],155));
@@ -110,7 +110,7 @@ static void persistence(void) {
     assert(proj_pack(&wire,&saved));assert(proj_import(&decoded,&wire,sizeof wire));
     assert(!memcmp(saved.vocal_id,decoded.vocal_id,sizeof saved.vocal_id));
     assert(!project_restore_runtime(&decoded));tick(512);assert(slc_vocal_match(&trk[3]));
-    puts("persistence: ten edited project/user sounds, OWN patches, FUND + vocal fingerprints PASS");
+    puts("persistence: ten edited project/user sounds, OWN patches, B6S1 + vocal fingerprints PASS");
 }
 static void extra_contracts(void) {
     assert(!web_bgirl_signature(0));tick(4096);song.sel=0;

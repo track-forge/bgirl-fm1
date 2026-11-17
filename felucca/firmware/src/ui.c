@@ -1,3 +1,4 @@
+static uint32_t project_bytes(void); /* main-loop occupancy query, implemented by project.c */
 /* SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2026 Leo Kuroshita (@kurogedelic), Hügelton Instruments */
 /* FELUCCA user interface.
@@ -173,7 +174,7 @@ static struct {
     uint8_t hot_col, hot_t;      /* column whose knob was just turned (drawn white) */
     uint8_t menu;                /* 0 off, 1 list, 2 about + credits, 3 info (1.2) (HOME held) */
     uint8_t menu_sel;            /* MENU: the row (menu_items.c MI_*; its tab MI_TAB), kept while the device runs */
-    uint8_t menu_row[5];         /* MENU: the row last picked in each tab, from its first (ALGORITHM comes back to it) */
+    uint8_t menu_row[6];         /* MENU: the row last picked in each tab, from its first (ALGORITHM comes back to it) */
     uint16_t menu_scroll;        /* continuous ABOUT + CREDITS position, pixels */
     uint32_t menu_sig, home_t0;  /* HOME press time (btn_hold) */
     uint8_t force;               /* full redraw pending */
@@ -1767,10 +1768,15 @@ static uint32_t preset_visible(uint32_t cur, uint32_t total, uint32_t row)
 
 /* HOME: the track KNOB k edits (MENU > HOME LEVELS, 1.5: track k; else the selected one) and what: the engine's four
  * main parameters, or (LEVELS) the track's LEVEL, as the GLO layer's knobs */
-static track_t *home_trk(uint32_t k) { return home_levels() ? &trk[k & 3u] : TSEL; }
+/* ALGORITHM follows selection across two four-knob banks; no new chord. */
+static uint32_t mix_base(void) { return song.sel >= 4u ? 4u : 0u; }
+static uint32_t mix_track(uint32_t knob) { return mix_base() + (knob & 3u); }
+static int16_t mix_inactive;
+static track_t *home_trk(uint32_t k) { return home_levels() && mix_track(k)<NTRK ? &trk[mix_track(k)] : TSEL; }
 static const param_desc_t *home_param(uint32_t k, int16_t **vp)
 {
     uint32_t id = home_levels() ? (uint32_t)P_LEVEL : ENGINES[TSEL->eng_req % NENGINES]->knob[k & 3u];
+    if (home_levels() && mix_track(k)>=NTRK) { *vp=&mix_inactive; return &TP[P_LEVEL]; }
     *vp = &home_trk(k)->p[id];
     return track_desc(home_trk(k), id);
 }

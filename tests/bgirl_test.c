@@ -58,7 +58,7 @@ int main(void) {
         web_enc(EN_ALGO,1); advance(80); /* ALGORITHM is track selection */
         assert(song.sel==t+1);
     }
-    for(i=0;i<3;i++) { web_enc(EN_ALGO,-1); advance(80); } assert(song.sel==0);
+    for(i=0;i<NTRK-1;i++) { web_enc(EN_ALGO,-1); advance(80); } assert(song.sel==0);
     tap(B_PLAY); assert(song.playing);
     for(i=0;i<44100u*8u;i+=128u) {
         web_render(128);

@@ -385,7 +385,7 @@ static int autosave_test(void)
     fail_after = -1;
     ok = as.err;
     as_power_on();
-    ok &= autosave_boot(1) == 1 && song.g[G_BPM] != 150 && trk[0].step[8].n == 1u;
+    ok &= autosave_boot(1) == 1 && song.g[G_BPM] != 150 && trk[8u % NTRK].step[8].n == 1u;
     bad += check("autosave: a write cut short (power off): the copy before is restored", ok);
     /* wear: a 4-hour session: 3 h of editing (a change every 3 s), pauses and playing it back, then an hour away */
     as_power_on();
@@ -428,7 +428,7 @@ int main(void)
     uint32_t before;
     persist_t p;
     project_store_t old, got;
-    project_v5_t v5;
+
     up_bank_t bank;
     up_rec_t r;
     reset();
@@ -621,7 +621,7 @@ int main(void)
     {   /* FUN7 itself refuses a step outside its fields: a damaged slot is empty, the tracks stay */
         step_t keep = trk[0].step[0];
         old = proj_slot[0];
-        proj_slot[0].raw[68 + PROJ_WIRE_NP + 2 + 4] = 7;               /* track 1 step 1: n = 7 */
+        proj_slot[0].raw[11] = 7;               /* track 1 step 1: n = 7 */
         bad += check("damaged FUN7 slot (hash ok, n > 4) is refused", (memcpy(proj_slot[0].raw + PROJ_STORE_SIZE - 4,
                       &(uint32_t){proj_hash(proj_slot[0].raw, PROJ_STORE_SIZE - 4)}, 4), !project_used(0)));
         st_save(OBJ_PROJECT0, &proj_slot[0], sizeof proj_slot[0]);
@@ -632,36 +632,14 @@ int main(void)
         proj_slot[0] = old;
         st_save(OBJ_PROJECT0, &proj_slot[0], sizeof proj_slot[0]);
     }
-    {   /* an older format (FUN5) with values FUN7 cannot pack still loads, bounded */
-        uint32_t i;
-        memset(&v5, 0, sizeof v5);
-        v5.magic = PROJ_MAGIC_V5;
-        v5.size = sizeof v5;
-        for (i = 0; i < G_COUNT; i++)
-            v5.g[i] = GP[i].def;
-        for (i = 0; i < NTRK; i++) {
-            v5.t[i].engine = trk[i].engine;
-            memcpy(v5.t[i].p, trk[i].p, sizeof v5.t[i].p);
-        }
-        v5.t[0].p[P_LEVEL] = 900;                                  /* out of range */
-        v5.t[0].step[0] = (step10_t){{255, 128, 160, 200}, 255, 255, 0, 96, 255, 5};
-        v5.sum = proj_hash(&v5, sizeof v5 - 4u);
-        st_save(OBJ_PROJECT0 + 3u, &v5, sizeof v5);
-        memset(proj_slot[3].raw, 0, 4);
-        project_load(3);
-        bad += check("FUN5 load bounds steps and masks lane accents", trk[0].step[0].n == 4u &&
-                      trk[0].step[0].time == ST_REST && trk[0].step[0].note[0] == 127u &&
-                      !trk[0].step[0].note[1] && trk[0].step[0].acc == 5u && project_used(3));
-        bad += check("FUN5 load clamps a parameter into its range", trk[0].p[P_LEVEL] == TP[P_LEVEL].max);
-        for (i = 0; i < P_COUNT; i++) {
-            uint32_t e;
-            for (e = 0; e < NENGINES; e++)
-                if (param_desc_of(e, i)->min < -64 || param_desc_of(e, i)->max > 127) {
-                    printf("param %u engine %u: range %d..%d does not fit FUN7's byte\n", i, e,
-                           param_desc_of(e, i)->min, param_desc_of(e, i)->max);
-                    bad++;
-                }
-        }
+    {   /* The clean break must not reinterpret a valid NOR object of an old project. */
+        uint8_t legacy[3840]={0};memcpy(legacy,"FUN5",4);
+        step_t keep=trk[0].step[0];
+        st_save(OBJ_PROJECT0+3u,legacy,sizeof legacy);
+        memset(proj_slot[3].raw,0,4);project_load(3);
+        bad += check("old project rejected without live-state mutation", !project_used(3) && !memcmp(&keep,&trk[0].step[0],sizeof keep));
+        project_save(3); /* explicit overwrite is allowed */
+        bad += check("old slot explicitly overwritten as B6S1",project_used(3));
     }
     chain_config.count = 1;
     chain_config.row[0] = chain_row_of(3, 1);

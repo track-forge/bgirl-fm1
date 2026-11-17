@@ -106,8 +106,16 @@ if (typeof registerProcessor === "function") {
         this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
         this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_vocoder(m.mode|0)===0});
       }
+      else if (m.type === "six-info") {
+        this.port.postMessage({type:"six-info",values:Array.from({length:14},(_,f)=>Array.from({length:6},(_,t)=>ex.web_bgirl_six_info(f,t)))});
+      }
+      else if (m.type === "six-project") {
+        this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
+        const ok=ex.web_bgirl_six_project(m.dense?1:0)===0;
+        this.port.postMessage({type:"bgirl-project-result",ok});
+      }
       else if (m.type === "signature-info") {
-        this.port.postMessage({type:"signature-info",tracks:[0,1,2,3].map(t=>[0,1,2,3,4,5,6].map(f=>ex.web_bgirl_signature_info(t,f)))});
+        this.port.postMessage({type:"signature-info",tracks:[0,1,2,3,4,5].map(t=>[0,1,2,3,4,5,6].map(f=>ex.web_bgirl_signature_info(t,f)))});
       }
       else if (m.type === "signature-project" || m.type === "signature-sound") {
         this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
