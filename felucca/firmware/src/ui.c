@@ -1298,6 +1298,9 @@ static uint32_t preset_orig(const engine_t *e, uint32_t k)
 static uint32_t preset_rank(const engine_t *e, uint32_t k)
 {
     uint32_t i, n = 0;
+    /* Display BG originals first without renumbering stored presets or MIDI PCs. */
+    if (e == ENGINES[ENGI_FM6] && k < e->npresets)
+        return k >= 8u ? k - 8u : e->npresets - 8u + k;
     if (e->presets != SMP_PRESET_TABLE)
         return k;
     for (i = 0; i < k; i++)
@@ -1306,6 +1309,17 @@ static uint32_t preset_rank(const engine_t *e, uint32_t k)
 }
 
 #define preset_shown(e) (ENGINES[e]->npresets - (ENGINES[e]->presets == SMP_PRESET_TABLE ? SMP_NALIAS : 0u))
+
+/* Browser position -> stable factory ID; MIDI program numbering is independent. */
+static uint32_t preset_browse_at(uint32_t e, uint32_t n)
+{
+    uint32_t k;
+    if (e == ENGI_FM6)
+        return n < ENGINES[e]->npresets - 8u ? n + 8u : n - (ENGINES[e]->npresets - 8u);
+    for (k = 0; preset_orig(ENGINES[e], k) != k || n--; k++)
+        ;
+    return k;
+}
 
 #if !FELUCCA_FM4
 /* DIGITAL (engine 1, retired): t's sound = p, values as DIGITAL has them, converted to FM6 with a patch of its own
@@ -1556,7 +1570,7 @@ static uint32_t preset_all_pos(uint32_t *total)          /* list index of the se
 /* list index n (< total) -> engine, *k its preset; NENGINES = user preset, *k its slot */
 static uint32_t preset_all_at(uint32_t n, uint32_t *k)
 {
-    uint32_t e = 0, i, r;
+    uint32_t e = 0, r;
     for (r = 0; r < NENG_SHOWN && n >= preset_shown(eng_vis(r)); r++)
         n -= preset_shown(eng_vis(r));
     if (r == NENG_SHOWN) {
@@ -1564,9 +1578,7 @@ static uint32_t preset_all_at(uint32_t n, uint32_t *k)
         return NENGINES;
     }
     e = eng_vis(r);
-    for (i = 0; preset_orig(ENGINES[e], i) != i || n--; i++)    /* the n-th shown preset */
-        ;
-    *k = i;
+    *k = preset_browse_at(e, n);
     return e;
 }
 
@@ -1719,9 +1731,7 @@ static void eng_list_step(int32_t direction)         /* the next / previous soun
         return;
     n = (cur + (direction > 0 ? 1u : total - 1u)) % total;
     if (n < np) {
-        for (k = 0; preset_orig(ENGINES[e], k) != k || n--; k++)   /* the n-th shown preset */
-            ;
-        apply_preset(k);
+        apply_preset(preset_browse_at(e, n));
     } else {
         n -= np;
         for (k = 0; k < UP_SLOTS; k++)

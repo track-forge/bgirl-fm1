@@ -30,6 +30,12 @@ const fs=require('node:fs');
    assert((await peak())>.00001,`audible selected sound ${i}`);
    await page.evaluate(()=>testNode.port.postMessage({type:'midi',data:[0x80,60,0]}));await page.waitForTimeout(1200);
   }
+  // The normal FM6 group starts with BG originals; labels do not change IDs.
+  await page.locator('#signature-sound').selectOption({index:0});await page.locator('#signature-load').click();await page.waitForTimeout(250);
+  for(const preset of [9,10,11,12,0,1,2,3,4,5,6,7]) {
+   await page.getByRole('slider',{name:'PRESETS',exact:true}).press('ArrowUp');await page.waitForTimeout(180);
+   a=await state();assert.equal(a[0][0],12);assert.equal(a[0][1],preset);
+  }
   const demoPeaks=[];
   for(const id of ['#signature-a','#signature-b','#signature-choke']) {
    await project(id);a=await state();assert(a.every(t=>t[6]===0));assert(a.some(t=>t[5]>0));
@@ -54,6 +60,6 @@ const fs=require('node:fs');
   await page.setViewportSize({width:390,height:844});await page.waitForTimeout(300);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await project('#signature-b');await page.screenshot({path:dir+'/mobile.png',fullPage:true});
-  assert.deepEqual(errors,[]);console.log({sounds:10,confirmCancel:true,templatesStopped:true,demoPeaks,panelSelection:true,saveReload:true,vocalDemoPreserved:true,mobile:true,pageErrors:errors});
+  assert.deepEqual(errors,[]);console.log({sounds:10,fm6BGFirst:true,confirmCancel:true,templatesStopped:true,demoPeaks,panelSelection:true,saveReload:true,vocalDemoPreserved:true,mobile:true,pageErrors:errors});
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});

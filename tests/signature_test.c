@@ -158,8 +158,33 @@ static void extra_contracts(void) {
     puts("rapid mono retriggers, four-note live chord/stacking/release, pitch contour, autosave precedence, slot isolation PASS");
 }
 
+static void browse_order(void) {
+    const uint32_t expected[] = {8,9,10,11,12,0,1,2,3,4,5,6,7};
+    uint32_t total, k, first = 0;
+    song.sel=0;list_set(0);
+    preset_all_pos(&total);
+    while(first<total && preset_all_at(first,&k)!=ENGI_FM6) first++;
+    for(uint32_t i=0;i<13;i++) {
+        assert(preset_all_at(first+i,&k)==ENGI_FM6 && k==expected[i]);
+        preset_go(first+i);
+        assert(trk[0].preset==expected[i]);
+        assert(preset_all_pos(&total)==first+i);
+        uint32_t count;
+        assert(eng_list_pos(&count)==i);
+        eng_list_step(1);assert(trk[0].preset==expected[(i+1)%13]);
+        eng_list_step(-1);assert(trk[0].preset==expected[i]);
+    }
+    for(uint32_t i=0;i<8;i++) {midi_pc_load(&trk[0],i);assert(trk[0].preset==i);}
+    for(uint32_t i=0;i<5;i++) {midi_pc_load(&trk[0],40+i);assert(trk[0].preset==8+i);}
+    list_set(1u+CAT_SIGNATURE);
+    preset_go(0);assert(trk[0].eng_req==ENGI_FM6 && trk[0].preset==8);
+    list_set(0);
+    puts("FM6 BG-first browsing, inverse positions, engine stepping and stable MIDI programs PASS");
+}
+
 int main(void) {
     web_nor_erase();web_boot();tick(FS);assert(!web_bgirl_project(0));tick(4096);
+    browse_order();assert(!web_bgirl_project(0));tick(4096);
     for(uint32_t i=0;i<NTRK;i++){trk_all_off(&trk[i]);trk[i].p[P_LEVEL]=0;}
     trk[0].p[P_LEVEL]=100;percussion();
     trk[1].p[P_LEVEL]=100;choke();

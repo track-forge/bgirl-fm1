@@ -178,6 +178,16 @@ clap is one trigger; chord is one live MIDI root. Dry sends0; restrained-wet DLY
 REV12. All sounds' original factory recipes are dry. Demos are four bars each at
 90/120/140BPM, complete editable arrangement—not ten concurrent tracks.
 
+## BG-first FM6 browsing
+
+FM6 display order is BG SUB CLEAN, BG SUB DRIVE, BG IRON STAB, BG EL CHORD,
+BG CHIRP, then the eight inherited presets. This is a presentation mapping only:
+factory IDs, favorites, saved sounds and MIDI PC0–7 / PC40–44 keep their identities.
+Both the normal PRESETS list and EDIT's engine-only stepping use this order.
+Focused Signature host coverage checks every list position, inverse position,
+forward/backward engine step and MIDI factory program. Actual Chromium coverage
+walks the FM6 group through the normal PRESETS control.
+
 ## Local browser audition (no deployment)
 
 Local-only transient user service `bgirl-signature-local.service` serves

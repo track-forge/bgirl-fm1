@@ -144,6 +144,8 @@ BG OPEN HAT, BG IRON STAB, BG EL CHORD and BG CHIRP; legacy kits/presets and all
 The browser's **Signature Electro** section also loads these normal factory
 sounds onto the selected track. Factory selection applies curated levels;
 subsequent user-preset loads retain the normal track mixer settings.
+The normal FM6 preset group lists the five `BG ` originals first, followed by
+the inherited presets. Saved preset IDs and MIDI program numbers are unchanged.
 
 - Subs: mono retrigger, MIDI28–52 (24 also tested), no default space/detune/sweep.
 - Standalone drums: every key/MIDI/step note plays the selected identity at fixed
