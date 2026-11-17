@@ -106,6 +106,13 @@ if (typeof registerProcessor === "function") {
         this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
         this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_vocoder(m.mode|0)===0});
       }
+      else if (m.type === "clarity-project") {
+        this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
+        this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_clarity(m.mode|0,m.bands|0,m.release|0,m.carrier|0,m.wet|0)===0});
+      }
+      else if (m.type === "clarity-info") {
+        this.port.postMessage({type:"clarity-info",values:Array.from({length:10},(_,f)=>ex.web_bgirl_clarity_info(f))});
+      }
       else if (m.type === "six-info") {
         this.port.postMessage({type:"six-info",values:Array.from({length:14},(_,f)=>Array.from({length:6},(_,t)=>ex.web_bgirl_six_info(f,t)))});
       }

@@ -57,3 +57,11 @@ cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -
 felucca/build/host/six_track_test
 cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/editor_test felucca/tests/editor_test.c -lm
 felucca/build/host/editor_test
+
+# Additive clarity release compatibility, 24-band controls and audition loaders.
+cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/clarity_test tests/clarity_test.c -lm
+felucca/build/host/clarity_test
+
+cc -O2 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/clarity_native tests/clarity_native.c -lm
+felucca/build/host/clarity_native felucca/build/host/clarity-native.f32
+node tests/clarity-wasm.mjs

@@ -670,6 +670,78 @@ EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
     return 0;
 }
 
+/* Independent, editable auditions. No startup/autosave hook. All synthesis is
+ * through normal engines, tracks, sequencer and the existing two-input vocoder.
+ * mode0 whole,1 chops,2 arrangement,3 carrier-only,4 dry whole. */
+EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,uint32_t carrier,uint32_t wet)
+{
+    if(mode>4 || bands>2 || release>127 || carrier>1 || wet>127) return 1;
+    uint32_t group=1;
+    for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
+        if(!strcmp(BG_VOCAL_VIEWS[i],"G6")) group=i;
+    if(web_bgirl_vocals(mode==1 ? 3 : 1,group))return 1;
+    fm1_irq_off();undo_depth++;
+    if(!carrier) {
+        set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
+    }
+    trk[2].p[P_LEVEL]=90;
+    trk[2].p[P_SLEN]=64;trk[2].p[P_SDIV]=2;
+    trk[3].p[P_SLEN]=64;trk[3].p[P_SDIV]=2;
+    trk[3].p[P_VBANDS]=bands;trk[3].p[P_VRANGE]=1;trk[3].p[P_VREL]=release;
+    trk[3].p[P_VWET]=wet;trk[3].p[P_VCONS]=0;trk[3].p[P_VMON]=mode==3;
+    for(uint32_t t=0;t<NTRK;t++) {
+        trk[t].p[P_CHOR]=trk[t].p[P_DLY]=trk[t].p[P_REV]=trk[t].p[P_DIST]=0;
+        if(t!=2 && t!=3) { trk[t].p[P_MUTE]=1; memset(trk[t].step,0,sizeof trk[t].step); }
+    }
+    memset(trk[2].step,0,sizeof trk[2].step);
+    for(uint32_t k=0;k<64;k++) {
+        step_t *s=&trk[2].step[k];s->time=k ? ST_TIE : ST_NOTE;
+        if(!k) {s->n=1;s->note[0]=46;s->vel=94;}
+    }
+    /* New complete four-bar arrangement: whole hook then answering chops.
+     * Carrier's melody is independent; drums/bass leave phrase space. */
+    if(mode==2) {
+        for(uint32_t t=0;t<2;t++) {trk[t].p[P_MUTE]=0;trk[t].p[P_SLEN]=64;trk[t].p[P_LEVEL]=t?72:84;}
+        for(uint32_t k=0;k<64;k++) {
+            step_t *d=&trk[0].step[k];d->time=ST_NOTE;d->vel=96;
+            d->hit=(k%16==0 || k%16==10 ? 1 : 0) | (k%16==4 || k%16==12 ? 6 : 0) | (k%4==2 ? 8 : 0);
+            if(k%8==0) {uint8_t note[4]={(uint8_t)(34+(k/16%2)*5),0,0,0};put_step(&trk[1],k,1,note,ST_NOTE,0);}
+            if(k==16 || k==32 || k==48) {trk[2].step[k].time=ST_NOTE;trk[2].step[k].n=1;trk[2].step[k].note[0]=46+(k/16%2)*7;trk[2].step[k].vel=94;}
+        }
+        /* Ordinary motion changes the bank view for the answering chops. */
+        trk[3].p[P_E1]=0;slc_vocal_select(&trk[3]);
+        memset(trk[3].step,0,sizeof trk[3].step);
+        uint8_t hook[4]={(uint8_t)(60+group-1),0,0,0};put_step(&trk[3],0,1,hook,ST_NOTE,0);
+        motion_set_event(&trk[3],0,P_E1,0);
+        motion_set_event(&trk[3],32,P_E1,group);
+        motion_set_enabled(&trk[3],1);
+        for(uint32_t k=32;k<64;k+=6) {
+            uint8_t answer[4]={(uint8_t)(60+(k/6)%BG_VOCAL_GROUPS[group].n),0,0,0};
+            put_step(&trk[3],k,1,answer,ST_NOTE,0);
+        }
+    }
+    if(mode==3) {memset(trk[3].step,0,sizeof trk[3].step);trk[3].p[P_LEVEL]=0;}
+    if(mode==4) {trk[3].p[P_VCARR]=0;trk[2].p[P_MUTE]=1;}
+    undo_depth--;song.sel=3;song.playing=0;transport_req=0;ui.home=1;ui.force=1;bg_vreset++;
+    fm1_irq_on();return 0;
+}
+EXPORT uint32_t web_bgirl_clarity_info(uint32_t field) {
+    switch(field) {
+    case 0:return trk[3].p[P_VBANDS];case 1:return trk[3].p[P_VRANGE];
+    case 2:return trk[3].p[P_VREL];case 3:return trk[3].p[P_VWET];
+    case 4:return trk[2].eng_req;case 5:return song.playing;
+    case 6:return (uint32_t)(BG_REL_MS[clamp(trk[3].p[P_VREL],0,127)]+.5f);
+    case 7:return trk[3].p[P_VHOLD];case 8:
+#if BGIRL_VOCODER
+        return bg_voc.hold;
+#else
+        return 0;
+#endif
+    case 9:return trk[2].preset;
+    default:return 0;
+    }
+}
+
 /* Small read-only status word for bank-info/browser diagnostics; no render state edits. */
 EXPORT uint32_t web_bgirl_vocal_state(void) {
     return trk[3].eng_req==13 ? ((uint32_t)trk[3].p[P_E0]&15u) |
