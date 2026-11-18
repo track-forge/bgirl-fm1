@@ -6,32 +6,19 @@ static void advance(uint32_t ms) { uint32_t n; for(n=0;n<ms*441u/10u;n+=128u) we
 static void tap(uint32_t bit) {web_buttons(1u<<bit); advance(60);web_buttons(0);advance(60);}
 static void defaults(int demo) {
     assert(trk[0].eng_req==ENGI_DRUM && trk[0].preset==2);
-    assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==V_LEGATO);
+    assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==(demo && BGIRL_VOCODER ? V_MONO : V_LEGATO));
 #if BGIRL_VOCODER
     if(demo) {
-        assert(trk[2].eng_req==6 && trk[2].preset==0 && trk[2].p[P_SUS]==60);
+        assert(trk[2].eng_req==0 && trk[2].preset==12 && trk[2].p[P_SUS]==127);
         assert(trk[3].eng_req==13);
-        assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==1);
+        assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==2);
         assert(trk[2].step[1].time==ST_TIE);
-        assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
-        static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
-        static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
-        const uint32_t group=NELEM(BG_VOCAL_GROUPS)>6 ? 6 : 1;
-        assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==(int16_t)group);
+        assert(trk[2].step[0].note[0]==45 && trk[2].step[16].note[0]==31);
+        assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==0);
         assert(slc_vocal_match(&trk[3]));
-        assert(trk[2].p[P_SLEN]==32 && trk[3].p[P_SLEN]==32);
-        uint32_t hits=0;
-        for(uint32_t k=0;k<NSTEP;k++) {
-            assert(trk[2].step[k].time==(k>=32 ? 0 : k%16 ? ST_TIE : ST_NOTE));
-            if(trk[3].step[k].n) {
-                assert(hits<NELEM(at) && k==at[hits]);
-                assert(trk[3].step[k].time==ST_NOTE);
-                assert(trk[3].step[k].note[0]==60+chop[hits]%BG_VOCAL_GROUPS[group].n);
-                assert(trk[3].step[k].vel==(hits%6==0 ? 110 : 100));
-                hits++;
-            } else assert(!trk[3].step[k].time);
-        }
-        assert(hits==NELEM(at));
+        assert(trk[2].p[P_SLEN]==64 && trk[3].p[P_SLEN]==64);
+        assert(trk[4].eng_req==ENGI_FM6 && trk[4].preset==4 && trk[4].step[33].note[0]==52);
+        assert(song.g[G_BPM]==128);
     } else
 #endif
     {
@@ -47,7 +34,11 @@ int main(void) {
     uint32_t vocalWraps=0,previousStep=0;
 #endif
     web_nor_erase(); web_boot(); advance(1200); defaults(1);
+#if BGIRL_VOCODER
+    assert(trk[0].step[4].hit==22 && trk[0].step[0].hit==8);
+#else
     assert(trk[0].step[4].hit==6 && trk[0].step[0].hit==1);
+#endif
     assert(trk[1].step[1].n && trk[2].step[0].n);
 #if BGIRL_VOCODER
     assert(trk[3].step[0].n);
@@ -64,7 +55,7 @@ int main(void) {
         web_render(128);
 #if BGIRL_VOCODER
         assert(bg_bus.owner==3 && bg_bus.carrier==2);
-        assert(trk[3].seq_idx<32);
+        assert(trk[3].seq_idx<64);
         if(trk[3].seq_idx<previousStep) vocalWraps++;
         previousStep=trk[3].seq_idx;
         for(uint32_t k=0;k<CTL;k++)speechEnergy+=(uint64_t)llabs(bg_bus.mod[k]);
@@ -89,7 +80,11 @@ int main(void) {
     felucca_init(); autosave_boot(1); advance(100);
     assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && trk[3].p[P_VWET]==81);
     assert(!web_bgirl_project(1)); advance(100); defaults(1);
+#if BGIRL_VOCODER
+    assert(trk[1].step[1].note[0]==21 && trk[0].step[4].hit==22);
+#else
     assert(trk[1].step[1].note[0]==36 && trk[0].step[4].hit==6);
+#endif
     /* Switching track while held must release the originally selected track. */
     web_enc(EN_ALGO,1);advance(60);web_keys(1u<<7);advance(100);
     web_enc(EN_ALGO,1);advance(60);web_keys(0);advance(4000);

@@ -54,10 +54,8 @@ source /path/to/emsdk/emsdk_env.sh
 
 ## Six full tracks · eight shared voices
 
-ALGORITHM selects **T1–T6** and wraps. T5 starts as FM6 and T6 as DRUM, both
-with empty editable patterns; either can use every normal engine, vocals/vocoder,
-64 steps, automation, locks, recording and song-chain lanes. The original four
-startup roles stay intact. The shared voice budget is still **eight**, not48.
+ALGORITHM selects **T1–T6** and wraps. T5 carries the Mega Jam CLOUD PAD and T6 is an empty DRUM track; either can use every normal engine, vocals/vocoder,
+64 steps, automation, locks, recording and song-chain lanes. The blank template retains the original palette. The shared voice budget is still **eight**, not48.
 
 For levels, select T1–4 or T5–6 with ALGORITHM, then hold **GLO** (or use
 MENU → DISPLAY → HOME → LEVELS). K1–4 follow the selected bank: **T1–4**, then
@@ -107,8 +105,8 @@ vocoder** below the panel; confirm replacing the current unsaved project. Press
 PLAY. The wet setups keep the electro demo drums/bass and use a **track3 TRIO /
 FAT BASS** as track4 speech's carrier, with dry carrier monitoring
 OFF. The dry-speech
-button stays isolated. Saved slots are not erased. Fresh startup and Load electro demo now use this
-12-band arrangement; restored autosaves take precedence.
+button stays isolated. Saved slots are not erased. The isolated wet buttons retain their prior 12-band arrangement. Fresh startup
+and Load electro demo use the four-bar 24-band Mega Jam below; restored autosaves take precedence.
 
 - Track4 chromatic keys select original-speed chops in the demo. The isolated
   dry-speech button still selects the four factory SPEECH phrases.
@@ -159,8 +157,8 @@ The **Vocal bank** section loads stopped whole-phrase or sequenced-chop audition
 each dry or through the TRIO / FAT BASS vocoder. Normal builds bundle the
 **G6 recording and its six chops**, authorized by Doug for public redistribution.
 The other five supplied recordings are not bundled. Factory SPEECH is unchanged.
-Startup and **Load electro demo** use the two-bar G6 groove, TRIO / FAT BASS and 12-band routing in public builds too. An explicit custom bank without G6
-uses its first chop group with the same rhythm. Autosaved projects still take
+Startup and **Load electro demo** use the four-bar Mega Jam, BG CARR SAW and 24-band routing in public builds too. An explicit custom bank without G6
+leaves the vocal pattern silent rather than substituting an unrelated phrase. Autosaved projects still take
 precedence; refresh and explicitly reload the demo to replace an old arrangement.
 
 Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
@@ -241,17 +239,20 @@ not establish musical approval or physical-device fit/performance.
 
 | Track | Sound | Pattern |
 | --- | --- | --- |
-| 1 | DRUM / TIGHT KIT | Original 16-step kick, snare+clap, hats and bell |
-| 2 | ANALOG / SQR BASS | Upstream OFFBEAT, mono legato bass |
-| 3 | TRIO / FAT BASS | C2/G2 tied through each phrase; carrier, dry MON OFF |
-| 4 | SLICE / VOCALS | Two-bar (32-step) chop groove; bundled G6 → 12-band vocoder, carrier T3 |
-| 5 | FM6 / TINE EP | Empty; unrestricted track |
-| 6 | DRUM / TIGHT KIT | Empty; unrestricted track |
+| 1 | DRUM / TIGHT KIT | Reference snare+clap, hats/rim; kick moved to T6; final-bar turnaround |
+| 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
+| 3 | ANALOG / BG CARR SAW | A2 then lower G1, four beats each, repeated; dry MON OFF |
+| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET66%; level−15.5dB |
+| 5 | FM6 / PAD | D2→C3→E3 (one octave lower); mono; FX GATE/PAT1/1⁄16/depth75%; level−6.5dB |
+| 6 | DRUM / BG KICK | T1 kick rhythm/accents on a separate track; final-step breath retained |
 
-Fresh browser state loads this editable demo **stopped at 120 BPM**. A valid
-last-session autosave takes precedence. All engines/presets remain selectable;
-this is a curated starting palette, not a restricted instrument. Shared upstream
-voice limits still apply. Doug accepted the sustained-carrier vocoder audition as a win; physical performance remains unverified.
+Fresh state and explicit demo load this same editable arrangement **stopped at128 BPM**.
+A valid last-session autosave takes precedence. Four bars last7.5 seconds.
+The source is Doug's bounded Mega Lab MIDI transcription, not imported audio or
+an exact recreation of the Ableton rack/external SH-01A. Existing engines and
+normal64-step sequences/motion are used; no alternate player or new sample bank.
+[Mapping deviations and technical verification](docs/MEGA_JAM_DEMO_VERIFICATION.md).
+Musical approval remains Doug's separate listening decision.
 
 **Load electro demo** and **Blank electro template** replace only the current
 unsaved project, after confirmation. Both use Felucca's project reset/sound-load
@@ -268,8 +269,8 @@ palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
    focused knob arrows also work. SELECT browses pages, PRESETS browses sounds.
 4. Stop with PLAY. Edit a sound and use Felucca **SAVE**, **OCT+**, **OCT+** to
    confirm a user preset. Use its normal SAVE > PROJECT page to save/load a project.
-5. On track4, tap FX slowly twice for VOCODER: CARR=T3,12bands,MON OFF.
-   MON ON adds the dry carrier; mute T1/T2 (not T3) for a clearer voice audition.
+5. On track4, tap FX slowly twice for VOCODER: CARR=T3,24bands,MON OFF.
+   MON ON adds the dry carrier; mute T1/T2/T5 (not T3) for a clearer voice audition.
 6. Use Blank electro template, edit or load saved material, then optionally reload
    the demo. Autosave restores changed music after at least 10 quiet seconds and
    the inherited 60-second write-spacing limit; a page reload immediately after an

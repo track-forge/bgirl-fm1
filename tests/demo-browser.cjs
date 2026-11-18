@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// The factory demo must keep its two-bar arrangement without a private bank.
+// The factory demo must keep its four-bar arrangement without a private bank.
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 (async()=>{
@@ -21,7 +21,7 @@ const assert=require('node:assert/strict');
   const check=async()=>{
    const info=await state(),g6=info.groupNumbers.indexOf(6);
    assert(g6>=0,'G6 must ship in the ordinary build');
-   assert.equal(info.state,4096+6+16*(g6+1),'VOCALS/G6/START0/matching bank');
+   assert([4096+6,4096+6+16*(g6+1)].includes(info.state),'VOCALS whole/G6/START0/matching bank');
    assert.match(await page.locator('#vocal-group option').nth(g6).innerText(),/^G6 /);
   };
   await check();

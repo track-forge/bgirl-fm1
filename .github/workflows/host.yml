@@ -48,6 +48,7 @@ jobs:
           node tests/splash-browser.cjs
           node tests/browser-smoke.cjs
           node tests/vocoder-browser.cjs
+          node tests/mega-browser.cjs
           node tests/demo-browser.cjs
           node tests/vocal-browser.cjs
           node tests/dance-browser.cjs
