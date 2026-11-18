@@ -1455,10 +1455,10 @@ static int test_categories(void)
     }
     bad += check("  the PRESETS knob steps through basses only (every engine), and round", ok && preset_pos(&total) == total - 1u);
     turn(EN_K4, 20);
-    bad += check("  .. right to SH-STYLE and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "SH-STYLE"));
+    bad += check("  .. right to SH-ISH and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "SH-ISH"));
 #if !FELUCCA_FM4                                           /* (DIGITAL's presets: OTHER's) */
     {
-        turn(EN_K4,-2); /* OTHER still exists before appended SIGNATURE and SH-STYLE. */
+        turn(EN_K4,-2); /* OTHER still exists before appended SIGNATURE and SH-ISH. */
         track_t before = *TSEL;
         ui.msg_t = 0;
         turn(EN_PRESET, 1);

@@ -6,9 +6,11 @@ static void advance(uint32_t ms) { uint32_t n; for(n=0;n<ms*441u/10u;n+=128u) we
 static void tap(uint32_t bit) {web_buttons(1u<<bit); advance(60);web_buttons(0);advance(60);}
 static void defaults(int demo) {
     assert(trk[0].eng_req==ENGI_DRUM && trk[0].preset==2);
-    assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==(demo && BGIRL_VOCODER ? V_MONO : V_LEGATO));
+    assert(trk[1].eng_req==0 && trk[1].preset==13 && trk[1].p[P_VOICE]==V_MONO);
 #if BGIRL_VOCODER
     if(demo) {
+        assert(!strcmp(BG_ANALOG_PRESETS[13].name,"Crunchy Bass"));
+        assert(trk[1].p[P_LEVEL]==100 && trk[1].p[P_DLY]==17 && trk[1].p[P_REV]==17);
         assert(trk[2].eng_req==0 && trk[2].preset==12 && trk[2].p[P_SUS]==127);
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==2);
@@ -81,7 +83,7 @@ int main(void) {
     assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && trk[3].p[P_VWET]==81);
     assert(!web_bgirl_project(1)); advance(100); defaults(1);
 #if BGIRL_VOCODER
-    assert(trk[1].step[1].note[0]==21 && trk[0].step[4].hit==22);
+    assert(trk[1].step[1].note[0]==33 && trk[0].step[4].hit==22);
 #else
     assert(trk[1].step[1].note[0]==36 && trk[0].step[4].hit==6);
 #endif
