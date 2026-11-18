@@ -86,3 +86,6 @@ python3 tests/test_studio_icons.py
 
 # CUT sequencing: real firmware layouts, all banks, preserved musical state.
 ./tests/run_cut_tests.sh
+
+# Remaining CUT: sample/slice/lane presentation and state-preserving render matrix.
+./tests/run_cut_samples_tests.sh

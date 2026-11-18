@@ -674,7 +674,7 @@ static void design_column(uint32_t c,const char *label,const char *val,const cha
     int32_t ky=tall?49:29;
     cv_text_on(3,ky,&AF_C,k,label[0]||val[0]?T_MID:T_DIM,bg);
     if(unit[0])cv_text_r(54,ky,&AF_C,unit,T_MID,bg);
-    if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,hot?T_ACCENT:vc==T_DIM?T_DIM:(design_context()==DC_CUT || design_context()==DC_CUT_SEQ)?T_RHYTHM:T_THEME);
+    if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,hot?T_ACCENT:vc==T_DIM?T_DIM:(design_context()==DC_CUT || design_context()==DC_CUT_SEQ || design_context()==DC_CUT_MORE)?T_RHYTHM:T_THEME);
     cv_blit((uint32_t)CARD_X(c),readout_y());
 }
 

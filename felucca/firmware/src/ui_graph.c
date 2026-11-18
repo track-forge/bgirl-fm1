@@ -1279,7 +1279,7 @@ static uint32_t graph_signature(void)
     if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
     /* LAB parameter/routing diagrams are static until their actual inputs change.
      * Do not inherit the old live-scope timer on these pages. */
-    if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE) || pg->graph == GR_ARP) h ^= ui.frame / 2u;
+    if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE && design_context()!=DC_CUT_MORE) || pg->graph == GR_ARP) h ^= ui.frame / 2u;
     if(design_context()==DC_LAB_MORE) {
         if(pg->scope==SC_GLOBAL)h=fnv(h,song.g,sizeof song.g);
         for(i=0;i<NTRK;i++)h=(h ^ (uint32_t)trk[i].eng_req ^ ((uint32_t)trk[i].p[P_VCARR]<<8))*16777619u;
@@ -1330,6 +1330,13 @@ static uint32_t graph_signature(void)
                                                      * levels, FB; the operator pages: the operator, the stage) */
         h ^= (fm6_pgen[(t - trk) % NTRK] + 1u) * 2246822519u + (fop_op + 1u) * 40503u + (fop_stg + 1u) * 7919u;
     if (pg->scope == SC_ENGINE && ENGINES[t->eng_req % NENGINES] == &ENG_SAMPLE) h ^= sample_wave.pos * 13u + sample_wave.key;
+    if(design_context()==DC_CUT_MORE){
+        h^=(ui.hot_t?ui.hot_col+1u:0u)*65537u;
+        h^=drum_mute[trk_index(t)%NPART]*2654435761u;
+        if(pg->scope==SC_ENGINE && ENGINES[t->eng_req%NENGINES]==&ENG_SLICE)
+            h^=smp_user_gen*7919u+fnv(2166136261u,bg_vocal_expected[trk_index(t)],8)+last_note*31u;
+        if(pg->graph==GR_SLCR)h^=(uint32_t)song.playing*104729u;
+    }
     if (pg->graph == GR_ROLL) {
         uint32_t ph = song.playing ? t->seq_idx : 0xFFFFu;
         if (ph / 16u != ui.bank)
@@ -2261,6 +2268,7 @@ static void graph_song(void)
 #include "ui_crew.c"
 #include "ui_lab.c"
 #include "ui_cut_seq.c"
+#include "ui_cut_samples.c"
 
 static void draw_graph(void)
 {
@@ -2287,7 +2295,9 @@ static void draw_graph(void)
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
-    if(design_context()==DC_LAB_MORE) {
+    if(design_context()==DC_CUT_MORE) {
+        graph_cut_samples(pg,t);
+    } else if(design_context()==DC_LAB_MORE) {
         graph_lab_more(pg,t);
     } else if (strip_kind() != SK_NONE) {                   /* MENU > LARGE: the strip */
         uint32_t k = strip_kind();
