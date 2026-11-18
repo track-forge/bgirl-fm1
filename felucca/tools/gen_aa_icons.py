@@ -29,6 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import aa_raster as ar  # noqa: E402
+import bgirl_sections as sections  # original monochrome SVGs, same icon ABI
 from gen_aa_font import huff_pack, huff_unpack  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -231,7 +232,7 @@ def main():
     if not a.out:
         ap.error("OUT.h is required")
     legacy = json.loads(Path(a.json).read_text())["names"]
-    names = list(legacy) + list(EXTRA)
+    names = list(legacy) + list(EXTRA) + list(sections.NAMES)
     glyph_of = {n: resolve(g, cps) for n, g in {**LEGACY, **EXTRA}.items()}
     missing = [n for n in legacy if n not in LEGACY]
     bad = [f"{n} -> {g}" for n, g in glyph_of.items() if g not in cps]
@@ -244,7 +245,7 @@ def main():
               + (f", {dropped} filled counter copy dropped" if dropped else ""))
     for n, g in {**LEGACY, **EXTRA}.items():
         if isinstance(g, tuple) and glyph_of[n] != g[0]:
-            print(f"icons: {n}: {g[0]} not in the font yet, using {glyph_of[n]}")
+            print(f"icons: {n}: {g[0]} not in the font yet, using {glyph_of.get(n, "original BGIRL SVG")}")
     mended = {g for g, _ in fixed}                     # (only those come from the mended copy)
     sizes = [int(s) for s in a.sizes.split(",")]
     big = [b for b in a.big.split(",") if b]
@@ -256,9 +257,10 @@ def main():
     for s in sizes:
         subset = ([n for n in names if (n in legacy and n not in NOT_DRAWN) or n in SMALL_EXTRA] if s == min(sizes) else
                   [n for n in names if n in HUGE_DEFAULT] if s == 24 else [n for n in names if n in big])
+        subset += list(sections.NAMES)
         cells[s] = []
         for n in subset:
-            b, ink = ar.raster_icon(font if glyph_of[n] in mended else a.font, s, cps[glyph_of[n]], a.gamma)
+            b, ink = sections.raster(n,s,a.gamma) if n in sections.NAMES else ar.raster_icon(font if glyph_of[n] in mended else a.font, s, cps[glyph_of[n]], a.gamma)
             assert ink, f"{n} is empty at {s}px"
             cells[s].append((n, [v for i in range(s * s) for v in (b[i >> 1] >> (0 if i & 1 else 4) & 15,)], b))
     # one Huffman code for every cell of every size (one decoding table in RAM: gfx.c hc_lut)
@@ -302,7 +304,7 @@ def main():
     print(f"icons total {tot} B -> {a.out}   ({len(legacy)} legacy names + {len(EXTRA)} new)")
     if a.report:
         for n in names:
-            print(f"  {a.prefix}{n.upper():12s} {glyph_of[n]}")
+            print(f"  {a.prefix}{n.upper():12s} {glyph_of.get(n, "original BGIRL SVG")}")
 
 
 if __name__ == "__main__":

@@ -79,3 +79,4 @@ node tests/mega-wasm.mjs
 
 # First-screen presentation matrix, real firmware renderer / inherited lint hooks.
 ./tests/run_stage_tests.sh
+python3 tests/test_studio_icons.py
