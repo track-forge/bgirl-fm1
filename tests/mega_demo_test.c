@@ -11,7 +11,23 @@ int main(void) {
     assert(!memcmp(&fresh,&explicit,sizeof fresh));
     assert(song.g[G_BPM]==128 && !song.playing && NVOICE==8);
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
-    assert(trk[1].step[0].note[0]==21 && trk[1].step[25].note[0]==29 && trk[1].step[28].vel==112);
+    assert(trk[1].step[0].note[0]==33 && trk[1].step[25].note[0]==41 && trk[1].step[28].vel==112);
+    static const uint8_t bass_steps[]={0,1,6,7,8,9,16,17,18,19,22,23,24,25,27,28};
+    static const uint8_t bass_notes[]={33,33,43,43,45,45,33,43,45,45,33,43,43,41,43,43};
+    for(uint32_t step=0;step<64;step++) {
+        uint32_t found=0;
+        for(uint32_t i=0;i<NELEM(bass_steps);i++)if(step%32==bass_steps[i]) {
+            found=1;assert(trk[1].step[step].note[0]==bass_notes[i]);
+        }
+        assert(trk[1].step[step].n==found);
+    }
+    assert(trk[1].eng_req==0 && trk[1].preset==13);
+    assert(!strcmp(sound_group_name(&trk[1]),"SH-ISH"));
+    assert(!strcmp(BG_ANALOG_PRESETS[13].name,"Crunchy Bass"));
+    /* The demo uses the exact factory tone, with only track-owned mix/gate setup. */
+    int16_t demo_tone[P_COUNT];memcpy(demo_tone,trk[1].p,sizeof demo_tone);
+    apply_preset_to(&trk[1],13);
+    for(uint32_t p=P_ATK;p<P_COUNT;p++)assert(trk[1].p[p]==demo_tone[p]);
     assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==72 && trk[0].step[63].hit==64);
     assert(trk[4].step[0].note[0]==38 && trk[4].step[28].note[0]==48 && trk[4].step[33].note[0]==52);
     assert(trk[5].eng_req==ENGI_DRUM && trk[5].preset==4 && trk[5].p[P_E0]==DK_SIG_KICK);

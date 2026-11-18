@@ -134,3 +134,35 @@ track level knobs, so browser editing uses ENV; default MIDI block is still1–4
 so the all-six test explicitly selects per-track routing. Live held notes remain
 held on STOP by design: tests distinguish MIDI note-off, panic and sequencer STOP.
 No DSP was changed to satisfy those assertions; no golden was rewritten.
+
+## SH-ISH listening revision — 2026-11-18
+
+Supersedes the historical display names and recipe hashes above, not the source
+identities or mapping. Collection label **SH-ISH**, preset13 **Crunchy Bass**
+(operator-confirmed 1-1), preset14 **Velvet Pulse** (human slot unknown). Factory
+parameter values and private capture hashes are unchanged. The reports were
+reproduced from both real private bundles, not hand-edited. Current recipe hashes:
+
+- Crunchy Bass: `c31ab43f6784d67dd0707277d1224a9261d122c204ae3e780c43e55b6afc787b`
+- Velvet Pulse: `6a71d8fc0e39c65f38b295723dfba8e99fa36ca04ba83911c32d4ace2c2f8053`
+
+Panel footer, EDIT/PRESETS engine-label cards and LIST show SH-ISH for these two
+factory sounds; legacy ANALOG sounds retain ANALOG, IDs and bytes. Normal all-preset
+order still appends13/14 after BG CARR SAW12. No new DSP engine or format change.
+
+Electro demo T2 loads preset13 with its original envelope/common sound settings
+(no old square-bass release override). All32 events rise12 semitones: note set
+33/41/43/45, same steps, velocities and track mix/gate. Startup already used the
+canonical demo builder; its initial T2 role now also selects13. Existing autosaves
+remain authoritative. Fresh startup == explicit Load electro demo is regression
+checked byte-for-byte, including saved-edit precedence.
+
+Focused verification for this revision:12 translator tests including private-source
+byte reproduction and bounded curated names; unchanged legacy preset bytes;
+SH host/MIDI/codec/six-track checks and176400 native/WASM frames; Mega fresh/default
+equality, every bass event, factory-tone identity, four loops/no voice steals,
+STOP/restart and edited persistence;661500 Mega native/WASM frames; actual Chromium
+SH loading/browsing/editing/audio/save/reload and Mega playback/STOP/save/reload,
+desktop/mobile. Full local suite is intentionally not rerun; hosted CI is allowed
+to finish in the background per Doug's instruction. Preview receipt is recorded
+in the notebook once the exact pushed commit is live.

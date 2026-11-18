@@ -48,8 +48,8 @@ live interaction or identity fails.
 Open the tailnet URL and Switch on. Existing music/autosaves still win; use the
 explicit **Load electro demo** button only if you want to replace unsaved music
 with main's Mega Jam. CREW is main's default display; existing saved view choices
-remain honored. SelectT1–T6 with ALGORITHM, then use SH-STYLE's selected-track
-loader or normal PRESETS→ANALOG / LIST SH-STYLE. ENV/LFO/EDIT and SAVE work normally.
+remain honored. SelectT1–T6 with ALGORITHM, then use SH-ISH's selected-track
+loader or normal PRESETS→LIST→SH-ISH. ENV/LFO/EDIT and SAVE work normally.
 No new collection preset is automatically installed into the current demo.
 
 The sounds remain approximate: proving1-1 drops source pulse/stored chord; wire-PC1

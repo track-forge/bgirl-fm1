@@ -84,6 +84,12 @@ class Translation(unittest.TestCase):
             with self.assertRaises(ValueError):self.run_translation(s)
         s=fixture();s['source']['evidence']='synthetic'
         with self.assertRaises(ValueError):self.run_translation(s)
+    def test_curated_names_bounded_ascii(self):
+        for name in ['Crunchy Bass','Velvet Pulse']:
+            recipe,_=translate(canonical(fixture()),b'test',name,13)
+            self.assertEqual(recipe['name'],name)
+        for name in ['', 'ThirteenChars', 'bad"name', 'bad\\name', 'Møøse']:
+            with self.assertRaises(ValueError):translate(canonical(fixture()),b'test',name,13)
     def test_bank_wrapper_and_old_recipes(self):
         generate(True);bank=read_bank();self.assertEqual([r['preset'] for r in bank],[13,14])
         source=(ROOT/'felucca/firmware/engines/src/eng_analog.c').read_text()
@@ -94,7 +100,7 @@ class Translation(unittest.TestCase):
     @unittest.skipUnless(os.environ.get('SH_STYLE_SOURCE_ROOT'),'private sources intentionally not in public repository')
     def test_real_sources_reproduce_exact_bytes(self):
         base=Path(os.environ['SH_STYLE_SOURCE_ROOT'])
-        for bundle,ident,name,preset in [('proving-patch-1-1-reloaded','proving-1-1','SH 1-1',13),('second-saved-patch-wire1-repeat','wire1','SH WIRE1',14)]:
+        for bundle,ident,name,preset in [('proving-patch-1-1-reloaded','proving-1-1','Crunchy Bass',13),('second-saved-patch-wire1-repeat','wire1','Velvet Pulse',14)]:
             paths=[base/bundle/f for f in ['patch.json','events.jsonl']];before=[p.read_bytes() for p in paths]
             r,report=translate_bundle(base/bundle,name,preset,strict=True)
             for value,suffix in [(r,'recipe'),(report,'report')]:self.assertEqual(artifact_bytes(value),(ROOT/f'assets/sh-style/{ident}.{suffix}.json').read_bytes())

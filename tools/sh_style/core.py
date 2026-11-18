@@ -59,7 +59,7 @@ def translate(snapshot_bytes, raw_bytes, name, preset, overrides=None, strict=Fa
         raise ValueError('raw log hash/length mismatch')
     if s['modified_since_load'] or s['confidence']['disconnect'] or s['confidence']['state'] not in ('partial','ready'):
         raise ValueError('require connected saved-patch baseline, not edits/stale capture')
-    if not re.fullmatch(r'[A-Z0-9 -]{1,12}',name): raise ValueError('name must be 1..12 uppercase characters')
+    if not re.fullmatch(r'[A-Za-z0-9 -]{1,12}',name): raise ValueError('name must be 1..12 ASCII letters, digits, spaces or hyphens')
     if type(preset) is not int or not 13 <= preset <= 127: raise ValueError('preset must be appended 13..127')
     for k,v in s['parameters'].items():
         d=CONTROLS.get(v['cc'])

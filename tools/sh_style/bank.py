@@ -7,7 +7,7 @@ MANIFEST = ROOT/'assets/sh-style/manifest.json'
 
 def read_bank():
     m=json.loads(MANIFEST.read_bytes())
-    if m['version'] != 1 or m['collection'] != 'SH-STYLE' or len(m['sounds']) != 2:
+    if m['version'] != 1 or m['collection'] != 'SH-ISH' or len(m['sounds']) != 2:
         raise ValueError('invalid collection manifest')
     if len({s['name'] for s in m['sounds']}) != len(m['sounds']):
         raise ValueError('duplicate preset names; choose distinct curated names')
@@ -17,7 +17,7 @@ def read_bank():
         report=json.loads((MANIFEST.parent/s['report']).read_bytes())
         if r['engine'] != 0 or r['preset'] != 13+i or r['name'] != s['name'] or r['version'] != 1:
             raise ValueError('bank IDs/names must append after BG CARR SAW')
-        if len(r['name'])>12 or any(c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -' for c in r['name']):
+        if len(r['name'])>12 or any(c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -' for c in r['name']):
             raise ValueError('invalid preset name')
         if sha(canonical(r)) != report['recipe_sha256'] or sha(POLICY.read_bytes()) != report['policy_sha256']:
             raise ValueError('recipe/policy hash mismatch')

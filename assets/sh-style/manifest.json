@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "collection": "SH-STYLE",
+  "collection": "SH-ISH",
   "fidelity": "Approximate ANALOG recipes, not a Roland emulator",
   "source_redistribution": "Private source captures not redistributed; no source license grant asserted",
   "sounds": [
     {
       "id": "proving-1-1",
-      "name": "SH 1-1",
+      "name": "Crunchy Bass",
       "identity": "Operator-confirmed proving patch 1-1; supersedes historical 2-1 arm label",
       "recipe": "proving-1-1.recipe.json",
       "report": "proving-1-1.report.json",
@@ -15,7 +15,7 @@
     },
     {
       "id": "wire1",
-      "name": "SH WIRE1",
+      "name": "Velvet Pulse",
       "identity": "Observed wire PC1; human bank/slot unknown",
       "recipe": "wire1.recipe.json",
       "report": "wire1.report.json",

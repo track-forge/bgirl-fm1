@@ -15,6 +15,12 @@ int main(void) {
  for(unsigned i=0;i<12;i++)assert(!memcmp(&ANALOG_PRESETS[i],&BG_ANALOG_PRESETS[i],sizeof(preset_t)));
  assert(!strcmp(BG_ANALOG_PRESETS[12].name,"BG CARR SAW"));
  assert(preset_cat(0,13)==CAT_SH_STYLE && preset_cat(0,14)==CAT_SH_STYLE && CAT_SIGNATURE==9 && CAT_SH_STYLE==10);
+ assert(!strcmp(CAT_NAME[CAT_SH_STYLE],"SH-ISH"));
+ assert(!strcmp(BG_ANALOG_PRESETS[13].name,"Crunchy Bass"));
+ assert(!strcmp(BG_ANALOG_PRESETS[14].name,"Velvet Pulse"));
+ apply_preset_to(&trk[1],12);assert(!strcmp(sound_group_name(&trk[1]),"ANALOG"));
+ apply_preset_to(&trk[1],13);assert(!strcmp(sound_group_name(&trk[1]),"SH-ISH"));
+ apply_preset_to(&trk[1],14);assert(!strcmp(sound_group_name(&trk[1]),"SH-ISH"));
  uint32_t total,k;list_set(1+CAT_SH_STYLE);preset_pos(&total);assert(total==2);
  assert(preset_at(0,&k)==0 && k==13);assert(preset_at(1,&k)==0 && k==14);list_set(0);
  for(unsigned sound=0;sound<2;sound++)for(unsigned t=0;t<6;t++) {

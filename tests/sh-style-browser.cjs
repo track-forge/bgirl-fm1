@@ -17,6 +17,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const turn=async(name,up=true)=>{await page.getByRole('slider',{name,exact:true}).press(up?'ArrowUp':'ArrowDown');await page.waitForTimeout(200);};
   const load=async sound=>{await page.locator('#sh-style-sound').selectOption({index:sound});await page.locator('#sh-style-load').click();await page.waitForTimeout(300);};
   await page.goto(process.env.BGIRL_URL||'http://127.0.0.1:8798');await on();
+  assert.equal(await page.locator('[aria-label="SH-ISH collection"] h2').textContent(),'SH-ISH');
+  assert.deepEqual(await page.locator('#sh-style-sound option').allTextContents(),['Crunchy Bass · 1-1','Velvet Pulse · saved patch, slot unknown']);
   page.once('dialog',d=>d.accept());await page.locator('#blank').click();await page.waitForTimeout(500);
   // Both ordinary presets available on all six selected tracks; other tracks untouched.
   for(let t=0;t<6;t++){
