@@ -69,6 +69,9 @@ int main(int argc,char **argv) {
     puts("CREW preferences: fresh default, saved SCOPE/TRACKS/LEVELS/CREW retained, unknown kept with SCOPE fallback PASS");
     for(uint32_t i=0;i<NTRK;i++)bare(i,0);
     track_t *t=&trk[0];
+    trk_note_on(t,60,100);trk_note_off(t,60);crew_publish(32);
+    assert(crew_read(0)&CREW_ACTIVE); /* admitted short gate in the same block still accents */
+    bare(0,0);
     trk_note_on(t,60,100);crew_publish(32);assert(crew_read(0)&CREW_ACTIVE);assert(!crew_read(1));
     uint32_t phase=crew_read(0)&255u;advance(300);assert((crew_read(0)&255u)!=phase && (crew_read(0)&CREW_ACTIVE));
     trk_note_off(t,60);advance(100);assert(crew_read(0)&CREW_SETTLE);advance(700);assert(!(crew_read(0)&(CREW_ACTIVE|CREW_SETTLE)));

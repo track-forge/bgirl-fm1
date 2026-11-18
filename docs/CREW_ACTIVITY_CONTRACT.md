@@ -19,7 +19,8 @@ local audio samples and measured/current BPM. START resets phase, STOP/CONTINUE
 preserve it. Skipped UI frames sample current phase; no event history or replay.
 
 Sustained activity means active gated non-oneshot admitted voices, not physical
-keys. One-shots (including vocal phrases) get a bounded 250ms attack envelope
+keys. Every admitted synth onset also gets a short90ms pulse, so note-on/off in
+the same block still accents; it does not require the gate to remain high. One-shots (including vocal phrases) get a bounded 250ms attack envelope
 regardless of a held key, then one quarter-note settle. Released sustained gates
 get the same one-quarter settle. Inactive phase freezes; panic/project/init reset
 all transient state. Muting/performance exclusion parks immediately, discards

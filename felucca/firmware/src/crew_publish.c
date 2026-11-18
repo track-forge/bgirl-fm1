@@ -26,7 +26,7 @@ static void crew_publish(uint32_t n)
         } else {
             if(crew_rt[i].pending && admitted) {
                 crew_rt[i].blocked=0;
-                crew_rt[i].pulse=oneshot ? FS/4u : 0u;
+                crew_rt[i].pulse=oneshot ? FS/4u : FS*90u/1000u;
                 crew_rt[i].accent=FS*90u/1000u;
                 crew_rt[i].strength=1u+crew_rt[i].pending/64u;
                 word|=CREW_SEEN;
