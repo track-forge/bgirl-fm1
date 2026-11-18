@@ -1,6 +1,7 @@
 # SH-01A patch gathering — basics round implementation plan
 
-Status: plan only; continue implementation on this PR when assigned.
+Status: implementation staged on this same PR; real patch captures pending.
+See tools/sh01a/README.md and SH01A_PATCH_GATHERING_VERIFICATION.md.
 Issue: https://github.com/track-forge/bgirl-fm1/issues/30
 Next: https://github.com/track-forge/bgirl-fm1/issues/31 (SH-STYLE ANALOG translation; blocked on this delivery).
 Planning baseline: main `c51c53885fd18c1e84be676d1644143803bc2e0b`.
