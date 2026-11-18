@@ -66,7 +66,27 @@ int main(int argc,char **argv) {
     assert(ui_home_view==HV_CREW && HV_SCOPE==0 && HV_TRACKS==1 && HV_LEVELS==2 && HV_CREW==3);
     persist_t pref={0};settings_export(&pref);
     for(uint32_t v=0;v<5;v++) {pref.favorites.factory[15][26]=v==4?255:v;assert(settings_import(&pref,sizeof pref));settings_init();assert(ui_home_view==(v==4?255:v));if(v==4)assert(menu_get(MI_HOME)==HV_SCOPE);}
-    puts("CREW preferences: fresh default, saved SCOPE/TRACKS/LEVELS/CREW retained, unknown kept with SCOPE fallback PASS");
+    /* Real pre-upgrade records have no marker. Upgrade each old HOME choice
+     * once without touching other settings, then preserve the next user choice. */
+    for(uint32_t v=0;v<5;v++) for(uint32_t idle=0;idle<2;idle++) {
+        persist_t old=pref, expected;
+        old.favorites.factory[15][26]=v==4?255:v;
+        old.favorites.factory[15][10]=(uint8_t)(0x54u|idle);
+        expected=old;
+        expected.favorites.factory[15][26]=HV_CREW;
+        expected.favorites.factory[15][10]|=HOME_CREW_DEFAULT_APPLIED;
+        assert(settings_import(&old,sizeof old)==1);
+        assert(!memcmp(&old,&expected,sizeof old));
+        settings_init();assert(ui_home_view==HV_CREW);
+        assert((ui_idle&1u)==idle);
+        assert(settings_import(&old,sizeof old)==1 && !memcmp(&old,&expected,sizeof old));
+        menu_put(MI_HOME,v<4?v:0);settings_export(&old);
+        assert(settings_import(&old,sizeof old)==1);settings_init();
+        assert(ui_home_view==(v<4?v:0));
+        menu_put(MI_ANIM,2);assert(ui_idle&HOME_CREW_DEFAULT_APPLIED);
+        menu_put(MI_ANIM,0);assert(ui_idle&HOME_CREW_DEFAULT_APPLIED);
+    }
+    puts("CREW preferences: fresh default, one-time saved-settings upgrade, unrelated bytes/IDLE preserved, later HOME choices retained PASS");
     for(uint32_t i=0;i<NTRK;i++)bare(i,0);
     track_t *t=&trk[0];
     trk_note_on(t,60,100);trk_note_off(t,60);crew_publish(32);

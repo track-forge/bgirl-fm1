@@ -71,8 +71,9 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
 ## CREW HOME lane
 
 - Read docs/CREW_ACTIVITY_CONTRACT.md and CREW_HOME_VERIFICATION.md.
-- HOME IDs0/1/2 stay SCOPE/TRACKS/LEVELS; CREW appends3. Only genuinely fresh
-  settings choose CREW; preserve imported choices and unknown-value SCOPE fallback.
+- HOME IDs0/1/2 stay SCOPE/TRACKS/LEVELS; CREW appends3. Fresh settings choose
+  CREW; unmarked older settings adopt it once ([15][10] bit7). Thereafter preserve
+  explicit HOME choices and unknown-value SCOPE fallback; keep ANIM IDLE bit0.
 - One selected dancer; `NTRK` associations share five clip banks. No grid or six
   background choreography loops. LARGE keeps the graph and normal engine knobs.
 - Core0 collects accepted activity; publish once after worker join/recovery. UI

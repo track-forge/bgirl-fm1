@@ -114,6 +114,7 @@ static uint32_t leds_step(uint32_t m, int32_t s)
 }
 
 static void palette_apply(void);               /* (ui.c: the palette in use, CUSTOM or a built-in one) */
+#define HOME_CREW_DEFAULT_APPLIED 128u /* [15][10] bit 7; bit 0 remains ANIM IDLE */
 static uint8_t settings_fresh_home; /* consumed by favorites.c after settings initialization */
 static void settings_init(void)
 {

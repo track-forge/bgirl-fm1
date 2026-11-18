@@ -6011,7 +6011,7 @@ static int test_idle_leds(void)
     menu_put(MI_ANIM, 2); settings_leds = LEDS_OFF; ui_leds();
     bad += check("  ANIM ON / OFF: none; LEDS OFF: no glow", ok && host_idle && !host_idle_glow);
     settings_export(&p);
-    ok = p.favorites.factory[15][10] == 1u && !(p.favorites.factory[15][30] & PREF_ANIM_OFF);
+    ok = (p.favorites.factory[15][10] & 1u) == 1u && !(p.favorites.factory[15][30] & PREF_ANIM_OFF);
     p.favorites.factory[15][10] = 0;
     ok &= settings_import(&p, sizeof p) == 1 && menu_get(MI_ANIM) == 0u;
     bad += check("  kept with the settings ([15][10] bit 0; 0, every older setting: ANIM ON)", ok);

@@ -1,3 +1,11 @@
+## CREW default follow-up (2026-11-18)
+
+Doug requested CREW as the default for existing settings too. Older unmarked
+preferences adopt CREW once; subsequent explicit HOME view choices stay saved.
+Music, other preferences and HOME-hold menu behavior are unchanged. See
+[default verification](CREW_DEFAULT_VERIFICATION.md). This supersedes the
+fresh-only default in the historical reports below.
+
 ## CREW HOME browser/host implementation (2026-11-18)
 
 Implemented on PR29 without changing the default musical demo, engine/BSP pins,

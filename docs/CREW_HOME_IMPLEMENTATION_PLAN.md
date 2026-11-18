@@ -50,6 +50,11 @@ Read current source rather than treating historical four-track comments as truth
 
 ## HOME and control contract
 
+**2026-11-18 follow-up:** Doug requested making CREW the default for existing
+settings too. This supersedes the original fresh-only recommendation below:
+unmarked older settings adopt CREW once; later explicit HOME choices remain saved.
+The HOME-hold menu interaction quirk is explicitly deferred.
+
 Add **CREW** to MENU → DISPLAY → HOME, preserving numeric IDs and behavior of
 SCOPE/TRACKS/LEVELS. Recommend CREW for genuinely fresh settings only; honor restored
 view choices and other saved preferences. Explicitly test unknown-value fallback;
