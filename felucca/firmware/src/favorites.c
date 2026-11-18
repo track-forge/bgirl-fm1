@@ -82,6 +82,7 @@ static const char *palette_name(uint32_t v) { return v == NPALETTES ? "CUSTOM" :
 /* the palette in use into gfx.c (the settings changed under it: a start, an import, a restore, a STYLE change) */
 static void palette_apply(void)
 {
+    if(settings_fresh_home) { favorites.factory[15][26]=3u; settings_fresh_home=0; } /* fresh CREW; imports preserve their byte */
     cpal_fix();
     if (cpal_on()) {
         palette_custom_load(ui_cpal);

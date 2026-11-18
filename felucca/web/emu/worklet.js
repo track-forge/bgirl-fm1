@@ -88,7 +88,10 @@ if (typeof registerProcessor === "function") {
       }
       const ex = this.ex;
       if (!ex) return;
-      if (m.type === "dance-info") {
+      if (m.type === "crew-info") {
+        this.port.postMessage({type:"crew-info",values:Array.from({length:13},(_,i)=>ex.web_bgirl_crew_info(i))});
+      }
+      else if (m.type === "dance-info") {
         this.port.postMessage({type:"dance-info",values:Array.from({length:10},(_,i)=>ex.web_bgirl_dance_info(i))});
       }
       else if (m.type === "vocal-info") {

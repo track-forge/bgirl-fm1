@@ -768,6 +768,26 @@ EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
 }
 
 /* Read-only browser acceptance/agent diagnostics; never changes music or drawing. */
+EXPORT uint32_t web_bgirl_crew_info(uint32_t field)
+{
+    switch(field) {
+    case 0:return ui_home_view;
+    case 1:return ui.home && home_crew() && !ui.menu && !ui.layer && !ui.confirm && !name_on();
+    case 2:return song.sel;
+    case 3:return crew_read(song.sel);
+    case 4:return crew_moves[song.sel];
+    case 5:return crew_graph_paints;
+    case 6:return song.playing;
+    case 7:return TSEL->p[P_MUTE];
+    case 8:return home_levels();
+    case 9:return ui.menu_sel;
+    case 10:return !!(ui_prefs&PREF_LARGE);
+    case 11:return palette_cur();
+    case 12:return ui_style;
+    default:return 0;
+    }
+}
+
 EXPORT uint32_t web_bgirl_dance_info(uint32_t field)
 {
     switch(field) {

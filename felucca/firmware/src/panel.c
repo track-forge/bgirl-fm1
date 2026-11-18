@@ -114,12 +114,14 @@ static uint32_t leds_step(uint32_t m, int32_t s)
 }
 
 static void palette_apply(void);               /* (ui.c: the palette in use, CUSTOM or a built-in one) */
+static uint8_t settings_fresh_home; /* consumed by favorites.c after settings initialization */
 static void settings_init(void)
 {
     if (settings.magic == SETTINGS_MAGIC_OLD && settings.palette < 20u) {
         settings.magic = SETTINGS_MAGIC;
         settings.palette = palette_from_stored(settings.palette);
     }
+    if (settings.magic != SETTINGS_MAGIC) settings_fresh_home=1;
     if (settings.magic != SETTINGS_MAGIC || settings.palette >= NPALETTES) {
         settings.magic = SETTINGS_MAGIC;
         settings.palette = UI_CIRCUIT_INDEX;   /* BGIRL fresh state only; restored settings win */

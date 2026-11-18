@@ -106,8 +106,9 @@ static uint32_t sel_mode(void) { return ((ui_prefs2 >> 4) & 1u) | ((ui_prefs2 >>
  * Saved with the settings; read only while LEDS is INV (menu_items.c leds_row) */
 #define ui_leds_inv (favorites.factory[15][25])
 static uint32_t leds_inv(void) { return settings_leds == LEDS_INV && ui_leds_inv - 1u < 2u ? ui_leds_inv : 0u; }
-enum { HV_SCOPE, HV_TRACKS, HV_LEVELS, HV_COUNT };
+enum { HV_SCOPE, HV_TRACKS, HV_LEVELS, HV_CREW, HV_COUNT };
 static int home_tracks(void) { return ui_home_view == HV_TRACKS || ui_home_view == HV_LEVELS; }
+static int home_crew(void) { return ui_home_view == HV_CREW; }
 static int home_levels(void) { return ui_home_view == HV_LEVELS; }
 enum { RP_CLICK, RP_LEVEL, RP_COUNTIN };
 static uint32_t rp_get(uint32_t f)                     /* a field as the MENU steps it: 0..2 */
@@ -396,7 +397,7 @@ static uint32_t large_kind(void)
     if (ui.layer)
         return LK_LABEL;
     if (ui.home)                                        /* (HOME > TRACKS: its rows need the panel, the cards as on */
-        return home_tracks() ? LK_LABEL : LK_TALL;      /* a list page; the rows' names in M: draw_home_tracks) */
+        return home_tracks() || home_crew() ? LK_LABEL : LK_TALL;      /* a list page; the rows' names in M: draw_home_tracks) */
     g = cur_page()->graph;
     return g == GR_BROWSE || g == GR_SLOTS || g == GR_USER || g == GR_PATS || g == GR_SONG || g == GR_ROLL ||
            g == GR_SLICES || g == GR_EVENTS || g == GR_DANCE ? LK_LABEL : LK_TALL;

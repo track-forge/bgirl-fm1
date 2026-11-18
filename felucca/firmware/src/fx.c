@@ -1102,6 +1102,8 @@ static uint32_t mix_split(void)
 }
 #endif
 
+#include "crew_publish.c"
+
 static void mix_block(int32_t *out, uint32_t n)
 {
     uint32_t i;
@@ -1166,6 +1168,7 @@ static void mix_block(int32_t *out, uint32_t n)
 #if FELUCCA_CPU2
     for(i=0;i<NPART;i++) track_lfo_end(&trk[i]);
 #endif
+    crew_publish(n);
     if (perf)
         perf_pre(mix_l, mix_r, send_d, send_r, n);
     fx_buses(send_c, send_d, send_r, wet, n);

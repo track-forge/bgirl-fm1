@@ -71,3 +71,6 @@ node tests/clarity-editor.mjs
 cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/mega_demo_test tests/mega_demo_test.c -lm
 felucca/build/host/mega_demo_test
 node tests/mega-wasm.mjs
+
+# Selected-track CREW HOME publication, rendering and preservation.
+./tests/run_crew_tests.sh

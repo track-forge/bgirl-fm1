@@ -913,13 +913,13 @@ static int menu_protocol(void)
         {"SCREEN OFF", "NEVER,5 MIN,15 MIN,30 MIN,60 MIN"},
         {"SCOPE", "OUT,MIX"}, {"STEP PREVIEW", "OFF,ON"}, {"CHORD ENTRY", "HOLD,ADD"},                  /* (1.2) */
         {"MIDI IN", "CH1-4,SEL,CH5-8,CH9-12,CH13-16,TRACK"}, {"TUNE", 0},   /* (1.2: the project's ROUT and TUNE; TUNE a number) */
-        {"HOME", "SCOPE,TRACKS,LEVELS"},                                                       /* (1.3; 1.5: LEVELS) */
+        {"HOME", "SCOPE,TRACKS,LEVELS,CREW"},                                                       /* (1.3; 1.5: LEVELS) */
         {"HELP", "OFF,ON"},                                                                          /* (1.5) */
         {"SELECT", "BPM,PAGE,MODW,VEL"},                                                             /* (1.5.5; 1.5.6 MODW VEL) */
         {"T1 CHANNEL", TCH_NAMES}, {"T2 CHANNEL", TCH_NAMES}, {"T3 CHANNEL", TCH_NAMES}, {"T4 CHANNEL", TCH_NAMES},   /* (1.5.5) */
         {"AUTO SELECT", "OFF,ON"}, {"SCREEN WAKE", "+MIDI,PANEL"},                                   /* (1.5.5) */
         {"2ND CORE", "OFF,ON (BETA)"}, {"T5 CHANNEL",TCH_NAMES}, {"T6 CHANNEL",TCH_NAMES}};                                                           /* (1.6.1; OFF the default) */
-    static const int32_t DEF[35] = {-1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 4, 5};   /* (COLOR: the default palette) */
+    static const int32_t DEF[35] = {-1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 2, 3, 0, 0, 0, 4, 5};   /* (COLOR: the default palette) */
     static const uint8_t TAB[35] = {0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 5, 2, 2, 2, 5, 1, 0, 0, 1, 1, 3, 2, 0, 5, 1, 4, 4, 4, 4, 3, 3, 5, 4, 4};   /* DISPLAY CONTROL AUDIO
                                                                                                          * MIDI SYSTEM (1.2) */
     static const char *const TABN[6] = {"DISPLAY", "CONTROL", "AUDIO", "MIDI", "CHANS", "SYSTEM"};
