@@ -1,0 +1,25 @@
+{
+  "runtimeSource": "53e63d0",
+  "wasmBytes": 1013012,
+  "wasmSHA256": "7d6ea362b53c96969d6e30ad55fbd049b3977015c11f4c6b271300f5d4ff229c",
+  "unchangedGeneratedFiles": [
+    "felucca_tables.h",
+    "felucca_fm6.h",
+    "felucca_adpcm.h",
+    "ui_keycaps.h",
+    "felucca_samples.h",
+    "ui_fonts.h",
+    "bgirl_speech.h",
+    "bgirl-speech.bin",
+    "bgirl_vocals.h",
+    "bank.ima",
+    "bank.json",
+    "bgirl_logo.h"
+  ],
+  "hostSize": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 934965\t   1596\t1654848\t2591409\t 278ab1\tfelucca/build/host/bgirl_test\n",
+  "iconBytesBefore": 7551,
+  "iconBytesAfter": 8397,
+  "fontBytesBefore": 84283,
+  "fontBytesAfter": 84283,
+  "redrawCSVsByteIdentical": true
+}

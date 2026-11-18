@@ -1,0 +1,9 @@
+2 extra bytes in post.stringData array
+2 extra bytes in post.stringData array
+icons: x_oct_up: symbol_pitch_up not in the font yet, using control_arrow_up
+icons: x_oct_dn: symbol_pitch_down not in the font yet, using control_arrow_down
+icons 12px: 108 cells, 4399 B
+icons 16px: 42 cells, 2834 B
+icons 24px: 9 cells, 1106 B
+icons code: 58 B
+icons total 8397 B -> local/studio-v2/repeat-icons.h   (87 legacy names + 36 new)

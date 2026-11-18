@@ -105,6 +105,7 @@ existing navigation and musical state remain unchanged. New **STUDIO** colors ar
 an appended palette, chosen only for fresh settings; saved/custom palettes win.
 JIANT's face configuration is adapted locally; LARGE keeps28px numeric values.
 
+[STUDIO iteration 2: warmer color semantics, crown/LAB/CUT icons and native comparisons](docs/STUDIO_ITERATION_2_VERIFICATION.md).
 [Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
 **Doug's visual/playability review is pending.** Other pages keep their existing
 composition. This is not the complete design overhaul.
