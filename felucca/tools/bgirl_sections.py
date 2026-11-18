@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from PIL import Image, ImageDraw
 import aa_raster as ar
 
-NAMES = ("bg_stage", "bg_lab", "bg_cut")
+NAMES = ("bg_stage", "bg_lab", "bg_cut", "bg_vinyl")
 ROOT = Path(__file__).resolve().parents[1] / "assets" / "bgirl-icons"
 
 
@@ -27,6 +27,9 @@ def raster(name, size, gamma=1.0):
         if tag == "polyline":
             pts = [tuple(float(v) * ss for v in p.split(",")) for p in e.attrib["points"].split()]
             d.line(pts, fill=255, width=width, joint="curve")
+        elif tag == "circle":
+            x,y,r=[float(e.attrib[k])*ss for k in ("cx","cy","r")]
+            d.ellipse((x-r,y-r,x+r,y+r),outline=255,width=width)
         elif tag == "rect":
             x, y, w, h = [float(e.attrib[k]) * ss for k in ("x", "y", "width", "height")]
             d.rectangle((x, y, x + w, y + h), outline=255, width=width)

@@ -25,3 +25,11 @@ shared compressed stream changes. `tests/test_studio_icons.py` checks those hash
 all9 new SVG/decoder compositions, nonempty/distinct silhouettes and padding.
 The native icon sheet produced by `tests/stage-render.c` uses the real firmware
 renderer, not the source rasterizer's preview.
+
+## Vinyl beat icon
+
+`bg_vinyl-{12,16,24}.svg` is an original, separately fitted concentric vinyl/label
+mark. It appends a new icon ID; inherited TEMPO/TAP and the three section IDs stay
+unchanged. Only the header beat marker switches to vinyl. The existing stationary
+beat/header behavior is preserved; this is not a spinning animation or an audio
+metronome change. Build-time circle strokes are packed through the same decoder.

@@ -187,8 +187,8 @@ static void head_geo(head_geo_t *g, const char *bpm)
     char z[8] = "0000000";
     z[str_len(bpm) < 7u ? str_len(bpm) : 7u] = 0;
     text_ink(&AF_M, z, g->b);
-    icon_ink(16, ICON_TEMPO, ib);
-    if (icon_cell(&sz, ICON_TEMPO) >= 0)
+    icon_ink(16, ICON_BG_VINYL, ib);
+    if (icon_cell(&sz, ICON_BG_VINYL) >= 0)
         c = (int32_t)sz;
     icon_ink(16, ICON_X_STOP, pb);                     /* the play state's slot: the wider of stop and play */
     pw = pb[2] - pb[0];
@@ -214,11 +214,11 @@ static void head_metro(int32_t x0, int32_t beat)
 {
     int32_t ib[4], c = 16;
     uint32_t sz = 16;
-    icon_ink(16, ICON_TEMPO, ib);
-    if (icon_cell(&sz, ICON_TEMPO) >= 0)
+    icon_ink(16, ICON_BG_VINYL, ib);
+    if (icon_cell(&sz, ICON_BG_VINYL) >= 0)
         c = (int32_t)sz;
     cv_flip = (uint8_t)(beat > 0 && (beat & 1));
-    cv_icon_mid(x0 - (cv_flip ? c - ib[2] : ib[0]), H_HEAD / 2, 16, ICON_TEMPO, beat == 0 ? T_ACCENT : T_MID, T_BG);
+    cv_icon_mid(x0 - (cv_flip ? c - ib[2] : ib[0]), H_HEAD / 2, 16, ICON_BG_VINYL, beat == 0 ? T_ACCENT : T_MID, T_BG);
     cv_flip = 0;
 }
 /* the width cv_free_hint(x, .., s, .., maxw) draws (its word, keycap and the ellipsised rest) */
@@ -328,7 +328,7 @@ static void draw_head(void)
     static int8_t metro_beat;
     char b[16];
     head_geo_t g;
-    int32_t beat = -1;                                 /* the metronome stands still (its swing removed in 1.1.5) */
+    int32_t beat = -1;                                 /* the vinyl beat icon stays still (same header behavior since 1.1.5) */
     uint32_t rec = (song.rec >> song.sel) & 1u ? 2u : song.rec != 0u;   /* 2 the selected track armed, 1 another */
     char sl[3];
     int slot = head_slot(sl);
