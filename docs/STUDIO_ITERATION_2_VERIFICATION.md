@@ -101,8 +101,7 @@ bindings, values, fonts, LARGE sizes and page geometry remain unchanged.
 
 Existing Chromium suites are browser-smoke, battle, CREW, dance, six-track,
 vocoder, vocal, Mega, SH-STYLE, clarity, signature, splash and demo. Focused stage
-browser ran again after the ENV focus fix; early suites were also repeated on the
-final runtime. GitHub exact-head CI is separate from these local results and is
+browser ran again after the ENV focus fix; early suites were also [repeated on the final runtime](img/studio-v2/browser-final-reruns.txt). GitHub exact-head CI is separate from these local results and is
 reported on the PR; no CI pass is inferred from local runs.
 
 See the receipts below for final results. The focused firmware matrix covers all
