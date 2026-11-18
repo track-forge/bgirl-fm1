@@ -27,7 +27,7 @@
       "P_ESYNC"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 2,
@@ -42,7 +42,7 @@
       "P_LFADE"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 3,
@@ -57,7 +57,7 @@
       "0xFF"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 4,
@@ -72,7 +72,7 @@
       "P_LD_AMP"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 5,
@@ -87,7 +87,7 @@
       "P_M1AMT"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 6,
@@ -102,7 +102,7 @@
       "P_REV"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 7,
@@ -117,7 +117,7 @@
       "P_VMON"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 8,
@@ -132,7 +132,7 @@
       "P_VCONS"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 9,
@@ -147,7 +147,7 @@
       "P_VREL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 10,
@@ -162,7 +162,7 @@
       "P_VWET"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 11,
@@ -192,7 +192,7 @@
       "P_IC"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 13,
@@ -207,7 +207,7 @@
       "0xFF"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 14,
@@ -222,7 +222,7 @@
       "G_DMIX"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 15,
@@ -237,7 +237,7 @@
       "0xFF"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 16,
@@ -252,7 +252,7 @@
       "0xFF"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 17,
@@ -297,7 +297,7 @@
       "P_E3"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 20,
@@ -312,7 +312,7 @@
       "P_E7"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 21,
@@ -327,7 +327,7 @@
       "P_E7"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 22,
@@ -402,7 +402,7 @@
       "0xFF"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 27,
@@ -432,7 +432,7 @@
       "P_FM1_REL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 29,
@@ -447,7 +447,7 @@
       "P_FM2_REL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 30,
@@ -462,7 +462,7 @@
       "P_FM3_REL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 31,
@@ -477,7 +477,7 @@
       "P_FM4_REL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 32,
@@ -492,7 +492,7 @@
       "P_FM4_LEVEL"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 33,
@@ -507,7 +507,7 @@
       "P_PRIO"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 34,
@@ -522,7 +522,7 @@
       "P_MUTE"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 35,
@@ -537,7 +537,7 @@
       "P_ATAMT"
     ],
     "phase": "LAB",
-    "status": "this LAB pass"
+    "status": "approved #39"
   },
   {
     "index": 36,
@@ -552,7 +552,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT sequencing pass"
   },
   {
     "index": 37,
@@ -687,7 +687,7 @@
       "3"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT sequencing pass"
   },
   {
     "index": 46,
@@ -702,7 +702,7 @@
       "3"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT sequencing pass"
   },
   {
     "index": 47,
@@ -717,7 +717,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT sequencing pass"
   },
   {
     "index": 48,

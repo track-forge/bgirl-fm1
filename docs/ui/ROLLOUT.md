@@ -1,9 +1,8 @@
 # Approved STUDIO rollout ledger
 
-Parent: PR36 / `3d125b2`. Doug approved the STUDIO first-screen direction on
-2026-11-18 and authorized this stacked inventory + LAB pass. This PR targets
-`plan/stage-lab-cut`, not main; do not merge the stack or deploy implicitly.
-Issue35 remains the umbrella, not closed by this pass.
+Current CUT continuation stacks on PR39 / `52910de`, branch
+`feat/studio-lab-rollout`. Doug approved the LAB/inventory/vinyl pass and authorized
+CUT sequencing next. No implicit merge or deployment; issue35 remains open.
 
 ## Coverage units
 
@@ -11,7 +10,7 @@ Issue35 remains the umbrella, not closed by this pass.
   Reproduce with `python3 tools/ui_inventory.py`; source names/bindings, no new IDs.
 - EDIT1/2 are engine-defined: every selectable engine has its own labels, ranges,
   units, enum names and enabled controls. The SAMPLE engine's existing waveform
-  and slice UI belong to the later CUT pass; FM4 compatibility-only pages remain
+  and slice UI belong to the later sample/slice pass; FM4 compatibility-only pages remain
   inventoried even when the build flag hides them. DRUM lane levels are CUT.
 - HOME is not a PAGES row: CREW (approved), SCOPE, TRACKS, LEVELS (pending STAGE).
   MIXER and GLO bank T1–4/T5–6; inactive two cells must stay inactive.
@@ -23,8 +22,9 @@ Issue35 remains the umbrella, not closed by this pass.
 | Slice | Coverage | Status / review gate |
 |---|---|---|
 | Foundation / PR36 | CREW STAGE, FM operator and operator2 LAB, drum STEP CUT, ENV | Doug approved; GitHub host checks green |
-| This stack / LAB | Remaining envelope/LFO/modulation, synth EDIT/FILTER/VOICE, FM OP ENV, FX/INSERT/global sends and vocoder | [Native comparisons and verification](LAB_VERIFICATION.md); Doug review pending |
-| CUT | Melodic STEP/DETAIL, automation, song, existing SAMPLE/SLICES, SLICER, drum LANES | Pending; no new sample editor or time stretching |
+| Approved LAB / PR39 | Remaining envelope/LFO/modulation, synth EDIT/FILTER/VOICE, FM OP ENV, FX/INSERT/global sends and vocoder | [Native comparisons and verification](LAB_VERIFICATION.md); Doug approved |
+| CUT sequencing / this stack | Melodic STEP/DETAIL, automation, SONG; DRUM DETAIL cross-check | [Native comparisons and verification](CUT_VERIFICATION.md); Doug review pending |
+| CUT samples / later | Existing SAMPLE/SLICES, SLICER, drum LANES | Pending; no new sample editor or time stretching |
 | STAGE | Other HOME views, MIXER/CLOCK, ARP/SCL/CHORD and ARP DANCE framing | Pending; do not alter dancer assets or choreography |
 | System | USER/PRESETS/PHRASES/PROJECT/TOOLS, menus, overlays and dialogs | Pending |
 | Browser shell | Align wrapper typography/color and focus/accessibility | Pending, after firmware coverage |
@@ -37,7 +37,7 @@ Each needs a native fixture and interaction check in its owning slice:
 
 | Surface | Cases to preserve | Owner |
 |---|---|---|
-| Global header/footer | Tempo widths/lock/rolling, REC own/other, count-in, internal/external clock, battery/USB, messages, page identity, long preset names | Shared; vinyl change in this pass |
+| Global header/footer | Tempo widths/lock/rolling, REC own/other, count-in, internal/external clock, battery/USB, messages, page identity, long preset names | Shared; vinyl approved in PR39 |
 | GLO hold | Track banks, mute/solo, ALL/LEARN/FILL/TAP, locked/held transitions | STAGE/system |
 | ENV/LFO/FX/REC hold layers | Momentary/latched maps, learn/assign/wait, return to underlying page, stale-pixel cleanup | System |
 | MENU | DISPLAY/CONTROL/AUDIO/MIDI/SYSTEM, scrolling/end, calibration/about, custom palette editing | System |

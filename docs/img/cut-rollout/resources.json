@@ -1,0 +1,20 @@
+{
+  "runtimeSource": "d062416f34430066c319bd45b3a4f31cb7117d27",
+  "parentSource": "52910de468fc4e87a940ea8d076a038bdcd7aa6c",
+  "wasmBefore": 1019490,
+  "wasmAfter": 1034067,
+  "wasmDelta": 14577,
+  "wasmSHA256": "7f6541d2fe112953d6edbda263f34dfda232bfe24c1203d66a5855424a93ba6d",
+  "fontsBeforeAndAfter": 84283,
+  "iconsBeforeAndAfter": 8753,
+  "generatedFontIconKeycapPaletteHeadersByteIdentical": true,
+  "canvasBeforeAndAfter": 59520,
+  "trackBeforeAndAfter": 1856,
+  "projectWireBeforeAndAfter": 3840,
+  "hostTextBefore": 939093,
+  "hostTextAfter": 945669,
+  "hostDataBeforeAndAfter": 1596,
+  "hostBSSBeforeAndAfter": 1654848,
+  "drawRecipes": 32,
+  "changedDrawRecipes": 0
+}
