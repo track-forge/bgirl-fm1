@@ -31,7 +31,7 @@ int main(void) {
     for(uint32_t k=0;k<NSTEP;k++) {
         assert(trk[2].step[k].n==(k%16==0));
         if(k%16==0) {
-            assert(trk[2].step[k].note[0]==(k%32==0?21:19));
+            assert(trk[2].step[k].note[0]==(k%32==0?33:31));
             assert(trk[2].step[k].time==ST_NOTE);
         } else assert(trk[2].step[k].time==ST_TIE);
         assert(trk[3].step[k].n==(k==0 || k==32));

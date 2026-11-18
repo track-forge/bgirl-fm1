@@ -59,9 +59,9 @@ static void bgirl_mega_demo(void)
      * deliberately quantized to this common gate rather than new timing DSP. */
     trk[2].p[P_LEVEL]=90;trk[2].p[P_VOICE]=V_MONO;
     for(k=0;k<64;k++)trk[2].step[k].time=ST_TIE;
-    /* A0/G0: two octaves below A2/G2, four beats per note. */
+    /* A1/G1: raised one octave from the first saw audition; four beats each. */
     for(k=0;k<64;k+=32) {
-        bgirl_mega_note(2,k,21,100);bgirl_mega_note(2,k+16,19,100);
+        bgirl_mega_note(2,k,33,100);bgirl_mega_note(2,k+16,31,100);
     }
     /* Find G6 by label. Generated WHOLE parent order mirrors the group order. */
     for(i=1;i<NELEM(BG_VOCAL_GROUPS);i++)

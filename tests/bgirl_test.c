@@ -13,7 +13,7 @@ static void defaults(int demo) {
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==2);
         assert(trk[2].step[1].time==ST_TIE);
-        assert(trk[2].step[0].note[0]==21 && trk[2].step[16].note[0]==19);
+        assert(trk[2].step[0].note[0]==33 && trk[2].step[16].note[0]==31);
         assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==0);
         assert(slc_vocal_match(&trk[3]));
         assert(trk[2].p[P_SLEN]==64 && trk[3].p[P_SLEN]==64);

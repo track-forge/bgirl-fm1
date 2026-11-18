@@ -187,3 +187,12 @@ edited gate/delay persistence through manual save and autosave. Native/WASM
 comparison renders the actual scheduled arrangement for two complete loops;
 voice-budget/STOP and browser checks remain required. Exact-head results and
 private-preview receipts are recorded in the PR follow-up, not listening approval.
+
+
+### Listening revision — carrier one octave higher (2026-11-18)
+
+The saw carrier audition above was too low. Only T3 pitches rise12semitones:
+A1(MIDI33), then lower G1(MIDI31), four beats each, repeated. All other demo
+parameters/tracks remain unchanged, including T2−24semitones and T4 FX gate3
+plus20% delay. Per Doug, a focused local build/arrangement/parity check precedes
+preview rollout; full hosted CI runs asynchronously, not as a deployment gate.

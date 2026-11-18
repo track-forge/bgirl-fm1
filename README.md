@@ -241,7 +241,7 @@ not establish musical approval or physical-device fit/performance.
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Reference two-bar kick, snare+clap, hats/rim; final-bar turnaround |
 | 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
-| 3 | ANALOG / BG CARR SAW | A0 then lower G0, four beats each, repeated; dry MON OFF |
+| 3 | ANALOG / BG CARR SAW | A1 then lower G1, four beats each, repeated; dry MON OFF |
 | 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET92% |
 | 5 | GRAIN / CLOUD PAD | Four-bar D3→C4→E4, single-voice textured movement |
 | 6 | DRUM / TIGHT KIT | Empty; unrestricted track for jamming |
