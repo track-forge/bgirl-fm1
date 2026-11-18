@@ -30,7 +30,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    await turn('ALGORITHM');
   }
   assert.equal(new Set(screens).size,6);for(let i=0;i<24;i++){await turn('ALGORITHM');assert.equal((await info())[2],(i+1)%6);}
-  await turn('ALGORITHM',-1);q=await info();assert.equal(q[2],5);assert.equal(q[3]&768,0); // Empty T6 while other tracks play.
+  await turn('ALGORITHM',-1);q=await info();assert.equal(q[2],5);
+  // Main's Mega Jam now uses T6 for BG KICK. Explicitly clear only that pattern
+  // through SAVE > TOOLS; never assume a production-demo track stays empty.
+  for(let i=0;i<5;i++)await tap('SAVE');
+  await turn('KNOB 1');await tap('OCT+');await tap('OCT+');await tap('HOME');
+  await page.waitForTimeout(1000);q=await info();
+  assert.equal(q[1],1);assert.equal(q[2],5);assert.equal(q[6],1);assert.equal(q[7],0);assert.equal(q[3]&768,0);
+  const otherTrackPeak=await page.evaluate(()=>{const a=new Float32Array(4096);analyser.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});
+  assert(otherTrackPeak>.0001,'other tracks still play while the cleared, unmuted T6 stays idle');
   await turn('ALGORITHM',-1,4); // T2 bass
   // Engine knob remains a normal musical edit; screenshot keeps the real labels.
   await turn('KNOB 1');await tap('HOME');assert.equal((await info())[1],0); // MIXER
