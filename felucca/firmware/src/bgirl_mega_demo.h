@@ -72,7 +72,7 @@ static void bgirl_mega_demo(void)
     trk[3].p[P_E2]=0;trk[3].p[P_ROOT]=0;
     trk[3].p[P_E4]=SLC_ONE;trk[3].p[P_E6]=127;
     trk[3].p[P_ATK]=trk[3].p[P_DEC]=0;trk[3].p[P_SUS]=127;
-    trk[3].p[P_VOICE]=V_MONO;trk[3].p[P_LEVEL]=96;
+    trk[3].p[P_VOICE]=V_MONO;trk[3].p[P_LEVEL]=81;
     trk[3].p[P_VCARR]=3;trk[3].p[P_VMON]=0;trk[3].p[P_VBANDS]=2;
     trk[3].p[P_VRANGE]=1;trk[3].p[P_VREL]=bg_release_value(120);
     trk[3].p[P_VWET]=84; /* displayed66% */trk[3].p[P_VCONS]=0;
@@ -85,7 +85,7 @@ static void bgirl_mega_demo(void)
         bgirl_mega_note(3,0,60+group-1,110);
         bgirl_mega_note(3,32,60+group-1,106);
     }
-    trk[4].p[P_LEVEL]=55;trk[4].p[P_VOICE]=V_MONO;
+    trk[4].p[P_LEVEL]=99;trk[4].p[P_VOICE]=V_MONO;
     trk[4].p[P_REV]=43;trk[4].p[P_REL]=35;trk[4].p[P_SGATE]=127;
     trk[4].p[P_SLCR]=SL_GATE;trk[4].p[P_SLPAT]=1;
     trk[4].p[P_SLRATE]=1;trk[4].p[P_SLDEPTH]=95; /* displayed75% */

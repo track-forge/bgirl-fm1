@@ -223,3 +223,12 @@ PAT1, rate1(1/16), depth95/127(display75%). Dormant FM6 state is canonicalized
 and the active T5 factory PAD slot is restored immediately. All other tracks,
 including separate BG KICK, A2/G1 carrier and T4 wet66/gate3/delay20, remain.
 Focused checks and live quick preview precede rollout; full CI asynchronous.
+
+
+### Listening revision — pad/chop mixer levels (2026-11-18)
+
+Only track LEVEL values change: T5 FM6 PAD99(display−6.5dB), T4 SLICE/CHOP81
+(display−15.5dB). These are the normal selected-track MIXER level parameters,
+not master volume, vocoder wet or effect sends. All notes, instruments, gating,
+wet66%, timing and other track settings remain unchanged. Focused local and
+live quick-preview checks precede rollout; hosted CI stays asynchronous.

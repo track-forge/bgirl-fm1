@@ -46,6 +46,11 @@ int main(void) {
     assert(trk[4].p[P_SLDEPTH]==95);
     param_format(&TP[P_SLDEPTH],trk[4].p[P_SLDEPTH],delay_text,&delay_unit);
     assert(!strcmp(delay_text,"75") && !strcmp(delay_unit,"%"));
+    assert(trk[4].p[P_LEVEL]==99 && trk[3].p[P_LEVEL]==81);
+    param_format(&TP[P_LEVEL],trk[4].p[P_LEVEL],delay_text,&delay_unit);
+    assert(!strcmp(delay_text,"-6.5") && !strcmp(delay_unit,"dB"));
+    param_format(&TP[P_LEVEL],trk[3].p[P_LEVEL],delay_text,&delay_unit);
+    assert(!strcmp(delay_text,"-15.5") && !strcmp(delay_unit,"dB"));
     for(uint32_t k=0;k<NSTEP;k++) {
         assert(trk[2].step[k].n==(k%16==0));
         if(k%16==0) {

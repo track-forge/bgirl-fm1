@@ -242,8 +242,8 @@ not establish musical approval or physical-device fit/performance.
 | 1 | DRUM / TIGHT KIT | Reference snare+clap, hats/rim; kick moved to T6; final-bar turnaround |
 | 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
 | 3 | ANALOG / BG CARR SAW | A2 then lower G1, four beats each, repeated; dry MON OFF |
-| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET66% |
-| 5 | FM6 / PAD | D2→C3→E3 (one octave lower); mono; FX GATE/PAT1/1⁄16/depth75% |
+| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET66%; level−15.5dB |
+| 5 | FM6 / PAD | D2→C3→E3 (one octave lower); mono; FX GATE/PAT1/1⁄16/depth75%; level−6.5dB |
 | 6 | DRUM / BG KICK | T1 kick rhythm/accents on a separate track; final-step breath retained |
 
 Fresh state and explicit demo load this same editable arrangement **stopped at128 BPM**.
