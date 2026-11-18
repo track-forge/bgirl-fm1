@@ -1,5 +1,8 @@
 # SH-STYLE basics-round evidence — issue #31 / PR #33
 
+> Historical initial implementation results below refer to pre-rebase02a4a2b.
+> Current-main rebase and user-authorized preview: [SH_STYLE_PREVIEW.md](SH_STYLE_PREVIEW.md).
+
 Implemented on `plan/sh-style-analog-bank`, stacked on **PR #32** branch
 `plan/sh01a-patch-gathering` at `4a1cb94db67da1c0e3f6f105f650e3c5b4125583`.
 Parent capture implementation is `27bbf5179cfc2c8d3707ce2156680485310a378d`;
