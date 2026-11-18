@@ -2,7 +2,7 @@
   "tracks": 6,
   "visibleDancers": 1,
   "distinctScreens": 6,
-  "peak": 0.2012786865234375,
+  "peak": 0.18288421630859375,
   "viewsRestored": [
     0,
     1,
@@ -14,7 +14,7 @@
   "emptyTrackIsolated": true,
   "hiddenAndCoveredNoPaint": true,
   "loads": [
-    0.052171875000000006
+    0.0483725823782235
   ],
   "errors": [],
   "humanArtApproval": "pending",

@@ -1,6 +1,6 @@
 # CREW HOME — browser / host review
 
-2026-11-18. Runtime source **30198d9cf4df88439e8df7abad43c51f9ba2b827**;
+2026-11-18. Runtime source **163a868493d95c1510655a9ba1c7a4cdd6c90f32**;
 subsequent documentation-only commit records evidence. Same draft
 [PR29](https://github.com/track-forge/bgirl-fm1/pull/29), branch `plan/crew-home`.
 Fresh remote main verified at `c51c53885fd18c1e84be676d1644143803bc2e0b` before
@@ -23,7 +23,7 @@ new-PR workflow. PR28's Mega Jam arrangement was **not** absorbed.
 - Core0 accepted starts/winning mono legato coalesce peak accents; one whole-word
   per-track snapshot is published **after render and CPU2 join/recovery**. Workers
   never write it; UI never reads mutable voices. Activity handles sustained gates,
-  bounded250ms one-shots, one-quarter settle, freeze, mute/solo inhibition,
+  bounded250ms one-shots/90ms synth attack pulses, one-quarter settle, freeze, mute/solo inhibition,
   deferred starts, stealing and reset. [Exact contract](CREW_ACTIVITY_CONTRACT.md).
 - One Q32 phrase/four quarter notes. Internal samples/current BPM, external musical
   GRID units, START reset / STOP local live phase / CONTINUE preserve. BPM changes
@@ -58,11 +58,11 @@ submodules resolved it, not a dependency update. Authoritative baseline was a
 frozen detached5072b2c worktree (`local/crew/baseline`): root web build and full host
 suite PASS. This avoids counting a test reading concurrently edited sources as a
 clean baseline. Receipts `/tmp/bgirl-crew-frozen-baseline-{build,tests}.log`.
-Final source-frozen receipts `/tmp/bgirl-crew-final-{build,tests}.log`.
+Final source-frozen receipts `/tmp/bgirl-crew-shortgate-{build,tests}.log`.
 
 ## Automated acceptance
 
-Final root web build and **full host suite PASS (exit0)**.109 audio goldens unchanged,
+Final short-gate root web build and **full host suite PASS (exit0)**.109 audio goldens unchanged,
 zero gone/health/routing failures;88200 heavy-song and176400 clarity native/WASM
 frames bit-identical. Applicable storage/persistence/UI/input/MIDI clock/drift,
 six-track codec/motion/editor, signature/vocal/vocoder, disabled-vocoder and worker
@@ -78,6 +78,8 @@ Focused CREW, independently repeated:
   expiry despite held key; muted receipts, performance exclusion and no unmute-only
   rejoin; losing mono priority, winning legato, deferred request, stolen voice,
   panic and project reset. Other tracks cannot animate an inactive selection.
+  A final regression proved that a synth note admitted/released in the same block
+  lost its accent; a90ms admitted-onset pulse fixes that without changing audio.
 - Exact external GRID phase tests: quarter-quarter advances, BPM-independent units,
   START resets, stopped local phase advances, CONTINUE keeps phase. A development
   samples-versus-GRID error was caught/fixed before the final source revision.
@@ -114,7 +116,7 @@ selection switches; empty T6 stays inactive while the rest play; engine knob,
 HOME/MIXER/CLOCK and mute/return; live notes while stopped; ARP/covered GLO paint
 isolation; LARGE/LINE/alternate palette; all four HOME choices changed through the
 normal menu, saved to emulated NOR/localStorage and restored after reload; desktop
-and390×844 mobile, no overflow/page errors. Final measured audio peak0.2012557983,
+and390×844 mobile, no overflow/page errors. Final measured audio peak0.1828842163,
 nonzero/bounded. [Machine receipt](img/crew/results.json).
 
 The preference test initially navigated PRESETS as if rows clamped, but the real
@@ -148,19 +150,19 @@ perfect motion reproduction or **Doug visual approval** is claimed.
 
 ## Measured resources (host/browser, not device fit)
 
-Same GCC/O1 `tests/bgirl_test.c` binary, baseline5072b2c vs source30198d9:
+Same GCC/O1 `tests/bgirl_test.c` binary, baseline5072b2c vs source163a868:
 
 | Region | Baseline | CREW | Delta |
 | --- | ---: | ---: | ---: |
 | New linked mask banks |0|55296B|+55296B read-only|
-| Native text+rodata |826693B|884493B|+57800B|
+| Native text+rodata |826693B|884557B|+57864B|
 | Native initialized data |1596B|1596B|0 aggregate, alignment may absorb fields|
 | Native BSS |1654688B|1654848B|+160B|
 | Logical new mutable fields |0|145B|24 snapshots+96 producer+4 phase+20 UI+1 default flag|
 | Track / project wire |1856 /3840B|same|0|
 | Existing canvas |59520B|same|0 new framebuffer|
 | Changed graph transfer |58560B|same|full240×122 RGB565|
-| WASM |916364B|948990B|+32626B|
+| WASM |916364B|948991B|+32627B|
 | WASM initial linear memory |33554432B|same|unchanged fixed build allocation|
 
 Existing13824B FLOORWORK bank is shared, not duplicated. Six track associations do
@@ -168,17 +170,19 @@ not multiply clip storage. At the15/s animation cap, graph payload alone can rea
 878400B/s; forced user edits/selection and other independently changed UI regions
 are additional. This is not a measured SPI bandwidth or device FPS promise.
 
-Three alternating paired hidden-UI whole-process512000-frame runs: disabled
-control median0.138777s, telemetry-on0.156953s (~13.1% higher). These include boot,
-UI and `/dev/null` state writes, on a shared host; not isolated DSP/target deadline
-measurements or a stable overhead guarantee. Raw local recipe/results:
-`local/crew/host-timing.json`. Browser final CREW diagnostic self-load sample5.217%
-under headless concurrent testing; not worst-case worklet latency or xrun proof.
+Three alternating paired hidden-UI whole-process512000-frame runs at163a868:
+disabled-control median0.166548s, telemetry-on0.157451s. Timings overlap/noise can
+reverse their order; **no overhead reduction or stable overhead estimate is
+inferred**. These include boot, UI and `/dev/null` writes on a shared host, not
+isolated DSP/target deadline measurements. Raw source-pinned recipe/results:
+[host-timing.json](img/crew/host-timing.json). Browser final CREW diagnostic self-load
+sample4.837% under headless concurrent testing; not worst-case worklet latency or
+xrun proof.
 
 Baseline WASM SHA256:
 `6e6d3e8a9678dc2829c6d179813d3e2357009e771d37c1fd6232a456e08e5b9d`.
 Final WASM SHA256:
-`3d39d6bf7cec9c411e4919a5140fecc4540bd595a312e2ad1cd01702492d1e8f`.
+`ebc68a6a75cdf7862ec0dee4dcddf7765d86d0598acd7c9e58338f56ae74f978`.
 
 ## Demo and remaining gates
 
