@@ -1262,7 +1262,13 @@ static uint32_t graph_signature(void)
     if (strip_kind() == SK_TITLE)                    /* MENU > LARGE: the page's title (its engine, its number) */
         return h ^ 0x5A17u;
     if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
-    if (pg->graph == GR_NONE || pg->graph == GR_ARP) h ^= ui.frame / 2u;
+    /* LAB parameter/routing diagrams are static until their actual inputs change.
+     * Do not inherit the old live-scope timer on these pages. */
+    if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE) || pg->graph == GR_ARP) h ^= ui.frame / 2u;
+    if(design_context()==DC_LAB_MORE) {
+        if(pg->scope==SC_GLOBAL)h=fnv(h,song.g,sizeof song.g);
+        for(i=0;i<NTRK;i++)h=(h ^ (uint32_t)trk[i].eng_req ^ ((uint32_t)trk[i].p[P_VCARR]<<8))*16777619u;
+    }
     for (i = 0; i < P_COUNT; i++)
         h = (h ^ (uint32_t)t->p[i]) * 16777619u;
     h ^= (uint32_t)TSEL->preset * 7u + (uint32_t)song.g[G_SLOT] * 13u + TSEL->user * 257u + up_gen * 7919u + ui.uslot * 104729u +

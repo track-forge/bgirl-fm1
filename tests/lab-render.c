@@ -2,6 +2,7 @@
 #define BGIRL_RENDER_LIBRARY
 #include "../felucca/tests/ui_render.c"
 #undef main
+#include <assert.h>
 int main(int argc,char **argv) {
  const char *out=argc>1?argv[1]:"local/lab-rollout/after";char path[512],name[96];
  snprintf(path,sizeof path,"%s/report.txt",out);rep=fopen(path,"w");if(!rep)return 2;
@@ -11,6 +12,14 @@ int main(int argc,char **argv) {
   setup(scenes[s]);pal(p);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
   snprintf(name,sizeof name,"%s-%s-%s",names[s],large?"large":"normal",style?"line":"flat");cur_name=name;ui.force=1;draw(scenes[s]);lint();mono_check();
   if(p==UI_STUDIO_INDEX)write_ppm(out,"STUDIO",name);
+ }
+ /* Actual configured vocoder, freeze setting and missing/self source states. */
+ for(int large=0;large<2;large++)for(int state=0;state<3;state++)for(int page=0;page<4;page++){
+  setup(S_ENV);eng(13);set_engine_of(&trk[2],ENGI_FM6);
+  TSEL->p[P_VCARR]=state==2?1:3;TSEL->p[P_VBANDS]=2;TSEL->p[P_VWET]=127;TSEL->p[P_VHOLD]=state==1;
+  const char *vt[]={"VOCODER","VOC INPUT","VOC COLOR","VOC TIME"};go_title(vt[page]);
+  pal(UI_STUDIO_INDEX);ui_prefs=large?PREF_LARGE:0;ui_style=1;style_apply();
+  snprintf(name,sizeof name,"voc%d-state%d-%s",page,state,large?"large":"normal");cur_name=name;ui.force=1;draw(S_ENV);lint();write_ppm(out,"STUDIO",name);
  }
  /* Every visible LAB page/engine combination: actual bindings and LARGE range faces. */
  FILE *inv;snprintf(path,sizeof path,"%s/visible-pages.tsv",out);inv=fopen(path,"w");
@@ -37,6 +46,12 @@ int main(int argc,char **argv) {
  }
  fclose(inv);
 #ifndef BGIRL_LAB_BASELINE
+ /* New static diagrams must invalidate for real inputs, not idle/focus time. */
+ setup(S_ENV);go_title("ENV DEST");ui_prefs=0;uint32_t sig=graph_signature();ui.frame+=2;assert(sig==graph_signature());
+ ui.hot_t=30;ui.hot_col=2;assert(sig==graph_signature());TSEL->p[P_ED_FLT]++;assert(sig!=graph_signature());
+ go_title("DLY");sig=graph_signature();song.g[G_DTIME]++;assert(sig!=graph_signature());
+ go_title("VOCODER");sig=graph_signature();trk[2].eng_req=(trk[2].eng_req+1)%NENGINES;assert(sig!=graph_signature());
+ fprintf(rep,"LAB cache: idle/focus isolation, local/global parameter and carrier eligibility invalidation PASS\n");
  setup(S_ENV);pal(UI_STUDIO_INDEX);nscr=npend=nrules=0;cur_name="vinyl-beat";
  lcd_fill(0,0,240,240,T_BG);cv_begin(240,120,T_BG);cv_oy=0;
  cv_text(12,6,&AF_C,"VINYL / BEAT",T_TEXT);
