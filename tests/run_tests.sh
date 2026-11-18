@@ -95,3 +95,5 @@ python3 tests/test_studio_icons.py
 
 # SYSTEM pages, menu rows, naming, confirmation and hold-map presentation.
 ./tests/run_system_tests.sh
+# Portable browser logical snapshots, codec atomicity and shared offline schema.
+./tests/run_song_snapshot_tests.sh

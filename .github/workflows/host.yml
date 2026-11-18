@@ -57,6 +57,7 @@ jobs:
           node tests/six-browser.cjs
           node tests/sh-style-browser.cjs
           node tests/system-browser.cjs
+          node tests/song-browser.cjs
       - name: Add source revision and license to the published artifact
         run: |
           cp LICENSE felucca/build/emu/LICENSE

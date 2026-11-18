@@ -1,6 +1,6 @@
 # Portable song snapshots — implementation plan
 
-Status: plan only, 2026-11-18. Owner: [issue #37](https://github.com/track-forge/bgirl-fm1/issues/37).
+Status: implemented in the same draft PR, 2026-11-18. [User/format guide](SONG_SNAPSHOTS.md); [verification](SONG_SNAPSHOTS_VERIFICATION.md). Owner: [issue #37](https://github.com/track-forge/bgirl-fm1/issues/37).
 Inspected main: `c7116c5451bcfca9325ce71a71f7356ab1bd1b2c`.
 Continue implementation on `plan/song-snapshots` and its existing draft PR.
 This planning commit contains only this document; it does not implement the feature.
