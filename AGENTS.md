@@ -67,3 +67,18 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
   Clarity carrier IDs:0 saw,1 archived GRAIN for old gallery reproduction,2 TRIO.
   Browser exposes saw/TRIO only. Do not relabel or re-render the archived gallery
   as TRIO without a new explicit rendering task.
+
+## CREW HOME lane
+
+- Read docs/CREW_ACTIVITY_CONTRACT.md and CREW_HOME_VERIFICATION.md.
+- HOME IDs0/1/2 stay SCOPE/TRACKS/LEVELS; CREW appends3. Only genuinely fresh
+  settings choose CREW; preserve imported choices and unknown-value SCOPE fallback.
+- One selected dancer; `NTRK` associations share five clip banks. No grid or six
+  background choreography loops. LARGE keeps the graph and normal engine knobs.
+- Core0 collects accepted activity; publish once after worker join/recovery. UI
+  reads one whole word, never mutable voices. External clock advances are GRID
+  units, not samples. Existing ARP telemetry and musical RNG are independent.
+- Four new clips and public-use permission: assets/crew/README.md. Offline repeat:
+  tools/convert_crew.py ORIGINALS DEST. Do not overwrite original FLOORWORK.
+- Root tests include tests/run_crew_tests.sh; real browser tests/crew-browser.cjs.
+  Technical acceptance is not art/seam approval or device fit. No manual deployment.

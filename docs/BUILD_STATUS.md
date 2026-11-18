@@ -1,3 +1,13 @@
+## CREW HOME browser/host implementation (2026-11-18)
+
+Implemented on PR29 without changing the default musical demo, engine/BSP pins,
+project storage or voice budget. One selected dancer, six track associations,
+four new authorized offline mask packs; ARP DANCE remains separate. Fresh-settings
+HOME is CREW; saved views are preserved. See
+[CREW_HOME_VERIFICATION.md](CREW_HOME_VERIFICATION.md) for exact source, build/test,
+redraw and size evidence. Art/seam approval and physical-device fit are pending.
+No merge, device build/flash or manual preview deployment.
+
 # BGIRL Felucca baseline — verification
 
 > This is the preserved baseline report. Current sample-fed vocoder evidence:

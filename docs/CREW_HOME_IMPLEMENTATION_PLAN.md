@@ -1,6 +1,8 @@
 # CREW HOME — the dancers are the instrument's front page
 
-Date: 2026-11-17; scope refined 2026-11-18. Status: **draft implementation plan; no runtime changes**.
+Date: 2026-11-17; scope refined 2026-11-18. Status: **implemented for browser/host review in PR29; art approval and hardware gates remain open**.
+Implementation/evidence: [CREW_HOME_VERIFICATION.md](CREW_HOME_VERIFICATION.md).
+The original plan below is retained as the acceptance brief.
 Inspected main: `c51c53885fd18c1e84be676d1644143803bc2e0b`.
 Related: [merged Arp Dance PR17](https://github.com/track-forge/bgirl-fm1/pull/17),
 [original exploration #2](https://github.com/track-forge/bgirl-fm1/issues/2),
@@ -257,8 +259,9 @@ Do not alter the default musical demo just to make the animation look busy.
 
 ## Boundaries and follow-ups
 
-This PR changes documentation only. Subsequent implementation may add local asset
-conversion, firmware/browser UI and tests, and an implementation PR. No new paid
+The original planning commits changed documentation only. Doug subsequently
+authorized implementing this same PR; the delivered change adds local asset
+conversion, firmware/browser UI and tests. See the verification report for evidence. No new paid
 image/video generation, DSP redesign, FFT, new sequencer, track/voice count change,
 B6S1 format expansion, frozen-default edits, dependency pin changes, device build
 or flash, release/tag, manual deployment or merge is part of this milestone.

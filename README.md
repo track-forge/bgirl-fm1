@@ -332,9 +332,18 @@ This workflow is a preview deployment, not hardware-performance proof. Imported
 upstream workflows under `felucca/.github` remain inactive; do not enable their
 release or installer destinations.
 
-## Planned CREW HOME
+## CREW HOME
 
-[Draft implementation plan](docs/CREW_HOME_IMPLEMENTATION_PLAN.md) ·
-[Agent handoff](docs/CREW_HOME_HANDOFF.md). One reactive dancer per track on HOME,
-including all six tracks and four new supplied motion references. **Planning only;
-not implemented by this documentation change.** Existing ARP DANCE remains intact.
+MENU → DISPLAY → HOME → **CREW** shows only the selected track's dancer. New
+settings default to CREW; saved SCOPE/TRACKS/LEVELS choices are preserved. ALGORITHM
+selects T1–T6 and swaps the dancer/move and activity source. Engine knobs, HOME →
+MIXER → CLOCK, GLO banks and ARP DANCE are unchanged. Sustained notes keep moving;
+one-shots get bounded activity, release settles, mute parks. This is musical
+activity, not a sound-level meter.
+
+[Implementation plan](docs/CREW_HOME_IMPLEMENTATION_PLAN.md) ·
+[Activity contract](docs/CREW_ACTIVITY_CONTRACT.md) ·
+[Asset provenance / offline review](assets/crew/README.md) ·
+[Verification and demo](docs/CREW_HOME_VERIFICATION.md).
+Browser/host evidence only; human art approval and physical-device fit remain
+separate. No project format, demo arrangement, engine/BSP pins or voice budget change.

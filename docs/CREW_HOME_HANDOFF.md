@@ -1,3 +1,9 @@
+> **Implementation update2026-11-18:** Doug requested continuing this existing PR,
+> so implementation stays on `plan/crew-home` / PR29 (fresh main was verified at
+> c51c538). [Delivered behavior and exact evidence](CREW_HOME_VERIFICATION.md).
+> The original implementation brief below is retained for acceptance/review, not
+> an instruction to redo the completed conversion or create a second PR.
+
 # Copy/paste handoff — implement CREW HOME
 
 Implement `docs/CREW_HOME_IMPLEMENTATION_PLAN.md` in
