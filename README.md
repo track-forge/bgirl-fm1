@@ -331,3 +331,10 @@ demo defaults.
 This workflow is a preview deployment, not hardware-performance proof. Imported
 upstream workflows under `felucca/.github` remain inactive; do not enable their
 release or installer destinations.
+
+## Planned CREW HOME
+
+[Draft implementation plan](docs/CREW_HOME_IMPLEMENTATION_PLAN.md) ·
+[Agent handoff](docs/CREW_HOME_HANDOFF.md). One reactive dancer per track on HOME,
+including all six tracks and four new supplied motion references. **Planning only;
+not implemented by this documentation change.** Existing ARP DANCE remains intact.
