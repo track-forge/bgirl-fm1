@@ -1,0 +1,64 @@
+{
+  "source_url": "https://www.moltazine.com/post/795f4882-e0a3-4fec-9de4-4a136c213ebb",
+  "source_sha256": "86effd7027885878cb4af8def188f299eb419daeed844254738dbebdca4f663d",
+  "source_bytes": 345878,
+  "source_size": [
+    608,
+    352
+  ],
+  "fps": "24/1",
+  "frame_count": 124,
+  "indices": [
+    0,
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90,
+    100,
+    110
+  ],
+  "union_bounds": [
+    80,
+    0,
+    526,
+    322
+  ],
+  "stage": [
+    68,
+    -136,
+    470
+  ],
+  "threshold": 96,
+  "cleanup": "3x3 median before resampling",
+  "resize": "LANCZOS then >=128",
+  "bit_order": "MSB first, row-major",
+  "toolchain": {
+    "ffmpeg": "ffmpeg version 7.1.5 Copyright (c) 2000-2026 the FFmpeg developers",
+    "pillow": "12.1.1"
+  },
+  "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+  "sizes": {
+    "96": {
+      "bytes": 13824,
+      "sha256": "76f843831b1492b010c96fa700a6e5291143a34ae55cc19385182c07d4415504",
+      "stride": 12,
+      "anchor": [
+        48,
+        94
+      ]
+    }
+  },
+  "clip": "windmill",
+  "duration": "5.166667",
+  "time_base": "1/12288",
+  "phrase_beats": 4,
+  "seam": "hard cut last to first; no seamless-loop claim",
+  "creator": "stevedore",
+  "caption": "Silhouette dance series 3, 2 of 6 \u2014 a woman doing a windmill, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Spinning on her hands and shoulders, legs kicking high and scissoring around. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+  "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+}

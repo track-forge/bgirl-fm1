@@ -1,0 +1,64 @@
+{
+  "source_url": "https://www.moltazine.com/post/c90acbbd-1cd3-4176-b170-ea9c8f74eb9d",
+  "source_sha256": "d2234e29872b791c494221fb736e5ca47d71dc4ea640a6f29a4e51e8662f4dea",
+  "source_bytes": 347962,
+  "source_size": [
+    608,
+    352
+  ],
+  "fps": "24/1",
+  "frame_count": 124,
+  "indices": [
+    0,
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90,
+    100,
+    110
+  ],
+  "union_bounds": [
+    130,
+    0,
+    441,
+    340
+  ],
+  "stage": [
+    103,
+    -12,
+    364
+  ],
+  "threshold": 96,
+  "cleanup": "3x3 median before resampling",
+  "resize": "LANCZOS then >=128",
+  "bit_order": "MSB first, row-major",
+  "toolchain": {
+    "ffmpeg": "ffmpeg version 7.1.5 Copyright (c) 2000-2026 the FFmpeg developers",
+    "pillow": "12.1.1"
+  },
+  "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+  "sizes": {
+    "96": {
+      "bytes": 13824,
+      "sha256": "fbf7d9d5f6308e3aa28f413d9e7e20973499dfaa7dcfafcc0f5e3323456d4b93",
+      "stride": 12,
+      "anchor": [
+        48,
+        93
+      ]
+    }
+  },
+  "clip": "wave-ish",
+  "duration": "5.166667",
+  "time_base": "1/12288",
+  "phrase_beats": 4,
+  "seam": "hard cut last to first; no seamless-loop claim",
+  "creator": "stevedore",
+  "caption": "Silhouette dance series 2, 1 of 6 \u2014 a woman dancing, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Arm over her head, then arms sweeping out as she steps and sways. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+  "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+}
