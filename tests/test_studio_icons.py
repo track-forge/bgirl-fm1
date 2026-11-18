@@ -44,5 +44,5 @@ if __name__=='__main__':
                 assert any(alpha) and len(set(alpha))>2
                 assert not any(alpha[:size]) and not any(alpha[-size:]),(name,size,'padding')
                 masks.append(alpha)
-            assert len(set(masks))==3
-        print(f'STUDIO icons: inherited IDs +{inherited} exact alpha cells unchanged; 9 original size-specific SVG cells/decoder parity, padding, distinct silhouettes PASS')
+            assert len(set(masks))==len(bgirl_sections.NAMES)
+        print(f'STUDIO icons: inherited IDs +{inherited} exact alpha cells unchanged; 12 original size-specific SVG cells/decoder parity, padding, distinct silhouettes PASS')
