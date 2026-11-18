@@ -142,3 +142,20 @@ format IDs 14/15 add vocoder-ms display without editing the engine API.
 [Additive count/default contract](VOCODER_CLARITY_CONTRACT.md) preserves B6S1
 126-count saves while writing 127-count records; frozen default values unchanged.
 See [host/browser evidence and target limits](VOCODER_CLARITY_VERIFICATION.md).
+
+## SH-STYLE additive collection (issue #31)
+
+The same `tools/carrier_bank.py` wrapper now appends ANALOG presets13–14 after
+unchanged presets0–12. Curated recipes derive from two privately retained,
+repeat-verified SH-01A CC captures; source snapshot/raw SHA256 references and
+per-field approximation/loss reports live under `assets/sh-style/`. Full source
+patch tables/logs/host metadata are not redistributed and no source license is
+invented. Capture/schema implementation is the dependency in PR #32. Selector
+bins and physical laws remain unverified: no Roland DSP/emulation claim.
+
+Normal `apply_preset_to` installs the recipes inside its existing load transaction;
+ANALOG engine0, DSP, engine/BSP gitlinks, old presets, frozen project defaults,
+startup/demo and B6S1 stay unchanged. SH-STYLE category10 appends after SIGNATURE9;
+no existing category IDs change. The count-aware upstream UI traversal fixture
+and category-end assertions change only for the additive bank; audio goldens do
+not change. See [SH_STYLE_VERIFICATION.md](SH_STYLE_VERIFICATION.md).

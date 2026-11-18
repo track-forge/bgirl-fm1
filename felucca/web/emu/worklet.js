@@ -124,6 +124,13 @@ if (typeof registerProcessor === "function") {
         const ok=ex.web_bgirl_six_project(m.dense?1:0)===0;
         this.port.postMessage({type:"bgirl-project-result",ok});
       }
+      else if (m.type === "sh-style-sound") {
+        this.queue.length=0; ex.web_keys(0); ex.web_buttons(0);
+        this.port.postMessage({type:"bgirl-project-result",ok:ex.web_bgirl_sh_style_sound(m.sound|0)===0});
+      }
+      else if (m.type === "sh-style-info") {
+        this.port.postMessage({type:"sh-style-info",tracks:Array.from({length:6},(_,t)=>Array.from({length:12},(_,f)=>ex.web_bgirl_sh_style_info(t,f)))});
+      }
       else if (m.type === "signature-info") {
         this.port.postMessage({type:"signature-info",tracks:[0,1,2,3,4,5].map(t=>[0,1,2,3,4,5,6].map(f=>ex.web_bgirl_signature_info(t,f)))});
       }

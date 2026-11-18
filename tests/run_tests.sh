@@ -74,3 +74,5 @@ node tests/mega-wasm.mjs
 
 # Selected-track CREW HOME publication, rendering and preservation.
 ./tests/run_crew_tests.sh
+# Additive SH-STYLE collection, unchanged ANALOG DSP and exact native/WASM output.
+./tests/run_sh_style_tests.sh

@@ -1,0 +1,35 @@
+{
+  "version": "basics-v1",
+  "translator_version": 1,
+  "schema_version": 1,
+  "definition_version": "roland-chart-1.00/raw-v1",
+  "engine": 0,
+  "first_preset": 13,
+  "laws": {
+    "normalized": "round-half-up(raw * target_max / 127), clamp to target descriptor; heuristic, not equivalent Hz/ms/gain",
+    "wave": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated).",
+    "sub_mix": "round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
+    "selectors": "All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+    "filter_env": "nonnegative 0..127 source depth -> 0..63 target depth, shared amplitude ADSR; response law unknown",
+    "lfo": "normalized rate and nonnegative pitch/filter depth -> 0..127 and 0..63; default target triangle is an assumption",
+    "missing": "default raw0 with a per-field missing/defaulted loss; strict rejects missing patch candidates",
+    "overrides": "only explicit bounded output values with nonempty rationale; never decode a selector implicitly"
+  },
+  "constants": {"P_E1": 0, "P_E6": 0, "P_VOICE": 1, "P_LWAVE": 1, "P_GLIDE": 0, "P_DIST": 0, "P_CHOR": 0, "P_DLY": 0, "P_REV": 0},
+  "mapped": {
+    "P_E3": ["mixer.noise_level",127], "P_E4": ["vcf.cutoff",127], "P_E5": ["vcf.resonance",127], "P_E7": ["vcf.key_follow",127],
+    "P_ATK": ["envelope.attack",127], "P_DEC": ["envelope.decay",127], "P_SUS": ["envelope.sustain",127], "P_REL": ["envelope.release",127],
+    "P_ED_FLT": ["vcf.envelope_depth",63], "P_LRATE": ["lfo.rate",127], "P_LD_PIT": ["vco.mod_depth",63], "P_LD_FLT": ["vcf.mod_depth",63]
+  },
+  "limitations": [
+    "ANALOG trapezoidal SVF is not the SH filter; normalized cutoff/resonance/key-follow and envelope time laws are not calibrated.",
+    "A single shared amplitude ADSR also drives filter modulation; source envelope mode and gate behavior are not reproduced.",
+    "Unknown range selector: no octave/transposition inference. Existing track scale/transposition is retained.",
+    "Unknown voice/chord selectors: mono retrigger fallback; stored source chord/unison/poly/priority not reproduced. Existing host chord keys are retained by normal sound loading.",
+    "Unknown PWM source/width response: centered pulse, no PWM routing; SUB shape/type fixed at target octave-down square.",
+    "LFO waveform/mode unknown: target triangle default; rate/depth normalized only; no SH timing/sync claim.",
+    "Glide/portamento mode and bend/mod sensitivity omitted; target glide disabled, normal host performance controls remain.",
+    "Source noise color unverified; existing target noise only. Source oscillator absolute gains not preserved.",
+    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed."
+  ]
+}

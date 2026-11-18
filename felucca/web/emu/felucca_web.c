@@ -524,6 +524,24 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
     return 0;
 }
 
+/* SH-STYLE is an additive ANALOG collection: exactly the normal factory loader. */
+EXPORT uint32_t web_bgirl_sh_style_sound(uint32_t sound) {
+    if (sound >= 2 || fm1_in.notes || fm1_in.buttons) return 1;
+    set_engine_of(TSEL, 0);
+    apply_preset_to(TSEL, 13 + sound);
+    ui.force = 1;
+    return 0;
+}
+/* Read-only state for browser/host acceptance; no alternate editing path. */
+EXPORT int32_t web_bgirl_sh_style_info(uint32_t track, uint32_t field) {
+    const track_t *t = &trk[track % NTRK];
+    static const uint8_t ids[] = {P_E4,P_E5,P_ATK,P_DEC,P_SUS,P_REL,P_LD_FLT,P_ED_FLT,P_VOICE};
+    if (field == 0) return t->eng_req;
+    if (field == 1) return t->preset;
+    if (field == 11) return song.sel;
+    return field >= 2 && field < 11 ? t->p[ids[field-2]] : -1;
+}
+
 /* Normal factory selections, also reachable through PRESETS / SIGNATURE. */
 static const uint8_t BG_SIGNATURE_SELECT[10][2] = {
     {12,8},{12,9},{10,4},{10,5},{10,6},{10,7},{10,8},{12,10},{12,11},{12,12}

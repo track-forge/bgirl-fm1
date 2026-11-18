@@ -141,6 +141,13 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   <div class="feature-chips" aria-label="Project highlights"><span>24-band vocoder</span><span>Arp dance</span><span>Editable groove</span><span>GPL code</span></div>
 </header>
 
+<section class="intro-card" aria-label="SH-STYLE collection">
+  <h2>SH-STYLE · approximate ANALOG sounds</h2>
+  <p>Two real-capture translations using ANALOG. Single-track approximations, not a Roland emulator: mixed waves, stored chords and source timing laws are not reproduced.</p>
+  <p><label>SH-STYLE sound <select id="sh-style-sound"><option>SH 1-1 · proving patch</option><option>SH WIRE1 · saved patch, slot unknown</option></select></label>
+  <button id="sh-style-load" disabled>Load SH-STYLE on selected track</button></p>
+  <p>Select any of six tracks with ALGORITHM, then load. Normal PRESETS → ANALOG also includes SH 1-1 / SH WIRE1 after BG CARR SAW. Edit, play and save normally; loading keeps the track’s pattern, mixer and chord-key settings. No demo or saved-slot replacement.</p>
+</section>
 <section class="intro-card" aria-label="Signature Electro bank">
   <h2>Signature Electro</h2>
   <p>Ten original sounds. On the panel: PRESETS → LIST → SIGNATURE. Listening review pending.</p>
@@ -682,7 +689,7 @@ async function switchOn() {
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
-    for (const id of ["six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
+    for (const id of ["sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();
@@ -704,6 +711,11 @@ for (const [id, demo] of [["demo", true], ["blank", false]]) {
     send({ type: "bgirl-project", demo });
   });
 }
+document.getElementById("sh-style-load").addEventListener("click",()=>{
+  if(!node)return;
+  btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
+  send({type:"sh-style-sound",sound:document.getElementById("sh-style-sound").selectedIndex});
+});
 document.getElementById("signature-load").addEventListener("click",()=>{
   if(!node)return;
   btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();

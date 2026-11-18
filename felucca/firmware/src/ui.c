@@ -1411,6 +1411,7 @@ static void apply_preset_to(track_t *t, uint32_t pi)
     }
     fm6_track_loaded(t);                              /* FM6: the preset's patch (its SLOT) */
     signature_factory_loaded(t);
+    sh_style_factory_loaded(t);
     load_end(t);
 }
 

@@ -13,6 +13,8 @@ static const preset_t BG_ANALOG_PRESETS[] = {
     {"WIND", {0, 0, 0, 90, 30, 90, 0, 0}, {60, 90, 60, 80}, 50, 0, FX(0, 30, 30, 70), PAT(5)},
     {"STRINGS", {0, 25, 64, 0, 70, 10, 0, 32}, {70, 90, 115, 90}, 5, 0, FX(0, 60, 20, 70), PAT(5)},
     {"BG CARR SAW", {0,0,0,0,127,0,0,0}, {0,0,127,20}, 0,1,FX(0,0,0,0),PAT(4)},
+    {"SH 1-1", {6,0,42,0,106,42,0,0}, {0,17,57,0}, 12,1,FX(0,0,0,0),PAT(4)},
+    {"SH WIRE1", {4,0,0,0,25,55,0,127}, {16,26,81,18}, 55,1,FX(0,0,0,0),PAT(4)},
 };
 static const engine_t BG_ANALOG = {
     .name = "ANALOG",
@@ -35,3 +37,60 @@ static const engine_t BG_ANALOG = {
     .knob = {P_E4, P_E5, P_ATK, P_REL},
     .keep = 0x03,                /* the filter */
 };
+/* Normal factory loading applies extra common parameters, inside the existing load transaction. */
+static void sh_style_factory_loaded(track_t *t) {
+    if (t->eng_req != 0) return;
+    switch(t->preset) {
+    case 13:
+        t->p[P_ATK] = 0;
+        t->p[P_CHOR] = 0;
+        t->p[P_DEC] = 17;
+        t->p[P_DIST] = 0;
+        t->p[P_DLY] = 0;
+        t->p[P_E0] = 6;
+        t->p[P_E1] = 0;
+        t->p[P_E2] = 42;
+        t->p[P_E3] = 0;
+        t->p[P_E4] = 106;
+        t->p[P_E5] = 42;
+        t->p[P_E6] = 0;
+        t->p[P_E7] = 0;
+        t->p[P_ED_FLT] = 12;
+        t->p[P_GLIDE] = 0;
+        t->p[P_LD_FLT] = 50;
+        t->p[P_LD_PIT] = 0;
+        t->p[P_LRATE] = 22;
+        t->p[P_LWAVE] = 1;
+        t->p[P_REL] = 0;
+        t->p[P_REV] = 0;
+        t->p[P_SUS] = 57;
+        t->p[P_VOICE] = 1;
+        break;
+    case 14:
+        t->p[P_ATK] = 16;
+        t->p[P_CHOR] = 0;
+        t->p[P_DEC] = 26;
+        t->p[P_DIST] = 0;
+        t->p[P_DLY] = 0;
+        t->p[P_E0] = 4;
+        t->p[P_E1] = 0;
+        t->p[P_E2] = 0;
+        t->p[P_E3] = 0;
+        t->p[P_E4] = 25;
+        t->p[P_E5] = 55;
+        t->p[P_E6] = 0;
+        t->p[P_E7] = 127;
+        t->p[P_ED_FLT] = 55;
+        t->p[P_GLIDE] = 0;
+        t->p[P_LD_FLT] = 0;
+        t->p[P_LD_PIT] = 0;
+        t->p[P_LRATE] = 65;
+        t->p[P_LWAVE] = 1;
+        t->p[P_REL] = 18;
+        t->p[P_REV] = 0;
+        t->p[P_SUS] = 81;
+        t->p[P_VOICE] = 1;
+        break;
+    default: break;
+    }
+}

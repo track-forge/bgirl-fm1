@@ -1,7 +1,9 @@
 # SH-STYLE bank via ANALOG — basics round implementation plan
 
-Status: plan only; implementation is BLOCKED on https://github.com/track-forge/bgirl-fm1/issues/30.
-Own issue: https://github.com/track-forge/bgirl-fm1/issues/31. Continue this PR when assigned after Part 1 delivery.
+Status: implementation on PR #33, stacked on PR #32 (`plan/sh01a-patch-gathering`).
+The two real inputs delivered by Part 1 are accepted for this basics round.
+See SH_STYLE_VERIFICATION.md for implementation evidence.
+Own issue: https://github.com/track-forge/bgirl-fm1/issues/31. Continue this PR when assigned after Part 1 delivery (accepted 2026-11-18).
 Planning baseline: main `c51c53885fd18c1e84be676d1644143803bc2e0b`.
 
 ## Product decision and scope
@@ -14,7 +16,7 @@ the collection. No new DSP/filter topology, poly/unison emulation or SH control
 panel is required. No reference audio, acoustic analysis, calibration or listening
 acceptance gate in this round. Technical generated-signal checks remain appropriate.
 
-Use the real captures produced by Part 1, including patch 2-1 and at least one
+Use the real captures produced by Part 1, including confirmed patch 1-1 and at least one
 other distinct saved patch. Do not substitute invented presets for missing inputs.
 The goal is playable, editable approximations and honest reports of their limits.
 Do not alter startup/demo arrangements, user saves, existing preset identities,
@@ -25,13 +27,13 @@ upstream engine/BSP pins, service previews, or device state.
 Before implementation, record Part 1's delivered commit, schema version, capture
 inventory, source hashes and known gaps. Confirm at least two real captures are
 available and accepted as the input set. Schema readiness alone is insufficient.
-If hardware work is blocked, this implementation stays blocked too.
+This gate is satisfied: parent capture code `27bbf51`, evidence head `4a1cb94`;
+two repeat-verified private schema-v1 sources, confirmed 1-1 and wire-PC1
+(unknown human slot). No new hardware work is required.
 
-Both planning PRs initially target main independently; a plan-only merge does not
-satisfy the dependency. Prefer starting runtime implementation after Part 1's
-implemented delivery is merged, then update this branch from main. If Part 1 is
-accepted but unmerged, explicitly stack this PR on its implementation branch and
-record the dependency; do not copy/diverge the schema or merge it without approval.
+Both planning PRs initially targeted main independently. For this accepted but
+unmerged delivery, PR #33 is explicitly stacked on PR #32's implementation branch.
+Do not copy/diverge the schema, merge either PR, or silently change this base.
 Recheck current source and IDs, since concurrent BGIRL work may have landed.
 
 ## Current architecture and integration points
@@ -118,7 +120,7 @@ multiple destinations must be handled consistently with target architecture.
 ## Bank and user experience
 
 Minimum shipped set: two named translations backed by two real captured patches;
-2-1 is a required member. Name additional optional exploratory variants distinctly
+Confirmed 1-1 is the required proving member (supersedes the original 2-1 label). Name additional optional exploratory variants distinctly
 and link them to their one source; variants do not satisfy the two-source minimum.
 Names must fit actual firmware limits with deterministic collision handling.
 

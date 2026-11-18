@@ -1363,9 +1363,25 @@ static int clarity_protocol(void) {
     a[2]=0;a[3]=64;request(ED_SET,a,4);ok &= TSEL->p[P_VREL]==0;
     return check("clarity DESC/SET:8/12/24, legacy/log ms formats, range reload and5ms endpoint",ok);
 }
+static int sh_style_protocol(void) {
+ int bad=0;reset();uint8_t a[4]={0};request(ED_NAMES,a,1);
+ bad += check("SH-STYLE editor", host_wire[5]==0 && host_wire[6]==15);
+ const char *s=(const char*)host_wire+7;
+ for(unsigned i=0;i<15;i++){bad += check("SH-STYLE editor", !strcmp(s,BG_ANALOG_PRESETS[i].name));s+=strlen(s)+1;}
+ for(unsigned track=0;track<6;track++)for(unsigned preset=13;preset<=14;preset++) {
+  song.sel=track;trk[track].p[P_LEVEL]=80;
+  a[0]=0;a[1]=preset;request(ED_PRESET,a,2);
+  bad += check("SH-STYLE editor", TSEL->eng_req==0 && TSEL->preset==preset && TSEL->p[P_VOICE]==V_MONO && TSEL->p[P_LEVEL]==80);
+  bad += check("SH-STYLE editor", TSEL->p[P_LD_FLT]==(preset==13?50:0));
+  a[0]=0;a[1]=P_E4;a[2]=77;a[3]=64;request(ED_SET,a,4);bad += check("SH-STYLE editor", TSEL->p[P_E4]==77);
+  a[0]=0;a[1]=P_E4;request(ED_GET,a,2);bad += check("SH-STYLE editor", host_wire[7]==77 && host_wire[8]==64);
+ }
+ return bad;
+}
+
 int main(void)
 {
-    int bad = clarity_protocol() + preferences() + motion_locks() + framing() + uart_recovery() + steps() + samples() + song_protocol() + malformed_saves() +
+    int bad = sh_style_protocol() + clarity_protocol() + preferences() + motion_locks() + framing() + uart_recovery() + steps() + samples() + song_protocol() + malformed_saves() +
               fm6_patches() + user_preset_roundtrip() + live_sync() + usb_burst() + menu_protocol() + drum_kit_retired() +
               learn_protocol() + custom_palette();
     printf("%s\n", bad ? "EDITOR TEST FAILED" : "editor test passed");
