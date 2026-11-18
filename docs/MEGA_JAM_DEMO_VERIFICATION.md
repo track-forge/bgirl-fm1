@@ -166,3 +166,24 @@ Doug also requested the vocal track play only the whole sample at beat1 of
 bars1/3. T4 now has exactly two SLC_ONE notes at steps0/32, WHOLE view throughout,
 no chopped answers or VIEW automation. Carrier, vocoder settings and all other
 tracks are unchanged. This is combined with the T2−24-semitone revision above.
+
+
+### Listening revision — saw carrier and vocal FX gate (2026-11-18)
+
+Supersedes the initial T3 TRIO recipe above, only for the default Mega Jam.
+T3 now uses the existing ANALOG / BG CARR SAW preset12, mono and MON OFF.
+A0(MIDI21) and the lower G0(MIDI19) each last four beats/16 sixteenth steps,
+repeating at steps0/16/32/48. This interprets two octaves down relative to A2/G2.
+T4 retains WHOLE G6 / SLC_ONE on steps0/32, but its normal FX SLICER is now
+GATE, displayed pattern3, existing rate1(1/16) and full depth. Normal FX page1
+DLY is25/127, displayed20%. Gate is an output effect, not chopped source notes.
+Vocoder24bands/LOG~120ms/wet117, lowered T2 riff, drums, pad and empty T6 remain
+unchanged. Standalone vocoder/clarity labs retain their existing TRIO recipes.
+Existing autosaves still win; refresh and explicitly Load electro demo to audition.
+
+Regression coverage checks the complete fresh/explicit project match, exact
+carrier schedule/ties, gate parameters and displayed delay, codec equality, and
+edited gate/delay persistence through manual save and autosave. Native/WASM
+comparison renders the actual scheduled arrangement for two complete loops;
+voice-budget/STOP and browser checks remain required. Exact-head results and
+private-preview receipts are recorded in the PR follow-up, not listening approval.

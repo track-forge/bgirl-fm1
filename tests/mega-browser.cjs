@@ -25,7 +25,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const tap=async name=>{await page.getByRole('button',{name,exact:true}).click({delay:90});await page.waitForTimeout(250);};
   const turn=async name=>{await page.getByRole('slider',{name,exact:true}).press('ArrowUp');await page.waitForTimeout(180);};
   await on();await page.waitForFunction(()=>document.querySelector('#vocal-status').textContent.startsWith('Installed bank'));
-  let q=await info();assert(q[11].every(n=>n===64));assert.equal(q[9][4],8);assert.equal(q[7][0],0);
+  let q=await info();assert(q[11].every(n=>n===64));assert.equal(q[9][4],8);assert.equal(q[9][2],0);assert.equal(q[7][0],0);
   assert.equal((await vocal()).state,4096+6,'whole G6 identity-bound source');
   page.once('dialog',d=>d.dismiss());await page.locator('#demo').click();assert.deepEqual(await info(),q);
   page.once('dialog',d=>d.accept());await page.locator('#demo').click();await page.waitForTimeout(400);

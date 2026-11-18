@@ -22,7 +22,7 @@ static void bgirl_mega_demo(void)
     undo_depth++;
     set_engine_of(&trk[0],ENGI_DRUM);apply_preset_to(&trk[0],2);
     set_engine_of(&trk[1],0);apply_preset_to(&trk[1],2);
-    set_engine_of(&trk[2],6);apply_preset_to(&trk[2],0);
+    set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
     set_engine_of(&trk[3],13);apply_preset_to(&trk[3],0);
     set_engine_of(&trk[4],8);apply_preset_to(&trk[4],0); /* CLOUD PAD, one voice */
     for(i=0;i<NTRK;i++) {
@@ -59,7 +59,10 @@ static void bgirl_mega_demo(void)
      * deliberately quantized to this common gate rather than new timing DSP. */
     trk[2].p[P_LEVEL]=90;trk[2].p[P_VOICE]=V_MONO;
     for(k=0;k<64;k++)trk[2].step[k].time=ST_TIE;
-    bgirl_mega_note(2,0,45,100);bgirl_mega_note(2,32,52,100);
+    /* A0/G0: two octaves below A2/G2, four beats per note. */
+    for(k=0;k<64;k+=32) {
+        bgirl_mega_note(2,k,21,100);bgirl_mega_note(2,k+16,19,100);
+    }
     /* Find G6 by label. Generated WHOLE parent order mirrors the group order. */
     for(i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
         if(!strcmp(BG_VOCAL_VIEWS[i],"G6"))group=i;
@@ -71,6 +74,9 @@ static void bgirl_mega_demo(void)
     trk[3].p[P_VCARR]=3;trk[3].p[P_VMON]=0;trk[3].p[P_VBANDS]=2;
     trk[3].p[P_VRANGE]=1;trk[3].p[P_VREL]=bg_release_value(120);
     trk[3].p[P_VWET]=117;trk[3].p[P_VCONS]=0;
+    /* FX gate shapes the whole one-shots; source VIEW stays WHOLE. */
+    trk[3].p[P_SLCR]=SL_GATE;trk[3].p[P_SLPAT]=3;
+    trk[3].p[P_DLY]=25; /* 20% on the normal FX page */
     slc_vocal_select(&trk[3]);
     if(group) {
         /* Doug's listening revision: full one-shot only, beat1 of bars1/3. */

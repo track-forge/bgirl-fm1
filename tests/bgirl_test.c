@@ -9,11 +9,11 @@ static void defaults(int demo) {
     assert(trk[1].eng_req==0 && trk[1].preset==2 && trk[1].p[P_VOICE]==(demo && BGIRL_VOCODER ? V_MONO : V_LEGATO));
 #if BGIRL_VOCODER
     if(demo) {
-        assert(trk[2].eng_req==6 && trk[2].preset==0 && trk[2].p[P_SUS]==60);
+        assert(trk[2].eng_req==0 && trk[2].preset==12 && trk[2].p[P_SUS]==127);
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==2);
         assert(trk[2].step[1].time==ST_TIE);
-        assert(trk[2].step[0].note[0]==45 && trk[2].step[32].note[0]==52);
+        assert(trk[2].step[0].note[0]==21 && trk[2].step[16].note[0]==19);
         assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==0);
         assert(slc_vocal_match(&trk[3]));
         assert(trk[2].p[P_SLEN]==64 && trk[3].p[P_SLEN]==64);

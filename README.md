@@ -157,7 +157,7 @@ The **Vocal bank** section loads stopped whole-phrase or sequenced-chop audition
 each dry or through the TRIO / FAT BASS vocoder. Normal builds bundle the
 **G6 recording and its six chops**, authorized by Doug for public redistribution.
 The other five supplied recordings are not bundled. Factory SPEECH is unchanged.
-Startup and **Load electro demo** use the four-bar Mega Jam, TRIO / FAT BASS and 24-band routing in public builds too. An explicit custom bank without G6
+Startup and **Load electro demo** use the four-bar Mega Jam, BG CARR SAW and 24-band routing in public builds too. An explicit custom bank without G6
 leaves the vocal pattern silent rather than substituting an unrelated phrase. Autosaved projects still take
 precedence; refresh and explicitly reload the demo to replace an old arrangement.
 
@@ -241,8 +241,8 @@ not establish musical approval or physical-device fit/performance.
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Reference two-bar kick, snare+clap, hats/rim; final-bar turnaround |
 | 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
-| 3 | TRIO / FAT BASS | A2/E3 tied carrier, dry MON OFF |
-| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; 24 bands, LOG REL ≈120ms, WET92% |
+| 3 | ANALOG / BG CARR SAW | A0 then lower G0, four beats each, repeated; dry MON OFF |
+| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET92% |
 | 5 | GRAIN / CLOUD PAD | Four-bar D3→C4→E4, single-voice textured movement |
 | 6 | DRUM / TIGHT KIT | Empty; unrestricted track for jamming |
 

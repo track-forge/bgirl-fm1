@@ -20,7 +20,20 @@ int main(void) {
     assert(!strcmp(BG_VOCAL_VIEWS[1],"G6") && slc_vocal_match(&trk[3]));
     assert(motion.count==0 && !motion.on);
     assert(trk[3].p[P_E1]==0 && trk[3].p[P_E4]==SLC_ONE);
+    assert(trk[2].eng_req==0 && trk[2].preset==12);
+    assert(!strcmp(BG_ANALOG_PRESETS[trk[2].preset].name,"BG CARR SAW"));
+    assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==3);
+    assert(trk[3].p[P_SLRATE]==1 && trk[3].p[P_SLDEPTH]==127);
+    assert(trk[3].p[P_DLY]==25);
+    char delay_text[8];const char *delay_unit;
+    param_format(&TP[P_DLY],trk[3].p[P_DLY],delay_text,&delay_unit);
+    assert(!strcmp(delay_text,"20") && !strcmp(delay_unit,"%"));
     for(uint32_t k=0;k<NSTEP;k++) {
+        assert(trk[2].step[k].n==(k%16==0));
+        if(k%16==0) {
+            assert(trk[2].step[k].note[0]==(k%32==0?21:19));
+            assert(trk[2].step[k].time==ST_NOTE);
+        } else assert(trk[2].step[k].time==ST_TIE);
         assert(trk[3].step[k].n==(k==0 || k==32));
         if(trk[3].step[k].n)assert(trk[3].step[k].note[0]==60);
     }
@@ -54,10 +67,13 @@ int main(void) {
     tick(4096);assert(voices_busy()<=8 && voice_kills>start_kills);panic_req=(1u<<NTRK)-1;tick(FS*5);assert(!voices_busy());
     assert(!web_bgirl_project(1));tick(4096);
     trk[4].step[33].note[0]=65;trk[3].p[P_VWET]=111;
+    trk[3].p[P_SLPAT]=5;trk[3].p[P_DLY]=30;
     assert(!project_save_as(0,"MEGA EDIT"));assert(!web_bgirl_project(0));
     for(uint32_t t=0;t<NTRK;t++)for(uint32_t k=0;k<NSTEP;k++)assert(!trk[t].step[k].n && !trk[t].step[k].hit);
     project_load(0);tick(4096);assert(trk[4].step[33].note[0]==65 && trk[3].p[P_VWET]==111);
+    assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==5 && trk[3].p[P_DLY]==30);
     tick(FS*70);felucca_init();assert(autosave_boot(1));tick(4096);
     assert(trk[4].step[33].note[0]==65 && trk[3].p[P_VWET]==111 && !song.playing);
+    assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==5 && trk[3].p[P_DLY]==30);
     puts("Mega: fresh/explicit equality, MIDI mapping, four loops/bounds/no steals, STOP/restart/overload, exact codec, edited save/autosave priority, blank PASS");
 }
