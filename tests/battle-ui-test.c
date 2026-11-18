@@ -23,7 +23,7 @@ static void shot(const char *out,const char *name) {
 int main(int argc,char **argv) {
     const char *out=argc>1?argv[1]:NULL;
     web_nor_erase();web_boot();advance();
-    assert(settings.palette==UI_CIRCUIT_INDEX && ux.circuit && ui_style==ST_FLAT);
+    assert(settings.palette==UI_STUDIO_INDEX && !ux.circuit && ui_style==ST_FLAT);
     persist_t p,q;
     static const char *names[]={"GREY","GREEN","AMBER","ICE","VIOLET","ROSE","PAPER","HI-CON","NIGHT","MONO"};
     static const uint8_t old[]={1,2,3,5,0,4,5,3,2,3,4,7,6,6,6,6,6,6,6,7};
@@ -33,7 +33,7 @@ int main(int argc,char **argv) {
         for(uint32_t style=0;style<2;style++) for(uint32_t large=0;large<2;large++) {
             settings.palette=k;ui_style=style;ui_prefs=large?PREF_LARGE:0;
             settings_export(&p);assert(p.palette==UI_PAL_TAG+k);
-            memset(&settings,0,sizeof settings);settings_init();assert(ux.circuit);
+            memset(&settings,0,sizeof settings);settings_init();assert(!ux.circuit && settings.palette==UI_STUDIO_INDEX);
             assert(settings_import(&p,sizeof p)==1);settings_init();style_apply();
             assert(settings.palette==k && ui_style==style && !!(ui_prefs&PREF_LARGE)==large);
             assert(ux.circuit==(k==UI_CIRCUIT_INDEX));

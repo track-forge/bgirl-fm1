@@ -57,6 +57,8 @@ PALETTES = [
     ("MONO",   (0, 0, 0),       (255, 255, 255), (255, 255, 255), RED,       (72, 140, 255)),
     # BGIRL: append only. Existing built-in IDs and old migration table stay stable.
     ("CIRCUIT", (9, 19, 16), (117, 245, 190), (215, 249, 231), (255, 120, 71), (215, 249, 231)),
+    # STAGE/LAB/CUT: append, never redefine an existing saved palette.
+    ("STUDIO", (9, 11, 12), (168, 240, 207), (233, 227, 214), (255, 143, 136), (209, 183, 255)),
 ]
 BW = "MONO"
 BW_GREY = (82, 82, 82)             # MONO's one mid grey (RGB565 10/20/10): DIM LINE RAISE LANE
@@ -197,7 +199,8 @@ def main():
             v = [to565(c, p[0] == BW) for c in p[1:]]
             out.append(f'    {{"{p[0]}", ' + ", ".join(f"0x{x:04x}" for x in v) + "},")
         out += ["};", f"#define UI_NPALETTES {len(PALETTES)}u", "#define UI_GREY_INDEX 0u",
-                f"#define UI_CIRCUIT_INDEX {names.index('CIRCUIT')}u  /* BGIRL fresh-state default */",
+                f"#define UI_CIRCUIT_INDEX {names.index('CIRCUIT')}u  /* existing palette ID, unchanged */",
+                f"#define UI_STUDIO_INDEX {names.index('STUDIO')}u  /* fresh state only; saved settings win */",
                 f"#define UI_BW_INDEX {names.index(BW)}u          /* MONO: black and white (src/gfx.c palette_set) */",
                 f"#define UI_BW_GREY 0x{to565(BW_GREY):04x}u          /* MONO's one grey: DIM LINE RAISE LANE */",
                 f"#define UI_PAL_TAG {PAL_TAG}u          /* stored id = UI_PAL_TAG + index; below 20: an old id */"]
