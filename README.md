@@ -103,11 +103,11 @@ Working firmware samples now recompose **CREW HOME / STAGE**, **FM operator / LA
 **drum STEP / CUT**, and the shared **ENV** cross-check. The four physical knobs,
 existing navigation and musical state remain unchanged. New **STUDIO** colors are
 an appended palette, chosen only for fresh settings; saved/custom palettes win.
-JIANT's face configuration is adapted locally; LARGE keeps28px numeric values.
+JIANT's face configuration is adapted locally; LARGE retains appropriate enlarged readouts and working charts.
 
 [STUDIO iteration 2: warmer color semantics, crown/LAB/CUT icons and native comparisons](docs/STUDIO_ITERATION_2_VERIFICATION.md).
 [Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
-**Doug approved the STUDIO foundation and LAB rollout.** The stacked [CUT sequencing pass](docs/ui/CUT_VERIFICATION.md) extends STEP, DETAIL, AUTOMATION and SONG; native comparisons await review. Existing sample/slice views, remaining STAGE and system work remain tracked in the [rollout ledger](docs/ui/ROLLOUT.md), not complete.
+**Doug approved the foundation, LAB and CUT sequencing.** The stacked [CUT completion](docs/ui/CUT_COMPLETION_VERIFICATION.md) finishes SAMPLE/SLICE engine views, SLICES, SLICER and drum LANES; native normal/LARGE comparisons await review. STAGE as a complete set is next; shared system surfaces and browser-shell work remain tracked in the [rollout ledger](docs/ui/ROLLOUT.md).
 [Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
 [Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
 [Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).

@@ -1,0 +1,12 @@
+{
+  "normalAndLarge": true,
+  "panelNavigation": true,
+  "editChecks": 18,
+  "sampleAndSliceEngineSelection": true,
+  "drumLaneEditing": true,
+  "slicerTransport": true,
+  "audioPeak": 0.1424407958984375,
+  "errors": [],
+  "hardware": "not tested",
+  "visualApproval": "Doug review pending"
+}

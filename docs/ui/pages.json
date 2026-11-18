@@ -177,7 +177,7 @@
       "P_SLDEPTH"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT completion pass"
   },
   {
     "index": 12,
@@ -296,8 +296,8 @@
       "P_E2",
       "P_E3"
     ],
-    "phase": "LAB",
-    "status": "approved #39"
+    "phase": "LAB/CUT",
+    "status": "approved #39; SAMPLE/SLICE this CUT pass"
   },
   {
     "index": 20,
@@ -311,8 +311,8 @@
       "P_E6",
       "P_E7"
     ],
-    "phase": "LAB",
-    "status": "approved #39"
+    "phase": "LAB/CUT",
+    "status": "approved #39; SAMPLE/SLICE this CUT pass"
   },
   {
     "index": 21,
@@ -342,7 +342,7 @@
       "P_LN3"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT completion pass"
   },
   {
     "index": 23,
@@ -357,7 +357,7 @@
       "P_LN7"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT completion pass"
   },
   {
     "index": 24,
@@ -372,7 +372,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "pending"
+    "status": "this CUT completion pass"
   },
   {
     "index": 25,
@@ -552,7 +552,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "this CUT sequencing pass"
+    "status": "approved #40"
   },
   {
     "index": 37,
@@ -687,7 +687,7 @@
       "3"
     ],
     "phase": "CUT",
-    "status": "this CUT sequencing pass"
+    "status": "approved #40"
   },
   {
     "index": 46,
@@ -702,7 +702,7 @@
       "3"
     ],
     "phase": "CUT",
-    "status": "this CUT sequencing pass"
+    "status": "approved #40"
   },
   {
     "index": 47,
@@ -717,7 +717,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "this CUT sequencing pass"
+    "status": "approved #40"
   },
   {
     "index": 48,

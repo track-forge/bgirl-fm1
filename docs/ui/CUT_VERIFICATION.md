@@ -1,4 +1,8 @@
-# CUT sequencing — review milestone
+# CUT sequencing — approved milestone
+
+Doug approved this visual/playability milestone. The remaining sample/slice/lane
+continuation is tracked in [CUT completion](CUT_COMPLETION_VERIFICATION.md); this
+approval is not an implicit merge or deployment.
 
 Stack base: PR39, `feat/studio-lab-rollout`, exact parent
 `52910de468fc4e87a940ea8d076a038bdcd7aa6c`. This is the next focused slice of
