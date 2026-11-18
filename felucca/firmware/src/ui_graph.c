@@ -1277,7 +1277,7 @@ static uint32_t graph_signature(void)
     if (strip_kind() == SK_TITLE)                    /* MENU > LARGE: the page's title (its engine, its number) */
         return h ^ 0x5A17u;
     if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
-    /* LAB parameter/routing diagrams are static until their actual inputs change.
+    /* LAB/CUT parameter and region diagrams are static until their actual inputs change.
      * Do not inherit the old live-scope timer on these pages. */
     if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE && design_context()!=DC_CUT_MORE) || pg->graph == GR_ARP) h ^= ui.frame / 2u;
     if(design_context()==DC_LAB_MORE) {
@@ -1310,7 +1310,7 @@ static uint32_t graph_signature(void)
     }
     if (pg->graph == GR_MOD)
         h ^= (mod_ui_slot + 1u) * 40503u;
-    if (pg->graph == GR_SLCR && t->p[P_SLCR])        /* the SLICER's step playing */
+    if (pg->graph == GR_SLCR && t->p[P_SLCR] && (design_context()!=DC_CUT_MORE || song.playing))        /* the SLICER's step playing */
         h ^= (sl[song.sel].idx + 1u) * 2654435761u;
     if (pg->graph == GR_SLOTS) {                     /* (a checksum over each slot) */
         for (i = 0; i < 4u; i++)

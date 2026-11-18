@@ -39,5 +39,11 @@ int main(int argc,char **argv){
   if(mode)assert(swap16(host_screen[(graph_y()+26)*240+13+13*play])==T_PLAY);
 #endif
  }
+#ifndef BGIRL_CUT_BASELINE
+ cut_setup(30);song.playing=0;uint32_t sig=graph_signature();sl[song.sel].idx=(sl[song.sel].idx+1)%16;assert(sig==graph_signature());
+ song.playing=1;sig=graph_signature();sl[song.sel].idx=(sl[song.sel].idx+1)%16;assert(sig!=graph_signature());
+ cut_setup(23);sig=graph_signature();drum_mute[trk_index(TSEL)]^=1;assert(sig!=graph_signature());
+ cut_setup(15);sig=graph_signature();bg_vocal_expected[trk_index(TSEL)][0]^=1;assert(sig!=graph_signature());
+#endif
  fprintf(rep,"CUT samples cases=%u findings=%u ink=%u neutral=%u align=%u lost=%u canvas=%zu\n",cases,nfind,nink,mono_bad,al_fail,al_lost,sizeof cv_px);fclose(rep);return nfind+nink+mono_bad+al_fail+al_lost?1:0;
 }
