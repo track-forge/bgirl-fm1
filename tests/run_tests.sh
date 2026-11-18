@@ -83,3 +83,6 @@ python3 tests/test_studio_icons.py
 
 # Approved LAB continuation and engine/page visibility matrix.
 ./tests/run_lab_tests.sh
+
+# CUT sequencing: real firmware layouts, all banks, preserved musical state.
+./tests/run_cut_tests.sh

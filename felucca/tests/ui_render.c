@@ -538,6 +538,27 @@ static void song_bands(void)
     uint32_t i, nl = 0;
     int32_t py = (int32_t)Y_GRAPH, base = -1;
     if (ui.home || ui.menu || ui.layer || ui.confirm || name_on() || cur_page()->graph != GR_SONG) return;
+    if(design_context()==DC_CUT_SEQ){
+        py=(int32_t)graph_y();
+        for(i=0;i<nscr;i++){
+            const rbox_t *b=&scr[i];
+            if(b->y1<=py || b->y0>=py+(int32_t)graph_h())continue;
+            nsong_txt++;
+            if(b->y0>=py && b->y1<=py+22 && b->x0>=8 && b->x1<=232)continue;
+            int lane=0;
+            for(int32_t k=0;k<NTRK;k++)lane|=b->y0>=py+CS_Y+k*CS_PITCH && b->y1<=py+CS_Y+k*CS_PITCH+CS_LH;
+            if(lane && b->x0>=4 && b->x1<=SG_X0+SG_W)continue;
+            if(!strcmp(b->s,"+") && b->y0>=py+CS_Y && b->y1<=py+CS_Y+NTRK*CS_PITCH-2 && b->x0>=SG_X0 && b->x1<=SG_X0+SG_W)continue;
+            if(b->y0>=py+107 && b->y1<=py+(int32_t)graph_h() && b->x0>=8 && b->x1<=232){
+                if((b->flags&4u) && strcmp(b->s,"icon"))continue;
+                nl++;if(base<0)base=b->y1;
+                if(nl>2 || b->y1-base>3 || base-b->y1>3)finding("SONG CUT: second info line",b,0);
+                continue;
+            }
+            finding("SONG CUT: outside bands",b,0);
+        }
+        return;
+    }
     for (i = 0; i < nscr; i++) {
         const rbox_t *b = &scr[i];
         int32_t k, lane = 0;

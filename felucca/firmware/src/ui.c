@@ -389,7 +389,7 @@ static const page_t *cur_page(void) { return page_over ? page_over : &PAGES[ui.p
  *            is, the card labels in M;
  *   LK_OFF   LARGE off; the menu (its own LARGE: ui_menu.c), the dialogs and NAME keep their own layout in every case. */
 /* Presentation only: no navigation IDs, input bindings or persisted state. */
-enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE };
+enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE, DC_CUT_SEQ };
 static uint32_t design_context(void)
 {
     const page_t *pg=cur_page();
@@ -398,6 +398,7 @@ static uint32_t design_context(void)
     if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2 || (pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_FM6)) return DC_LAB;
     if (pg->graph==GR_ADSR) return DC_ENV;
     if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
+    if (pg->graph==GR_ROLL || pg->graph==GR_EVENTS || pg->graph==GR_SONG) return DC_CUT_SEQ;
     if ((pg->fam==FAM_ENV || pg->fam==FAM_LFO || pg->fam==FAM_FX || pg->fam==FAM_EDIT) &&
         pg->graph!=GR_SLICES && pg->graph!=GR_SLCR && pg->id[0]!=P_LN0 && pg->id[0]!=P_LN4 &&
         !(pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_SAMPLE)) return DC_LAB_MORE;

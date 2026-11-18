@@ -88,8 +88,8 @@ static int32_t bar_x(uint32_t i) { return 12 + (int32_t)(i % 16u) * 13 + (int32_
  * (proll.lo, the bottom row) fits the notes of the page, else centres on the cursor's note, and follows in steps (a
  * third of the way per frame); graph_signature() holds it, so a page that does not change is not drawn again. */
 #define PR_ROWS 21                                  /* semitones shown (1.75 octaves) */
-#define PR_RH 5                                     /* px per row */
-#define PR_Y0 9                                     /* the top row (canvas y) */
+#define PR_RH (design_context()==DC_CUT_SEQ?4:5)                                     /* px per row */
+#define PR_Y0 (design_context()==DC_CUT_SEQ?29:9)                                     /* the top row (canvas y) */
 #define PR_X0 35                                    /* the first step column */
 #define PR_CW 12                                    /* px per step */
 #define PR_KX 24                                    /* the keyboard strip, 9 px */
@@ -223,7 +223,10 @@ static void graph_roll(const track_t *t, uint16_t c)
             {   /* its ink ends at x 23, a column before the keys (by the advance, C1's 1 ended 2 px short) */
                 int32_t b[4];
                 text_ink(&AF_S, nb, b);
-                cv_text_on(23 - b[2], y - 5, &AF_S, nb, T_DIM, T_SURF);   /* (the widest, "C-1", inside the panel) */
+                if(design_context()==DC_CUT_SEQ){
+                    text_ink(&AF_C,nb,b);
+                    cv_text_on(23-b[2],y+CAP_IN(C,PR_RH),&AF_C,nb,T_SUPPORT,T_BG);
+                } else cv_text_on(23 - b[2], y - 5, &AF_S, nb, T_DIM, T_SURF);   /* (the widest, "C-1", inside the panel) */
             }
         }
     }
@@ -233,13 +236,13 @@ static void graph_roll(const track_t *t, uint16_t c)
         uint32_t si = base + i;
         int32_t x = PR_X0 + (int32_t)i * PR_CW;
         if (si == ui.cursor)
-            cv_frame(x, PR_Y0 - 2, PR_CW + 1, ybot - PR_Y0 + 4, T_TEXT);
-        if (song.playing && si == t->seq_idx)
+            cv_frame(x, PR_Y0 - 2, PR_CW + 1, ybot - PR_Y0 + 4, design_context()==DC_CUT_SEQ?T_ACCENT:T_TEXT);
+        if (design_context()!=DC_CUT_SEQ && song.playing && si == t->seq_idx)
             cv_rect(x + 6, PR_Y0, 1, ybot - PR_Y0, T_ACCENT);
         if ((locks >> si) & 1u)                       /* a parameter lock: a mark under the step */
             cv_rect(x + 3, ybot + 3, 7, 2, T_ACCENT);
         if (step_detailed(&seq_steps(t)[si]))         /* 1.5.1: CHANCE / RATCH / NUDGE set: a mark over it (DETAIL) */
-            cv_rect(x + 4, 2, 5, 3, c);
+            cv_rect(x + 4, design_context()==DC_CUT_SEQ?PR_Y0-7:2, 5, 3, c);
     }
     for (i = 0; i < ncol; i++) {                      /* the notes */
         uint32_t si = base + i, s = pr_src(t, si, len), nx = (si + 1u) % len;
@@ -259,6 +262,11 @@ static void graph_roll(const track_t *t, uint16_t c)
             int32_t ny = clamp(pr_row_y(ns->note[0]), PR_Y0, ybot - PR_RH);
             cv_line(x + 10, y + 2, x + 14, ny + 2, T_TEXT);   /* the slide into the next note */
         }
+    }
+    if(design_context()==DC_CUT_SEQ && song.playing && t->seq_idx>=base && t->seq_idx<base+ncol){
+        int32_t x=PR_X0+(int32_t)(t->seq_idx-base)*PR_CW;
+        cv_rect(x+6,PR_Y0,1,ybot-PR_Y0,T_PLAY);
+        cv_rect(x+1,PR_Y0-5,PR_CW-1,2,T_PLAY);
     }
 }
 /* SEQ > STEP on a DRUM track: the grid, 8 lanes x the 16 steps of the page shown. Lanes by their two-letter
@@ -359,13 +367,16 @@ static void graph_grid(const track_t *t, uint16_t c)
 static void graph_detail(const track_t *t, uint16_t c)
 {
     static const char *const NAME[4] = {"CHN", "RAT", "NDG", "VEL"};
-    static const uint8_t LY[4] = {4, 38, 62, 86}, LH[4] = {28, 18, 18, 28};
+    const int cut=design_context()==DC_CUT_SEQ;
+    const uint8_t LY[4] = {cut?28:4, cut?56:38, cut?75:62, cut?94:86};
+    const uint8_t LH[4] = {cut?26:28, cut?16:18, cut?16:18, cut?22:28};
     uint32_t i, l, len = (uint32_t)t->p[P_SLEN], base = ui.bank * 16u, ncol;
     ncol = base < len ? (len - base < 16u ? len - base : 16u) : 0u;
     for (l = 0; l < 4u; l++) {
         int32_t yb = LY[l] + LH[l];
         cv_rect(SD_X0, yb, (int32_t)ncol * 12 + 1, 1, T_GRID);   /* the lane's floor */
-        cv_text_on(8, LY[l] + LH[l] / 2 - 8, &AF_S, NAME[l], ui.hot_t && ui.hot_col == l ? T_ACCENT : T_MID, T_SURF);
+        if(cut)cv_text_on(8,LY[l]+LH[l]/2+CAP_IN(C,0),&AF_C,NAME[l],ui.hot_t && ui.hot_col==l?T_ACCENT:T_SUPPORT,T_BG);
+        else cv_text_on(8, LY[l] + LH[l] / 2 - 8, &AF_S, NAME[l], ui.hot_t && ui.hot_col == l ? T_ACCENT : T_MID, T_SURF);
     }
     for (i = 0; i < ncol; i++) {
         uint32_t si = base + i;
@@ -373,8 +384,8 @@ static void graph_detail(const track_t *t, uint16_t c)
         int32_t x = SD_X0 + (int32_t)i * 12;
         uint16_t hi = si == ui.cursor ? T_ACCENT : c;
         if (si == ui.cursor)
-            cv_frame(x, 1, 13, 116, T_TEXT);
-        if (song.playing && si == t->seq_idx)
+            cv_frame(x,cut?26:1,13,cut?94:116,cut?T_ACCENT:T_TEXT);
+        if (!cut && song.playing && si == t->seq_idx)
             cv_rect(x + 6, 2, 1, 114, T_ACCENT);
         for (l = 0; l < 4u; l++) {
             uint32_t k = SD_KIND[l];
@@ -413,6 +424,10 @@ static void graph_detail(const track_t *t, uint16_t c)
                 cv_rect(x + 2, y + h - (bh < 2 ? 2 : bh), 9, bh < 2 ? 2 : bh, col);
             }
         }
+    }
+    if(cut && song.playing && t->seq_idx>=base && t->seq_idx<base+ncol){
+        int32_t x=SD_X0+(int32_t)(t->seq_idx-base)*12;
+        cv_rect(x+6,28,1,90,T_PLAY);cv_rect(x+1,23,11,2,T_PLAY);
     }
 }
 /* SCL: the 12 keys as rounded bars (black keys high, white keys low): in the scale THEME, the root the
@@ -2245,6 +2260,7 @@ static void graph_song(void)
 }
 #include "ui_crew.c"
 #include "ui_lab.c"
+#include "ui_cut_seq.c"
 
 static void draw_graph(void)
 {
@@ -2304,11 +2320,11 @@ static void draw_graph(void)
         case GR_ROLL:
             cv_oy = 0;
             if (detail_on())                          /* 1.5.1 (#199) */
-                graph_detail(t, c);
+                graph_detail(t, design_context()==DC_CUT_SEQ?T_RHYTHM:c);
             else if (drum_track(t))
                 graph_grid(t, c);
             else
-                graph_roll(t, c);
+                graph_roll(t, design_context()==DC_CUT_SEQ?T_RHYTHM:c);
             break;
         case GR_SCALE:
             graph_scale(t, c);
@@ -2344,7 +2360,7 @@ static void draw_graph(void)
             break;
         case GR_SONG:
             cv_oy = 0;
-            graph_song();
+            if(design_context()==DC_CUT_SEQ)graph_cut_song();else graph_song();
             break;
         case GR_PATS:
             cv_oy = 0;
@@ -2352,7 +2368,7 @@ static void draw_graph(void)
             break;
         case GR_EVENTS:
             cv_oy = 0;
-            graph_events();
+            if(design_context()==DC_CUT_SEQ)graph_cut_events();else graph_events();
             break;
         case GR_TOOLS:
             cv_oy = 0;
@@ -2390,5 +2406,6 @@ static void draw_graph(void)
         section_heading(ICON_BG_LAB,"LAB",T_THEME);
         cv_text(10,26,&AF_C,label,T_MID);
     }
+    if(design_context()==DC_CUT_SEQ)cut_sequence_heading(pg,t);
     cv_blit(0, graph_y());
 }

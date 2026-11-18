@@ -2291,7 +2291,7 @@ static int test_roll(void)
 static int test_soak_cards(void)
 {
     uint32_t seed = 63u, f, quiet = 0, old = 0, stale = 0, cmp = 0, c;
-    static uint16_t shot[240 * CARD_H];
+    static uint16_t shot[240 * LG_CARD_H];
 #define SOAK_RND(n) ((seed = seed * 1103515245u + 12345u) >> 8) % (n)
     ui_power_on();
     ui.frame = 0xFFFFFF00u;
@@ -2326,11 +2326,11 @@ static int test_soak_cards(void)
             for (c = 0; c < 5u && !ui.roll[c].from[0]; c++) {}
             if (c < 5u)
                 continue;
-            memcpy(shot, &host_screen[Y_LABEL * 240], sizeof shot);
+            memcpy(shot,&host_screen[readout_y()*240],240*card_h()*sizeof(uint16_t));
             ui.force = 1;
             ui_draw();
             cmp++;
-            stale += memcmp(shot, &host_screen[Y_LABEL * 240], sizeof shot) != 0;
+            stale += memcmp(shot,&host_screen[readout_y()*240],240*card_h()*sizeof(uint16_t))!=0;
         }
     }
 #undef SOAK_RND
@@ -2568,7 +2568,8 @@ static int sg_seen(const song_lay_t *L, uint32_t r)  /* row r's block (r == n: +
     int32_t a = L->x[r], b = r < L->n ? L->x[r + 1u] - SG_GAP : L->x[r] + SG_ADDW;
     return a >= sgv.off && b <= sgv.off + SG_W;
 }
-static uint16_t sg_px(int32_t x, int32_t y) { return swap16(host_screen[(uint32_t)(Y_GRAPH + y) * 240u + (uint32_t)x]); }
+static uint16_t sg_px(int32_t x, int32_t y) { return swap16(host_screen[(uint32_t)(graph_y() + y) * 240u + (uint32_t)x]); }
+static int32_t csg_y(uint32_t k){return CS_Y+(int32_t)k*CS_PITCH;}
 static int test_song_timeline(void)
 {
     song_lay_t L;
@@ -2633,21 +2634,20 @@ static int test_song_timeline(void)
     turn(EN_K1, 1); frames(800);
     bad += check("SONG timeline: the cursor moved while playing: its block in view", ui.song_row == 1u && sg_seen(&L, 1));
     seq_stop(); chain_stop(); frames(100);
-    /* styles: a slot not saved outlined (DIM), the selected one filled (THEME), the others RAISE; + ADD dashed */
+    /* CUT styles: missing slot outlined DIM; selection framed, saved fill RAISE; + ADD dashed. */
     chain_config.count = 3;
     chain_config.row[0] = chain_row_of(0, 1); chain_config.row[1] = chain_row_of(3, 1); chain_config.row[2] = chain_row_of(0, 1);
     ui.song_row = 0; fm1_ms += 1000u; go_page(GR_SONG); frames(100);
     song_layout(&L);
-    x = SG_X0 + L.x[1] + 4;
-    ok = sg_px(SG_X0 + L.x[0] + 4, SG_Y + SG_LH - 2) == T_THEME && sg_px(SG_X0 + L.x[2] + 4, SG_Y + SG_LH - 2) == T_RAISE;
-    ok &= sg_px(x, SG_Y) == T_DIM && sg_px(x, SG_Y + SG_LH - 2) == T_SURF && sg_px(SG_X0 + L.x[1], SG_Y + 3) == T_DIM;
-    bad += check("SONG timeline: selected THEME, others RAISE, a slot not saved only outlined (DIM)", ok);
+    x = SG_X0 + L.x[1] + 12;
+    ok = sg_px(SG_X0 + L.x[0] + 4, CS_Y + CS_LH - 1) == T_ACCENT && sg_px(SG_X0 + L.x[2] + 4, CS_Y + CS_LH - 2) == T_RAISE;
+    ok &= sg_px(x, CS_Y) == T_DIM && sg_px(x, CS_Y + CS_LH - 2) == T_BG && sg_px(SG_X0 + L.x[1], CS_Y + 3) == T_DIM;
+    bad += check("SONG CUT: selection framed, other blocks RAISE, missing slot outlined DIM", ok);
     x = SG_X0 + L.x[3];
-    bad += check("SONG timeline: + ADD's slot dashed (DIM), THEME when selected",
-                 sg_px(x, SG_Y) == T_DIM && sg_px(x + 1, SG_Y) == T_DIM && sg_px(x + 2, SG_Y) == T_SURF &&
-                 sg_px(x + 4, SG_Y) == T_DIM && sg_px(x + 4, SG_Y + 3) == T_SURF);
-    ui.song_row = 3; frames(100);
-    bad += check("SONG timeline: + ADD selected", sg_px(x, SG_Y) == T_THEME && sg_px(x + 2, SG_Y) == T_SURF);
+    bad += check("SONG CUT: + ADD vertical edge dashed DIM, empty interior",
+                 sg_px(x,CS_Y)==T_DIM && sg_px(x,CS_Y+1)==T_DIM && sg_px(x,CS_Y+2)==T_BG && sg_px(x+2,CS_Y+3)==T_BG);
+    ui.song_row=3;frames(100);
+    bad += check("SONG CUT: selected + ADD edge ACCENT",sg_px(x,CS_Y)==T_ACCENT && sg_px(x,CS_Y+2)==T_BG);
     chain_defaults(&chain_config);
     ui.song_row = 0;
     return bad;
@@ -4467,12 +4467,12 @@ static int test_chord_page(void)
 }
 
 /* the STEP page's piano roll (ui_graph.c graph_roll), read back from the screen: per column the rows whose centre
- * pixel (the bar's middle, x + 6) is a bar colour, against the notes the step sounds (its own; a TIE: the note
+ * pixel (x + 5, away from slide endpoints and the playhead) is a bar colour, against the notes the step sounds (its own; a TIE: the note
  * before's; a REST: none) */
 static int pr_is_bar(uint32_t x, uint32_t y)
 {
     uint16_t c = swap16(host_screen[y * 240u + x]);
-    return c == T_THEME || c == T_ACCENT || c == T_TEXT;
+    return c == T_RHYTHM || c == T_ACCENT || c == T_TEXT;
 }
 static int pr_columns_match(const track_t *t, uint32_t *nbars)
 {
@@ -4485,7 +4485,7 @@ static int pr_columns_match(const track_t *t, uint32_t *nbars)
             if (n >= 0 && rr >= 0 && rr < PR_ROWS) want |= 1u << rr;
         }
         for (r = 0; r < PR_ROWS; r++)
-            if (pr_is_bar((uint32_t)(PR_X0 + (int32_t)i * PR_CW + 6), Y_GRAPH + PR_Y0 + r * PR_RH + 2u)) got |= 1u << r;
+            if (pr_is_bar((uint32_t)(PR_X0 + (int32_t)i * PR_CW + 5), graph_y() + PR_Y0 + r * PR_RH + 2u)) got |= 1u << r;
         if (got != want) {
             printf("ui:   roll column %u: rows %05x drawn, %05x wanted\n", base + i, got, want);
             ok = 0;
@@ -4804,7 +4804,7 @@ static int test_piano_roll(void)
     key_down(7); frames(200);                                         /* a key held: its row lit on the strip */
     {
         int32_t r = (int32_t)proll.lo + PR_ROWS - 1 - (int32_t)kb_chord[7][0];
-        uint16_t c = r >= 0 && r < PR_ROWS ? swap16(host_screen[(Y_GRAPH + PR_Y0 + (uint32_t)r * PR_RH + 1u) * 240u + PR_KX + 7]) : 0;
+        uint16_t c = r >= 0 && r < PR_ROWS ? swap16(host_screen[(graph_y() + PR_Y0 + (uint32_t)r * PR_RH + 1u) * 240u + PR_KX + 7]) : 0;
         bad += check("  a key held: its row on the keyboard strip is the accent", kb_chn[7] && c == T_ACCENT);
     }
     key_up(7); frames(100);
@@ -8007,6 +8007,14 @@ static void cin_beat(void)                       /* the audio until the count-in
     for (k = 0; k < 4000u && cin_left == left && seq_counting(); k++)
         events_block(CTL);
 }
+static int countin_page_restored(void)
+{
+    static uint16_t shot[240 * H_GRAPH];
+    uint32_t y=graph_y(),h=graph_h();
+    memcpy(shot,host_screen+y*240,240*h*sizeof(uint16_t));
+    ui.force=1;ui_draw();
+    return !memcmp(shot,host_screen+y*240,240*h*sizeof(uint16_t));
+}
 static int test_click_menu(void)
 {
     int bad = 0, ok;
@@ -8088,14 +8096,14 @@ static int test_click_menu(void)
     ok = transport_req == 2u;
     events_block(CTL);
     frame();
-    ok &= !seq_counting() && !song.playing && (song.rec & 1u) && px_at(16, CI_Y + 4) == px_at(16 + 56, CI_Y + 4);
+    ok &= !seq_counting() && !song.playing && (song.rec & 1u) && countin_page_restored();
     bad += check("PLAY while counting in stops it: nothing plays, still armed, the page back", ok);
     press(B_PLAY);
     events_block(CTL);
     ok = seq_counting() && cin_left == 4u;
     for (i = 0; i < 4u; i++) cin_beat();
     frame();
-    ok &= !seq_counting() && song.playing && trk[0].seq_idx == 0u && px_at(16, CI_Y + 4) == px_at(16 + 56, CI_Y + 4);
+    ok &= !seq_counting() && song.playing && trk[0].seq_idx == 0u && countin_page_restored();
     bad += check("PLAY armed and stopped: the count-in again; at its end the sequencer plays from step 1, the page back", ok);
     press(B_PLAY);
     events_block(CTL);
@@ -8897,16 +8905,16 @@ static int test_song_lanes_drawn(void)
     go_page(GR_SONG); frames(100);
     song_layout(&L);
     xb = SG_X0 + L.x[1] - 1;                         /* the boundary between sections 1 and 2 */
-    y0 = SG_LY(0) + SG_LH - 1; y1 = SG_LY(1) + SG_LH - 1; y2 = SG_LY(2) + SG_LH - 1;   /* (under the letters) */
-    ok = sg_px(xb, SG_LY(3) + SG_LH - 1) == T_RAISE;  /* T4: B B -: one block over the boundary */
+    y0 = csg_y(0) + CS_LH - 1; y1 = csg_y(1) + CS_LH - 1; y2 = csg_y(2) + CS_LH - 1;   /* (under the letters) */
+    ok = sg_px(xb, csg_y(3) + CS_LH - 1) == T_RAISE;  /* T4: B B -: one block over the boundary */
     ok &= sg_px(xb, y1) != T_RAISE && sg_px(xb, y1) != T_THEME;   /* T2: A then B: two blocks, the gap */
     ok &= sg_px(SG_X0 + L.x[0] + 4, y2) != T_RAISE && sg_px(SG_X0 + L.x[0] + 4, y2) != T_THEME;   /* T3 "-": nothing */
     bad += check("SONG lanes drawn: a run of one slot one block, another slot a new one, \"-\" a gap", ok);
-    ok = sg_px(SG_X0 + L.x[1] + 2, y0) == T_THEME && sg_px(SG_X0 + L.x[0] + 2, y0) == T_RAISE && sg_px(xb, y0) == T_RAISE;
-    bad += check("SONG lanes drawn: the cell (section 2, T1) THEME, the rest of its block RAISE", ok);
+    ok = sg_px(SG_X0+L.x[1]+2,y0)==T_ACCENT && sg_px(SG_X0+L.x[0]+20,y0-1)==T_RAISE && sg_px(xb,y0)==T_RAISE;
+    bad += check("SONG CUT: only the selected section framed ACCENT, merged run remains RAISE", ok);
     ui.song_trk = 2; ui.song_row = 0; frames(100);
-    ok = sg_px(SG_X0 + L.x[0] + 4, SG_LY(2)) == T_THEME && sg_px(SG_X0 + L.x[0], SG_LY(2) + 4) == T_THEME &&
-         sg_px(SG_X0 + L.x[0] + 4, SG_LY(2) + 4) != T_THEME;
+    ok = sg_px(SG_X0 + L.x[0] + 4, csg_y(2)) == T_ACCENT && sg_px(SG_X0 + L.x[0], csg_y(2) + 4) == T_ACCENT &&
+         sg_px(SG_X0 + L.x[0] + 4, csg_y(2) + 4) != T_ACCENT;
     bad += check("SONG lanes drawn: the cursor on a \"-\" cell: its outline only", ok);
     chain_prepare(); events_block(32);
     for (k = 0; k < 600u; k++) events_block(32);
@@ -8914,10 +8922,10 @@ static int test_song_lanes_drawn(void)
     ok = 1;
     {
         int32_t sp = SG_X0 + song_playx(&L) - sgv.off;
-        for (k = 0; k < NTRK; k++) ok &= sg_px(sp, SG_LY(k) + 1) == T_ACCENT;
-        ok &= sp > SG_X0 + 4 && sg_px(sp, SG_Y + SG_H) == T_ACCENT && sg_px(sp, SG_RY + 3) == T_ACCENT;
+        for (k = 0; k < NTRK; k++) ok &= sg_px(sp, csg_y(k) + 1) == T_PLAY;
+        ok &= sp > SG_X0 + 4 && sg_px(sp, CS_Y+NTRK*CS_PITCH-2)==T_PLAY && sg_px(sp,110)==T_PLAY;
     }
-    bad += check("SONG lanes drawn: the playhead crosses the four lanes to the ruler (ACCENT)", ok);
+    bad += check("SONG CUT: PLAY stripe crosses all six lanes and the bar ruler", ok);
     seq_stop(); frames(50);
     ui_prefs &= ~PREF_ANIM_OFF;
     chain_defaults(&chain_config);
@@ -8933,8 +8941,8 @@ static uint32_t sg_bar(int32_t x, int32_t k)          /* lane k's bar height at 
 {
     uint32_t n = 0;
     int32_t y;
-    for (y = SG_LY(k) + SG_PAD; y < SG_LY(k) + SG_PAD + SG_PH; y++)
-        n += sg_px(x, y) == T_THEME || sg_px(x, y) == T_INK;
+    for (y = csg_y(k) + 2; y < csg_y(k) + 2 + 7; y++)
+        n += sg_px(x,y)==T_RHYTHM;
     return n;
 }
 static int test_song_pictures(void)
@@ -8973,24 +8981,24 @@ static int test_song_pictures(void)
     ok = 1;
     for (i = 4; i < 16u; i++) {                      /* (cells 0..3 hold the letter) */
         int32_t x = sx + (int32_t)((2u * i + 1u) * (uint32_t)wt / 32u);
-        ok &= sg_bar(x, 2) == lv[i] * SG_PH / 3u && sg_px(x, SG_LY(2) + SG_LH - 2) == T_RAISE;
+        ok &= sg_bar(x, 2) == lv[i] * 7 / 3u && sg_px(x, csg_y(2) + CS_LH - 2) == T_RAISE;
     }
-    bad += check("SONG pictures: drawn in the lane, a bar a cell as high as its level (THEME on RAISE)", ok);
+    bad += check("SONG CUT: true per-cell density heights in the lane (RHYTHM on RAISE)", ok);
     ui.song_trk = 2; frames(100);                     /* the cell selected: INK bars on THEME */
     ok = 1;
     for (i = 4; i < 16u; i++) {
         int32_t x = sx + (int32_t)((2u * i + 1u) * (uint32_t)wt / 32u), y;
         uint32_t n = 0;
-        for (y = SG_LY(2) + SG_PAD; y < SG_LY(2) + SG_PAD + SG_PH; y++) n += sg_px(x, y) == T_INK;
-        ok &= n == lv[i] * SG_PH / 3u && sg_px(x, SG_LY(2) + SG_LH - 2) == T_THEME;
+        for (y = csg_y(2) + 2; y < csg_y(2) + 2 + 7; y++) n += sg_px(x,y)==T_RHYTHM;
+        ok &= n == lv[i] * 7 / 3u && sg_px(x, csg_y(2) + CS_LH - 2) == T_RAISE;
     }
-    bad += check("SONG pictures: in the cell selected INK bars on THEME", ok);
+    bad += check("SONG CUT: selected cell retains true RHYTHM density bars on RAISE", ok);
     chain_config.row[0].repeat = 2;                  /* x2: the pattern twice, a notch between */
     ui.song_trk = 0; frames(100);
     song_layout(&L);
     sx = SG_X0 + L.x[0]; wt = L.x[1] - L.x[0] - SG_GAP;
-    ok = sg_bar(sx + wt / 2 + (int32_t)(5u * (uint32_t)wt / 32u + (uint32_t)wt / 64u), 2) == SG_PH &&
-         sg_px(sx + wt / 2, SG_LY(2) + SG_PAD + 1) == T_SURF && sg_px(sx + wt / 2, SG_LY(2) + 1) == T_RAISE;
+    ok = sg_bar(sx + wt / 2 + (int32_t)(5u * (uint32_t)wt / 32u + (uint32_t)wt / 64u), 2) == 7 &&
+         sg_bar(sx+(wt+1)/2,2)==0 && sg_px(sx + wt / 2, csg_y(2) + 1) == T_RAISE;
     bad += check("SONG pictures: REPS 2 draws the pattern twice, notched between (the block whole)", ok);
     trk[2].p[P_SLEN] = 32;                           /* LEN 32: two steps a cell, the mean rounded up */
     memset(trk[2].step, 0, sizeof trk[2].step);
