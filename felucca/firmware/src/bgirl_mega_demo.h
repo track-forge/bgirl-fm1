@@ -24,7 +24,7 @@ static void bgirl_mega_demo(void)
     set_engine_of(&trk[1],0);apply_preset_to(&trk[1],2);
     set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
     set_engine_of(&trk[3],13);apply_preset_to(&trk[3],0);
-    set_engine_of(&trk[4],8);apply_preset_to(&trk[4],0); /* CLOUD PAD, one voice */
+    set_engine_of(&trk[4],ENGI_FM6);apply_preset_to(&trk[4],4); /* PAD, one voice */
     set_engine_of(&trk[5],ENGI_DRUM);apply_preset_to(&trk[5],4); /* BG KICK */
     for(i=0;i<NTRK;i++) {
         track_t *t=&trk[i];
@@ -87,12 +87,16 @@ static void bgirl_mega_demo(void)
     }
     trk[4].p[P_LEVEL]=55;trk[4].p[P_VOICE]=V_MONO;
     trk[4].p[P_REV]=43;trk[4].p[P_REL]=35;trk[4].p[P_SGATE]=127;
+    trk[4].p[P_SLCR]=SL_GATE;trk[4].p[P_SLPAT]=1;
+    trk[4].p[P_SLRATE]=1;trk[4].p[P_SLDEPTH]=95; /* displayed75% */
     /* Quantized0/6.951958/8.203610 beats ->0/28/33 steps. Mono overlap
      * is intentionally collapsed; ties retain the long source contours. */
     for(k=0;k<62;k++)trk[4].step[k].time=ST_TIE;
-    bgirl_mega_note(4,0,50,72);bgirl_mega_note(4,28,60,70);bgirl_mega_note(4,33,64,68);
+    /* One OCT- worth of pitch: D2/C3/E3, timing/velocities unchanged. */
+    bgirl_mega_note(4,0,38,72);bgirl_mega_note(4,28,48,70);bgirl_mega_note(4,33,52,68);
     /* Canonical dormant FM6 state too: startup/explicit reset have different
      * inherited preset history, but the saved demo must be exactly identical. */
     fm6_init();
+    fm6_track_loaded(&trk[4]); /* keep the active FM6 PAD factory patch */
     undo_depth--;
 }

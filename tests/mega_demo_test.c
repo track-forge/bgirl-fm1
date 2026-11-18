@@ -13,7 +13,7 @@ int main(void) {
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
     assert(trk[1].step[0].note[0]==21 && trk[1].step[25].note[0]==29 && trk[1].step[28].vel==112);
     assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==72 && trk[0].step[63].hit==64);
-    assert(trk[4].step[0].note[0]==50 && trk[4].step[28].note[0]==60 && trk[4].step[33].note[0]==64);
+    assert(trk[4].step[0].note[0]==38 && trk[4].step[28].note[0]==48 && trk[4].step[33].note[0]==52);
     assert(trk[5].eng_req==ENGI_DRUM && trk[5].preset==4 && trk[5].p[P_E0]==DK_SIG_KICK);
     assert(!strcmp(DRUM_PRESETS[trk[5].preset].name,"BG KICK"));
     static const uint8_t kick_steps[]={0,2,6,8,10,14,16,18,22,26,31};
@@ -40,6 +40,12 @@ int main(void) {
     assert(!strcmp(delay_text,"20") && !strcmp(delay_unit,"%"));
     param_format(&TP[P_VWET],trk[3].p[P_VWET],delay_text,&delay_unit);
     assert(!strcmp(delay_text,"66") && !strcmp(delay_unit,"%"));
+    assert(trk[4].eng_req==ENGI_FM6 && trk[4].preset==4 && fm6_slot[4]==4);
+    assert(!strcmp(FM6_PRESETS[4].name,"PAD") && trk[4].p[P_VOICE]==V_MONO);
+    assert(trk[4].p[P_SLCR]==SL_GATE && trk[4].p[P_SLPAT]==1 && trk[4].p[P_SLRATE]==1);
+    assert(trk[4].p[P_SLDEPTH]==95);
+    param_format(&TP[P_SLDEPTH],trk[4].p[P_SLDEPTH],delay_text,&delay_unit);
+    assert(!strcmp(delay_text,"75") && !strcmp(delay_unit,"%"));
     for(uint32_t k=0;k<NSTEP;k++) {
         assert(trk[2].step[k].n==(k%16==0));
         if(k%16==0) {
@@ -78,14 +84,14 @@ int main(void) {
     for(uint32_t t=0;t<NTRK;t++)for(uint32_t j=0;j<8;j++)trk_note_on(&trk[t],60+j,100);
     tick(4096);assert(voices_busy()<=8 && voice_kills>start_kills);panic_req=(1u<<NTRK)-1;tick(FS*5);assert(!voices_busy());
     assert(!web_bgirl_project(1));tick(4096);
-    trk[4].step[33].note[0]=65;trk[3].p[P_VWET]=111;
+    trk[4].step[33].note[0]=53;trk[3].p[P_VWET]=111;
     trk[3].p[P_SLPAT]=5;trk[3].p[P_DLY]=30;
     assert(!project_save_as(0,"MEGA EDIT"));assert(!web_bgirl_project(0));
     for(uint32_t t=0;t<NTRK;t++)for(uint32_t k=0;k<NSTEP;k++)assert(!trk[t].step[k].n && !trk[t].step[k].hit);
-    project_load(0);tick(4096);assert(trk[4].step[33].note[0]==65 && trk[3].p[P_VWET]==111);
+    project_load(0);tick(4096);assert(trk[4].step[33].note[0]==53 && trk[3].p[P_VWET]==111);
     assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==5 && trk[3].p[P_DLY]==30);
     tick(FS*70);felucca_init();assert(autosave_boot(1));tick(4096);
-    assert(trk[4].step[33].note[0]==65 && trk[3].p[P_VWET]==111 && !song.playing);
+    assert(trk[4].step[33].note[0]==53 && trk[3].p[P_VWET]==111 && !song.playing);
     assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==5 && trk[3].p[P_DLY]==30);
     puts("Mega: fresh/explicit equality, MIDI mapping, four loops/bounds/no steals, STOP/restart/overload, exact codec, edited save/autosave priority, blank PASS");
 }

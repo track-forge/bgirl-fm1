@@ -209,3 +209,17 @@ remain. T3 carrier is now A2(MIDI45) then lower G1(MIDI31), four beats each
 repeated. The G stays in the octave below A, not G2. T2/pad and labs unchanged.
 Focused local arrangement/audio/persistence/parity and live preview checks
 precede the quick rollout; hosted full CI is asynchronous per Doug.
+
+
+### Listening revision — FM6 PAD down an octave with gate (2026-11-18)
+
+Only T5 changes: existing FM6 / PAD preset4 replaces CLOUD PAD, still mono
+at level55 with the existing reverb43/release35/gate127 demo settings.
+Notes38/48/52(D2/C3/E3) are12semitones below the prior50/60/64, equivalent
+in pitch to one OCT-; sequence onsets0/28/33, ties and velocities72/70/68
+remain unchanged. OCT- is not globally changed (that UI control affects the
+live keyboard, not stored sequence notes). Normal FX page6 SLICER: GATE,
+PAT1, rate1(1/16), depth95/127(display75%). Dormant FM6 state is canonicalized
+and the active T5 factory PAD slot is restored immediately. All other tracks,
+including separate BG KICK, A2/G1 carrier and T4 wet66/gate3/delay20, remain.
+Focused checks and live quick preview precede rollout; full CI asynchronous.

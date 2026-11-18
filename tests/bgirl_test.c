@@ -17,7 +17,7 @@ static void defaults(int demo) {
         assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==0);
         assert(slc_vocal_match(&trk[3]));
         assert(trk[2].p[P_SLEN]==64 && trk[3].p[P_SLEN]==64);
-        assert(trk[4].eng_req==8 && trk[4].step[33].note[0]==64);
+        assert(trk[4].eng_req==ENGI_FM6 && trk[4].preset==4 && trk[4].step[33].note[0]==52);
         assert(song.g[G_BPM]==128);
     } else
 #endif
