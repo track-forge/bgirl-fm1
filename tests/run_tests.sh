@@ -66,3 +66,8 @@ cc -O2 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -
 felucca/build/host/clarity_native felucca/build/host/clarity-native.f32
 node tests/clarity-wasm.mjs
 node tests/clarity-editor.mjs
+
+# Mega Lab default: complete-loop capacity/voice/release/persistence and WASM parity.
+cc -O1 -w -ffp-contract=off -Ifelucca/firmware/hal -Ifelucca/firmware/bsp/chip -Ifelucca/firmware/bsp/boards/fm1 -Ifelucca/firmware/src -Ifelucca/build/gen -o felucca/build/host/mega_demo_test tests/mega_demo_test.c -lm
+felucca/build/host/mega_demo_test
+node tests/mega-wasm.mjs

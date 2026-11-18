@@ -79,7 +79,8 @@ int main(int argc,char **argv)
         printf("listening: five 9s comparable sequenced WAVs written; NOT human approval\n");
     }
     printf("state: DSP=%zu bytes; captures=%zu bytes; track=%zu bytes; bank=%zu bytes\n",sizeof bg_voc,sizeof bg_bus,sizeof(track_t),sizeof BG_SPEECH_DATA);
-    assert(!web_bgirl_project(1));tick(4410);
+    /* Isolated wet8/12 auditions intentionally retain the pre-Mega backing. */
+    assert(!web_bgirl_vocoder(1));tick(4410);
     step_t electroSteps[3][NSTEP];int16_t electroSound[3][P_COUNT];
     for(uint32_t t=0;t<3;t++){memcpy(electroSteps[t],trk[t].step,sizeof trk[t].step);memcpy(electroSound[t],trk[t].p,sizeof trk[t].p);}
     for(uint32_t mode=1;mode<=2;mode++) {

@@ -596,8 +596,10 @@ EXPORT uint32_t web_bgirl_signature_info(uint32_t track, uint32_t field) {
 static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 {
     uint32_t k;
-    if(web_bgirl_project(pad_demo ? 1 : 0)) return 1;
+    if(web_bgirl_project(0)) return 1;
     if(pad_demo) {
+        for(k=1;k<3;k++)load_pat16(&trk[k],PATTERNS[BGIRL_TRK_DEF[k][2]-1u].note,PATTERNS[BGIRL_TRK_DEF[k][2]-1u].flags);
+        bgirl_legacy_demo_steps();
         trk[3].p[P_VBANDS]=mode==1 ? 0 : 1;
         song.sel=3; ui.home=1; ui.force=1; bg_vreset++;
         return 0;
@@ -637,7 +639,8 @@ static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
 {
     if(mode>3 || group<1 || group>=NELEM(BG_VOCAL_GROUPS)) return 1;
-    if(web_bgirl_project(1)) return 1;
+    if(web_bgirl_project(0)) return 1;
+    bgirl_legacy_demo_steps();
     fm1_irq_off();
     undo_depth++;
     set_engine_of(&trk[3],13); apply_preset_to(&trk[3],0);

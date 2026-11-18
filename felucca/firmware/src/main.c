@@ -96,9 +96,9 @@ static void bgirl_demo_vocoder(void)
 }
 #endif
 
-/* BGIRL demo is ordinary editable sequencer data, never a second transport/DSP.
- * Called at initialization BEFORE autosave restore and on explicit browser reset only. */
-static void bgirl_demo_steps(void)
+/* Retained editable pre-Mega backing for isolated lab auditions and
+ * vocoder-disabled startup. Never a second transport or DSP. */
+static void bgirl_legacy_demo_steps(void)
 {
     uint32_t i;
     static const uint8_t reply[16] = {0,0,0,0,0,0,0,0,0,0,0,60,0,0,55,0};
@@ -115,6 +115,19 @@ static void bgirl_demo_steps(void)
     bgirl_demo_vocoder();
 #endif
     for (i = 0; i < NTRK; i++) pat_sig[i] = steps_sig(&trk[i]);
+}
+
+#if BGIRL_VOCODER
+#include "bgirl_mega_demo.h"
+#endif
+static void bgirl_demo_steps(void)
+{
+#if BGIRL_VOCODER
+    bgirl_mega_demo();
+    for(uint32_t i=0;i<NTRK;i++)pat_sig[i]=steps_sig(&trk[i]);
+#else
+    bgirl_legacy_demo_steps();
+#endif
 }
 
 /* BGIRL power-on palette and editable demo, restored user music takes precedence. */
