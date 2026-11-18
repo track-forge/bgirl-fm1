@@ -72,7 +72,7 @@ readable numeric JSON (not base64); `fm6_pack/unpack` is the existing codec.
 | 64 steps each, all four dormant notes, time/ties, flags/accent/slide/ratchet/nudge, velocity, drum hits/accents, chance/conditions | `step_t` / `proj_steps`, existing sequencer |
 | Length/division/swing/gate/quantize | `P_SLEN..P_SGATE`, `P_SQNT` / existing timing |
 | Motion and locks (track, step, stable parameter ID, lock flag, value) | `motion_store_t`, `motion_valid` / normal motion loader |
-| Six-lane SONG rows and up to4 complete source projects | `chain_config` plus slot or portable-source resolution / `chain_prepare` |
+| Six-lane SONG rows and up to4 complete source projects | `chain_config` plus slot or portable-source resolution / `chain_prepare`, `song_source_info` |
 | Vocal identity and user-sample requirements | `bg_vocal_expected`, source/motion scan / pre-apply bank check |
 
 Excludes transient voices/playhead/FX history, held keys, live vocoder HOLD/Freeze
@@ -105,6 +105,8 @@ rather than returning a mixture or stale cached state.
 
 Four browser-only source projects are session-owned, take precedence over local
 slots0..3 while attached, and feed the **existing** `chain_prepare` and sequencer.
+SONG's overview resolves their names, lengths and density through the same source
+precedence; PROJECT's save/load browser continues to show the actual named slots.
 Successful new/blank/demo/load/runtime restore detaches them; a failed load does
 not. Changing an arrangement row to another source can resolve a local slot if
 that ID was not imported; the next export includes every currently used source.

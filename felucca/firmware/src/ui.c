@@ -32,6 +32,7 @@ static uint32_t up_cat(uint32_t k);
 static int project_save_as(uint32_t slot, const char *name);
 static int project_name(uint32_t slot, char *b);
 static int project_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, uint8_t *n);
+static int song_source_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, uint8_t *n);
 static int project_rename(uint32_t slot, const char *name);
 static int project_erase(uint32_t slot);
 static void project_cur_name(char *b);

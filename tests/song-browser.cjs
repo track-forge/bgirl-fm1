@@ -78,7 +78,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  assert.deepEqual(semantic(await read()),semantic(before));
  // Multi-source SONG: original instruments + bundled source patterns; named slots untouched.
  const arranged=structuredClone(edited);arranged.title='Portable arrangement';
- const a=structuredClone(edited.song),b=structuredClone(edited.song);
+ const a=structuredClone(edited.song),b=structuredClone(edited.song);a.name="SOURCE A";b.name="SOURCE B";
  a.tracks[1].steps[0].notes[0]=40;b.tracks[1].steps[0].notes[0]=52;
  arranged.dependencies=[{id:'pattern-0',song:a},{id:'pattern-1',song:b}];
  arranged.song.arrangement.count=2;
@@ -88,7 +88,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  assert.deepEqual(semantic(await read()),semantic(arranged));assert.deepEqual(await flash(),beforeStorage);
  await page.evaluate(()=>{window.analyser=testAC.createAnalyser();analyser.fftSize=4096;testNode.connect(analyser);});
  // GLO => SONG; normal sequencer starts through inherited panel controls.
- await tap('GLO');await tap('PLAY / STOP');await page.waitForTimeout(1700);
+ await tap('GLO');await page.locator('#screen').screenshot({path:`${artifacts}/portable-song-screen.png`});await tap('PLAY / STOP');await page.waitForTimeout(1700);
  const peak=await page.evaluate(()=>{const a=new Float32Array(4096);analyser.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});assert(peak>.0001&&peak<=1);
  const busy=await req('song-capture');assert(busy.error.includes('Stop playback'));
  await tap('PLAY / STOP');await tap('HOME');await page.waitForTimeout(600);

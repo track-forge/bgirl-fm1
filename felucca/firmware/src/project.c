@@ -632,6 +632,23 @@ static int project_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, 
     return 1;
 }
 
+/* SONG metadata follows the same source precedence as playback. The PROJECT
+ * browser deliberately keeps project_info's real named-slot metadata. */
+static int song_source_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, uint8_t *n)
+{
+#if FELUCCA_WEB
+    if ((portable_mask >> (slot & 3u)) & 1u) {
+        const project_t *p=&portable_source[slot & 3u];
+        proj_name_get(b,(const uint8_t *)p->name);
+        for(uint32_t k=0;len48 && k<NTRK;k++)
+            len48[k]=(uint16_t)len48_of(p->t[k].p[P_SLEN],p->t[k].p[P_SDIV]);
+        for(uint32_t k=0;den && k<NTRK;k++) den[k]=proj_density(&p->t[k],&n[k]);
+        return 1;
+    }
+#endif
+    return project_info(slot,b,len48,den,n);
+}
+
 /* a stored project renamed in place (nothing else of it changes; the music playing is not touched, but the slot
  * it was loaded from / saved to: its name is the new one, the next SAVE's prefill): 0 done, 1 refused (playing,
  * an empty slot), 2 failed (the slot as it was) */
