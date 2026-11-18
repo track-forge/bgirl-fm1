@@ -97,16 +97,24 @@ new **F6** SysEx namespace (`7D 46 36`) and advertised counts.
 [Exact host/browser checks, RAM findings, and audition recipe](docs/SIX_TRACK_VERIFICATION.md).
 No hardware RAM/deadline/flash-compatibility claim.
 
-## STAGE / LAB / CUT redesign planning
+## STAGE / LAB / CUT — first-screen review
 
-A new visual architecture is planned; it is not implemented by the planning PR.
+Working firmware samples now recompose **CREW HOME / STAGE**, **FM operator / LAB**,
+**drum STEP / CUT**, and the shared **ENV** cross-check. The four physical knobs,
+existing navigation and musical state remain unchanged. New **STUDIO** colors are
+an appended palette, chosen only for fresh settings; saved/custom palettes win.
+JIANT's face configuration is adapted locally; LARGE keeps28px numeric values.
+
+[Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
+**Doug's visual/playability review is pending.** Other pages keep their existing
+composition. This is not the complete design overhaul.
 [Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
 [Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
 [Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).
 
 ## Battle Circuit visual identity
 
-The fresh-state UI now uses **CIRCUIT**: crisp mint/near-black display, squared
+The earlier Battle Circuit milestone introduced **CIRCUIT**: crisp mint/near-black display, squared
 technical cells, reverse-video focus, and a bone/black browser shell. Existing
 saved COLOR / STYLE / LARGE / CUSTOM choices are preserved. To opt in on a saved
 session, hold HOME → COLOR → CIRCUIT; HOME exits. No musical behavior changes.

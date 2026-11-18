@@ -1,0 +1,24 @@
+{
+  "ChakraPetch-Medium.ttf": {
+    "sha256": "d480f4f97405fac3600652e2e14fd0b14339031c0af4da11582994878f04d919",
+    "missingAscii": []
+  },
+  "InterTight[wght].ttf": {
+    "sha256": "b81b73dcb64df3c230cabade7df6c5773bf863233f24c9ee51087519f1f88b6f",
+    "missingAscii": []
+  },
+  "Michroma-Regular.ttf": {
+    "sha256": "b62301163788bc5b7f8fcac0b74b184e34e1827e577b499ecb724da065098f87",
+    "missingAscii": []
+  },
+  "S": {
+    "unchangedDefinitions": 8
+  },
+  "M": {
+    "unchangedDefinitions": 9
+  },
+  "L": {
+    "unchangedDefinitions": 9
+  },
+  "displayHeadings": "STAGE LAB CUT ENV and full A-Z/0-9/punctuation set; AF_M fallback retained for legacy sparse LARGE glyphs"
+}

@@ -1,6 +1,6 @@
 # BGIRL visual architecture — STAGE / LAB / CUT
 
-Date: 2026-11-18. Status: **plan only; first-screen implementation follows in this same PR**.
+Date: 2026-11-18. Status: **first-screen implementation in this same PR; Doug review pending**.
 Tracking: [issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).
 Planning base: `c7116c5451bcfca9325ce71a71f7356ab1bd1b2c` (main).
 Branch: `plan/stage-lab-cut`. [Implementation handoff](STAGE_LAB_CUT_HANDOFF.md).

@@ -35,7 +35,7 @@ static void pixels(void) {
     ui.home=1;ui.force=1;paint();before=crew_graph_paints;
     for(uint32_t i=0;i<1000;i++) {fm1_ms++;crew_phase+=1234567;crew_publish(32);draw_graph();}
     assert(crew_graph_paints-before<=15);
-    puts("CREW pixels: 2904 exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS");
+    printf("CREW pixels: %u exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS\n",NPALETTES*2u*NTRK*22u);
 }
 static uint32_t done;
 static void *producer(void *unused) {

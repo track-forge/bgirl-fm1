@@ -18,6 +18,23 @@ int main(int argc, char **argv) {
         cur_name=name; ui.force=1; draw(scenes[s]); lint();mono_check();
         if(p==UI_STUDIO_INDEX || p==UI_CIRCUIT_INDEX || !strcmp(UI_PALETTES[p].name,"MONO") || !strcmp(UI_PALETTES[p].name,"PAPER"))write_ppm(out,UI_PALETTES[p].name,name);
     }
+    /* CREW's shared register must fit every engine's real HOME bindings, not
+     * just the default drum/ANALOG examples. Exercise complete ordinary ranges. */
+    for(int large=0;large<2;large++)for(uint32_t e=0;e<NENGINES;e++) {
+        if(!eng_ok(e))continue;
+        setup(S_HOME_IDLE);eng(e);go_home();ui_home_view=HV_CREW;
+        pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+        for(uint32_t col=0;col<4;col++) {
+            int16_t *vp;const param_desc_t *d=home_param(col,&vp);int32_t old=*vp;
+            for(int32_t v=d->min;v<=d->max;v++) {
+                *vp=v;ui.hot_col=col;ui.hot_t=30;ui.force=1;
+                snprintf(name,sizeof name,"stage-engine%u-k%u-large%d",e,col+1,large);cur_name=name;
+                draw(S_HOME_IDLE);lint();
+                if(v-d->min>512)v=d->max-1;
+            }
+            *vp=old;
+        }
+    }
     /* Every actual FM topology and selected operator, including LARGE geometry. */
     for(int large=0;large<2;large++)for(int alg=1;alg<=32;alg++)for(int op=0;op<6;op++) {
         setup(S_FM6_OP);pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
