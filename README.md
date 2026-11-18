@@ -97,6 +97,13 @@ new **F6** SysEx namespace (`7D 46 36`) and advertised counts.
 [Exact host/browser checks, RAM findings, and audition recipe](docs/SIX_TRACK_VERIFICATION.md).
 No hardware RAM/deadline/flash-compatibility claim.
 
+## STAGE / LAB / CUT redesign planning
+
+A new visual architecture is planned; it is not implemented by the planning PR.
+[Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
+[Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
+[Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).
+
 ## Battle Circuit visual identity
 
 The fresh-state UI now uses **CIRCUIT**: crisp mint/near-black display, squared
