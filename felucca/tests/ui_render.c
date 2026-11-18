@@ -322,6 +322,9 @@ static uint64_t fmp_mask[CV_MAX];
 static uint16_t fmp_save[CV_MAX];
 static uint8_t fmp_kind[FMP_MAX], fmp_a[FMP_MAX], fmp_b[FMP_MAX];
 static uint32_t fmp_n, fmp_charts;
+#ifndef UI_LINT_LIMIT
+#define UI_LINT_LIMIT 600u
+#endif
 static void finding(const char *what, const rbox_t *b, const rbox_t *o);
 static void fmp_find(uint32_t alg, const char *what, uint32_t i, int32_t x, int32_t y, uint32_t j)
 {
@@ -413,9 +416,12 @@ static void fm6_hook(uint32_t kind, uint32_t a, uint32_t b)
     fmp_n++;
 }
 
+#ifndef UI_LINT_LIMIT
+#define UI_LINT_LIMIT 600u
+#endif
 static void finding(const char *what, const rbox_t *b, const rbox_t *o)
 {
-    static char seen[600][64];
+    static char seen[UI_LINT_LIMIT][64];
     static uint32_t nseen;
     char key[64];
     uint32_t i;
@@ -423,7 +429,7 @@ static void finding(const char *what, const rbox_t *b, const rbox_t *o)
     snprintf(key, sizeof key, "%.20s|%.14s|%.24s", cur_name, what, b->s);
     for (i = 0; i < nseen && strcmp(seen[i], key); i++) ;
     if (i < nseen) return;                       /* each finding once per screen */
-    if (nseen < 600u) strcpy(seen[nseen++], key);
+    if (nseen < UI_LINT_LIMIT) strcpy(seen[nseen++], key);
     else return;
     fprintf(rep, "LINT %-22s %-32s '%s' (%d,%d)-(%d,%d)", cur_name, what, b->s, b->x0, b->y0, b->x1, b->y1);
     if (o) fprintf(rep, " / '%s' (%d,%d)-(%d,%d)", o->s, o->x0, o->y0, o->x1, o->y1);

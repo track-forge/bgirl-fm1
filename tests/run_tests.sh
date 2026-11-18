@@ -76,3 +76,6 @@ node tests/mega-wasm.mjs
 ./tests/run_crew_tests.sh
 # Additive SH-STYLE collection, unchanged ANALOG DSP and exact native/WASM output.
 ./tests/run_sh_style_tests.sh
+
+# First-screen presentation matrix, real firmware renderer / inherited lint hooks.
+./tests/run_stage_tests.sh

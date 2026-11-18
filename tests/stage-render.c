@@ -16,9 +16,28 @@ int main(int argc, char **argv) {
         if(s==0){ui_home_view=HV_CREW; ui.home=1;}
         snprintf(name,sizeof name,"%s_%s_%s_%s",names[s],large?"large":"normal",style?"line":"flat",play?"play":"stop");
         cur_name=name; ui.force=1; draw(scenes[s]); lint();mono_check();
-        if(p==UI_CIRCUIT_INDEX || !strcmp(UI_PALETTES[p].name,"MONO") || !strcmp(UI_PALETTES[p].name,"PAPER"))write_ppm(out,UI_PALETTES[p].name,name);
+        if(p==UI_STUDIO_INDEX || p==UI_CIRCUIT_INDEX || !strcmp(UI_PALETTES[p].name,"MONO") || !strcmp(UI_PALETTES[p].name,"PAPER"))write_ppm(out,UI_PALETTES[p].name,name);
+    }
+    /* Every actual FM topology and selected operator, including LARGE geometry. */
+    for(int large=0;large<2;large++)for(int alg=1;alg<=32;alg++)for(int op=0;op<6;op++) {
+        setup(S_FM6_OP);pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+        TSEL->p[P_E0]=alg;fop_op=op;ui.force=1;
+        snprintf(name,sizeof name,"lab-alg%d-op%d-large%d",alg,op,large);cur_name=name;
+        draw(S_FM6_OP);lint();
+    }
+    /*64-step banks: cursor and playhead coincide with accented/ratcheted events,
+     * selected and muted lanes, and a shortened last bank. */
+    for(int large=0;large<2;large++)for(int pos=0;pos<64;pos++)for(int lane=0;lane<NLANE;lane++) {
+        setup(S_DRUM);pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+        TSEL->p[P_SLEN]=64;ui.bank=pos/16;ui.cursor=pos;ui.lane=lane;
+        TSEL->seq_idx=pos;song.playing=1;drum_mute[trk_index(TSEL)%NPART]=1u<<lane;
+        for(int k=16;k<64;k++)TSEL->step[k]=TSEL->step[k%16];
+        snprintf(name,sizeof name,"cut-step%d-lane%d-large%d",pos,lane,large);cur_name=name;
+        ui.force=1;draw(S_DRUM);lint();
     }
     fprintf(rep,"focused findings=%u ink=%u mono=%u align=%u lost=%u canvas=%zu\n",nfind,nink,mono_bad,al_fail,al_lost,sizeof cv_px);
+    uint32_t failures=nfind+nink+mono_bad+al_fail+al_lost;
+    nscr=npend=nrules=0;al_off=1;
     /* Same deterministic non-audio draw recipes before and after. */
     for(int s=0;s<4;s++) {
         setup(scenes[s]);pal(UI_CIRCUIT_INDEX); if(!s){ui_home_view=HV_CREW;ui.home=1;}
@@ -31,5 +50,5 @@ int main(int argc, char **argv) {
         fprintf(rep,"%s focus100 pixels=%llu\n",names[s],(unsigned long long)(blit_px-b));
     }
     fprintf(rep,"total pixels=%llu\n",(unsigned long long)blit_px);fclose(rep);
-    return nfind||nink||mono_bad||al_fail||al_lost?1:0;
+    return failures?1:0;
 }

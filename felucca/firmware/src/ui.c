@@ -388,6 +388,20 @@ static const page_t *cur_page(void) { return page_over ? page_over : &PAGES[ui.p
  *            AUTOMATION, SLICES), HOME with MENU > HOME TRACKS (1.3) and the quick layers' maps: the layout as it
  *            is, the card labels in M;
  *   LK_OFF   LARGE off; the menu (its own LARGE: ui_menu.c), the dialogs and NAME keep their own layout in every case. */
+/* Presentation only: no navigation IDs, input bindings or persisted state. */
+enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV };
+static uint32_t design_context(void)
+{
+    const page_t *pg=cur_page();
+    if (ui.layer || ui.menu || ui.confirm) return DC_NONE;
+    if (ui.home) return home_crew() ? DC_STAGE : DC_NONE;
+    if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2) return DC_LAB;
+    if (pg->graph==GR_ADSR && pg->id[0]==P_ATK) return DC_ENV;
+    if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
+    return DC_NONE;
+}
+static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV); }
+static uint32_t readout_y(void) { return design_context() ? (design_tall()?134u:154u) : Y_LABEL; }
 enum { LK_OFF, LK_LABEL, LK_TALL };
 static uint32_t large_kind(void)
 {
@@ -403,9 +417,9 @@ static uint32_t large_kind(void)
            g == GR_SLICES || g == GR_EVENTS || g == GR_DANCE ? LK_LABEL : LK_TALL;
 }
 /* the geometry of the page shown: the cards' height, the panel's top and height */
-static uint32_t card_h(void) { return large_kind() == LK_TALL ? LG_CARD_H : CARD_H; }
-static uint32_t graph_y(void) { return large_kind() == LK_TALL ? LG_Y_GRAPH : Y_GRAPH; }
-static uint32_t graph_h(void) { return large_kind() == LK_TALL ? LG_H_GRAPH : H_GRAPH; }
+static uint32_t card_h(void) { if(design_context())return design_tall()?64u:CARD_H; return large_kind() == LK_TALL ? LG_CARD_H : CARD_H; }
+static uint32_t graph_y(void) { if(design_context())return 28u; return large_kind() == LK_TALL ? LG_Y_GRAPH : Y_GRAPH; }
+static uint32_t graph_h(void) { if(design_context())return design_tall()?102u:H_GRAPH; return large_kind() == LK_TALL ? LG_H_GRAPH : H_GRAPH; }
 static int large_face_has(const char *s)                /* every glyph of s in the sparse L face */
 {
     for (; *s; s++)

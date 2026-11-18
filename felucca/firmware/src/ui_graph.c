@@ -9,7 +9,7 @@
  * bars rounded; a list's selected row is a THEME bar with INK text. */
 #define PANEL_X0 10                                  /* the graphs' inner area: x 10..230 */
 #define PANEL_W 220
-#define GOY 11                                       /* graphs drawn on a 100 px scale sit at y 11..111 */
+#define GOY (design_tall()?0:11)                                       /* graphs drawn on a 100 px scale sit at y 11..111 */
 /* the height ADSR and LFO are drawn on: 100 px, or (MENU > LARGE's strip: draw_graph) the strip's ~ 56 */
 static int32_t graph_ht = 100;
 #include "ui_fm6op.c"                                /* EDIT > OPERATOR, OP ENV, OPERATOR 2: FM6's operators (their charts below) */
@@ -261,8 +261,48 @@ static void graph_roll(const track_t *t, uint16_t c)
  * accent; a RATCH step's: its 2..4 parts as bars), an empty step a dot (brighter on the beats and on the selected lane); the selected lane is
  * underlaid RAISE, the cursor framed in TEXT; a TEXT bar over the step playing. 1.4.1: a muted lane (the EDIT layer's
  * black keys, eng_drum.c drum_mute): its name DIM, the MUTE icon after it, its hits DIM */
+/* CUT: same64-step event data and bank/cursor owners, explicit orthogonal marks.
+ * Filled event; inset hole=accent; outer frame=edit; top dash=playhead. */
+static void graph_cut(const track_t *t,uint16_t c)
+{
+    uint32_t len=(uint32_t)t->p[P_SLEN],base=ui.bank*16u;
+    uint32_t mute=drum_mute[trk_index(t)%NPART];
+    uint64_t locks=motion_lock_steps(trk_index(t));
+    char b[20];
+    cv_text(10,0,&AF_H,"CUT",T_TEXT);
+    fmt_int(b,(int32_t)base+1);str_cpy(b+str_len(b),"-",2);
+    fmt_int(b+str_len(b),(int32_t)(base+16u<len?base+16u:len));
+    str_cpy(b+str_len(b)," / ",4);fmt_int(b+str_len(b),(int32_t)len);
+    cv_text_r(228,4,&AF_C,b,T_MID,T_BG);
+    for(uint32_t l=0;l<NLANE;l++) {
+        int32_t y=24+(int32_t)l*12;
+        int sel=l==ui.lane,mu=(mute>>l)&1u;
+        uint16_t bg=sel?T_RAISE:T_BG;
+        if(sel)cv_rect(6,y,228,12,bg);
+        cv_text_on(9,y-1,&AF_C,drum_lane_abbr(t,l),mu?T_DIM:sel?T_TEXT:T_MID,bg);
+        if(mu)cv_line_t(30,y+3,35,y+9,T_TEXT,1);
+        for(uint32_t i=0;i<16 && base+i<len;i++) {
+            int32_t x=42+(int32_t)i*11+(int32_t)(i/4)*3;
+            const step_t *st=&seq_steps(t)[base+i];uint32_t bit=1u<<l;
+            uint16_t ink=mu?T_DIM:c;
+            if(step_lanes(st)&bit) {
+                if(step_ratchet(st)>1)pr_split(x,y+2,8,8,ink,step_ratchet(st));
+                else cv_rect(x,y+2,8,8,ink);
+                if(step_accents(st)&bit)cv_rect(x+3,y+4,2,3,bg);
+            } else if(i%4==0)cv_frame(x+2,y+4,4,4,sel?T_MID:T_DIM);
+            else cv_rect(x+3,y+5,2,2,T_DIM);
+            if(sel && base+i==ui.cursor)cv_frame(x-1,y,10,12,T_TEXT);
+            if(l==0) {
+                if((locks>>(base+i))&1u)cv_rect(x,17,8,1,T_ACCENT);
+                if(step_detailed(st))cv_rect(x+2,19,4,1,c);
+                if(song.playing && t->seq_idx==base+i)cv_rect(x,21,8,2,T_TEXT);
+            }
+        }
+    }
+}
 static void graph_grid(const track_t *t, uint16_t c)
 {
+    if(design_context()==DC_CUT){graph_cut(t,c);return;}
     uint32_t l, i, len = (uint32_t)t->p[P_SLEN], base = ui.bank * 16u, mute = drum_mute[trk_index(t) % NPART];
     uint64_t locks = motion_lock_steps(trk_index(t));
     int32_t y0 = 6;
@@ -793,6 +833,7 @@ static uint32_t fm6_alg_of(const track_t *t)
  * sel < 6 (the OPERATOR pages, ui_fm6op.c): that operator's box ACCENT with an INK numeral, its frequency top right */
 static void graph_fm6(const track_t *t, uint16_t c, uint32_t sel)
 {
+    uint16_t surface=design_context()==DC_LAB?T_BG:T_SURF;
     uint32_t alg = fm6_alg_of(t), k, j, car = fm6_car_ops(alg), top = 0, hi = 0, fbop = fm6_fb_op(alg), hotset = 0;
     uint32_t hot = ui.hot_t ? (uint32_t)cur_page()->id[ui.hot_col & 3u] : 0u;
     const uint8_t *pt = fm6_patch[(t - trk) % NTRK];
@@ -841,23 +882,26 @@ static void graph_fm6(const track_t *t, uint16_t c, uint32_t sel)
         uint16_t f = hotset >> k & 1u ? T_ACCENT : c, fill = k == sel ? T_ACCENT : fill_c ? f : T_RAISE;
         char n[2] = {(char)('1' + k), 0};
         FM6_CHART_HOOK(FMH_BOX, k, 0);
-        cv_rrect(x[k] - 10, y[k], 21, FM_BH, 3, fill, T_SURF);
+        cv_rrect(x[k] - 10, y[k], 21, FM_BH, design_context()==DC_LAB?0:3, fill, surface);
         GFX_HOOK_ALIGN(x[k] - 10, y[k], x[k] + 11, y[k] + FM_BH, AL_HV, "FM6 operator number in its box");
         cv_text_in(x[k] - 10, y[k] + CAP_IN(S, FM_BH), 21, &AF_S, n, fill_c || k == sel ? T_INK : on ? f : T_DIM, fill);
     }
     FM6_CHART_HOOK(FMH_LABEL, 0, 0);
-    cv_text(10, 4 - GOY, &AF_S, b, hot == P_E0 || hot == P_E7 ? T_ACCENT : T_MID);
+    if(design_context()==DC_LAB) {
+        cv_text(10,-GOY,&AF_H,"LAB",T_TEXT);
+        cv_text(10,26-GOY,&AF_C,b,hot==P_E0||hot==P_E7?T_ACCENT:T_MID);
+    } else cv_text(10, 4 - GOY, &AF_S, b, hot == P_E0 || hot == P_E7 ? T_ACCENT : T_MID);
     if (sel < 6u) {                                  /* the operator picked: "OP3 x1.50" */
         char fq[16] = {'O', 'P', (char)('1' + sel), ' ', 0};
         fop_freq(pt + (5u - sel) * FP_OP, fq + 4);
-        cv_text_r(228, 4 - GOY, &AF_S, fq, T_TEXT, T_SURF);
+        cv_text_r(228, 4 - GOY, &AF_S, fq, T_TEXT, surface);
     } else if (fm6_bank_slot(fm6_slot[(t - trk) % NTRK]) >= 0) {   /* SLOT B1..B32: the bank voice's name */
         char nm[11];
         for (k = 0; k < 10u; k++)
             nm[k] = (char)pt[FP_NAME + k];
         for (nm[10] = 0; k && nm[k - 1] == ' '; k--)
             nm[k - 1] = 0;
-        cv_text_r(228, 4 - GOY, &AF_S, nm, T_TEXT, T_SURF);
+        cv_text_r(228, 4 - GOY, &AF_S, nm, T_TEXT, surface);
     }
     FM6_CHART_HOOK(FMH_END, alg, 0);
 }
@@ -952,7 +996,7 @@ static void graph_fm(const track_t *t, uint16_t c)
         char b[2] = {(char)('1' + k), 0};
         uint32_t on = t->p[P_FM1_LEVEL + k * 5u] != 0, fill_c = (car >> k & 1u) && on;
         uint16_t f = k == hop ? T_ACCENT : c, fill = fill_c ? f : T_RAISE;
-        cv_rrect(x[k] - 10, y[k], 21, FM_BH, 3, fill, T_SURF);
+        cv_rrect(x[k] - 10, y[k], 21, FM_BH, design_context()==DC_LAB?0:3, fill, T_SURF);
         GFX_HOOK_ALIGN(x[k] - 10, y[k], x[k] + 11, y[k] + FM_BH, AL_HV, "DIGITAL operator number in its box");
         cv_text_in(x[k] - 10, y[k] + CAP_IN(S, FM_BH), 21, &AF_S, b, fill_c ? T_INK : on ? f : T_DIM, fill);
     }
@@ -1133,7 +1177,7 @@ enum { SK_NONE, SK_SCOPE, SK_ADSR, SK_LFO, SK_TRK, SK_TITLE };
 static uint32_t strip_kind(void)
 {
     uint32_t g;
-    if (large_kind() != LK_TALL)
+    if (design_context() || large_kind() != LK_TALL)
         return SK_NONE;
     if (ui.home)
         return SK_SCOPE;
@@ -2213,8 +2257,8 @@ static void draw_graph(void)
         return;
     ui.graph_sig = sig;
     cv_begin(240, graph_h(), T_BG);
-    cv_rrect(3, 0, 234, graph_h(), 5, T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
-    cv_bg = T_SURF;                                  /* (text drawn with cv_text lands on it) */
+    cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
+    cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
     if (strip_kind() != SK_NONE) {                   /* MENU > LARGE: the strip */
         uint32_t k = strip_kind();
@@ -2234,7 +2278,12 @@ static void draw_graph(void)
             graph_dance(t, c);
             break;
         case GR_ADSR:
-            graph_adsr(t, c);
+            if(design_context()==DC_ENV) {
+                cv_oy=0;cv_text(10,0,&AF_H,"ENV",T_TEXT);
+                cv_text_r(228,5,&AF_C,"LAB / ADSR",T_MID,T_BG);
+                cv_oy=24;graph_ht=(int32_t)graph_h()-26;
+                graph_adsr(t,c);graph_ht=100;
+            } else graph_adsr(t, c);
             break;
         case GR_LFO:
             graph_lfo(t, c);

@@ -455,6 +455,13 @@ static void draw_gaps(uint32_t y, uint32_t h)
 /* full redraw: the strips (header, cards, panel, footer) cover the rest; only the BG between them is filled */
 static void draw_frame(void)
 {
+    if (design_context()) {
+        gap_rows(H_HEAD,graph_y());
+        gap_rows(graph_y()+graph_h(),readout_y());
+        gap_rows(readout_y()+card_h(),Y_FOOT);
+        draw_gaps(readout_y(),card_h());
+        return;
+    }
     uint32_t ch = card_h(), gy = graph_y(), gh = graph_h();   /* (MENU > LARGE: tall cards, a strip) */
     gap_rows(H_HEAD, Y_LABEL);
     gap_rows(Y_LABEL + ch, gy);
@@ -638,6 +645,38 @@ static void draw_column_tall(uint32_t c, const char *label, const char *val, con
     cv_blit((uint32_t)CARD_X(c), Y_LABEL);
 }
 
+/* A four-knob instrument register below the visual, not four floating cards.
+ * Names, units and K1..4 remain explicit; focus uses a bracket as well as hue.
+ * LARGE retains the 28px numeric face and whole-range face selection. */
+static void design_column(uint32_t c,const char *label,const char *val,const char *unit,
+                          uint16_t vc,int32_t ratio,int hot,int mot,const card_span_t *sp)
+{
+    int tall=design_tall();
+    const aafont_t *lf=(ui_prefs&PREF_LARGE) && ink_w(&AF_V,label)<=51?&AF_V:&AF_C;
+    const aafont_t *vf=&AF_V;
+    char k[3]={'K',(char)('1'+c),0};
+    uint32_t h=card_h();
+    if(tall) {
+        uint32_t f=sp->fn?span_face(c,sp,label):tall_face(val);
+        vf=f==0?&AF_L:f==1?&AF_V:&AF_C;
+        LARGE_HOOK(val,f==0?0:f==2?3:!large_face_has(val)?1:2);
+    } else if(ink_w(vf,val)>51) vf=&AF_C;
+    cv_begin(COL_W,h,T_BG);
+    /* LINE stays open; FLAT has a quiet register surface. */
+    uint16_t bg=ux.style?T_BG:T_SURF;
+    cv_rect(0,0,COL_W,h,bg);cv_bg=bg;
+    if(hot) {cv_rect(0,0,2,h,T_ACCENT);cv_rect(0,0,COL_W,2,T_ACCENT);}
+    else cv_rect(0,0,COL_W,1,mot?T_THEME:T_LINE);
+    cv_text_fit(3,1,lf,label,hot?T_ACCENT:mot?T_THEME:T_TEXT,bg,51);
+    int32_t vy=tall?(vf==&AF_L?22-AF_L_CAP_Y:vf==&AF_V?25-AF_V_CAP_Y:26-AF_C_CAP_Y):14;
+    cv_text_in(0,vy,COL_W,vf,val,vc,bg);
+    int32_t ky=tall?49:29;
+    cv_text_on(3,ky,&AF_C,k,label[0]||val[0]?T_MID:T_DIM,bg);
+    if(unit[0])cv_text_r(54,ky,&AF_C,unit,T_MID,bg);
+    if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,vc);
+    cv_blit((uint32_t)CARD_X(c),readout_y());
+}
+
 /* one card = one knob: [icon] LABEL / value unit / gauge on a SURF card, redrawn only when it changed.
  * The value is M, or S when M is too wide (engine names, long ENUMs); the unit S after it. The gauge is
  * a 3 px rounded bar: BG track, THEME fill. The knob just turned (hot): icon, label, value and gauge in
@@ -693,6 +732,14 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
     if (kind == LK_TALL)
         ui.roll[c].from[0] = 0;                         /* (a tall card: no rolling digits) */
     strip = !snap && str_eq(key, ui.col[c]);
+    if (design_context()) {
+        ui.roll[c].from[0]=0;
+        if(strip) return;
+        ui.roll[c].sig=sig;
+        str_cpy(ui.col[c],key,sizeof ui.col[c]);
+        design_column(c,label,val,unit,vc,ratio,hot,mot,&sp);
+        return;
+    }
     if (strip && !ui.roll[c].from[0])
         return;
     if (strip) {                                        /* rolling: the value strip only */
