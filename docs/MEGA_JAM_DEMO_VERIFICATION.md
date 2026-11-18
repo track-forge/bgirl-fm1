@@ -196,3 +196,16 @@ A1(MIDI33), then lower G1(MIDI31), four beats each, repeated. All other demo
 parameters/tracks remain unchanged, including T2−24semitones and T4 FX gate3
 plus20% delay. Per Doug, a focused local build/arrangement/parity check precedes
 preview rollout; full hosted CI runs asynchronously, not as a deployment gate.
+
+
+### Listening revision — separate BG KICK, wet66%, A2/G1 (2026-11-18)
+
+T6 is no longer empty: existing DRUM / BG KICK preset4 plays T1's former kick
+grid with the same onsets, shared velocity104 and accent bits, at level92.
+The final step63 kick omission remains. T1 has no kick notes/hits; its snare,
+clap, hats and rim remain unchanged. BG KICK's preset timbre is unmodified.
+T4 vocoder wet is84/127 (display66%); WHOLE one-shots, GATE3 and delay20%
+remain. T3 carrier is now A2(MIDI45) then lower G1(MIDI31), four beats each
+repeated. The G stays in the octave below A, not G2. T2/pad and labs unchanged.
+Focused local arrangement/audio/persistence/parity and live preview checks
+precede the quick rollout; hosted full CI is asynchronous per Doug.

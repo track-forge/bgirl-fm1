@@ -12,10 +12,20 @@ int main(void) {
     assert(song.g[G_BPM]==128 && !song.playing && NVOICE==8);
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
     assert(trk[1].step[0].note[0]==21 && trk[1].step[25].note[0]==29 && trk[1].step[28].vel==112);
-    assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==73 && trk[0].step[63].hit==64);
+    assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==72 && trk[0].step[63].hit==64);
     assert(trk[4].step[0].note[0]==50 && trk[4].step[28].note[0]==60 && trk[4].step[33].note[0]==64);
-    assert(!trk[5].step[0].n && !trk[5].step[63].hit);
-    assert(trk[3].p[P_VBANDS]==2 && trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==117);
+    assert(trk[5].eng_req==ENGI_DRUM && trk[5].preset==4 && trk[5].p[P_E0]==DK_SIG_KICK);
+    assert(!strcmp(DRUM_PRESETS[trk[5].preset].name,"BG KICK"));
+    static const uint8_t kick_steps[]={0,2,6,8,10,14,16,18,22,26,31};
+    static const uint8_t kick_acc[]={1,0,1,0,1,0,1,0,1,1,0};
+    for(uint32_t k=0;k<64;k++) {
+        uint32_t expected=0,accent=0;
+        for(uint32_t j=0;j<NELEM(kick_steps);j++)if(k%32==kick_steps[j] && k!=63){expected=1;accent=kick_acc[j];}
+        assert(!(trk[0].step[k].hit&1) && !(trk[0].step[k].acc&1));
+        assert(trk[5].step[k].hit==expected && trk[5].step[k].acc==accent);
+        assert(!trk[5].step[k].n && trk[5].step[k].vel==104);
+    }
+    assert(trk[3].p[P_VBANDS]==2 && trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==84);
     assert(trk[3].p[P_VREL]==bg_release_value(120) && trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON]);
     assert(!strcmp(BG_VOCAL_VIEWS[1],"G6") && slc_vocal_match(&trk[3]));
     assert(motion.count==0 && !motion.on);
@@ -28,10 +38,12 @@ int main(void) {
     char delay_text[8];const char *delay_unit;
     param_format(&TP[P_DLY],trk[3].p[P_DLY],delay_text,&delay_unit);
     assert(!strcmp(delay_text,"20") && !strcmp(delay_unit,"%"));
+    param_format(&TP[P_VWET],trk[3].p[P_VWET],delay_text,&delay_unit);
+    assert(!strcmp(delay_text,"66") && !strcmp(delay_unit,"%"));
     for(uint32_t k=0;k<NSTEP;k++) {
         assert(trk[2].step[k].n==(k%16==0));
         if(k%16==0) {
-            assert(trk[2].step[k].note[0]==(k%32==0?33:31));
+            assert(trk[2].step[k].note[0]==(k%32==0?45:31));
             assert(trk[2].step[k].time==ST_NOTE);
         } else assert(trk[2].step[k].time==ST_TIE);
         assert(trk[3].step[k].n==(k==0 || k==32));

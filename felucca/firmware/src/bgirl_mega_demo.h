@@ -25,6 +25,7 @@ static void bgirl_mega_demo(void)
     set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
     set_engine_of(&trk[3],13);apply_preset_to(&trk[3],0);
     set_engine_of(&trk[4],8);apply_preset_to(&trk[4],0); /* CLOUD PAD, one voice */
+    set_engine_of(&trk[5],ENGI_DRUM);apply_preset_to(&trk[5],4); /* BG KICK */
     for(i=0;i<NTRK;i++) {
         track_t *t=&trk[i];
         memset(t->step,0,sizeof t->step);
@@ -33,13 +34,13 @@ static void bgirl_mega_demo(void)
         t->p[P_AMODE]=0;
     }
     song.g[G_BPM]=128;
-    trk[0].p[P_LEVEL]=92;
-    /* Shared step velocity104; per-lane accents127 approximate the loud kick
-     * and backbeat. Keep snare+clap as explicit two-lane layering. */
-    for(k=0;k<64;k++)trk[0].step[k].vel=104;
+    trk[0].p[P_LEVEL]=92;trk[5].p[P_LEVEL]=92;
+    /* Preserve the kick rhythm/accents on its own BG KICK track.
+     * T1 retains snare+clap layering, hats and rim, with no kick lane. */
+    for(k=0;k<64;k++)trk[0].step[k].vel=trk[5].step[k].vel=104;
     for(k=0;k<64;k+=32) {
         for(i=0;i<NELEM(kick);i++) {
-            step_t *s=&trk[0].step[k+kick[i]];s->hit|=1;
+            step_t *s=&trk[5].step[k+kick[i]];s->hit|=1;
             if(kv[i]==120)s->acc|=1;
         }
         for(i=4;i<32;i+=8) {trk[0].step[k+i].hit|=6;trk[0].step[k+i].acc|=6;}
@@ -52,6 +53,7 @@ static void bgirl_mega_demo(void)
     }
     /* A softer final rim, then a breath instead of the final kick/hat stack. */
     trk[0].step[62].vel=88;
+    trk[5].step[63].hit=trk[5].step[63].acc=0; /* retain the final kick breath */
     trk[0].step[63].hit=64;trk[0].step[63].acc=0;trk[0].step[63].vel=78;
     trk[1].p[P_LEVEL]=79;trk[1].p[P_VOICE]=V_MONO;
     trk[1].p[P_REL]=20;trk[1].p[P_SGATE]=100;
@@ -59,9 +61,9 @@ static void bgirl_mega_demo(void)
      * deliberately quantized to this common gate rather than new timing DSP. */
     trk[2].p[P_LEVEL]=90;trk[2].p[P_VOICE]=V_MONO;
     for(k=0;k<64;k++)trk[2].step[k].time=ST_TIE;
-    /* A1/G1: raised one octave from the first saw audition; four beats each. */
+    /* A2 then G1 (G in the octave below A), four beats each. */
     for(k=0;k<64;k+=32) {
-        bgirl_mega_note(2,k,33,100);bgirl_mega_note(2,k+16,31,100);
+        bgirl_mega_note(2,k,45,100);bgirl_mega_note(2,k+16,31,100);
     }
     /* Find G6 by label. Generated WHOLE parent order mirrors the group order. */
     for(i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
@@ -73,7 +75,7 @@ static void bgirl_mega_demo(void)
     trk[3].p[P_VOICE]=V_MONO;trk[3].p[P_LEVEL]=96;
     trk[3].p[P_VCARR]=3;trk[3].p[P_VMON]=0;trk[3].p[P_VBANDS]=2;
     trk[3].p[P_VRANGE]=1;trk[3].p[P_VREL]=bg_release_value(120);
-    trk[3].p[P_VWET]=117;trk[3].p[P_VCONS]=0;
+    trk[3].p[P_VWET]=84; /* displayed66% */trk[3].p[P_VCONS]=0;
     /* FX gate shapes the whole one-shots; source VIEW stays WHOLE. */
     trk[3].p[P_SLCR]=SL_GATE;trk[3].p[P_SLPAT]=3;
     trk[3].p[P_DLY]=25; /* 20% on the normal FX page */

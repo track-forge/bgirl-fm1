@@ -13,7 +13,7 @@ static void defaults(int demo) {
         assert(trk[3].eng_req==13);
         assert(trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON] && trk[3].p[P_VBANDS]==2);
         assert(trk[2].step[1].time==ST_TIE);
-        assert(trk[2].step[0].note[0]==33 && trk[2].step[16].note[0]==31);
+        assert(trk[2].step[0].note[0]==45 && trk[2].step[16].note[0]==31);
         assert(trk[3].p[P_E0]==SLC_SRC_VOCALS && trk[3].p[P_E1]==0);
         assert(slc_vocal_match(&trk[3]));
         assert(trk[2].p[P_SLEN]==64 && trk[3].p[P_SLEN]==64);
@@ -35,7 +35,7 @@ int main(void) {
 #endif
     web_nor_erase(); web_boot(); advance(1200); defaults(1);
 #if BGIRL_VOCODER
-    assert(trk[0].step[4].hit==22 && trk[0].step[0].hit==9);
+    assert(trk[0].step[4].hit==22 && trk[0].step[0].hit==8);
 #else
     assert(trk[0].step[4].hit==6 && trk[0].step[0].hit==1);
 #endif
