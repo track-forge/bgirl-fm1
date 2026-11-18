@@ -212,6 +212,14 @@ footer nav a { display: inline-flex; align-items: center; min-height: 44px; marg
 </p>
 
 
+<section class="intro-card project-tools" aria-label="Portable songs">
+  <h2>Portable songs</h2>
+  <button id="song-export" type="button" disabled>Export song</button>
+  <button id="song-import" type="button" disabled>Import song</button>
+  <input id="song-file" type="file" accept=".json,application/json" hidden>
+  <p id="song-status" role="status">Readable song JSON · stop playback and release controls first. Saved slots stay unchanged.</p>
+</section>
+
 <section class="intro-card" aria-label="SH-ISH collection">
   <h2>SH-ISH</h2>
   <p>Two real-capture translations using ANALOG. Single-track approximations, not a Roland emulator: mixed waves, stored chords and source timing laws are not reproduced.</p>
@@ -244,6 +252,7 @@ footer nav a { display: inline-flex; align-items: center; min-height: 44px; marg
   <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
   <p>Fresh starts use this electro demo. Reloading restores your saved session; to hear the updated default here, choose Load electro demo and confirm replacement.</p>
 </section>
+
 
 <section class="lab" aria-label="Vocal one-shot audition">
 <h2 data-id="01">Vocal bank · whole phrases &amp; chops</h2>
@@ -309,6 +318,7 @@ FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not
 
 <script type="module">
 import { midiKnob, KNOB_MODES } from "./worklet.js";
+import {parse as parseSong, toWire, summary, MAX_BYTES} from './song-snapshot.mjs';
 const NS = "http://www.w3.org/2000/svg";
 // panel.c's labels (bit = label) and encoder roles
 const B = { FX: 0, SCL: 1, ENV: 2, LFO: 3, EDIT: 4, GLO: 5, HOME: 6, SAVE: 7, ARP: 8, SEQ: 9, PLAY: 10, REC: 11, "OCT-": 12, "OCT+": 13 };
@@ -671,11 +681,13 @@ function drawLights([litB, litK, dimB, dimK, dimLo = 0, brB = 0, brK = 0, midK =
 function loadFlash() {
   try {
     const raw = JSON.parse(localStorage.getItem(STORE) || "{}"), out = {};
-    for (const [off, b64] of Object.entries(raw)) out[off] = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    for (const [off, b64] of Object.entries(raw)) if(off!=="_portableSong") out[off] = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
     return out;
   } catch { return {}; }
 }
+let songCheckpoint=null, songPortable=false, latestSectors=null, songRestoreAllowed=true;
 function saveFlash(sectors) {
+  latestSectors=sectors;
   try {
     const raw = {};
     for (const [off, u8] of Object.entries(sectors)) {
@@ -683,10 +695,61 @@ function saveFlash(sectors) {
       for (let i = 0; i < u8.length; i += 4096) s += String.fromCharCode.apply(null, u8.subarray(i, i + 4096));
       raw[off] = btoa(s);
     }
+    // One atomic localStorage record pairs current song + all source patterns
+    // with its own flash, never a loose sidecar attached to unrelated music.
+    if(songCheckpoint) raw._portableSong=songCheckpoint;
     localStorage.setItem(STORE, JSON.stringify(raw));
     return true;
   } catch { return false; }                                       // private mode, full: this session only
 }
+
+// Portable snapshots: bounded, correlated requests with no late timeout mutation.
+const songRequests=new Map();let songRequestId=0,songBusy=false;
+const songSay=t=>document.getElementById('song-status').textContent=t;
+function songRequest(type,doc) {
+  if(!node)return Promise.reject(new Error('Switch on first.'));
+  return new Promise((resolve,reject)=>{
+    const id=++songRequestId,deadline=Date.now()+8000;
+    const timer=setTimeout(()=>{songRequests.delete(id);reject(new Error('Snapshot request timed out. Retry after releasing controls.'));},8500);
+    songRequests.set(id,{resolve,reject,timer});send({type,id,doc,deadline});
+  });
+}
+async function checkpointSong() {
+  const r=await songRequest('song-checkpoint');
+  songPortable=r.active;
+  songCheckpoint=r.active?r.doc:null;
+  if(latestSectors && !saveFlash(latestSectors))throw new Error('Browser storage unavailable: session only. Export and keep the song file before closing.');
+}
+setInterval(async()=>{
+  if(!node||!songPortable||songBusy)return;
+  try {await checkpointSong();}
+  catch(e){songSay(e.message+' Changes checkpoint after stopping; Export song keeps a portable copy.');}
+},2000);
+document.getElementById('song-export').addEventListener('click',async()=>{
+  if(songBusy)return;songBusy=true;
+  try {
+    const r=await songRequest('song-capture');
+    const blob=new Blob([JSON.stringify(r.doc,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=(r.doc.title.replace(/[^a-z0-9_-]/gi,'-')||'song')+'.bgirl.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    songSay(`Exported live edits. Hardware save: ${r.bytes}/3840 bytes${r.bytes>3840?' · FULL (JSON is complete)':''}.`);
+  } catch(e){songSay(e.message);}finally{songBusy=false;}
+});
+document.getElementById('song-import').addEventListener('click',()=>{document.getElementById('song-file').value='';document.getElementById('song-file').click();});
+document.getElementById('song-file').addEventListener('change',async e=>{
+ if(songBusy||!e.target.files[0])return;songBusy=true;
+ try {
+   const file=e.target.files[0];if(file.size>MAX_BYTES)throw new Error('Song file exceeds 2 MiB.');
+   const doc=parseSong(await file.text());const r=await songRequest('song-validate',doc);
+   if(!confirm(`${summary(doc)}\nHardware save: ${r.bytes}/3840 bytes${r.bytes>3840?' · FULL':''}.\nReplace current unsaved music? Saved slots, libraries and settings stay unchanged.`)){songSay('Import cancelled; current music is unchanged.');return;}
+   await songRequest('song-import',doc);
+   btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
+   songPortable=true;
+   // Imported sessions, including FULL patterns, use paired browser checkpoints.
+   songCheckpoint=doc;
+   if(!saveFlash(latestSectors||{}))throw new Error('Imported, stopped · browser storage unavailable: SESSION ONLY. Keep the downloaded file.');
+   songSay('Imported, stopped. Saved slots unchanged. Imported sessions checkpoint every 2 seconds while stopped; keep an exported file.');
+ }catch(e){songSay(e.message);}finally{songBusy=false;}
+});
 
 // ------------------------------------------------------------------ Web MIDI in (channel messages)
 // With the page's checkbox on, CC 20..27 turn the panel's knobs (worklet.js midiKnob), any channel, CC 20..26 sent
@@ -752,7 +815,11 @@ async function switchOn() {
     await new Promise((res, rej) => {
       node.port.onmessage = (e) => {
         const m = e.data;
-        if (m.type === "ready") res();
+        if (m.type === "song-result") {
+          const pending=songRequests.get(m.id);
+          if(pending){clearTimeout(pending.timer);songRequests.delete(m.id);m.error?pending.reject(new Error(m.error)):pending.resolve(m);}
+        }
+        else if (m.type === "ready") { songRestoreAllowed=m.restoreSong!==false;res(); }
         else if (m.type === "vocal-info") {
           const groups=document.getElementById("vocal-group"), selected=groups.value;
           groups.replaceChildren(...m.groupNumbers.map((number,i)=>new Option(`G${number} / whole W${String(i+1).padStart(2,"0")}`,String(i+1))));
@@ -762,6 +829,10 @@ async function switchOn() {
         else if (m.type === "bgirl-project-result") document.getElementById("project-status").textContent = m.ok ? "Loaded, transport stopped. Save via Felucca SAVE; saved slots are unchanged." : "Not loaded; release all controls and retry.";
         else if (m.type === "error") rej(new Error(m.message));
         else if (m.type === "frame") {
+          if(songPortable && !m.portable) {
+            songPortable=false;songCheckpoint=null;
+            if(latestSectors)saveFlash(latestSectors);
+          }
           if (m.fb) drawScreen(m.fb);
           if (m.leds) drawLights(lastLeds = m.leds, m.anim);
           if (m.sectors && !saveFlash(m.sectors) && !warned) {
@@ -770,15 +841,26 @@ async function switchOn() {
           }
         }
       };
-      node.port.postMessage({ type: "load", wasm, sectors: loadFlash(), master: masterValue }, [wasm]);
+      latestSectors=loadFlash();
+      node.port.postMessage({ type: "load", wasm, sectors: latestSectors, master: masterValue }, [wasm]);
     });
     await ac.resume();
+    // Restore the complete paired browser checkpoint, not destination slot rows.
+    try {
+      const checkpoint=JSON.parse(localStorage.getItem(STORE)||"{}")._portableSong;
+      if(checkpoint && songRestoreAllowed) {
+        toWire(checkpoint);
+        await songRequest('song-import',checkpoint);
+        songCheckpoint=checkpoint;songPortable=true;
+        songSay('Restored portable song, stopped. Saved slots are unchanged.');
+      }
+    } catch(err) { songSay('Portable restoration failed: '+err.message+' Keep/import your downloaded song file.'); }
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
     for (const hit of device.querySelectorAll(".hit")) { hit.tabIndex = 0; hit.setAttribute("aria-disabled", "false"); }
     buttons.find(b => b.bit === B.HOME)?.hit.focus({ preventScroll: true });
-    for (const id of ["sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
+    for (const id of ["song-export","song-import","sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();

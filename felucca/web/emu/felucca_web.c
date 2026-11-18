@@ -867,3 +867,5 @@ EXPORT uint32_t web_bgirl_six_info(uint32_t field,uint32_t t)
     if(field==13){uint32_t n=0;for(uint32_t i=0;i<NVOICE;i++)n+=trk[t].v[i].active && trk[t].v[i].stage!=4;return n;}
     return 0xFFFFFFFFu;
 }
+
+#include "song_snapshot.c"
