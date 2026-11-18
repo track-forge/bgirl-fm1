@@ -9,29 +9,29 @@
   "fps": "24/1",
   "frame_count": 124,
   "indices": [
-    0,
-    10,
-    20,
-    30,
-    40,
+    24,
+    31,
+    37,
+    44,
     50,
-    60,
+    57,
+    63,
     70,
-    80,
-    90,
-    100,
-    110
+    76,
+    83,
+    89,
+    96
   ],
   "union_bounds": [
-    43,
-    22,
-    551,
+    46,
+    28,
+    544,
     312
   ],
   "stage": [
-    31,
-    -208,
-    532
+    34,
+    -198,
+    522
   ],
   "threshold": 96,
   "cleanup": "3x3 median before resampling",
@@ -45,7 +45,7 @@
   "sizes": {
     "96": {
       "bytes": 13824,
-      "sha256": "a829ac22d9095cc4a17afdbfdc0b0746b6f0703b63573b68a25c1d8cfb0f143a",
+      "sha256": "d88b58f324257cb624189b84a5fabe3547adbe1f81dc81fd2a0981f9785e75ca",
       "stride": 12,
       "anchor": [
         48,
@@ -53,12 +53,132 @@
       ]
     }
   },
+  "framing": "union",
+  "bounds_scope": "selected",
+  "source_padding": 24,
+  "crop_lefts": [
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34
+  ],
+  "pose_bounds": [
+    [
+      65,
+      44,
+      486,
+      312
+    ],
+    [
+      72,
+      126,
+      530,
+      312
+    ],
+    [
+      91,
+      93,
+      543,
+      312
+    ],
+    [
+      106,
+      145,
+      544,
+      312
+    ],
+    [
+      66,
+      90,
+      428,
+      312
+    ],
+    [
+      56,
+      42,
+      487,
+      312
+    ],
+    [
+      65,
+      116,
+      528,
+      312
+    ],
+    [
+      72,
+      104,
+      536,
+      312
+    ],
+    [
+      108,
+      123,
+      542,
+      312
+    ],
+    [
+      65,
+      121,
+      450,
+      312
+    ],
+    [
+      46,
+      28,
+      426,
+      312
+    ],
+    [
+      57,
+      100,
+      527,
+      312
+    ]
+  ],
   "clip": "worm",
   "duration": "5.166667",
   "time_base": "1/12288",
   "phrase_beats": 4,
-  "seam": "hard cut last to first; no seamless-loop claim",
+  "seam": "ping-pong 0..11..1; endpoints not duplicated",
+  "playback": "ping-pong",
+  "playback_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
   "creator": "stevedore",
   "caption": "Silhouette dance series 3, 5 of 6 \u2014 a woman doing the worm, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Lying prone, her body rippling in a wave from chest to feet, legs kicking up high behind her. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
-  "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+  "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified",
+  "source_window_seconds": [
+    1,
+    4
+  ]
 }

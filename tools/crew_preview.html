@@ -1,13 +1,13 @@
 <!doctype html><meta charset="utf-8"><title>CREW @CLIP@ — offline review</title>
 <style>body{font:16px monospace;background:#202830;color:#eaf4f0;max-width:760px;margin:2em auto}canvas{image-rendering:pixelated;width:240px;height:240px}button,input,select{font:inherit;margin:.4em}</style>
-<h1>@CLIP@</h1><p>One selected dancer, actual 240px panel. Source-order12 poses; explicit hard cut11→0. Four beats per phrase. Approximate HOME chrome for layout review; see instrument screenshots for actual fonts/controls.</p>
+<h1>@CLIP@</h1><p>One selected dancer, actual 240px panel. Twelve source-order poses. @PLAYBACK_DESCRIPTION@ Four beats per phrase. Approximate HOME chrome for layout review; see instrument screenshots for actual fonts/controls.</p>
 <label>BPM<input id="bpm" type="number" value="120" min="40" max="240"></label>
 <label>State<select id="state"><option>MOVE</option><option>IDLE</option><option>MUTE</option><option>ACCENT</option></select></label>
-<button id="play">Play/pause</button><button id="next">Next pose</button><button id="seam">Seam11→0</button><br><canvas id="panel" width="240" height="240"></canvas>
+<button id="play">Play/pause</button><button id="next">Next pose</button><button id="seam">Review turnarounds</button><br><canvas id="panel" width="240" height="240"></canvas>
 <script>
-const masks=Uint8Array.from(atob('@MASK_BASE64@'),c=>c.charCodeAt(0)),ctx=document.querySelector('canvas').getContext('2d');let pose=0,timer;
+const masks=Uint8Array.from(atob('@MASK_BASE64@'),c=>c.charCodeAt(0)),ctx=document.querySelector('canvas').getContext('2d');const pingPong='@PLAYBACK@'==='ping-pong',walk=pingPong?[0,1,2,3,4,5,6,7,8,9,10,11,10,9,8,7,6,5,4,3,2,1]:[0,1,2,3,4,5,6,7,8,9,10,11];let pose=0,step=0,timer;
 function draw(){ctx.fillStyle='#101418';ctx.fillRect(0,0,240,240);ctx.font='11px monospace';ctx.fillStyle='#eaf4f0';ctx.fillText('CREW    T1         120 BPM',8,18);for(let k=0;k<4;k++){ctx.fillStyle='#202830';ctx.fillRect(3+k*59,28,57,44);ctx.fillStyle='#eaf4f0';ctx.fillText(['TONE','DECAY','COLOR','LEVEL'][k],6+k*59,45);ctx.fillText('64',6+k*59,62);}ctx.fillStyle='#202830';ctx.fillRect(3,76,234,122);ctx.fillStyle='#eaf4f0';ctx.fillText('T1 @CLIP@',10,88);ctx.fillText('POSE '+pose+' /11',10,224);ctx.fillStyle=state.value==='MUTE'?'#586877':state.value==='IDLE'?'#a0adb6':state.value==='ACCENT'?'#ffffff':'#77d6c2';for(let y=0;y<96;y++)for(let x=0;x<96;x++)if(masks[pose*1152+y*12+(x>>3)]&(128>>(x&7)))ctx.fillRect(72+x,98+y,1,1);}
-function next(){pose=(pose+1)%12;draw();}
-function start(){clearInterval(timer);timer=setInterval(()=>{if(state.value==='MOVE'||state.value==='ACCENT')next();},60000/+bpm.value*4/12);}
-document.querySelector('#next').onclick=next;state.onchange=draw;bpm.onchange=()=>{if(timer)start();};document.querySelector('#play').onclick=()=>{if(timer){clearInterval(timer);timer=null;}else start();};document.querySelector('#seam').onclick=()=>{pose=11;draw();setTimeout(()=>{pose=0;draw();},60000/+bpm.value*4/12);};draw();
+function next(){step=(step+1)%walk.length;pose=walk[step];draw();}
+function start(){clearInterval(timer);timer=setInterval(()=>{if(state.value==='MOVE'||state.value==='ACCENT')next();},60000/+bpm.value*4/walk.length);}
+document.querySelector('#next').onclick=next;state.onchange=draw;bpm.onchange=()=>{if(timer)start();};document.querySelector('#play').onclick=()=>{if(timer){clearInterval(timer);timer=null;}else start();};document.querySelector('#seam').onclick=()=>{clearInterval(timer);timer=null;step=10;pose=10;draw();setTimeout(()=>{next();setTimeout(next,60000/+bpm.value*4/walk.length);},60000/+bpm.value*4/walk.length);};draw();
 </script>

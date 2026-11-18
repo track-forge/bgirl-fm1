@@ -48,6 +48,15 @@ Read current source rather than treating historical four-track comments as truth
 - `docs/SIX_TRACK_IMPLEMENTATION_PLAN.md`, `SIX_TRACK_VERIFICATION.md`,
   `SIX_TRACK_CODEC_SPIKE.md`: six-track controls and frozen B6S1 constraints.
 
+## Animation feedback follow-up (2026-11-18)
+
+Doug requested larger T1 groundwork, worm footage limited to1–4s, and forward/back
+playback. The windmill now uses horizontal subject-following framing at constant
+scale/floor (superseding the initial full-union crop for that pack only). Worm
+samples frames24..96 inclusive. All CREW tracks use22-step ping-pong over four
+beats; original ARP DANCE remains unchanged. See assets/crew/README.md for exact
+recipes and provenance. No menu-navigation repair in this follow-up.
+
 ## HOME and control contract
 
 **2026-11-18 follow-up:** Doug requested making CREW the default for existing

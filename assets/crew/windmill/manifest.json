@@ -23,15 +23,15 @@
     110
   ],
   "union_bounds": [
-    80,
-    0,
-    526,
-    322
+    122,
+    14,
+    521,
+    319
   ],
   "stage": [
-    68,
-    -136,
-    470
+    139,
+    -37,
+    364
   ],
   "threshold": 96,
   "cleanup": "3x3 median before resampling",
@@ -45,7 +45,7 @@
   "sizes": {
     "96": {
       "bytes": 13824,
-      "sha256": "76f843831b1492b010c96fa700a6e5291143a34ae55cc19385182c07d4415504",
+      "sha256": "85a35e3d251a39cbe8fe4ac3e820e791c646d99860ef26a881d7d71bf64026ad",
       "stride": 12,
       "anchor": [
         48,
@@ -53,11 +53,127 @@
       ]
     }
   },
+  "framing": "follow-x",
+  "bounds_scope": "selected",
+  "source_padding": 16,
+  "crop_lefts": [
+    96,
+    161,
+    130,
+    64,
+    179,
+    165,
+    117,
+    73,
+    108,
+    75,
+    106,
+    133
+  ],
+  "pose_bounds": [
+    [
+      154,
+      81,
+      402,
+      299
+    ],
+    [
+      236,
+      47,
+      450,
+      282
+    ],
+    [
+      177,
+      81,
+      448,
+      287
+    ],
+    [
+      122,
+      124,
+      370,
+      317
+    ],
+    [
+      279,
+      135,
+      443,
+      288
+    ],
+    [
+      173,
+      142,
+      521,
+      276
+    ],
+    [
+      232,
+      65,
+      366,
+      275
+    ],
+    [
+      139,
+      78,
+      372,
+      284
+    ],
+    [
+      213,
+      14,
+      368,
+      319
+    ],
+    [
+      125,
+      39,
+      389,
+      308
+    ],
+    [
+      184,
+      64,
+      392,
+      289
+    ],
+    [
+      187,
+      119,
+      444,
+      278
+    ]
+  ],
   "clip": "windmill",
   "duration": "5.166667",
   "time_base": "1/12288",
   "phrase_beats": 4,
-  "seam": "hard cut last to first; no seamless-loop claim",
+  "seam": "ping-pong 0..11..1; endpoints not duplicated",
+  "playback": "ping-pong",
+  "playback_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
   "creator": "stevedore",
   "caption": "Silhouette dance series 3, 2 of 6 \u2014 a woman doing a windmill, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Spinning on her hands and shoulders, legs kicking high and scissoring around. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
   "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"

@@ -11,10 +11,17 @@ static const char *const crew_names[]={"WINDMILL","STEP / TURN","WAVE-ISH","WORM
 static const uint8_t crew_moves[NTRK]={0,1,2,3,4,0};
 static uint32_t crew_graph_sig, crew_graph_ms, crew_graph_track=~0u, crew_graph_word;
 static uint32_t crew_graph_paints;
+/* One four-beat cycle: 0..11,10..1, then 0. No duplicated endpoint hold.
+ * Quantize only in the visible selected-track UI; audio publication is unchanged. */
+static uint32_t crew_pose(uint32_t phase)
+{
+    uint32_t step=(phase&255u)*22u/256u;
+    return step<12u ? step : 22u-step;
+}
 static void draw_crew(void)
 {
     uint32_t word=crew_read(song.sel), move=crew_moves[song.sel];
-    uint32_t pose=(word&255u)*12u/256u;
+    uint32_t pose=crew_pose(word);
     uint32_t sig=pose | (word&~255u) | song.sel<<16 | palette_cur()<<20 | (ui_style&1u)<<28;
     uint32_t urgent=ui.force || crew_graph_track!=song.sel || ((crew_graph_word^word)&(CREW_MUTED|CREW_SEEN));
     if(!urgent && ((uint32_t)(fm1_ms-crew_graph_ms)<67u || sig==crew_graph_sig)) return;

@@ -1,3 +1,10 @@
+## CREW animation refinement (2026-11-18)
+
+Follow-up source extraction makes the shared T1/T6 windmill29.1% larger and limits
+T4 worm to1–4s. All CREW clips now play forward/backward over the four-beat phrase,
+without duplicate endpoint holds. Original ARP DANCE/audio/music/settings unchanged.
+See[refinement recipe and verification](CREW_MOTION_REFINEMENT.md).
+
 ## CREW default follow-up (2026-11-18)
 
 Doug requested CREW as the default for existing settings too. Older unmarked

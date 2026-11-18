@@ -79,6 +79,9 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
 - Core0 collects accepted activity; publish once after worker join/recovery. UI
   reads one whole word, never mutable voices. External clock advances are GRID
   units, not samples. Existing ARP telemetry and musical RNG are independent.
+- CREW uses22-step ping-pong (0..11,10..1) per four beats; ARP DANCE unchanged.
+  Windmill follows horizontal subject center at fixed scale/floor; worm samples
+  only1–4s. Per-clip recipes are in assets/crew/sources.json.
 - Four new clips and public-use permission: assets/crew/README.md. Offline repeat:
   tools/convert_crew.py ORIGINALS DEST. Do not overwrite original FLOORWORK.
 - Root tests include tests/run_crew_tests.sh; real browser tests/crew-browser.cjs.

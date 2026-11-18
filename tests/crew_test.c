@@ -15,9 +15,10 @@ static void paint(void) { fm1_ms+=70;draw_graph();ui.force=0; }
 static void pixels(void) {
     ui.home=1;ui_home_view=HV_CREW;
     for(uint32_t pal=0;pal<NPALETTES;pal++)for(uint32_t style=0;style<2;style++)
-    for(uint32_t track=0;track<NTRK;track++)for(uint32_t pose=0;pose<12;pose++) {
+    for(uint32_t track=0;track<NTRK;track++)for(uint32_t step=0;step<22;step++) {
+        uint32_t pose=step<12?step:22-step;
         palette_set(pal);ui_style=style;style_apply();song.sel=track;
-        uint32_t phase=(pose*256u+11u)/12u;
+        uint32_t phase=(step*256u+21u)/22u;
         __atomic_store_n(&crew_state[track],phase|CREW_ACTIVE|CREW_SEEN,__ATOMIC_RELAXED);
         ui.force=1;paint();
         for(uint32_t y=0;y<96;y++)for(uint32_t x=0;x<96;x++) {
@@ -34,7 +35,7 @@ static void pixels(void) {
     ui.home=1;ui.force=1;paint();before=crew_graph_paints;
     for(uint32_t i=0;i<1000;i++) {fm1_ms++;crew_phase+=1234567;crew_publish(32);draw_graph();}
     assert(crew_graph_paints-before<=15);
-    puts("CREW pixels: 1584 exact single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS");
+    puts("CREW pixels: 2904 exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS");
 }
 static uint32_t done;
 static void *producer(void *unused) {
@@ -64,6 +65,10 @@ int main(int argc,char **argv) {
         return 0;
     }
     assert(ui_home_view==HV_CREW && HV_SCOPE==0 && HV_TRACKS==1 && HV_LEVELS==2 && HV_CREW==3);
+    static const uint8_t walk[22]={0,1,2,3,4,5,6,7,8,9,10,11,10,9,8,7,6,5,4,3,2,1};
+    for(uint32_t phase=0;phase<256;phase++)assert(crew_pose(phase)==walk[phase*22u/256u]);
+    assert(crew_pose(0)==0 && crew_pose(128)==11 && crew_pose(255)==1 && crew_pose(256)==0);
+    puts("CREW ping-pong: all256 phase bins, both endpoints, reverse traversal and wrap PASS");
     persist_t pref={0};settings_export(&pref);
     for(uint32_t v=0;v<5;v++) {pref.favorites.factory[15][26]=v==4?255:v;assert(settings_import(&pref,sizeof pref));settings_init();assert(ui_home_view==(v==4?255:v));if(v==4)assert(menu_get(MI_HOME)==HV_SCOPE);}
     /* Real pre-upgrade records have no marker. Upgrade each old HOME choice

@@ -28,7 +28,9 @@ pending accents, and inhibits rejoin until a genuine accepted attack; unmute alo
 does not resume held voices. Level0/carrier routing are not calibrated sound-level
 measurements. Accent lasts90ms, strength has a minimum and is max-coalesced.
 
-The UI quantizes only the selected track phase to12 poses. At most15 graph paints/s
+The UI maps only the selected track phase to a22-step ping-pong walk through
+12 masks:0..11,10..1, then0 again. One full forward/back cycle spans four beats;
+endpoints are not held twice. Activity still freezes/settles the same phase. At most15 graph paints/s
 while active (latest snapshot, not a queue); selection/mute/reset changes are
 immediate. Hidden/covered CREW has no animation timer, phase evaluation or painting;
 there are no six background dancer loops. Existing ARP telemetry is independent.

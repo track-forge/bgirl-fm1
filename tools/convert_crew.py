@@ -14,8 +14,9 @@ def main():
     sources=json.loads((Path(__file__).resolve().parents[1]/'assets/crew/sources.json').read_text())
     for item in sources:
         name=item['clip']
-        m=convert(a.originals/(name+'.mp4'),a.dest/name,item['indices'],item['source_sha256'],item['source_url'],item['rights'],clip=name,sizes=(96,))
+        m=convert(a.originals/(name+'.mp4'),a.dest/name,item['indices'],item['source_sha256'],item['source_url'],item['rights'],clip=name,sizes=(96,),ping_pong=True,**item.get('framing',{}))
         m.update({k:item[k] for k in ('creator','caption','provenance')})
+        if 'source_window_seconds' in item: m['source_window_seconds']=item['source_window_seconds']
         (a.dest/name/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
         print(name,m['source_sha256'],m['sizes']['96']['sha256'])
 if __name__=='__main__':main()
