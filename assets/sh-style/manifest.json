@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "collection": "SH-ISH",
+  "fidelity": "Approximate ANALOG recipes, not a Roland emulator",
+  "source_redistribution": "Private source captures not redistributed; no source license grant asserted",
+  "sounds": [
+    {
+      "id": "proving-1-1",
+      "name": "Crunchy Bass",
+      "identity": "Operator-confirmed proving patch 1-1; supersedes historical 2-1 arm label",
+      "recipe": "proving-1-1.recipe.json",
+      "report": "proving-1-1.report.json",
+      "snapshot_sha256": "f30d053bc4c5381494365c5cdc16e0e2e37f76539b5f85805eb86c86432503e8",
+      "raw_sha256": "534c9e37e89c217df9c4ece6e7738cc08874e57d5730544e734386d31775f29b"
+    },
+    {
+      "id": "wire1",
+      "name": "Velvet Pulse",
+      "identity": "Observed wire PC1; human bank/slot unknown",
+      "recipe": "wire1.recipe.json",
+      "report": "wire1.report.json",
+      "snapshot_sha256": "9c0dee5a41dd5a5acd4fb775ba1bb71257b1cb4c8fe1d77f117616777f275a6c",
+      "raw_sha256": "9d605255a68f924343c2efbf330b199054923aa5f4f773e7b2c1b2fdba2f447f"
+    }
+  ]
+}

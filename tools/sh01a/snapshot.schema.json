@@ -1,0 +1,313 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "device_model": {
+      "const": "SH-01A"
+    },
+    "tracker_version": {
+      "type": "string"
+    },
+    "definition_version": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "capture_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "patch_identity": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provenance": {
+          "const": "manual"
+        }
+      },
+      "required": [
+        "label",
+        "provenance"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "evidence": {
+          "enum": [
+            "synthetic",
+            "hardware"
+          ]
+        }
+      },
+      "required": [
+        "port",
+        "channel",
+        "evidence"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "confidence": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "uninitialized",
+            "capturing",
+            "partial",
+            "stale",
+            "ready"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "profile": {
+          "type": "string"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disconnect": {
+          "type": "boolean"
+        },
+        "overflow": {
+          "const": "not_detectable"
+        },
+        "ready": {
+          "const": false
+        }
+      },
+      "required": [
+        "state",
+        "reasons",
+        "profile",
+        "missing",
+        "observed",
+        "expected",
+        "disconnect",
+        "overflow",
+        "ready"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "cc": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "raw": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "decoded": {
+            "type": "null"
+          },
+          "decoding": {
+            "type": "string"
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "time": {
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "patch",
+              "performance",
+              "system"
+            ]
+          }
+        },
+        "required": [
+          "cc",
+          "raw",
+          "decoded",
+          "decoding",
+          "seq",
+          "time",
+          "category"
+        ]
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "cc": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "raw": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "decoded": {
+            "type": "null"
+          },
+          "decoding": {
+            "type": "string"
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "time": {
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "patch",
+              "performance",
+              "system"
+            ]
+          }
+        },
+        "required": [
+          "cc",
+          "raw",
+          "decoded",
+          "decoding",
+          "seq",
+          "time",
+          "category"
+        ]
+      }
+    },
+    "baseline_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "modified_since_load": {
+      "type": "boolean"
+    },
+    "changes": {
+      "type": "array"
+    },
+    "unknown_messages": {
+      "type": "array"
+    },
+    "unknown_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "wire_program_observations": {
+      "type": "array"
+    },
+    "filtered_messages": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "message_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "raw_log": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "const": "events.jsonl"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "file",
+        "sha256",
+        "bytes"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "device_model",
+    "tracker_version",
+    "definition_version",
+    "session_id",
+    "capture_id",
+    "patch_identity",
+    "source",
+    "sequence",
+    "confidence",
+    "parameters",
+    "baseline",
+    "baseline_id",
+    "modified_since_load",
+    "changes",
+    "unknown_messages",
+    "unknown_count",
+    "wire_program_observations",
+    "filtered_messages",
+    "message_counts",
+    "limitations",
+    "updated_at",
+    "raw_log"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SH-01A portable capture v1"
+}

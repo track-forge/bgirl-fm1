@@ -21,7 +21,7 @@ static void bgirl_mega_demo(void)
     for(i=0;i<NTRK;i++)motion_reset(&trk[i]);
     undo_depth++;
     set_engine_of(&trk[0],ENGI_DRUM);apply_preset_to(&trk[0],2);
-    set_engine_of(&trk[1],0);apply_preset_to(&trk[1],2);
+    set_engine_of(&trk[1],0);apply_preset_to(&trk[1],13); /* SH-ISH Crunchy Bass (1-1) */
     set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
     set_engine_of(&trk[3],13);apply_preset_to(&trk[3],0);
     set_engine_of(&trk[4],ENGI_FM6);apply_preset_to(&trk[4],4); /* PAD, one voice */
@@ -48,15 +48,16 @@ static void bgirl_mega_demo(void)
         for(i=0;i<NELEM(open);i++)trk[0].step[k+open[i]].hit|=16;
         for(i=0;i<NELEM(rim);i++)trk[0].step[k+rim[i]].hit|=64;
         /* GM49 deliberately omitted: no unintended TOM/BELL grid remap. */
-        /* Doug's listening revision: SQR BASS only, two octaves down. */
-        for(i=0;i<NELEM(riff);i++)bgirl_mega_note(1,k+riff[i][0],riff[i][1]-24, riff[i][2]);
+        /* Crunchy Bass: one octave above the previous square-bass sequence. */
+        for(i=0;i<NELEM(riff);i++)bgirl_mega_note(1,k+riff[i][0],riff[i][1]-12, riff[i][2]);
     }
     /* A softer final rim, then a breath instead of the final kick/hat stack. */
     trk[0].step[62].vel=88;
     trk[5].step[63].hit=trk[5].step[63].acc=0; /* retain the final kick breath */
     trk[0].step[63].hit=64;trk[0].step[63].acc=0;trk[0].step[63].vel=78;
-    trk[1].p[P_LEVEL]=79;trk[1].p[P_VOICE]=V_MONO;
-    trk[1].p[P_REL]=20;trk[1].p[P_SGATE]=100;
+    trk[1].p[P_LEVEL]=100; /* mixer: -6.0 dB */trk[1].p[P_VOICE]=V_MONO;
+    trk[1].p[P_SGATE]=100; /* keep the factory patch envelope unchanged */
+    trk[1].p[P_DLY]=trk[1].p[P_REV]=17; /* FX page1: 13% each */
     /* SGATE is track-wide (not motion-lockable): short source gates are
      * deliberately quantized to this common gate rather than new timing DSP. */
     trk[2].p[P_LEVEL]=90;trk[2].p[P_VOICE]=V_MONO;

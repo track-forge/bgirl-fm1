@@ -1,0 +1,31 @@
+{
+  "engine": 0,
+  "name": "Velvet Pulse",
+  "preset": 14,
+  "values": {
+    "P_ATK": 16,
+    "P_CHOR": 0,
+    "P_DEC": 26,
+    "P_DIST": 0,
+    "P_DLY": 0,
+    "P_E0": 4,
+    "P_E1": 0,
+    "P_E2": 0,
+    "P_E3": 0,
+    "P_E4": 25,
+    "P_E5": 55,
+    "P_E6": 0,
+    "P_E7": 127,
+    "P_ED_FLT": 55,
+    "P_GLIDE": 0,
+    "P_LD_FLT": 0,
+    "P_LD_PIT": 0,
+    "P_LRATE": 65,
+    "P_LWAVE": 1,
+    "P_REL": 18,
+    "P_REV": 0,
+    "P_SUS": 81,
+    "P_VOICE": 1
+  },
+  "version": 1
+}

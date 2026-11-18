@@ -8,6 +8,14 @@
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 
+## SH-STYLE collection
+
+Two real-capture, approximate ANALOG sounds: **SH 1-1** and **SH WIRE1**.
+Select a track with ALGORITHM and use the SH-STYLE browser loader, or normal
+PRESETS → ANALOG / LIST SH-STYLE. Existing sounds, projects and demos stay intact.
+[Translation, limitations and demo commands](tools/sh_style/README.md) ·
+[verification](docs/SH_STYLE_VERIFICATION.md). Not a Roland emulator or acoustic match.
+
 ## Play in your browser
 
 **[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/)**

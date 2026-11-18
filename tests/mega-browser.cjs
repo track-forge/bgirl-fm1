@@ -18,6 +18,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    const fn=e=>{if(e.data.type==='six-info'){testNode.port.removeEventListener('message',fn);resolve(e.data.values);}};
    testNode.port.addEventListener('message',fn);testNode.port.postMessage({type:'six-info'});
   }));
+  const bass=()=>page.evaluate(()=>new Promise(resolve=>{
+   const fn=e=>{if(e.data.type==='sh-style-info'){testNode.port.removeEventListener('message',fn);resolve(e.data.tracks[1]);}};
+   testNode.port.addEventListener('message',fn);testNode.port.postMessage({type:'sh-style-info'});
+  }));
   const vocal=()=>page.evaluate(()=>new Promise(resolve=>{
    const fn=e=>{if(e.data.type==='vocal-info'){testNode.port.removeEventListener('message',fn);resolve(e.data);}};
    testNode.port.addEventListener('message',fn);testNode.port.postMessage({type:'vocal-info'});
@@ -26,10 +30,16 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const turn=async name=>{await page.getByRole('slider',{name,exact:true}).press('ArrowUp');await page.waitForTimeout(180);};
   await on();await page.waitForFunction(()=>document.querySelector('#vocal-status').textContent.startsWith('Installed bank'));
   let q=await info();assert(q[11].every(n=>n===64));assert.equal(q[9][4],12);assert.equal(q[9][2],0);assert.equal(q[7][0],0);
+  assert.equal(q[10][1],100,'Crunchy Bass HOME mixer -6.0dB');
+  const freshBass=await bass();assert.deepEqual(freshBass.slice(0,2),[0,13]);assert.equal(freshBass[7],0);
   assert.equal((await vocal()).state,4096+6,'whole G6 identity-bound source');
   page.once('dialog',d=>d.dismiss());await page.locator('#demo').click();assert.deepEqual(await info(),q);
   page.once('dialog',d=>d.accept());await page.locator('#demo').click();await page.waitForTimeout(400);
-  assert.equal((await info())[7][0],0);
+  assert.equal((await info())[7][0],0);assert.deepEqual(await bass(),freshBass);
+  assert.equal((await info())[10][1],100);
+  await turn('ALGORITHM');await tap('FX');
+  await page.screenshot({path:`${dir}/crunchy-bass-fx.png`,fullPage:true});
+  await tap('HOME');for(let i=0;i<5;i++)await turn('ALGORITHM');
   await page.evaluate(()=>{window.meter=testAC.createAnalyser();meter.fftSize=4096;testNode.connect(meter);});
   const peak=()=>page.evaluate(()=>{const a=new Float32Array(4096);meter.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});
   await tap('PLAY / STOP');let max=0;

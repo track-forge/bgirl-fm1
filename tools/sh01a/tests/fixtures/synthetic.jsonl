@@ -1,0 +1,4 @@
+{"kind":"arm","label":"SYNTHETIC ONLY; not an SH-01A capture","seq":1,"time":"2026-11-18T12:00:00+00:00"}
+{"bytes":[176,74,42],"kind":"midi","seq":2,"time":"2026-11-18T12:00:01+00:00"}
+{"kind":"baseline","seq":3,"time":"2026-11-18T12:00:02+00:00"}
+{"bytes":[176,74,50],"kind":"midi","seq":4,"time":"2026-11-18T12:00:03+00:00"}

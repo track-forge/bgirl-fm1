@@ -141,6 +141,13 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   <div class="feature-chips" aria-label="Project highlights"><span>24-band vocoder</span><span>Arp dance</span><span>Editable groove</span><span>GPL code</span></div>
 </header>
 
+<section class="intro-card" aria-label="SH-ISH collection">
+  <h2>SH-ISH</h2>
+  <p>Two real-capture translations using ANALOG. Single-track approximations, not a Roland emulator: mixed waves, stored chords and source timing laws are not reproduced.</p>
+  <p><label>SH-ISH sound <select id="sh-style-sound"><option>Crunchy Bass · 1-1</option><option>Velvet Pulse · saved patch, slot unknown</option></select></label>
+  <button id="sh-style-load" disabled>Load SH-ISH on selected track</button></p>
+  <p>Select any of six tracks with ALGORITHM, then load. On the panel: PRESETS → LIST → SH-ISH for Crunchy Bass and Velvet Pulse. These sounds show SH-ISH in place of ANALOG; the original ANALOG sounds stay unchanged. Edit, play and save normally; loading keeps the track’s pattern, mixer and chord-key settings. No demo or saved-slot replacement.</p>
+</section>
 <section class="intro-card" aria-label="Signature Electro bank">
   <h2>Signature Electro</h2>
   <p>Ten original sounds. On the panel: PRESETS → LIST → SIGNATURE. Listening review pending.</p>
@@ -157,13 +164,14 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   <button id="signature-choke" disabled>Signature hat choke audition</button></p>
 </section>
 <section class="intro-card" aria-label="Live demo controls">
-  <strong>1 · MEGA DRUMS / 2 · SH RIFF / 3 · BG CARR SAW / 4 · G6 → 24 BANDS / GATE 3 / 5 · FM6 PAD / 6 · BG KICK</strong>
-  <p>Press PLAY for the four-bar Mega Jam vocoder electro demo at 128 BPM. Whole G6 one-shots on beat 1 of bars 1 and 3, with D→C→E pad movement. Use the labs below for isolated vocal and band comparisons.</p>
+  <strong>1 · MEGA DRUMS / 2 · CRUNCHY BASS / 3 · BG CARR SAW / 4 · G6 → 24 BANDS / GATE 3 / 5 · FM6 PAD / 6 · BG KICK</strong>
+  <p>Press PLAY for the four-bar Mega Jam vocoder electro demo at 128 BPM. Whole G6 one-shots on beat 1 of bars 1 and 3, with D→C→E pad movement and SH-ISH Crunchy Bass on track 2. Use the labs below for isolated vocal and band comparisons.</p>
   <p><button id="six-demo" disabled>Six-track electro audition</button>
   <button id="six-dense" disabled>Dense save-capacity stress fixture</button></p>
   <p>Six full tracks / eight shared voices. ALGORITHM selects T1–T6 and follows mixer banks T1–4 / T5–6.
   PROJECT SAVE shows bytes / 3840; FULL leaves the last save intact. Old project formats are not migrated.</p>
   <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
+  <p>Fresh starts use this electro demo. Reloading restores your saved session; to hear the updated default here, choose Load electro demo and confirm replacement.</p>
 </section>
 <div class="device" id="device">
   <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>
@@ -682,7 +690,7 @@ async function switchOn() {
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
-    for (const id of ["six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
+    for (const id of ["sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();
@@ -704,6 +712,11 @@ for (const [id, demo] of [["demo", true], ["blank", false]]) {
     send({ type: "bgirl-project", demo });
   });
 }
+document.getElementById("sh-style-load").addEventListener("click",()=>{
+  if(!node)return;
+  btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
+  send({type:"sh-style-sound",sound:document.getElementById("sh-style-sound").selectedIndex});
+});
 document.getElementById("signature-load").addEventListener("click",()=>{
   if(!node)return;
   btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();

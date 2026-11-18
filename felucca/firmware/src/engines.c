@@ -211,7 +211,7 @@ static uint32_t trk_def_engine(uint32_t i) { return TRK_DEF[i % NPART][0]; }
  * CLEAR ALL keep their original semantics. No engine/preset IDs are renumbered. */
 static const uint8_t BGIRL_TRK_DEF[NPART][3] = {
     {ENGI_DRUM, 2, 0}, /* TIGHT KIT */
-    {0, 2, 2},        /* ANALOG SQR BASS, OFFBEAT */
+    {0, 13, 2},       /* SH-ISH Crunchy Bass, OFFBEAT */
     {ENGI_FM6, 1, 7}, /* BELL, sparse metallic reply */
     {5, 1, 0},        /* VOX LEAD: robot synth PLACEHOLDER (no speech/vocoder) */
     {ENGI_FM6, 0, 0}, /* T5: full FM6 track, empty pattern */

@@ -1411,6 +1411,7 @@ static void apply_preset_to(track_t *t, uint32_t pi)
     }
     fm6_track_loaded(t);                              /* FM6: the preset's patch (its SLOT) */
     signature_factory_loaded(t);
+    sh_style_factory_loaded(t);
     load_end(t);
 }
 
@@ -1542,6 +1543,14 @@ static void track_defaults(track_t *t)
     for (i = 0; i < P_E0; i++)
         t->p[i] = TP[i].def;
     track_defaults_steps(t);
+}
+
+/* Collection label only: underlying ANALOG IDs, DSP and browsing order stay stable. */
+static const char *sound_group_name(const track_t *t)
+{
+    if (t->eng_req == 0 && t->preset >= 13 && t->preset <= 14 && user_of(t) >= UP_SLOTS)
+        return "SH-ISH";
+    return ENGINES[t->eng_req % NENGINES]->name;
 }
 
 /* switch engine (its defaults + first preset) and say so */

@@ -232,3 +232,21 @@ Only track LEVEL values change: T5 FM6 PAD99(display−6.5dB), T4 SLICE/CHOP81
 not master volume, vocoder wet or effect sends. All notes, instruments, gating,
 wet66%, timing and other track settings remain unchanged. Focused local and
 live quick-preview checks precede rollout; hosted CI stays asynchronous.
+
+### Listening revision — SH-ISH Crunchy Bass (2026-11-18)
+
+T2 is now the accepted capture-derived 1-1 factory patch, **Crunchy Bass**, engine0 /
+preset13, displayed under **SH-ISH**. All32 bass events rise exactly one octave from
+the preceding square-bass demo (MIDI33/41/43/45); rhythm/velocities/mix/gate remain.
+The old SQR BASS release override is removed so the full factory tone is used.
+The other five tracks are unchanged. Fresh startup and explicit demo are identical;
+old saved sessions intentionally still win until Load electro demo is confirmed.
+Focused native/WASM and real browser regression evidence: see SH_STYLE_VERIFICATION.md.
+
+### Crunchy Bass mix revision — 2026-11-18
+
+T2 HOME mixer level is now **-6.0 dB** (raw100). FX page1 **DLY13% / REV13%**
+(raw17 each). These are demo/track settings, not a factory recipe or DSP change.
+Fresh-start and explicit demo use the same settings; saved sessions still win.
+Focused native tests assert the real display formatter values and retain native/WASM
+parity, playback bounds, STOP and save/autosave checks.

@@ -441,7 +441,7 @@ static int test_sound_loads(void)
                  preset_pat_hint() == 12 && ui.ppick == 12 && str_eq(PATTERNS[12].name, "ARP"));
     t->p[P_AMODE] = 2;
     before = *t;
-    for (i = 0; i < 7u; i++)                      /* inherited6 + appended carrier, into next engine */
+    for (i = 0; i < ENGINES[0]->npresets - before.preset; i++) /* all remaining ANALOG presets, into next engine */
         turn(EN_PRESET, 1);
     bad += check("browsing on, into another engine: the steps still untouched", t->eng_req != before.eng_req &&
                  !memcmp(t->step, before.step, sizeof t->step) && t->p[P_AMODE] == 2);
@@ -1455,10 +1455,10 @@ static int test_categories(void)
     }
     bad += check("  the PRESETS knob steps through basses only (every engine), and round", ok && preset_pos(&total) == total - 1u);
     turn(EN_K4, 20);
-    bad += check("  .. right to SIGNATURE and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "SIGNATURE"));
+    bad += check("  .. right to SH-ISH and no further (no wrap)", list_mode() == LIST_N - 1u && str_eq(list_name(list_mode()), "SH-ISH"));
 #if !FELUCCA_FM4                                           /* (DIGITAL's presets: OTHER's) */
     {
-        turn(EN_K4,-1); /* OTHER still exists before appended SIGNATURE. */
+        turn(EN_K4,-2); /* OTHER still exists before appended SIGNATURE and SH-ISH. */
         track_t before = *TSEL;
         ui.msg_t = 0;
         turn(EN_PRESET, 1);
