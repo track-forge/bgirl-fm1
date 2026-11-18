@@ -24,10 +24,18 @@ int main(void) {
     assert(trk[1].eng_req==0 && trk[1].preset==13);
     assert(!strcmp(sound_group_name(&trk[1]),"SH-ISH"));
     assert(!strcmp(BG_ANALOG_PRESETS[13].name,"Crunchy Bass"));
-    /* The demo uses the exact factory tone, with only track-owned mix/gate setup. */
+    /* The demo uses the exact factory tone, with only track-owned mix/gate/FX setup. */
     int16_t demo_tone[P_COUNT];memcpy(demo_tone,trk[1].p,sizeof demo_tone);
     apply_preset_to(&trk[1],13);
-    for(uint32_t p=P_ATK;p<P_COUNT;p++)assert(trk[1].p[p]==demo_tone[p]);
+    for(uint32_t p=P_ATK;p<P_COUNT;p++)if(p!=P_DLY && p!=P_REV)assert(trk[1].p[p]==demo_tone[p]);
+    memcpy(trk[1].p,demo_tone,sizeof demo_tone); /* restore the demo's sends */
+    char bass_value[8];const char *bass_unit;
+    param_format(&TP[P_LEVEL],trk[1].p[P_LEVEL],bass_value,&bass_unit);
+    assert(!strcmp(bass_value,"-6.0") && !strcmp(bass_unit,"dB"));
+    param_format(&TP[P_DLY],trk[1].p[P_DLY],bass_value,&bass_unit);
+    assert(!strcmp(bass_value,"13") && !strcmp(bass_unit,"%"));
+    param_format(&TP[P_REV],trk[1].p[P_REV],bass_value,&bass_unit);
+    assert(!strcmp(bass_value,"13") && !strcmp(bass_unit,"%"));
     assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==72 && trk[0].step[63].hit==64);
     assert(trk[4].step[0].note[0]==38 && trk[4].step[28].note[0]==48 && trk[4].step[33].note[0]==52);
     assert(trk[5].eng_req==ENGI_DRUM && trk[5].preset==4 && trk[5].p[P_E0]==DK_SIG_KICK);

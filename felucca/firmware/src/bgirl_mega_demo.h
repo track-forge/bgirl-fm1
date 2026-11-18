@@ -55,8 +55,9 @@ static void bgirl_mega_demo(void)
     trk[0].step[62].vel=88;
     trk[5].step[63].hit=trk[5].step[63].acc=0; /* retain the final kick breath */
     trk[0].step[63].hit=64;trk[0].step[63].acc=0;trk[0].step[63].vel=78;
-    trk[1].p[P_LEVEL]=79;trk[1].p[P_VOICE]=V_MONO;
+    trk[1].p[P_LEVEL]=100; /* mixer: -6.0 dB */trk[1].p[P_VOICE]=V_MONO;
     trk[1].p[P_SGATE]=100; /* keep the factory patch envelope unchanged */
+    trk[1].p[P_DLY]=trk[1].p[P_REV]=17; /* FX page1: 13% each */
     /* SGATE is track-wide (not motion-lockable): short source gates are
      * deliberately quantized to this common gate rather than new timing DSP. */
     trk[2].p[P_LEVEL]=90;trk[2].p[P_VOICE]=V_MONO;
