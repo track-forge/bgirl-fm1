@@ -1,5 +1,8 @@
 # CREW HOME — browser / host review
 
+> Historical pre-rebase evidence. For the main/PR28 integration and explicitly
+> authorized tailnet preview, see [rebase verification](CREW_REBASE_PREVIEW_VERIFICATION.md).
+
 2026-11-18. Runtime source **163a868493d95c1510655a9ba1c7a4cdd6c90f32**;
 subsequent documentation-only commit records evidence. Same draft
 [PR29](https://github.com/track-forge/bgirl-fm1/pull/29), branch `plan/crew-home`.
