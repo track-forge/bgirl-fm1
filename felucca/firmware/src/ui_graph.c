@@ -918,7 +918,7 @@ static void graph_fm6env(const track_t *t, uint16_t c)
 {
     static const char *const STG[4] = {"ATK", "DEC", "SUS", "REL"};
     const uint8_t *op = fop_bytes((uint32_t)(t - trk));
-    int32_t top = 24, bot = 88, x[6], y[6], k;
+    int32_t top = design_context()==DC_LAB_MORE?6:24, bot = design_context()==DC_LAB_MORE?graph_ht-6:88, x[6], y[6], k;
     uint32_t sg = fop_stg & 3u;
     char b[24] = {'O', 'P', (char)('1' + fop_op % 6u), 0};
 #define FEGY(l) (bot - (int32_t)(l) * (bot - top) / 99)
@@ -941,13 +941,13 @@ static void graph_fm6env(const track_t *t, uint16_t c)
     fm_dot(x[k], y[k], T_ACCENT);
 #undef FEGY
 #undef FEGW
-    cv_text(10, 4 - GOY, &AF_S, b, T_MID);
+    if(design_context()!=DC_LAB_MORE)cv_text(10, 4 - GOY, &AF_S, b, T_MID);
     str_cpy(b, STG[sg], sizeof b);
     str_cpy(b + str_len(b), "  R ", 5);
     fmt_int(b + str_len(b), op[FP_R1 + sg]);
     str_cpy(b + str_len(b), "  L ", 5);
     fmt_int(b + str_len(b), op[FP_L1 + sg]);
-    cv_text_r(228, 4 - GOY, &AF_S, b, T_TEXT, T_SURF);
+    if(design_context()!=DC_LAB_MORE)cv_text_r(228, 4 - GOY, &AF_S, b, T_TEXT, T_SURF);
 }
 
 #if FELUCCA_FM4
@@ -2238,6 +2238,7 @@ static void graph_song(void)
     }
 }
 #include "ui_crew.c"
+#include "ui_lab.c"
 
 static void draw_graph(void)
 {
@@ -2264,7 +2265,9 @@ static void draw_graph(void)
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
-    if (strip_kind() != SK_NONE) {                   /* MENU > LARGE: the strip */
+    if(design_context()==DC_LAB_MORE) {
+        graph_lab_more(pg,t);
+    } else if (strip_kind() != SK_NONE) {                   /* MENU > LARGE: the strip */
         uint32_t k = strip_kind();
         cv_oy = k == SK_ADSR || k == SK_LFO ? 3 : 0;
         graph_ht = LG_H_GRAPH - 6;

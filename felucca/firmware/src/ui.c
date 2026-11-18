@@ -389,18 +389,21 @@ static const page_t *cur_page(void) { return page_over ? page_over : &PAGES[ui.p
  *            is, the card labels in M;
  *   LK_OFF   LARGE off; the menu (its own LARGE: ui_menu.c), the dialogs and NAME keep their own layout in every case. */
 /* Presentation only: no navigation IDs, input bindings or persisted state. */
-enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV };
+enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE };
 static uint32_t design_context(void)
 {
     const page_t *pg=cur_page();
     if (ui.layer || ui.menu || ui.confirm) return DC_NONE;
     if (ui.home) return home_crew() ? DC_STAGE : DC_NONE;
-    if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2) return DC_LAB;
-    if (pg->graph==GR_ADSR && pg->id[0]==P_ATK) return DC_ENV;
+    if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2 || (pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_FM6)) return DC_LAB;
+    if (pg->graph==GR_ADSR) return DC_ENV;
     if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
+    if ((pg->fam==FAM_ENV || pg->fam==FAM_LFO || pg->fam==FAM_FX || pg->fam==FAM_EDIT) &&
+        pg->graph!=GR_SLICES && pg->graph!=GR_SLCR && pg->id[0]!=P_LN0 && pg->id[0]!=P_LN4 &&
+        !(pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_SAMPLE)) return DC_LAB_MORE;
     return DC_NONE;
 }
-static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV); }
+static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV || c==DC_LAB_MORE); }
 static uint32_t readout_y(void) { return design_context() ? (design_tall()?134u:154u) : Y_LABEL; }
 enum { LK_OFF, LK_LABEL, LK_TALL };
 static uint32_t large_kind(void)

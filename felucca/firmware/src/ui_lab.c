@@ -1,0 +1,83 @@
+/* SPDX-License-Identifier: GPL-3.0-only
+ * LAB continuation: presentation of real parameters, not an audio analyzer.
+ * Shares the approved graph/knob seam; no new UI or persistence state. */
+static void lab_params(const page_t *pg)
+{
+    int32_t rh=graph_ht/4;
+    for(uint32_t k=0;k<4;k++) {
+        int16_t *v;const param_desc_t *d=page_desc(pg,k,&v);
+        if(!d || !d->label || d->label[0]=='-') continue;
+        int32_t y=(int32_t)k*rh,range=d->max-d->min;
+        int32_t w=range?clamp(*v-d->min,0,range)*134/range:0;
+        cv_text_fit(12,y,&AF_C,d->label,T_TEXT,T_BG,64);
+        cv_rect(84,y+5,140,2,T_RAISE);
+        if(w)cv_rect(84,y+4,w,4,T_THEME);
+        cv_frame(82+w,y+2,5,8,T_TEXT);
+    }
+}
+static void lab_mod(const track_t *t)
+{
+    int32_t rh=graph_ht/NMSLOT;
+    for(uint32_t k=0;k<NMSLOT;k++) {
+        const int16_t *p=&t->p[P_M1SRC+3u*k];int32_t y=(int32_t)k*rh;
+        int on=p[0]&&p[1]&&p[2],sel=k==mod_ui_slot;
+        uint16_t col=on?T_THEME:T_DIM;
+        char b[12];const char *unit;
+        if(sel)cv_frame(8,y,224,rh-1,T_ACCENT);
+        b[0]=(char)('1'+k);b[1]=0;
+        cv_text(12,y+2,&AF_C,b,sel?T_ACCENT:T_SUPPORT);
+        cv_text_fit(28,y+2,&AF_C,N_MSRC[clamp(p[0],0,MS_N-1)],col,T_BG,52);
+        cv_line(83,y+8,98,y+8,col);cv_line(94,y+5,98,y+8,col);cv_line(94,y+11,98,y+8,col);
+        cv_text_fit(106,y+2,&AF_C,mod_dst_name(t,p[1]),col,T_BG,64);
+        param_format(&TP[P_M1AMT],p[2],b,&unit);
+        cv_text_r(224,y+2,&AF_C,b,on?T_TEXT:T_DIM,T_BG);
+    }
+}
+static void lab_vocoder(const track_t *t)
+{
+    char carrier[16],bands[8];const char *unit;
+    const param_desc_t *cd=track_desc(t,P_VCARR);
+    int valid=t->p[P_VCARR] && cd!=&VC_MISSING && cd!=&VC_BUSY;
+    param_format(cd,t->p[P_VCARR],carrier,&unit);
+    fmt_int(bands,t->p[P_VBANDS]==2?24:t->p[P_VBANDS]==1?12:8);
+    cv_text(12,1,&AF_C,valid?"CARRIER":cd==&VC_BUSY?"BUSY":"NO SOURCE",valid?T_SUPPORT:T_DIM);
+    cv_text_r(226,1,&AF_C,t->p[P_VHOLD]?"HOLD":"FOLLOW",t->p[P_VHOLD]?T_ACCENT:T_SUPPORT,T_BG);
+    int32_t y=22,h=graph_ht-44;if(h<18)h=18;
+    cv_frame(12,y,50,h,valid?T_THEME:T_DIM);cv_text_in(12,y+(h-12)/2,50,&AF_C,carrier,T_TEXT,T_BG);
+    cv_line(62,y+h/2,88,y+h/2,valid?T_THEME:T_DIM);
+    cv_frame(88,y,64,h,T_RHYTHM);cv_text_in(88,y+(h-12)/2,64,&AF_C,bands,T_TEXT,T_BG);
+    cv_line(152,y+h/2,176,y+h/2,T_THEME);
+    cv_frame(176,y,50,h,t->p[P_VWET]?T_THEME:T_DIM);cv_text_in(176,y+(h-12)/2,50,&AF_C,"WET",t->p[P_VWET]?T_TEXT:T_DIM,T_BG);
+    cv_text(12,graph_ht-14,&AF_C,"ROUTING / BANDS",T_SUPPORT);
+    cv_text_r(226,graph_ht-14,&AF_C,t->p[P_VMON]?"DRY ON":"DRY OFF",T_SUPPORT,T_BG);
+}
+/* WHEEL keeps all nine real drawbar levels, including percussion cancellation. */
+static void lab_wheel(const track_t *t)
+{
+    static const char *const feet[9]={"16","5.3","8","4","2.7","2","1.6","1.3","1"};
+    int32_t h=graph_ht-20;
+    for(uint32_t k=0;k<9;k++){
+        int32_t x=13+(int32_t)k*25,level=drw_level(t->p,k);
+        if(t->p[P_E4]&&k==8)level=0;
+        int32_t bh=level*h/8;
+        cv_rect(x+5,0,2,h,T_RAISE);
+        if(bh)cv_rect(x+1,h-bh,10,bh,T_THEME);
+        cv_frame(x,h-bh,12,3,T_TEXT);
+        cv_text_in(x-4,h+5,20,&AF_C,feet[k],T_SUPPORT,T_BG);
+    }
+}
+static void graph_lab_more(const page_t *pg,const track_t *t)
+{
+    cv_oy=26;graph_ht=(int32_t)graph_h()-30;
+    if(pg->graph==GR_LFO)graph_lfo(t,T_THEME);
+    else if(pg->graph==GR_INS)graph_insert(t,T_THEME);
+    else if(pg->graph==GR_MOD)lab_mod(t);
+    else if(pg->graph==GR_FMENV && fop_ok())graph_fm6env(t,T_THEME);
+    else if(pg->scope==SC_ENGINE && ENGINES[t->eng_req%NENGINES]==&ENG_WHEEL)lab_wheel(t);
+    else if(str_eq(pg->title,"VOCODER") || str_eq(pg->title,"VOC INPUT"))lab_vocoder(t);
+    else lab_params(pg);
+    graph_ht=100;cv_oy=0;
+    section_heading(ICON_BG_LAB,"LAB",T_THEME);
+    const char *title=pg->scope==SC_ENGINE?ENGINES[t->eng_req%NENGINES]->page_title[pg->id[0]!=P_E0]:pg->title;
+    cv_text_r(228,5,&AF_C,title,T_SUPPORT,T_BG);
+}
