@@ -1,0 +1,1 @@
+159 prior decoded alpha cells and all prior icon IDs unchanged; three new vinyl cells appended.

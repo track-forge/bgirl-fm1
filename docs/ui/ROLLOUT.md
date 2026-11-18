@@ -23,7 +23,7 @@ Issue35 remains the umbrella, not closed by this pass.
 | Slice | Coverage | Status / review gate |
 |---|---|---|
 | Foundation / PR36 | CREW STAGE, FM operator and operator2 LAB, drum STEP CUT, ENV | Doug approved; GitHub host checks green |
-| This stack / LAB | Remaining envelope/LFO/modulation, synth EDIT/FILTER/VOICE, FM OP ENV, FX/INSERT/global sends and vocoder | Native before/after and test receipts required; Doug review pending |
+| This stack / LAB | Remaining envelope/LFO/modulation, synth EDIT/FILTER/VOICE, FM OP ENV, FX/INSERT/global sends and vocoder | [Native comparisons and verification](LAB_VERIFICATION.md); Doug review pending |
 | CUT | Melodic STEP/DETAIL, automation, song, existing SAMPLE/SLICES, SLICER, drum LANES | Pending; no new sample editor or time stretching |
 | STAGE | Other HOME views, MIXER/CLOCK, ARP/SCL/CHORD and ARP DANCE framing | Pending; do not alter dancer assets or choreography |
 | System | USER/PRESETS/PHRASES/PROJECT/TOOLS, menus, overlays and dialogs | Pending |

@@ -107,8 +107,7 @@ JIANT's face configuration is adapted locally; LARGE keeps28px numeric values.
 
 [STUDIO iteration 2: warmer color semantics, crown/LAB/CUT icons and native comparisons](docs/STUDIO_ITERATION_2_VERIFICATION.md).
 [Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
-**Doug's visual/playability review is pending.** Other pages keep their existing
-composition. This is not the complete design overhaul.
+**Doug approved the STUDIO foundation.** The stacked [UI inventory and LAB rollout](docs/ui/ROLLOUT.md) extends it; its new native comparisons await review. CUT, STAGE and system work remain tracked, not complete.
 [Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
 [Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
 [Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).
