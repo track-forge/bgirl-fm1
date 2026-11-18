@@ -20,10 +20,10 @@ int main(int argc, char **argv) {
     }
     /* CREW's shared register must fit every engine's real HOME bindings, not
      * just the default drum/ANALOG examples. Exercise complete ordinary ranges. */
-    for(int large=0;large<2;large++)for(uint32_t e=0;e<NENGINES;e++) {
+    for(int studio=0;studio<2;studio++)for(int large=0;large<2;large++)for(uint32_t e=0;e<NENGINES;e++) {
         if(!eng_ok(e))continue;
         setup(S_HOME_IDLE);eng(e);go_home();ui_home_view=HV_CREW;
-        pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+        pal(studio?UI_STUDIO_INDEX:UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
         for(uint32_t col=0;col<4;col++) {
             int16_t *vp;const param_desc_t *d=home_param(col,&vp);int32_t old=*vp;
             for(int32_t v=d->min;v<=d->max;v++) {
@@ -36,16 +36,16 @@ int main(int argc, char **argv) {
         }
     }
     /* Every actual FM topology and selected operator, including LARGE geometry. */
-    for(int large=0;large<2;large++)for(int alg=1;alg<=32;alg++)for(int op=0;op<6;op++) {
-        setup(S_FM6_OP);pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+    for(int studio=0;studio<2;studio++)for(int large=0;large<2;large++)for(int alg=1;alg<=32;alg++)for(int op=0;op<6;op++) {
+        setup(S_FM6_OP);pal(studio?UI_STUDIO_INDEX:UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
         TSEL->p[P_E0]=alg;fop_op=op;ui.force=1;
         snprintf(name,sizeof name,"lab-alg%d-op%d-large%d",alg,op,large);cur_name=name;
         draw(S_FM6_OP);lint();
     }
     /*64-step banks: cursor and playhead coincide with accented/ratcheted events,
      * selected and muted lanes, and a shortened last bank. */
-    for(int large=0;large<2;large++)for(int pos=0;pos<64;pos++)for(int lane=0;lane<NLANE;lane++) {
-        setup(S_DRUM);pal(UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
+    for(int studio=0;studio<2;studio++)for(int large=0;large<2;large++)for(int pos=0;pos<64;pos++)for(int lane=0;lane<NLANE;lane++) {
+        setup(S_DRUM);pal(studio?UI_STUDIO_INDEX:UI_CIRCUIT_INDEX);ui_prefs=large?PREF_LARGE:0;
         TSEL->p[P_SLEN]=64;ui.bank=pos/16;ui.cursor=pos;ui.lane=lane;
         TSEL->seq_idx=pos;song.playing=1;drum_mute[trk_index(TSEL)%NPART]=1u<<lane;
         for(int k=16;k<64;k++)TSEL->step[k]=TSEL->step[k%16];
