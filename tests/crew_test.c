@@ -23,7 +23,7 @@ static void pixels(void) {
         ui.force=1;paint();
         for(uint32_t y=0;y<96;y++)for(uint32_t x=0;x<96;x++) {
             uint32_t bit=128u>>(x&7u),off=y*12u+x/8u;
-            uint16_t expected=crew_masks[crew_moves[track]][pose][off]&bit ? T_THEME : T_BG;
+            uint16_t expected=crew_masks[crew_moves[track]][pose][off]&bit ? T_TEXT : T_BG;
             assert(web_fb[(graph_y()+22u+y)*240u+132u+x]==swap16(expected));
         }
     }

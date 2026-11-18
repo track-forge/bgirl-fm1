@@ -47,6 +47,11 @@ static void graph_adsr(const track_t *t, uint16_t c)
         px = x3 + i;
         py = EGY(sus * e >> 15);
     }
+    if(design_context()==DC_ENV) {
+        int32_t vx[4]={x1,x1+d,x3,226};
+        int32_t vy[4]={top,EGY(sus),EGY(sus),bot};
+        for(uint32_t k=0;k<4;k++)cv_frame(vx[k]-2,vy[k]-2,5,5,ui.hot_t && ui.hot_col==k?T_ACCENT:T_TEXT);
+    }
 #undef EGY
 }
 
@@ -268,9 +273,9 @@ static void graph_cut(const track_t *t,uint16_t c)
     uint32_t len=(uint32_t)t->p[P_SLEN],base=ui.bank*16u;
     uint32_t mute=drum_mute[trk_index(t)%NPART];
     uint64_t locks=motion_lock_steps(trk_index(t));
-    char b[20];
-    cv_text(10,0,&AF_H,"CUT",T_TEXT);
-    fmt_int(b,(int32_t)base+1);str_cpy(b+str_len(b),"-",2);
+    char b[24]="STEP ";
+    section_heading(ICON_BG_CUT,"CUT",T_RHYTHM);
+    fmt_int(b+5,(int32_t)base+1);str_cpy(b+str_len(b),"-",2);
     fmt_int(b+str_len(b),(int32_t)(base+16u<len?base+16u:len));
     str_cpy(b+str_len(b)," / ",4);fmt_int(b+str_len(b),(int32_t)len);
     cv_text_r(228,4,&AF_C,b,T_MID,T_BG);
@@ -284,18 +289,18 @@ static void graph_cut(const track_t *t,uint16_t c)
         for(uint32_t i=0;i<16 && base+i<len;i++) {
             int32_t x=42+(int32_t)i*11+(int32_t)(i/4)*3;
             const step_t *st=&seq_steps(t)[base+i];uint32_t bit=1u<<l;
-            uint16_t ink=mu?T_DIM:c;
+            uint16_t ink=mu?T_DIM:song.playing && t->seq_idx==base+i?T_PLAY:T_RHYTHM;
             if(step_lanes(st)&bit) {
                 if(step_ratchet(st)>1)pr_split(x,y+2,8,8,ink,step_ratchet(st));
                 else cv_rect(x,y+2,8,8,ink);
                 if(step_accents(st)&bit)cv_rect(x+3,y+4,2,3,bg);
             } else if(i%4==0)cv_frame(x+2,y+4,4,4,sel?T_MID:T_DIM);
             else cv_rect(x+3,y+5,2,2,T_DIM);
-            if(sel && base+i==ui.cursor)cv_frame(x-1,y,10,12,T_TEXT);
+            if(sel && base+i==ui.cursor)cv_frame(x-1,y,10,12,T_ACCENT);
             if(l==0) {
                 if((locks>>(base+i))&1u)cv_rect(x,17,8,1,T_ACCENT);
                 if(step_detailed(st))cv_rect(x+2,19,4,1,c);
-                if(song.playing && t->seq_idx==base+i)cv_rect(x,21,8,2,T_TEXT);
+                if(song.playing && t->seq_idx==base+i)cv_rect(x,21,8,2,T_PLAY);
             }
         }
     }
@@ -880,6 +885,7 @@ static void graph_fm6(const track_t *t, uint16_t c, uint32_t sel)
     for (k = 0; k < 6u; k++) {
         uint32_t on = pt[(5u - k) * FP_OP + FP_OL] != 0, fill_c = (car >> k & 1u) && on;
         uint16_t f = hotset >> k & 1u ? T_ACCENT : c, fill = k == sel ? T_ACCENT : fill_c ? f : T_RAISE;
+        if(design_context()==DC_LAB && k!=sel && fill_c)fill=T_TEXT;
         char n[2] = {(char)('1' + k), 0};
         FM6_CHART_HOOK(FMH_BOX, k, 0);
         cv_rrect(x[k] - 10, y[k], 21, FM_BH, design_context()==DC_LAB?0:3, fill, surface);
@@ -2277,8 +2283,8 @@ static void draw_graph(void)
             break;
         case GR_ADSR:
             if(design_context()==DC_ENV) {
-                cv_oy=0;cv_text(10,0,&AF_H,"ENV",T_TEXT);
-                cv_text_r(228,5,&AF_C,"LAB / ADSR",T_MID,T_BG);
+                cv_oy=0;section_heading(ICON_BG_LAB,"LAB",T_THEME);
+                cv_text_r(228,5,&AF_C,"ENV / ADSR",T_MID,T_BG);
                 cv_oy=24;graph_ht=(int32_t)graph_h()-26;
                 graph_adsr(t,c);graph_ht=100;
             } else graph_adsr(t, c);
@@ -2372,7 +2378,7 @@ static void draw_graph(void)
     if(design_context()==DC_LAB) {
         uint32_t alg=fm6_alg_of(t)+1u;
         char label[7]={'A','L','G',' ',(char)('0'+alg/10u),(char)('0'+alg%10u),0};
-        cv_text(10,0,&AF_H,"LAB",T_TEXT);
+        section_heading(ICON_BG_LAB,"LAB",T_THEME);
         cv_text(10,26,&AF_C,label,T_MID);
     }
     cv_blit(0, graph_y());

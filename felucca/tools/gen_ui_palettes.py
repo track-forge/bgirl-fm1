@@ -58,8 +58,11 @@ PALETTES = [
     # BGIRL: append only. Existing built-in IDs and old migration table stay stable.
     ("CIRCUIT", (9, 19, 16), (117, 245, 190), (215, 249, 231), (255, 120, 71), (215, 249, 231)),
     # STAGE/LAB/CUT: append, never redefine an existing saved palette.
-    ("STUDIO", (9, 11, 12), (168, 240, 207), (233, 227, 214), (255, 143, 136), (209, 183, 255)),
+    ("STUDIO", (24, 20, 32), (168, 240, 207), (233, 227, 214), (255, 143, 136), (228, 110, 183)),
 ]
+# Extra built-in semantic roles; not new persisted/custom-palette fields.
+STUDIO_ROLES = {"rhythm": (209,183,255), "support": (154,139,210),
+                "surface": (40,32,48)}
 BW = "MONO"
 BW_GREY = (82, 82, 82)             # MONO's one mid grey (RGB565 10/20/10): DIM LINE RAISE LANE
 # the 20 palettes of the earlier firmware (index order) -> the new palette
@@ -139,6 +142,10 @@ def derive(p):
              key=mix(bg, text, PCT["KEY"], mono))
     d["ink"] = bg
     d["light"] = luma(bg) > 128
+    if name == "STUDIO":
+        surf=to565(STUDIO_ROLES["surface"])
+        d.update(surf=surf,mid=to565(STUDIO_ROLES["support"]),
+                 raise_=mix(surf,text,6),rhythm=to565(STUDIO_ROLES["rhythm"]))
     if name == BW:                     # src/gfx.c palette_set: set, not blended
         grey = to565(BW_GREY)
         d.update(mid=text, sel=theme, key=text, dim=grey, line=grey, raise_=grey, lane=grey, tint=bg, grid=bg)
@@ -184,6 +191,10 @@ def main():
             c = contrast(d[f], d[b])
             if c < lim:
                 fails.append(f"{name}: {f}/{b} {c:.2f} < {lim} ({why})")
+    studio=dict(rows)["STUDIO"]
+    for fg,bg,minimum in [("rhythm","bg",4.5),("rhythm","surf",4.5),("accent","raise_",4.5),("theme","raise_",4.5)]:
+        if contrast(studio[fg],studio[bg])<minimum:
+            fails.append(f"STUDIO {fg}/{bg}: insufficient semantic contrast")
     if a.report:
         print(f"{'palette':8s} " + " ".join(f"{f}/{b}".ljust(12) for f, b, _, _ in CHECKS))
         for name, d in rows:
@@ -198,7 +209,11 @@ def main():
         for p in PALETTES:
             v = [to565(c, p[0] == BW) for c in p[1:]]
             out.append(f'    {{"{p[0]}", ' + ", ".join(f"0x{x:04x}" for x in v) + "},")
-        out += ["};", f"#define UI_NPALETTES {len(PALETTES)}u", "#define UI_GREY_INDEX 0u",
+        out += ["};"]
+        for name,rgb in STUDIO_ROLES.items():
+            out.append(f"#define UI_STUDIO_{name.upper()} 0x{to565(rgb):04x}u")
+        out.append("#define UI_STUDIO_RAISE_PCT 6u")
+        out += [ f"#define UI_NPALETTES {len(PALETTES)}u", "#define UI_GREY_INDEX 0u",
                 f"#define UI_CIRCUIT_INDEX {names.index('CIRCUIT')}u  /* existing palette ID, unchanged */",
                 f"#define UI_STUDIO_INDEX {names.index('STUDIO')}u  /* fresh state only; saved settings win */",
                 f"#define UI_BW_INDEX {names.index(BW)}u          /* MONO: black and white (src/gfx.c palette_set) */",
