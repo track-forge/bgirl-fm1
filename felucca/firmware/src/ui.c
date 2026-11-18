@@ -400,7 +400,11 @@ static uint32_t design_context(void)
     if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
     if (pg->graph==GR_ROLL || pg->graph==GR_EVENTS || pg->graph==GR_SONG) return DC_CUT_SEQ;
     if(pg->graph==GR_SLICES || pg->graph==GR_SLCR || pg->id[0]==P_LN0 || pg->id[0]==P_LN4 ||
-       (pg->scope==SC_ENGINE && (ENGINES[TSEL->eng_req%NENGINES]==&ENG_SAMPLE || ENGINES[TSEL->eng_req%NENGINES]==&ENG_SLICE))) return DC_CUT_MORE;
+       (pg->scope==SC_ENGINE && (ENGINES[TSEL->eng_req%NENGINES]==&ENG_SAMPLE
+#if FELUCCA_SLICE
+        || ENGINES[TSEL->eng_req%NENGINES]==&ENG_SLICE
+#endif
+       ))) return DC_CUT_MORE;
     if ((pg->fam==FAM_ENV || pg->fam==FAM_LFO || pg->fam==FAM_FX || pg->fam==FAM_EDIT) &&
         pg->graph!=GR_SLICES && pg->graph!=GR_SLCR && pg->id[0]!=P_LN0 && pg->id[0]!=P_LN4 &&
         !(pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_SAMPLE)) return DC_LAB_MORE;

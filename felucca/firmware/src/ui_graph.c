@@ -1333,8 +1333,10 @@ static uint32_t graph_signature(void)
     if(design_context()==DC_CUT_MORE){
         h^=(ui.hot_t?ui.hot_col+1u:0u)*65537u;
         h^=drum_mute[trk_index(t)%NPART]*2654435761u;
+#if FELUCCA_SLICE
         if(pg->scope==SC_ENGINE && ENGINES[t->eng_req%NENGINES]==&ENG_SLICE)
             h^=smp_user_gen*7919u+fnv(2166136261u,bg_vocal_expected[trk_index(t)],8)+last_note*31u;
+#endif
         if(pg->graph==GR_SLCR)h^=(uint32_t)song.playing*104729u;
     }
     if (pg->graph == GR_ROLL) {
