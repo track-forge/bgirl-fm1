@@ -1,0 +1,40 @@
+{
+  "source": "163a868493d95c1510655a9ba1c7a4cdd6c90f32",
+  "method": "Three alternating whole-process 512000-frame hidden-UI runs; same six-track fixture/random arp/state writes to /dev/null. Shared host, includes boot/UI/I/O; not DSP-only or device budget.",
+  "rows": [
+    {
+      "pass_index": 0,
+      "binary": "crew_control",
+      "seconds": 0.1610508430749178
+    },
+    {
+      "pass_index": 0,
+      "binary": "crew_test",
+      "seconds": 0.1712507987394929
+    },
+    {
+      "pass_index": 1,
+      "binary": "crew_test",
+      "seconds": 0.15727333491668105
+    },
+    {
+      "pass_index": 1,
+      "binary": "crew_control",
+      "seconds": 0.16654757130891085
+    },
+    {
+      "pass_index": 2,
+      "binary": "crew_control",
+      "seconds": 0.17967933835461736
+    },
+    {
+      "pass_index": 2,
+      "binary": "crew_test",
+      "seconds": 0.1574506307952106
+    }
+  ],
+  "medians": {
+    "crew_control": 0.16654757130891085,
+    "crew_test": 0.1574506307952106
+  }
+}

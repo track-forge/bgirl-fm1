@@ -895,6 +895,7 @@ static __attribute__((noinline)) void kt_block(void)
 static void seq_start(void)
 {
     uint32_t i;
+    crew_phase=0;
     midi_grid_reset();
     motion_begin();
     chain_start();
@@ -1498,6 +1499,8 @@ static void events_block(uint32_t n)
         uint32_t arp_n = clock_mode ? midi_grid_advance(&midi_arp_grid[i], seq_n, (uint32_t)trk[i].p[P_ARATE]) : n;
         arp_step(&trk[i], arp_n, clock_mode && song.playing ? arp_n : n);
     }
+    /* Q32 four-quarter phrase; audio-owned, never driven by UI redraw count. */
+    crew_phase += (uint32_t)(((uint64_t)(clock_mode && song.playing ? seq_n : n)<<30) / (clock_mode && song.playing ? MIDI_CLOCK_GRID : beat_samples()));
     beat_pos += clock_mode ? midi_grid_advance(&midi_beat_grid, seq_n, 0u) : n; /* ARP LED beat */
     if (beat_pos >= beat_samples()) {
         beat_pos -= beat_samples();

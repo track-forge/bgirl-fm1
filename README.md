@@ -331,3 +331,22 @@ demo defaults.
 This workflow is a preview deployment, not hardware-performance proof. Imported
 upstream workflows under `felucca/.github` remain inactive; do not enable their
 release or installer destinations.
+
+## CREW HOME
+
+MENU → DISPLAY → HOME → **CREW** shows only the selected track's dancer. New
+settings default to CREW; older saved settings switch to CREW once on upgrade.
+Any HOME view you choose afterward stays saved. ALGORITHM
+selects T1–T6 and swaps the dancer/move and activity source. Engine knobs, HOME →
+MIXER → CLOCK, GLO banks and ARP DANCE are unchanged. Sustained notes keep moving;
+one-shots get bounded activity, release settles, mute parks. This is musical
+activity, not a sound-level meter. CREW loops play forward then backward without
+repeating endpoints; T1/T6 windmill is reframed larger and T4 worm uses seconds1–4.
+
+[Implementation plan](docs/CREW_HOME_IMPLEMENTATION_PLAN.md) ·
+[Activity contract](docs/CREW_ACTIVITY_CONTRACT.md) ·
+[Asset provenance / offline review](assets/crew/README.md) ·
+[Verification and demo](docs/CREW_HOME_VERIFICATION.md) ·
+[Animation refinement](docs/CREW_MOTION_REFINEMENT.md).
+Browser/host evidence only; human art approval and physical-device fit remain
+separate. No project format, demo arrangement, engine/BSP pins or voice budget change.

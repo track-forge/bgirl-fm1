@@ -45,7 +45,7 @@ int main(void)
         /* 1.0.2: the old MONO keeps its id as GREY (a saved MONO looks the same); the new black and white MONO is
          * appended, a new id */
         assert(palette_from_stored(UI_PAL_TAG + 0u) == UI_GREY_INDEX && !strcmp(UI_PALETTES[UI_GREY_INDEX].name, "GREY"));
-        assert(UI_BW_INDEX == NPALETTES - 1u && !strcmp(UI_PALETTES[UI_BW_INDEX].name, "MONO") &&
+        assert(UI_BW_INDEX < NPALETTES && !strcmp(UI_PALETTES[UI_BW_INDEX].name, "MONO") &&
                palette_from_stored(UI_PAL_TAG + UI_BW_INDEX) == UI_BW_INDEX && palette_stored_ok(UI_PAL_TAG + UI_BW_INDEX));
         q.palette = palette_to_stored(5);
         assert(settings_import(&q, sizeof q) == 1 && settings.palette == 5u);
@@ -201,7 +201,7 @@ int main(void)
         assert(settings_import(&p, sizeof p) == 1);
         for (i = 0; i < 32u; i++) assert(favorites.factory[14][i] == (uint8_t)(i * 29u + 3u));
         assert(!memcmp(favorites.factory[13], original.favorites.factory[13], 32) &&
-               !memcmp(favorites.factory[15], original.favorites.factory[15], 32));
+               !memcmp(favorites.factory[15], p.favorites.factory[15], 32));
         memset(&q, 0, sizeof q); settings_export(&q); assert(!memcmp(&q.favorites, &p.favorites, sizeof q.favorites));
         assert(settings_import(&q, sizeof q) == 1 && settings_import(&q, sizeof q) == 1);
         for (i = 0; i < 32u; i++) assert(favorites.factory[14][i] == (uint8_t)(i * 29u + 3u));

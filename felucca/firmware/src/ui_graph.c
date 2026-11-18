@@ -2189,6 +2189,8 @@ static void graph_song(void)
                      i < 4u ? "[K3] ADD SECTION" : "[SAVE] PROJECT A-D", T_MID, T_SURF, x0 - 10 - SG_X0);
     }
 }
+#include "ui_crew.c"
+
 static void draw_graph(void)
 {
     const page_t *pg = cur_page();
@@ -2199,6 +2201,7 @@ static void draw_graph(void)
         draw_tracks();
         return;
     }
+    if (ui.home && home_crew()) { draw_crew(); return; }
     if (ui.home && home_tracks()) {                  /* MENU > HOME TRACKS (1.3) */
         draw_home_tracks();
         return;

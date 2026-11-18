@@ -1,0 +1,22 @@
+{
+  "tracks": 6,
+  "visibleDancers": 1,
+  "distinctScreens": 6,
+  "peak": 0.18288421630859375,
+  "viewsRestored": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "mute": true,
+  "stoppedLive": true,
+  "emptyTrackIsolated": true,
+  "hiddenAndCoveredNoPaint": true,
+  "loads": [
+    0.0483725823782235
+  ],
+  "errors": [],
+  "humanArtApproval": "pending",
+  "hardware": "unverified"
+}

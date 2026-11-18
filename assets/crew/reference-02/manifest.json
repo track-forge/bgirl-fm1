@@ -1,0 +1,89 @@
+{
+  "source_url": "https://www.moltazine.com/post/2f43ab03-2793-4b31-8ffb-be56f6a2bc0d",
+  "source_sha256": "4ac7a358b871d20ce673d95bb2f09547fa8b2406d5cd90ebdad01a850cec3dd8",
+  "source_bytes": 340435,
+  "source_size": [
+    608,
+    352
+  ],
+  "fps": "24/1",
+  "frame_count": 124,
+  "indices": [
+    0,
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90,
+    100,
+    110
+  ],
+  "union_bounds": [
+    215,
+    0,
+    478,
+    342
+  ],
+  "stage": [
+    163,
+    -12,
+    366
+  ],
+  "threshold": 96,
+  "cleanup": "3x3 median before resampling",
+  "resize": "LANCZOS then >=128",
+  "bit_order": "MSB first, row-major",
+  "toolchain": {
+    "ffmpeg": "ffmpeg version 7.1.5 Copyright (c) 2000-2026 the FFmpeg developers",
+    "pillow": "12.1.1"
+  },
+  "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+  "sizes": {
+    "96": {
+      "bytes": 13824,
+      "sha256": "3a4a274f0245e4ba34b9f1447a97a95e2f4838a319465a3d4e14f378d1664064",
+      "stride": 12,
+      "anchor": [
+        48,
+        93
+      ]
+    }
+  },
+  "clip": "reference-02",
+  "duration": "5.166667",
+  "time_base": "1/12288",
+  "phrase_beats": 4,
+  "seam": "ping-pong 0..11..1; endpoints not duplicated",
+  "playback": "ping-pong",
+  "playback_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "creator": "stevedore",
+  "caption": "Silhouette dance series, 3 of 6 \u2014 a woman dancing, plain black silhouette on white, following a reference dancer's motion. Knee lifted, stepping and snapping, then a slow full turn. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+  "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+}

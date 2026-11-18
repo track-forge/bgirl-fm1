@@ -1,3 +1,28 @@
+## CREW animation refinement (2026-11-18)
+
+Follow-up source extraction makes the shared T1/T6 windmill29.1% larger and limits
+T4 worm to1–4s. All CREW clips now play forward/backward over the four-beat phrase,
+without duplicate endpoint holds. Original ARP DANCE/audio/music/settings unchanged.
+See[refinement recipe and verification](CREW_MOTION_REFINEMENT.md).
+
+## CREW default follow-up (2026-11-18)
+
+Doug requested CREW as the default for existing settings too. Older unmarked
+preferences adopt CREW once; subsequent explicit HOME view choices stay saved.
+Music, other preferences and HOME-hold menu behavior are unchanged. See
+[default verification](CREW_DEFAULT_VERIFICATION.md). This supersedes the
+fresh-only default in the historical reports below.
+
+## CREW HOME browser/host implementation (2026-11-18)
+
+Implemented on PR29 without changing the default musical demo, engine/BSP pins,
+project storage or voice budget. One selected dancer, six track associations,
+four new authorized offline mask packs; ARP DANCE remains separate. Fresh-settings
+HOME is CREW; saved views are preserved. See
+[CREW_HOME_VERIFICATION.md](CREW_HOME_VERIFICATION.md) for exact source, build/test,
+redraw and size evidence. Art/seam approval and physical-device fit are pending.
+No merge, device build/flash or manual preview deployment.
+
 # BGIRL Felucca baseline — verification
 
 > This is the preserved baseline report. Current sample-fed vocoder evidence:

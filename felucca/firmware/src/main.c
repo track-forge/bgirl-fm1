@@ -142,6 +142,7 @@ static void felucca_init(void)
     for (i = 0; i < NTRK; i++) {
         track_t *t = &trk[i];
         dance_reset(i);
+        crew_reset(i);
         track_defaults(t);
         set_engine_of(t, BGIRL_TRK_DEF[i][0]);
         apply_preset_to(t, BGIRL_TRK_DEF[i][1]);    /* with its sends */

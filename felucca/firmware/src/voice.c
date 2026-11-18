@@ -316,6 +316,7 @@ static void voice_start(track_t *t, voice_t *v, uint32_t note, uint32_t vel, int
         t->sp_alt ^= 1u;                                /* sounding voice keeps its side (no jump) */
     }                                                   /* sounding: the attack starts from the current level */
     e->note_on(t, v);
+    if(v->active && v->stage && v->stage!=4u) crew_attack((uint32_t)(t-trk),vel);
     if (sounding && !e->sampled) {                     /* retrigger / steal: keep phases and filter */
         v->ph[0] = ph0;                                 /* states (resetting them clicks) */
         v->ph[1] = ph1;
@@ -367,6 +368,7 @@ static void mono_play(track_t *t, uint32_t note, uint32_t vel, int retrig, int g
             glide_set(t, v, glide);
         }
     }
+    if(t->v[0].active && t->v[0].gate && t->v[0].stage!=4u) crew_attack((uint32_t)(t-trk),vel);
     t->mono_note = (uint8_t)note;
 }
 
@@ -489,6 +491,7 @@ static void trk_all_off(track_t *t)
 {
     uint32_t i;
     dance_reset((uint32_t)(t - trk));
+    crew_reset((uint32_t)(t - trk));
     if (t->engine == ENGI_DRUM && (drum_solo(t->p) || drum_solo_played[t-trk])) {
         memset(drum_kit_of(t),0,sizeof(drum_lane_t)*DV_NLANE);
         for (i=0;i<NVOICE;i++) t->v[i].active=0;

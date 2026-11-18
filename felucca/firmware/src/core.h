@@ -409,6 +409,7 @@ static inline uint32_t swing_step_len(const track_t *t, uint32_t base, uint32_t 
 }
 
 #include "arp_dance.h"
+#include "crew_activity.h"
 
 /* ----------------------------------------------------------- system --- */
 #define RING_PUBLISH() __asm__ volatile("" ::: "memory")   /* slot store before the index update */

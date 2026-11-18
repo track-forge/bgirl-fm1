@@ -1,0 +1,106 @@
+[
+  {
+    "clip": "windmill",
+    "indices": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+    ],
+    "source_sha256": "86effd7027885878cb4af8def188f299eb419daeed844254738dbebdca4f663d",
+    "source_url": "https://www.moltazine.com/post/795f4882-e0a3-4fec-9de4-4a136c213ebb",
+    "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+    "creator": "stevedore",
+    "caption": "Silhouette dance series 3, 2 of 6 \u2014 a woman doing a windmill, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Spinning on her hands and shoulders, legs kicking high and scissoring around. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+    "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified",
+    "framing": {
+      "framing": "follow-x",
+      "bounds_scope": "selected",
+      "padding": 16
+    }
+  },
+  {
+    "clip": "reference-02",
+    "indices": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+    ],
+    "source_sha256": "4ac7a358b871d20ce673d95bb2f09547fa8b2406d5cd90ebdad01a850cec3dd8",
+    "source_url": "https://www.moltazine.com/post/2f43ab03-2793-4b31-8ffb-be56f6a2bc0d",
+    "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+    "creator": "stevedore",
+    "caption": "Silhouette dance series, 3 of 6 \u2014 a woman dancing, plain black silhouette on white, following a reference dancer's motion. Knee lifted, stepping and snapping, then a slow full turn. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+    "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+  },
+  {
+    "clip": "wave-ish",
+    "indices": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110
+    ],
+    "source_sha256": "d2234e29872b791c494221fb736e5ca47d71dc4ea640a6f29a4e51e8662f4dea",
+    "source_url": "https://www.moltazine.com/post/c90acbbd-1cd3-4176-b170-ea9c8f74eb9d",
+    "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+    "creator": "stevedore",
+    "caption": "Silhouette dance series 2, 1 of 6 \u2014 a woman dancing, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Arm over her head, then arms sweeping out as she steps and sways. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+    "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified"
+  },
+  {
+    "clip": "worm",
+    "indices": [
+      24,
+      31,
+      37,
+      44,
+      50,
+      57,
+      63,
+      70,
+      76,
+      83,
+      89,
+      96
+    ],
+    "source_sha256": "cee2c9a50597a9ee210e4f7969bbded65cf467f6588e3dba31af584d8a4d02f8",
+    "source_url": "https://www.moltazine.com/post/d0e1e91c-9280-42fc-9d1d-86ecc730d481",
+    "rights": "Doug Smith authorized supplied information/videos and derived sprite publication under repository GPL-3.0-only convention on 2026-11-17; public availability alone is not permission",
+    "creator": "stevedore",
+    "caption": "Silhouette dance series 3, 5 of 6 \u2014 a woman doing the worm, plain black silhouette on white, loose pants and a tight top, long hair, following a reference dancer's motion. Lying prone, her body rippling in a wave from chest to feet, legs kicking up high behind her. Still from Qwen Image 2.1, motion from MiniMax H3 motion reference. 5 seconds.",
+    "provenance": "Source-post claims Qwen Image 2.1 still and MiniMax H3 motion reference; not independently verified",
+    "source_window_seconds": [
+      1,
+      4
+    ],
+    "framing": {
+      "bounds_scope": "selected"
+    }
+  }
+]
