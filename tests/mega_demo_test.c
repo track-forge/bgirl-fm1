@@ -18,7 +18,12 @@ int main(void) {
     assert(trk[3].p[P_VBANDS]==2 && trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==117);
     assert(trk[3].p[P_VREL]==bg_release_value(120) && trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON]);
     assert(!strcmp(BG_VOCAL_VIEWS[1],"G6") && slc_vocal_match(&trk[3]));
-    assert(motion.count==4 && (motion.on&8)==8);
+    assert(motion.count==0 && !motion.on);
+    assert(trk[3].p[P_E1]==0 && trk[3].p[P_E4]==SLC_ONE);
+    for(uint32_t k=0;k<NSTEP;k++) {
+        assert(trk[3].step[k].n==(k==0 || k==32));
+        if(trk[3].step[k].n)assert(trk[3].step[k].note[0]==60);
+    }
     uint32_t bytes=project_bytes();assert(bytes<3000);
     assert(proj_pack(&wire,&fresh) && proj_import(&decoded,&wire,sizeof wire));
     assert(!memcmp(&fresh,&decoded,sizeof fresh));

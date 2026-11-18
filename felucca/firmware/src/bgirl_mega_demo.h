@@ -73,15 +73,9 @@ static void bgirl_mega_demo(void)
     trk[3].p[P_VWET]=117;trk[3].p[P_VCONS]=0;
     slc_vocal_select(&trk[3]);
     if(group) {
-        /* Whole parent at bars1/3; just two replies in each following bar.
-         * Ordinary VIEW events precede the notes, repeat deterministically. */
+        /* Doug's listening revision: full one-shot only, beat1 of bars1/3. */
         bgirl_mega_note(3,0,60+group-1,110);
         bgirl_mega_note(3,32,60+group-1,106);
-        bgirl_mega_note(3,20,61,98);bgirl_mega_note(3,26,64,92);
-        bgirl_mega_note(3,52,62,100);bgirl_mega_note(3,58,65,88);
-        motion_set_event(&trk[3],0,P_E1,0);motion_set_event(&trk[3],20,P_E1,group);
-        motion_set_event(&trk[3],32,P_E1,0);motion_set_event(&trk[3],52,P_E1,group);
-        motion_set_enabled(&trk[3],1);
     }
     trk[4].p[P_LEVEL]=55;trk[4].p[P_VOICE]=V_MONO;
     trk[4].p[P_REV]=43;trk[4].p[P_REL]=35;trk[4].p[P_SGATE]=127;

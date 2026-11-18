@@ -36,11 +36,11 @@ copies of one bar. No new engine, voice pool, wire format, sample, DSP or effect
 - **T3 TRIO/FAT BASS:**factory preset unchanged, mono, level90, A2 then E3,
  each tied for two bars. MON OFF, normal T3→T4 carrier route. Oscillator settings
  remain factory; this is a compositional carrier line, not the old C2/G2 loop.
-- **T4 SLICE/VOCALS:**find public G6 by view label. WHOLE at steps0/32 uses
- the matching parent, chops at20/26/52/58 use G6 view and notes61/64/62/65.
- Four ordinary VIEW motion events select whole/chopped material at those steps.
- WET117/127 (92%),24bands, LOG REL nearest120ms; MON OFF, consonants0.
- Whole phrase is1.918s; first answer at2.344s leaves hook space. No new speech
+- **T4 SLICE/VOCALS:**find public G6 by view label. WHOLE one-shots at
+ steps0/32 only (beat1 of bars1/3), using the matching parent. No chops or VIEW
+ automation, per Doug's 2026-11-18 listening revision. SLC_ONE means note-off
+ does not gate the phrase. WET117/127 (92%),24bands, LOG REL nearest120ms;
+ MON OFF, consonants0. Whole phrase is1.918s, with7.5s/four bars. No new speech
  or bank rebuild. Bundled public G6 fingerprint/provenance unchanged; see
  `assets/vocals/` and existing VOCAL_BANK documentation. A custom bank lacking
  G6 intentionally leaves the vocal pattern silent instead of substituting an
@@ -159,3 +159,10 @@ parameters and all other tracks (including the TRIO carrier) are unchanged.
 Existing autosaves are not rewritten; explicitly Load electro demo after refresh.
 Original measurement/CI/deployment receipts above describe the first version;
 updated exact-head verification and preview are recorded in the PR follow-up.
+
+### Listening revision — whole vocal one-shots (2026-11-18)
+
+Doug also requested the vocal track play only the whole sample at beat1 of
+bars1/3. T4 now has exactly two SLC_ONE notes at steps0/32, WHOLE view throughout,
+no chopped answers or VIEW automation. Carrier, vocoder settings and all other
+tracks are unchanged. This is combined with the T2−24-semitone revision above.
