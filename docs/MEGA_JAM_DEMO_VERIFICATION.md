@@ -25,8 +25,9 @@ copies of one bar. No new engine, voice pool, wire format, sample, DSP or effect
  Signature drum presets are **single-identity** instruments (every key maps to
  one piece), so they cannot form this multi-lane kit without splitting tracks
  or changing the engine. Keep TIGHT KIT and preserve the BG Signature bank.
-- **T2 ANALOG/SQR BASS:**16 mono events per two bars, raw A/G/F pitches and
- raw source velocities preserved; repeat at step32. Simultaneous55 at beat4.5
+- **T2 ANALOG/SQR BASS:**16 mono events per two bars; A/G/F pitch classes,
+ source velocities and rhythm preserved, transposed **−24 semitones** per Doug's
+ 2026-11-18 listening request (MIDI21/29/31/33). Repeat at step32. Simultaneous55 at beat4.5
  (0.012798beat) and45 at5.75 (0.008936beat) omitted in favor of longer57/55.
  Global GATE100/128 gives0.1953125beat; source0.25 and short gates are quantized
  to this common value. SGATE is not motion-lockable, so no unsupported locks
@@ -148,3 +149,13 @@ reported page errors. Clarity preserves all five signal loaders, normal8/12/24
 selection,5/500ms controls, Freeze/STOP, persistence and mobile behavior with
 the unchanged archived gallery fixture. Final HTTPS rollout checks and hosted
 CI are independently recorded in the PR handoff at the exact deployed head.
+
+
+### Listening revision — SQR BASS down two octaves (2026-11-18)
+
+Doug found T2 too beepy and requested two octaves, not one. Only demo T2 note
+pitches change:21/29/31/33 instead of45/53/55/57. Rhythm, velocities, sound
+parameters and all other tracks (including the TRIO carrier) are unchanged.
+Existing autosaves are not rewritten; explicitly Load electro demo after refresh.
+Original measurement/CI/deployment receipts above describe the first version;
+updated exact-head verification and preview are recorded in the PR follow-up.

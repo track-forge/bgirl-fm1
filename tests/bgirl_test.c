@@ -81,7 +81,7 @@ int main(void) {
     assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && trk[3].p[P_VWET]==81);
     assert(!web_bgirl_project(1)); advance(100); defaults(1);
 #if BGIRL_VOCODER
-    assert(trk[1].step[1].note[0]==45 && trk[0].step[4].hit==22);
+    assert(trk[1].step[1].note[0]==21 && trk[0].step[4].hit==22);
 #else
     assert(trk[1].step[1].note[0]==36 && trk[0].step[4].hit==6);
 #endif

@@ -47,7 +47,8 @@ static void bgirl_mega_demo(void)
         for(i=0;i<NELEM(open);i++)trk[0].step[k+open[i]].hit|=16;
         for(i=0;i<NELEM(rim);i++)trk[0].step[k+rim[i]].hit|=64;
         /* GM49 deliberately omitted: no unintended TOM/BELL grid remap. */
-        for(i=0;i<NELEM(riff);i++)bgirl_mega_note(1,k+riff[i][0],riff[i][1],riff[i][2]);
+        /* Doug's listening revision: SQR BASS only, two octaves down. */
+        for(i=0;i<NELEM(riff);i++)bgirl_mega_note(1,k+riff[i][0],riff[i][1]-24, riff[i][2]);
     }
     /* A softer final rim, then a breath instead of the final kick/hat stack. */
     trk[0].step[62].vel=88;

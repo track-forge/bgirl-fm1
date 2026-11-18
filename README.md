@@ -240,7 +240,7 @@ not establish musical approval or physical-device fit/performance.
 | Track | Sound | Pattern |
 | --- | --- | --- |
 | 1 | DRUM / TIGHT KIT | Reference two-bar kick, snare+clap, hats/rim; final-bar turnaround |
-| 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, original A/G/F pitches and accents |
+| 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
 | 3 | TRIO / FAT BASS | A2/E3 tied carrier, dry MON OFF |
 | 4 | SLICE / VOCALS | Whole G6 hooks + four sparse answers; 24 bands, LOG REL ≈120ms, WET92% |
 | 5 | GRAIN / CLOUD PAD | Four-bar D3→C4→E4, single-voice textured movement |

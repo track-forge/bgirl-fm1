@@ -11,7 +11,7 @@ int main(void) {
     assert(!memcmp(&fresh,&explicit,sizeof fresh));
     assert(song.g[G_BPM]==128 && !song.playing && NVOICE==8);
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
-    assert(trk[1].step[25].note[0]==53 && trk[1].step[28].vel==112);
+    assert(trk[1].step[0].note[0]==21 && trk[1].step[25].note[0]==29 && trk[1].step[28].vel==112);
     assert(trk[0].step[4].hit==22 && trk[0].step[31].hit==73 && trk[0].step[63].hit==64);
     assert(trk[4].step[0].note[0]==50 && trk[4].step[28].note[0]==60 && trk[4].step[33].note[0]==64);
     assert(!trk[5].step[0].n && !trk[5].step[63].hit);
