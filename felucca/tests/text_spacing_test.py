@@ -33,7 +33,7 @@ LOWER = ["oeo", "coco", "eco", "nono", "minimum", "hello", "level", "decay", "re
 UPPER = ["CUTOFF", "RESO", "LEVEL", "DECAY", "RELEASE", "SOUND", "OCOE", "COCO", "NONO", "MINIMUM", "SUPER SAW",
          "FELUCCA", "PRESETS", "ANALOG", "DIGITAL", "PITCH", "SWING", "AV AW LT TA YO"]
 RULE = ["gfx"]   # "gfx": src/gfx.c cv_text; "rounded": the earlier rule (each glyph at the rounded pen, 1 phase)
-LIMIT = {"S": 0.25, "M": 0.25, "L": 0.5}
+LIMIT = {"S": 0.25, "M": 0.25, "L": 0.5, "C": 0.25, "V": 0.25, "H": 0.5}
 
 
 def parse(path):
@@ -122,7 +122,7 @@ def centroid(cols):
     return sum((i + 0.5) * c for i, c in enumerate(cols)) / m if m else None
 
 
-def measure(f, font_hi, s):
+def measure(f, font_hi, s, tracking_px=0.0):
     """[(pair, gap error px)] of one string"""
     x0 = 4
     placed = place(f, s)
@@ -131,7 +131,7 @@ def measure(f, font_hi, s):
         if ch == " " or not e[4]:
             d.append(None)
             continue
-        pen = (font_hi.getlength(s[:i + 1]) - font_hi.getlength(s[i])) / SS
+        pen = (font_hi.getlength(s[:i + 1]) - font_hi.getlength(s[i])) / SS + i * tracking_px
         w = int(pen + font_hi.getlength(s[i]) / SS) + 3 * f["h"]
         img = ar.render_cell(font_hi, ch, (w * SS, 3 * f["h"] * SS), round((x0 + pen) * SS), 2 * f["h"] * SS)
         a = img.reduce(SS)                               # box-filtered coverage on the pixel grid
@@ -174,15 +174,15 @@ def main():
     a = ap.parse_args()
     RULE[0] = a.rule
     faces = parse(a.header)
-    spec = {n: (font, px) for n, font, px, *_ in gf.preset("inter-tight")}
+    spec = {n: (font, px, tracking or 0.0) for n, font, px, rng, extras, tracking, phases in gf.preset("bgirl")}
     bad = 0
     for name, f in faces.items():
-        font, px = spec[name]
+        font, px, tracking = spec[name]
         font_hi = ar.open_font(font, px * SS)
         words = LOWER if f["last"] >= ord("z") else UPPER
         # a sparse face (L): the words it can draw (the firmware draws no others in it)
         words = [w for w in words if all(glyph_at(f, ord(ch.upper())) is not None for ch in w)]
-        pairs = [p for s in words for p in measure(f, font_hi, s)]
+        pairs = [p for s in words for p in measure(f, font_hi, s, px * tracking)]
         e = sorted(pairs, key=lambda p: -abs(p[1]))
         mx = abs(e[0][1])
         rms = (sum(v * v for _, v in pairs) / len(pairs)) ** 0.5

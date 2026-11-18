@@ -887,10 +887,8 @@ static void graph_fm6(const track_t *t, uint16_t c, uint32_t sel)
         cv_text_in(x[k] - 10, y[k] + CAP_IN(S, FM_BH), 21, &AF_S, n, fill_c || k == sel ? T_INK : on ? f : T_DIM, fill);
     }
     FM6_CHART_HOOK(FMH_LABEL, 0, 0);
-    if(design_context()==DC_LAB) {
-        cv_text(10,-GOY,&AF_H,"LAB",T_TEXT);
-        cv_text(10,26-GOY,&AF_C,b,hot==P_E0||hot==P_E7?T_ACCENT:T_MID);
-    } else cv_text(10, 4 - GOY, &AF_S, b, hot == P_E0 || hot == P_E7 ? T_ACCENT : T_MID);
+    if(design_context()!=DC_LAB)
+        cv_text(10, 4 - GOY, &AF_S, b, hot == P_E0 || hot == P_E7 ? T_ACCENT : T_MID);
     if (sel < 6u) {                                  /* the operator picked: "OP3 x1.50" */
         char fq[16] = {'O', 'P', (char)('1' + sel), ' ', 0};
         fop_freq(pt + (5u - sel) * FP_OP, fq + 4);
@@ -2371,5 +2369,11 @@ static void draw_graph(void)
         }
     }
     cv_oy = 0;
+    if(design_context()==DC_LAB) {
+        uint32_t alg=fm6_alg_of(t)+1u;
+        char label[7]={'A','L','G',' ',(char)('0'+alg/10u),(char)('0'+alg%10u),0};
+        cv_text(10,0,&AF_H,"LAB",T_TEXT);
+        cv_text(10,26,&AF_C,label,T_MID);
+    }
     cv_blit(0, graph_y());
 }
