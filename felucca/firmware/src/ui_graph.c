@@ -50,7 +50,7 @@ static void graph_adsr(const track_t *t, uint16_t c)
     if(design_context()==DC_ENV) {
         int32_t vx[4]={x1,x1+d,x3,226};
         int32_t vy[4]={top,EGY(sus),EGY(sus),bot};
-        for(uint32_t k=0;k<4;k++)cv_frame(vx[k]-2,vy[k]-2,5,5,ui.hot_t && ui.hot_col==k?T_ACCENT:T_TEXT);
+        for(uint32_t k=0;k<4;k++)cv_frame(vx[k]-2,vy[k]-2,5,5,T_TEXT);
     }
 #undef EGY
 }
