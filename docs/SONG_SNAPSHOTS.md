@@ -44,7 +44,10 @@ engine descriptors, not a second JavaScript default/DSP implementation. IDs use
 stable `P_*`/`G_*` names; common mappings, per-engine ranges and alias exclusions
 are in `snapshot-layout.mjs`. Numbers are **raw instrument counts**, not physical
 units; the normal instrument display supplies physical units/enum names.
-`layout.engines[engine].name` is the readable engine label. `P_E0..P_E7` are
+`midiChannel` retains the project's stored channel offset:0..15 means physical
+one-based channel `((value + trackIndex) % 16) + 1`;16 is OMNI,17 OFF. Track indexes
+are zero-based. This preserves normal per-track assignments, not MIDI learn or
+device preferences. `layout.engines[engine].name` is the readable engine label. `P_E0..P_E7` are
 engine-specific; consult that engine's parameter descriptor when editing them.
 
 `title` is a free title (up to120 characters). `song.name` is the existing

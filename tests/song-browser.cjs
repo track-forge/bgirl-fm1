@@ -88,7 +88,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  assert.deepEqual(semantic(await read()),semantic(arranged));assert.deepEqual(await flash(),beforeStorage);
  await page.evaluate(()=>{window.analyser=testAC.createAnalyser();analyser.fftSize=4096;testNode.connect(analyser);});
  // GLO => SONG; normal sequencer starts through inherited panel controls.
- await tap('GLO');await page.locator('#screen').screenshot({path:`${artifacts}/portable-song-screen.png`});await tap('PLAY / STOP');await page.waitForTimeout(1700);
+ await tap('GLO');await page.locator('#screen').screenshot({path:`${artifacts}/portable-song-screen.png`});await tap('PLAY / STOP');await page.waitForTimeout(8200); // complete 64-step section, including edited step63
  const peak=await page.evaluate(()=>{const a=new Float32Array(4096);analyser.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});assert(peak>.0001&&peak<=1);
  const busy=await req('song-capture');assert(busy.error.includes('Stop playback'));
  await tap('PLAY / STOP');await tap('HOME');await page.waitForTimeout(600);
@@ -111,7 +111,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  await page.waitForFunction(()=>document.querySelector('#song-status').textContent.includes('SESSION ONLY'));
  await exportFile(page);
  assert.deepEqual(errors,[]);
- const results={normalUnsavedEdit:true,actualDownloadUpload:true,agentParameterNoteMotionCustomFM6:true,freshProfile:true,refresh:true,cancelPreservesLatch:true,invalidAtomic:true,expiredRequestAtomic:true,missingBankAtomic:true,twoSourceArrangement:true,slotsUnchanged:true,audioPeak:peak,denseFULL:true,mobile:true,storageDenied:true,errors,humanListening:'not performed'};
+ const results={normalUnsavedEdit:true,actualDownloadUpload:true,agentParameterNoteMotionCustomFM6:true,freshProfile:true,refresh:true,cancelPreservesLatch:true,invalidAtomic:true,expiredRequestAtomic:true,missingBankAtomic:true,twoSourceArrangement:true,fullPatternAudition:true,slotsUnchanged:true,audioPeak:peak,denseFULL:true,mobile:true,storageDenied:true,errors,humanListening:'not performed'};
  fs.writeFileSync(`${artifacts}/results.json`,JSON.stringify(results,null,2)+'\n');console.log(results);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
