@@ -1,6 +1,6 @@
 # CREW HOME — the dancers are the instrument's front page
 
-Date: 2026-11-17. Status: **draft implementation plan; no runtime changes**.
+Date: 2026-11-17; scope refined 2026-11-18. Status: **draft implementation plan; no runtime changes**.
 Inspected main: `c51c53885fd18c1e84be676d1644143803bc2e0b`.
 Related: [merged Arp Dance PR17](https://github.com/track-forge/bgirl-fm1/pull/17),
 [original exploration #2](https://github.com/track-forge/bgirl-fm1/issues/2),
@@ -8,9 +8,11 @@ Related: [merged Arp Dance PR17](https://github.com/track-forge/bgirl-fm1/pull/1
 
 ## Product intent
 
-A pocket electro crew: **one b-girl for every track**, reacting independently to
-that track's music. Dancers are protagonists and a legible performance overview,
-not decoration buried in the arp menu. HOME is the dance floor; ordinary sound,
+A pocket electro crew: **one b-girl associated with every track, with only the
+selected track's dancer shown on HOME**. She reacts to that track's music, not
+the mixed output. Selecting another track replaces her with that track's dancer.
+Dancers are protagonists, not decoration buried in the arp menu. HOME is a
+selected-track performance view, not an all-track overview; ordinary sound,
 sequence and effect pages remain the editing tools. ARP DANCE stays available with
 its existing trigger-driven CRISP/GHOST contract.
 
@@ -22,7 +24,8 @@ implementation defaults, not claims that every detail was individually approved.
 **Baseline correction:** our conversation said four dancers, but current main has
 **six full tracks**, 64 steps per track and eight shared admitted voices. Implement
 for `NTRK` (currently six), including T5/T6. Do not regress to four tracks, hide the
-last two behind a permanently four-person scene, or change the voice budget.
+last two from dancer selection, or change the voice budget. This iteration shows
+exactly one dancer at a time; the earlier simultaneous-crew proposal is superseded.
 
 ## Existing integration points
 
@@ -54,8 +57,9 @@ do not reset settings or change projects to install the new default.
   HOME → MIXER → CLOCK cycle and HOME-hold menu behavior.
 - CREW's K1–K4 retain the selected engine's normal HOME parameters. Do not silently
   make them animation controls or six-track level controls.
-- ALGORITHM selects T1–T6 normally. Each dancer has stable placement and a visible
-  T-number; highlight selection using more than color alone. Keep selected sound,
+- ALGORITHM selects T1–T6 normally and immediately shows the corresponding dancer
+  with a visible T-number. Track-to-dancer/move association stays stable across
+  selection changes; identity must not rely on color alone. Keep selected sound,
   control labels/values, transport and useful clock feedback readable.
 - GLO performance layers retain T1–4 / T5–6 banking and inactive-cell semantics;
   LEVELS/MIXER stay accessible. Do not invent six physical knobs.
@@ -65,26 +69,26 @@ do not reset settings or change projects to install the new default.
   textual track/selection/mute information. Other HOME views offer a nonanimated
   alternative. No claim of new screen-reader parity.
 
-### Composition decision: prove at actual size
+### Composition: one selected-track dancer
 
-The display is 240×240; the old dance page uses a roughly 122px graph below its
-controls. Six 96px dancers cannot simply be placed there. Make actual-size
-contact sheets and short browser previews of at least these two layouts:
+Use one large, centered silhouette in the available HOME area of the 240×240
+display. Review actual-size contact sheets and browser previews with real HOME
+chrome, knob feedback and track label visible. Reclaim HOME-only vertical space
+only if needed; keep controls legible. LARGE mode, palettes, FLAT/LINE and mobile
+browser scaling need explicit review.
 
-1. **Equal crew:** six stable cells, initially 3 columns × 2 rows, compact labels.
-   Compare with a staggered stage if it improves floorwork readability.
-2. **Featured dancer:** larger selected dancer plus five smaller, always-visible
-   crew indicators/dancers. Keep stable track identity when selection changes.
+No six-person grid, miniature unselected dancers or featured-plus-crew layout in
+this iteration. The simplification is deliberate: floorwork gets room to read,
+and only one dancer needs painting. Track selection must clear the previous
+silhouette and show the new track's current activity on the next display update,
+without a queued transition, inherited accent, synthetic note or effect on audio.
+Returning to a track restores its stable move association and samples current
+activity/clock phase; do not replay events missed while it was unselected.
+Unselected tracks keep making music normally but need no sprite rendering or
+background per-frame choreography. Unique character art is not required: stable
+track labels and deterministic move associations suffice, with shared clips.
 
-Prefer equal crew if the windmill/worm remain recognizable. Otherwise implement
-the featured layout and document the readability reason. The implementer may
-choose this bounded fallback with evidence, without stalling routine work for
-approval. Do not call either layout human-approved until Doug has seen it.
-Reclaim HOME-only vertical space if needed, but retain readable knob feedback;
-show the proposed chrome at 1× rather than evaluating isolated large sprites.
-LARGE mode, palettes, FLAT/LINE and mobile browser scaling need explicit review.
-
-## Musical behavior: rhythm plus expression, not six independent GIF timers
+## Musical behavior: rhythm plus selected-track expression
 
 Use the instrument's musical clock for the base phrase. Start with one cycle over
 four quarter-note beats, with per-clip metadata if a move reads better over two or
@@ -100,19 +104,20 @@ approximately 12–15 updates/s, capped and measured, not a device FPS promise.
 | Released / inactive | Complete a short bounded settle (initially one beat), then a readable freeze |
 | Muted / excluded by solo | Dim and park immediately; no claim of activity from rejected notes |
 | Unmuted | Rejoin on the next genuine activity; unmute alone must not manufacture a note |
-| Selected | Persistent outline/cell focus/T-number, independent of musical activity |
+| Track selection changed | Replace the sole visible dancer and T-number; sample the newly selected track, never carry over the previous track's accent |
 | Transport stopped | Sequencer-driven motion settles; live keyboard/MIDI attacks still animate using a defined local BPM phase |
 | Project change / panic / all-off | Clear transient activity safely; no stale dancing from the previous project |
 
 Velocity can control a bounded accent strength, with a useful minimum. Never scale
-sprites unpredictably into neighbors. One-shot drum/sample activity needs a bounded
+sprites unpredictably beyond the dancer area or over controls. One-shot drum/sample activity needs a bounded
 activity envelope even after immediate note-off; a held MIDI key is not proof that
 a one-shot is still sounding. Legato changes may accent without treating every
 allocated voice as a fresh phrase. Define and test these distinctions explicitly.
 
 MVP movement selection: deterministic track-to-move defaults distributed across
-available clips (six dancers may share clips), distinct stable track labels/focus,
-and independent phase/activity state. No instrument-role inference from engine or
+available clips (six track associations may share clips), stable track labels,
+and correctly isolated activity. Only the selected dancer needs frame evaluation;
+derive phase from the clock rather than maintaining six background animations. No instrument-role inference from engine or
 track number is required. Add moves without rewriting ARP DANCE. Automatic move
 switching, if included, occurs at a phrase boundary; arbitrary windmill-to-worm
 cuts on every hit are not the default. User choreography editors and saved per-track
@@ -181,8 +186,10 @@ FLOORWORK asset from PR17 is a separate fifth source, not one of these four.
    stable floor/anchor, and padding for every limb. No independent per-frame
    centering. Review segmentation, shimmer, negative space and extreme floorwork
    at the final display size, not just 96px or full video resolution.
-4. Compare roughly 48/64px small silhouettes and larger featured sizes as the
-   layout permits; choose from actual results. Start at 12 poses per move, vary
+4. Start by evaluating the existing 96px silhouette size in the single-dancer
+   HOME area; compare larger sizes only if they improve readability and fit the
+   controls/resource budget. No miniature crew asset sizes are required.
+   Start at 12 poses per move, vary
    only with documented readability/size benefit. Preserve source-order motion.
 5. Produce per-clip contact sheets and standalone playback previews with intended
    BPM/phrase timing, explicit last→first seam, idle and mute/focus treatments.
@@ -195,8 +202,8 @@ FLOORWORK asset from PR17 is a separate fifth source, not one of these four.
    CI and runtime consume committed assets offline with no Moltazine dependency.
 
 Shared clip storage is per move/size, not per dancer. For illustration, four
-12-pose 64×64 one-bit banks total 24,576 bytes before metadata; six dancers do not
-multiply that by six. This is not a chosen final size or target-fit claim.
+12-pose 96×96 one-bit banks total 55,296 bytes before metadata; six track
+associations do not multiply that by six. This is not a chosen final size or target-fit claim.
 
 ## Implementation sequence and acceptance
 
@@ -205,9 +212,10 @@ multiply that by six. This is not a chosen final size or target-fit claim.
    `./tests/run_tests.sh` before runtime changes. Record existing failures honestly.
    Coordinate with other open plans (e.g. Mega Jam demo PR28); do not bundle their
    musical/demo changes or require their merge for CREW.
-2. **Art/layout spike:** convert the four references, compare six-person layouts
-   at 240px, choose and document the bounded layout. Ship inspectable artifacts.
-3. **Activity model:** implement/test coherent six-track telemetry and timing.
+2. **Art/layout spike:** convert the four references and review one large dancer
+   with HOME chrome at 240px. Ship inspectable artifacts; no crew layout comparison.
+3. **Activity model:** implement/test bounded track activity and timing, supporting
+   selection of any of the six tracks without six background animation loops.
    Exercise dense/chord/mono/legato/one-shot/stolen/deferred/failed or suppressed
    notes, mute/solo, stop/live play, panic, project switch and counter wrap.
 4. **HOME integration:** add CREW, fresh default and preserved saved preferences,
@@ -222,14 +230,18 @@ Required evidence:
   unchanged; compare identical deterministic audio/RNG/sequence output with CREW
   disabled, visible, hidden and under dense all-six-track playback.
 - Actual Chromium interaction/audio after user gesture: fresh CREW default,
-  restored SCOPE/TRACKS/LEVELS/CREW, all six selected tracks, GLO banks/inactive
+  restored SCOPE/TRACKS/LEVELS/CREW, selection through all six tracks with exactly
+  one correct dancer visible, rapid switches with no stale accents/trails, inactive
+  selected track while other tracks play (no false activity), GLO banks/inactive
   cells, engine knobs, HOME/MIXER/CLOCK/menu, mute/return, live notes when stopped,
   sustained and one-shot sounds, save/reload and project replacement. No page errors.
 - Screenshots/video at actual panel resolution and desktop/mobile, LARGE and
   representative palettes/styles. Demonstrate all six identities and multiple
-  move packs; record visual findings separately from Doug's subjective approval.
+  move packs sequentially by track selection, never as a grid; record visual
+  findings separately from Doug's subjective approval.
 - Coherent snapshot stress tests; skipped paints land on current phase; no hidden
-  or unchanged-idle graph transfers; dirty regions restore old silhouettes without
+  or unchanged-idle graph transfers, no unselected-dancer paints; dirty regions
+  restore old silhouettes without
   trails. Bound redraws with many attacks rather than one paint per event.
 - Exact linked asset, text/rodata, mutable RAM and browser size deltas; no new
   framebuffer unless justified. Report bytes per changed region and measured
@@ -239,7 +251,7 @@ Required evidence:
   atomic codegen, linker fit, deadlines and xruns remain unverified separately.
 
 Demo recipe: fresh boot → CREW → load existing six-track audition → PLAY → select
-T1–T6 → mute bass and return it → isolate a sparse/held part → visit ARP DANCE and
+T1–T6 and see each dancer replace the last → select bass, mute and return it → isolate a sparse/held part → visit ARP DANCE and
 return → STOP → play live notes → change HOME view → reload and verify preference.
 Do not alter the default musical demo just to make the animation look busy.
 
@@ -253,4 +265,4 @@ or flash, release/tag, manual deployment or merge is part of this milestone.
 
 Later possibilities: per-track move selection, beat-quantized choreography,
 character-specific silhouette identities, audio-envelope modulation and a larger
-performance-focused stage. None is required to make the initial crew useful.
+simultaneous multi-dancer stage. None is required for this selected-track iteration.

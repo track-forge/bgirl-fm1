@@ -4,8 +4,11 @@ Implement `docs/CREW_HOME_IMPLEMENTATION_PLAN.md` in
 https://github.com/track-forge/bgirl-fm1 on a new feature branch/worktree.
 
 Goal: make the b-girls the instrument's HOME experience, one independently reacting
-dancer per track. **Current main has SIX tracks**, not the four mentioned in the
-initial brainstorm. Preserve the eight-voice budget and normal instrument controls.
+dancer associated with each track, but **show only the selected track's dancer**.
+ALGORITHM selection swaps the single large dancer and visible track label.
+Current main has SIX tracks; support all six associations, never six simultaneous
+dancers. This supersedes the initial grid/featured-plus-crew plan. Preserve the
+eight-voice budget and normal instrument controls.
 
 Read `AGENTS.md`, README, the CREW plan, six-track contracts/verification, and existing
 ARP DANCE implementation/provenance before editing. Start from fresh verified main.
@@ -14,11 +17,11 @@ branch without discarding newer main changes; do not implement on an obsolete
 four-track baseline. Inspect status and leave other agents' worktrees untouched.
 
 Follow the plan's five stages: reproduce baseline; convert and review supplied art
-and six-person layouts; implement bounded general track-activity telemetry;
+in a single-dancer HOME layout; implement bounded track-activity telemetry;
 integrate CREW as a fresh-settings HOME default with preserved preferences and
-controls; verify and publish an implementation PR. You may make the documented
-layout fallback decision from actual-size evidence. Do not silently reduce the
-crew to four or label unreviewed art as approved.
+controls; verify and publish an implementation PR. No grid, miniature crew,
+layout fallback comparison or background per-frame choreography for unselected
+tracks. Do not omit T5/T6 or label unreviewed art as approved.
 
 All FOUR new public video references and Doug's public-use authorization are in
 the plan's source table. Download/inspect each original, preserve provenance and
@@ -32,7 +35,11 @@ accents/settling. Support sequencer, arp and live keyboard/MIDI; coalesce chords
 rapid notes rather than speeding animation with voice count. Define stopped live
 play, sustained/one-shot sounds, mute/solo, voice stealing, deferred engine starts,
 project reset and panic behavior. Do not claim an activity display is a sound meter.
-Keep audio output/RNG/sequencing unchanged and rendering out of the audio path.
+Switching tracks must show that track's current activity/phase without stale
+accents, trails or replaying missed events. Other tracks must not animate an idle
+selected track. Stable labels/move associations can share clips; unique character
+art is not required. Keep audio output/RNG/sequencing unchanged and rendering out
+of the audio path.
 
 Add CREW without renumbering existing HOME views; preserve saved choices, six-track
 selection, GLO banks, HOME knobs, HOME/MIXER/CLOCK/menu behavior and editing pages.
