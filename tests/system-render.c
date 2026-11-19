@@ -89,6 +89,12 @@ int main(int argc,char **argv){
   cur_name="confirmation-target";uint32_t before=music_state();draw(S_CONFIRM_SEQ);assert(before==music_state());lint();
   clear_frame(DLG_X+10,DLG_Y+80,90,26,T_LINE);cases++;
  }
+ /* A real channel edit must repaint without a forced redraw, including T5/6. */
+ for(uint32_t track=0;track<NTRK;track++){
+  setup(S_MENU);pal(UI_STUDIO_INDEX);ui.menu_sel=MI_TCH1+track;draw(S_MENU);
+  uint64_t pixels=blit_px;menu_put(ui.menu_sel,menu_step(ui.menu_sel,1));nscr=npend=nrules=0;ui_draw();
+  assert(blit_px>pixels);cases++;
+ }
  /* Cache inputs of the new tools diagram: moving focus and CLEAN must repaint. */
  setup(S_TOOLS);pal(UI_STUDIO_INDEX);uint32_t sig=graph_signature();ui.act=2;assert(sig!=graph_signature());
  sig=graph_signature();ui.tl_clean^=1;assert(sig!=graph_signature());

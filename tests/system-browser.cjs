@@ -23,6 +23,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    if(large){await turn('PRESETS',2);await turn('KNOB 1');assert.equal((await info())[10],1);}
    for(let tab=0;tab<6;tab++){
     await shot(`menu-${tab}-${large}`);const before=await pixels();await turn('PRESETS');assert.notEqual(await pixels(),before);menus++;
+    if(tab===4){
+     await turn('PRESETS',3);await page.waitForTimeout(300);let old=await pixels();await turn('KNOB 1');assert.notEqual(await pixels(),old);
+     await turn('PRESETS');await page.waitForTimeout(300);old=await pixels();await turn('KNOB 1');assert.notEqual(await pixels(),old);await shot(`channels56-${large}`);
+    }
     await turn('ALGORITHM');
    }
    await tap('HOME');

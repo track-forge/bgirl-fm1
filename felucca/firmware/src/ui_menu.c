@@ -407,9 +407,8 @@ static void draw_menu(void)
           ui_prefs2 * 524287u + ui_idle * 1048573u +      /* (1.2: ANIM IDLE's value redraws its row) */
           ui_home_view * 7340033u +    /* (1.3: HOME) */
           (uint32_t)(song.g[G_TUNE] + 64) * 8191u + (uint32_t)song.g[G_ROUTE] * 27449u +   /* (1.2: the project's rows) */
-          (song.mch[0] | (uint32_t)song.mch[1] << 8 | (uint32_t)song.mch[2] << 16 | (uint32_t)song.mch[3] << 24) *
-          2246822519u +                                   /* (1.5.5: T1..T4 CHANNEL) */
           (ui.menu == 2 ? ui.menu_scroll * 48611u : 0u) + (ui.menu == 3 ? info_sig() * 2654435761u : 0u);
+    sig=fnv(sig,song.mch,sizeof song.mch); /* all six CHANS rows must invalidate */
     if (!ui.force && sig == ui.menu_sig) {
         if (ui.menu == 1 && mt.pos != pos0) {          /* only the tabs slid: their strip */
             cv_begin(240, MP_Y - H_HEAD, T_BG);
