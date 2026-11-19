@@ -1,0 +1,71 @@
+== system-browser
+{
+  normalAndLarge: true,
+  pages: 10,
+  menus: 12,
+  layers: 24,
+  namingCancel: true,
+  soundSave: true,
+  overwriteCancel: true,
+  reloadPreservesSettingsAndSectors: true,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+== browser-smoke
+{
+  demoPeak: 0.11682891845703125,
+  distinctTrackScreens: 4,
+  savedSectors: 1,
+  errors: [],
+  humanListening: 'not performed',
+  physicalMidiClock: 'not tested'
+}
+== lab-browser
+{
+  normalAndLarge: true,
+  physicalFamilyNavigation: true,
+  knobEditChecks: 10,
+  audioPeak: 0.119903564453125,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+== cut-browser
+{
+  normalAndLarge: true,
+  panelNavigation: true,
+  editChecks: 8,
+  savedProjectAndSongSection: true,
+  audioPeak: 0.1217041015625,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+== cut-samples-browser
+{
+  normalAndLarge: true,
+  panelNavigation: true,
+  editChecks: 18,
+  sampleAndSliceEngineSelection: true,
+  drumLaneEditing: true,
+  slicerTransport: true,
+  audioPeak: 0.14306640625,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+== stage-full-browser
+{
+  normalAndLarge: true,
+  homeViews: 3,
+  panelNavigation: true,
+  editChecks: 2,
+  inactiveLevelKnobs: true,
+  mixerAndClock: true,
+  arpScaleChordDance: true,
+  audioPeak: 0.10416412353515625,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}

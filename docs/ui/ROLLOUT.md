@@ -1,9 +1,9 @@
 # Approved STUDIO rollout ledger
 
-Current STAGE implementation stacks on [PR41](https://github.com/track-forge/bgirl-fm1/pull/41)
-/ `82dc8f78479c7832f5ae5949de1d0e55ae97f8a6`, branch `feat/studio-cut-complete`.
-Doug approved CUT completion and authorized STAGE as one complete set.
-No implicit merge or deployment; issue35 remains open.
+Current SYSTEM implementation stacks on [PR42](https://github.com/track-forge/bgirl-fm1/pull/42)
+/ `c6cc2619153a07a5860eb0cd9832dbc27e197aa3`, branch `feat/studio-stage-rollout`.
+Doug approved STAGE including the frame-clearance repair and authorized SYSTEM as
+one complete set. No implicit merge or deployment; issue35 remains open.
 
 ## Coverage units
 
@@ -25,20 +25,21 @@ No implicit merge or deployment; issue35 remains open.
 | Approved LAB / PR39 | Remaining envelope/LFO/modulation, synth EDIT/FILTER/VOICE, FM OP ENV, FX/INSERT/global sends and vocoder | [Native comparisons and verification](LAB_VERIFICATION.md); Doug approved |
 | Approved CUT sequencing / PR40 | Melodic STEP/DETAIL, automation, SONG; DRUM DETAIL cross-check | [Native comparisons and verification](CUT_VERIFICATION.md); Doug approved |
 | Approved CUT completion / PR41 | SAMPLE and SLICE EDIT1/2, SLICES, SLICER, drum LANES1/2 | [Native comparisons and verification](CUT_COMPLETION_VERIFICATION.md); Doug approved; no new editor or time stretching |
-| STAGE / this stack | Other HOME views, MIXER/CLOCK, ARP/SCL/CHORD and ARP DANCE framing | [Native comparisons and verification](STAGE_VERIFICATION.md); Doug review pending; existing dancer assets and choreography unchanged |
-| System | USER/PRESETS/PHRASES/PROJECT/TOOLS, menus, overlays and dialogs | Pending |
+| Approved STAGE / PR42 | Other HOME views, MIXER/CLOCK, ARP/SCL/CHORD and ARP DANCE framing | [Native comparisons and verification](STAGE_VERIFICATION.md); Doug approved; existing dancer assets and choreography unchanged |
+| SYSTEM / this stack | USER/PRESETS/PHRASES/PROJECT/TOOLS, menus, overlays and dialogs | [Native comparisons and verification](SYSTEM_VERIFICATION.md); Doug review pending |
 | Browser shell | Align wrapper typography/color and focus/accessibility | Pending, after firmware coverage |
 | Hardware | LCD contrast/legibility, transfer/tearing, linker fit/RAM/stack, audio deadlines | Not tested; separate authorized gate |
 
-## Dynamic surfaces / state audit backlog
+## Dynamic surfaces / state audit
 
 These are not counted as separate pages and must not disappear behind a page total.
-Each needs a native fixture and interaction check in its owning slice:
+SYSTEM fixtures and interactions are recorded in [SYSTEM verification](SYSTEM_VERIFICATION.md).
+Each retains its owning slice and human review gate:
 
 | Surface | Cases to preserve | Owner |
 |---|---|---|
 | Global header/footer | Tempo widths/lock/rolling, REC own/other, count-in, internal/external clock, battery/USB, messages, page identity, long preset names | Shared; vinyl approved in PR39 |
-| GLO hold | Track banks, mute/solo, ALL/LEARN/FILL/TAP, locked/held transitions | System; unchanged in this STAGE page pass |
+| GLO hold | Track banks, mute/solo, ALL/LEARN/FILL/TAP, locked/held transitions | System; verified in this pass |
 | ENV/LFO/FX/SEQ/REC hold layers | Momentary/latched maps, learn/assign/wait, return to underlying page, stale-pixel cleanup | System |
 | MENU | DISPLAY/CONTROL/AUDIO/MIDI/SYSTEM, scrolling/end, calibration/about, custom palette editing | System |
 | Naming | Cursor, character edit, long/full name, confirm/cancel | System |

@@ -83,6 +83,12 @@ int main(int argc,char **argv){
    snprintf(name,sizeof name,"custom-bank2-%s-%d-%d",S_NAME[scenes[scene]],large,style);cur_name=name;uint32_t before=music_state();draw(scenes[scene]);assert(before==music_state());lint();cases++;
   }
  }
+ /* Every confirmation kind and target/bank, preserving all underlying music. */
+ for(int large=0;large<2;large++)for(int style=0;style<2;style++)for(uint32_t kind=CF_CLEAR_SEQ;kind<=CF_LEARN_CLEAR;kind++)for(uint32_t target=0;target<NTRK;target++){
+  setup(S_USER);pal(UI_STUDIO_INDEX);ui_prefs=large?PREF_LARGE:0;ui_style=style;style_apply();ui.confirm=kind;ui.confirm_trk=target;
+  cur_name="confirmation-target";uint32_t before=music_state();draw(S_CONFIRM_SEQ);assert(before==music_state());lint();
+  clear_frame(DLG_X+10,DLG_Y+80,90,26,T_LINE);cases++;
+ }
  /* Cache inputs of the new tools diagram: moving focus and CLEAN must repaint. */
  setup(S_TOOLS);pal(UI_STUDIO_INDEX);uint32_t sig=graph_signature();ui.act=2;assert(sig!=graph_signature());
  sig=graph_signature();ui.tl_clean^=1;assert(sig!=graph_signature());

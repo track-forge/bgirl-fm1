@@ -25,8 +25,8 @@ EDIT1/2 multiplex engine-specific layouts: SAMPLE and SLICE belong to CUT; other
 | 14 | DLY | FAM_FX | SC_GLOBAL | GR_NONE | G_DTIME, G_DFDBK, G_DCOLOR, G_DMIX | LAB | approved #39 |
 | 15 | REVERB | FAM_FX | SC_GLOBAL | GR_NONE | G_RTYPE, G_RSIZE, G_RDAMP, 0xFF | LAB | approved #39 |
 | 16 | CHORUS | FAM_FX | SC_GLOBAL | GR_NONE | G_CRATE, G_CDEPTH, 0xFF, 0xFF | LAB | approved #39 |
-| 17 | SCL | FAM_SCL | SC_TRACK | GR_SCALE | P_ROOT, P_SCALE, P_QUANT, P_TRANS | STAGE | this STAGE pass |
-| 18 | CHORD | FAM_SCL | SC_TRACK | GR_CHORD | P_CHRD, P_VOIC, 0xFF, 0xFF | STAGE | this STAGE pass |
+| 17 | SCL | FAM_SCL | SC_TRACK | GR_SCALE | P_ROOT, P_SCALE, P_QUANT, P_TRANS | STAGE | approved #42 |
+| 18 | CHORD | FAM_SCL | SC_TRACK | GR_CHORD | P_CHRD, P_VOIC, 0xFF, 0xFF | STAGE | approved #42 |
 | 19 | EDIT 1 | FAM_EDIT | SC_ENGINE | GR_NONE | P_E0, P_E1, P_E2, P_E3 | LAB/CUT | approved #39/#41 (engine-specific) |
 | 20 | EDIT 2 | FAM_EDIT | SC_ENGINE | GR_NONE | P_E4, P_E5, P_E6, P_E7 | LAB/CUT | approved #39/#41 (engine-specific) |
 | 21 | FILTER | FAM_EDIT | SC_TRACK | GR_NONE | P_FTYPE, P_E4, P_E5, P_E7 | LAB | approved #39 |
@@ -45,16 +45,16 @@ EDIT1/2 multiplex engine-specific layouts: SAMPLE and SLICE belong to CUT; other
 | 34 | VOICE 2 | FAM_EDIT | SC_TRACK | GR_NONE | P_ALLOC, P_DETUNE, P_PAN, P_MUTE | LAB | approved #39 |
 | 35 | VOICE 3 | FAM_EDIT | SC_TRACK | GR_NONE | P_SPRD, P_ATSNS, P_ATDST, P_ATAMT | LAB | approved #39 |
 | 36 | SONG | FAM_GLO | SC_GLOBAL | GR_SONG | 0xFF, 0xFF, 0xFF, 0xFF | CUT | approved #40 |
-| 37 | USER | FAM_SAVE | SC_GLOBAL | GR_USER | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | pending |
-| 38 | PRESETS | FAM_SAVE | SC_GLOBAL | GR_BROWSE | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | pending |
-| 39 | PHRASES | FAM_SAVE | SC_GLOBAL | GR_PATS | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | pending |
-| 40 | PROJECT | FAM_SAVE | SC_GLOBAL | GR_SLOTS | G_SLOT, 0xFF, G_LOAD, G_SAVE | SYSTEM | pending |
-| 41 | TOOLS | FAM_SAVE | SC_GLOBAL | GR_TOOLS | G_CLRSEQ, G_INITSND, 0xFF, 0xFF | SYSTEM | pending |
-| 42 | ARP | FAM_ARP | SC_TRACK | GR_ARP | P_AMODE, P_ARATE, P_AOCT, P_AGATE | STAGE | this STAGE pass |
-| 43 | ARP 2 | FAM_ARP | SC_TRACK | GR_NONE | P_ASWING, P_APROB, P_AHOLD, P_AORDER | STAGE | this STAGE pass |
-| 44 | ARP DANCE | FAM_ARP | SC_TRACK | GR_DANCE | P_AMODE, P_ARATE, 0xFF, 0xFF | STAGE | this STAGE pass |
+| 37 | USER | FAM_SAVE | SC_GLOBAL | GR_USER | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | this SYSTEM pass |
+| 38 | PRESETS | FAM_SAVE | SC_GLOBAL | GR_BROWSE | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | this SYSTEM pass |
+| 39 | PHRASES | FAM_SAVE | SC_GLOBAL | GR_PATS | 0xFF, 0xFF, 0xFF, 0xFF | SYSTEM | this SYSTEM pass |
+| 40 | PROJECT | FAM_SAVE | SC_GLOBAL | GR_SLOTS | G_SLOT, 0xFF, G_LOAD, G_SAVE | SYSTEM | this SYSTEM pass |
+| 41 | TOOLS | FAM_SAVE | SC_GLOBAL | GR_TOOLS | G_CLRSEQ, G_INITSND, 0xFF, 0xFF | SYSTEM | this SYSTEM pass |
+| 42 | ARP | FAM_ARP | SC_TRACK | GR_ARP | P_AMODE, P_ARATE, P_AOCT, P_AGATE | STAGE | approved #42 |
+| 43 | ARP 2 | FAM_ARP | SC_TRACK | GR_NONE | P_ASWING, P_APROB, P_AHOLD, P_AORDER | STAGE | approved #42 |
+| 44 | ARP DANCE | FAM_ARP | SC_TRACK | GR_DANCE | P_AMODE, P_ARATE, 0xFF, 0xFF | STAGE | approved #42 |
 | 45 | STEP | FAM_SEQ | SC_STEP | GR_ROLL | 0, 1, 2, 3 | CUT | approved #40 |
 | 46 | DETAIL | FAM_SEQ | SC_STEP | GR_ROLL | 0, 1, 2, 3 | CUT | approved #40 |
 | 47 | AUTOMATION | FAM_SEQ | SC_TRACK | GR_EVENTS | 0xFF, 0xFF, 0xFF, 0xFF | CUT | approved #40 |
-| 48 | MIXER | FAM_TRK | SC_TRK | GR_TRK | 0, 1, 2, 3 | STAGE | this STAGE pass |
-| 49 | CLOCK | FAM_TRK | SC_GLOBAL | GR_NONE | G_BPM, G_SWING, G_CLOCK, 0xFF | STAGE | this STAGE pass |
+| 48 | MIXER | FAM_TRK | SC_TRK | GR_TRK | 0, 1, 2, 3 | STAGE | approved #42 |
+| 49 | CLOCK | FAM_TRK | SC_GLOBAL | GR_NONE | G_BPM, G_SWING, G_CLOCK, 0xFF | STAGE | approved #42 |

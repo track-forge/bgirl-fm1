@@ -1,0 +1,45 @@
+{
+  "recipes": 78,
+  "changed": 3,
+  "changes": [
+    {
+      "surface": "TOOLS",
+      "large": 0,
+      "recipe": "knob100x128frames",
+      "before": [
+        33,
+        188556
+      ],
+      "after": [
+        49,
+        657036
+      ]
+    },
+    {
+      "surface": "TOOLS",
+      "large": 1,
+      "recipe": "forced896frames",
+      "before": [
+        7,
+        53472
+      ],
+      "after": [
+        7,
+        54192
+      ]
+    },
+    {
+      "surface": "TOOLS",
+      "large": 1,
+      "recipe": "knob100x128frames",
+      "before": [
+        33,
+        246696
+      ],
+      "after": [
+        49,
+        657036
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "normalAndLarge": true,
+  "pages": 10,
+  "menus": 12,
+  "layers": 24,
+  "namingCancel": true,
+  "soundSave": true,
+  "overwriteCancel": true,
+  "reloadPreservesSettingsAndSectors": true,
+  "errors": [],
+  "hardware": "not tested",
+  "visualApproval": "Doug review pending"
+}

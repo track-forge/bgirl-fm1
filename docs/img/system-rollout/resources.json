@@ -1,0 +1,26 @@
+{
+  "runtimeSource": "993edf200aef62649bbd299d039402924c5e710b",
+  "parentSource": "c6cc2619153a07a5860eb0cd9832dbc27e197aa3",
+  "wasmBefore": 1063941,
+  "wasmAfter": 1069391,
+  "wasmDelta": 5450,
+  "wasmSHA256": "b7057150929b116af87b928a84887b347cbe2e1f09a173f042163c07a7f05c2b",
+  "hostTextBefore": 960085,
+  "hostTextAfter": 961837,
+  "hostDataBeforeAndAfter": 1596,
+  "hostBSSBeforeAndAfter": 1654848,
+  "fontsBeforeAndAfter": 84283,
+  "iconsBeforeAndAfter": 8753,
+  "generatedHeadersByteIdentical": {
+    "ui_fonts.h": true,
+    "ui_icons.h": true,
+    "ui_keycaps.h": true,
+    "ui_palettes.h": true
+  },
+  "dancerAssetsByteIdentical": 36,
+  "canvasBeforeAndAfter": 59520,
+  "trackBeforeAndAfter": 1856,
+  "projectWireBeforeAndAfter": 3840,
+  "drawRecipes": 78,
+  "changedDrawRecipes": 3
+}

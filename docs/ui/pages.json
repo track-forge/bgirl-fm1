@@ -267,7 +267,7 @@
       "P_TRANS"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 18,
@@ -282,7 +282,7 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 19,
@@ -567,7 +567,7 @@
       "0xFF"
     ],
     "phase": "SYSTEM",
-    "status": "pending"
+    "status": "this SYSTEM pass"
   },
   {
     "index": 38,
@@ -582,7 +582,7 @@
       "0xFF"
     ],
     "phase": "SYSTEM",
-    "status": "pending"
+    "status": "this SYSTEM pass"
   },
   {
     "index": 39,
@@ -597,7 +597,7 @@
       "0xFF"
     ],
     "phase": "SYSTEM",
-    "status": "pending"
+    "status": "this SYSTEM pass"
   },
   {
     "index": 40,
@@ -612,7 +612,7 @@
       "G_SAVE"
     ],
     "phase": "SYSTEM",
-    "status": "pending"
+    "status": "this SYSTEM pass"
   },
   {
     "index": 41,
@@ -627,7 +627,7 @@
       "0xFF"
     ],
     "phase": "SYSTEM",
-    "status": "pending"
+    "status": "this SYSTEM pass"
   },
   {
     "index": 42,
@@ -642,7 +642,7 @@
       "P_AGATE"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 43,
@@ -657,7 +657,7 @@
       "P_AORDER"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 44,
@@ -672,7 +672,7 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 45,
@@ -732,7 +732,7 @@
       "3"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   },
   {
     "index": 49,
@@ -747,6 +747,6 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "this STAGE pass"
+    "status": "approved #42"
   }
 ]
