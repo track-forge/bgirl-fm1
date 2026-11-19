@@ -67,21 +67,21 @@
     "large": "0",
     "scenario": "play44800frames",
     "blits": -354,
-    "pixels": -1644624
+    "pixels": -1620432
   },
   {
     "page": "TRACKS",
     "large": "0",
     "scenario": "knob100x128frames",
     "blits": -87,
-    "pixels": -431592
+    "pixels": -426216
   },
   {
     "page": "TRACKS",
     "large": "0",
     "scenario": "track100x896frames",
     "blits": -80,
-    "pixels": -1001580
+    "pixels": -719340
   },
   {
     "page": "TRACKS",
@@ -95,21 +95,21 @@
     "large": "1",
     "scenario": "play44800frames",
     "blits": -354,
-    "pixels": -1644624
+    "pixels": -1620432
   },
   {
     "page": "TRACKS",
     "large": "1",
     "scenario": "knob100x128frames",
     "blits": -87,
-    "pixels": -431592
+    "pixels": -426216
   },
   {
     "page": "TRACKS",
     "large": "1",
     "scenario": "track100x896frames",
     "blits": -80,
-    "pixels": -1001580
+    "pixels": -719340
   },
   {
     "page": "LEVELS",
@@ -123,21 +123,21 @@
     "large": "0",
     "scenario": "play44800frames",
     "blits": -354,
-    "pixels": -1644624
+    "pixels": -1620432
   },
   {
     "page": "LEVELS",
     "large": "0",
     "scenario": "knob100x128frames",
     "blits": -102,
-    "pixels": -469212
+    "pixels": -463836
   },
   {
     "page": "LEVELS",
     "large": "0",
     "scenario": "track100x896frames",
     "blits": -80,
-    "pixels": -1001580
+    "pixels": -719340
   },
   {
     "page": "LEVELS",
@@ -151,21 +151,21 @@
     "large": "1",
     "scenario": "play44800frames",
     "blits": -354,
-    "pixels": -1644624
+    "pixels": -1620432
   },
   {
     "page": "LEVELS",
     "large": "1",
     "scenario": "knob100x128frames",
     "blits": -102,
-    "pixels": -469212
+    "pixels": -463836
   },
   {
     "page": "LEVELS",
     "large": "1",
     "scenario": "track100x896frames",
     "blits": -80,
-    "pixels": -1001580
+    "pixels": -719340
   },
   {
     "page": "MIXER",

@@ -22,4 +22,4 @@ adpcm: 6 waves, 8 presets, 324 B -> /home/dev/.openclaw/workspace/codebase/bgirl
 speech: 54357 bytes; 4.930340136054422 seconds; sha256 855a08f7bf1cf5001bb7d112e8f423f12fcb1ff5a85577e3b9b2957ad1dc5b1f
 vocals: 1 whole + 6 chops; 42294 encoded bytes; id a0fce7527ad0f979f83be2f5cfc86fc29277db570bc0f870de20744dea9a3757
 splash logo: 224x145, 16288 B indexed RGB565 + alpha; source 0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a
-emu: build/emu (1064992 B wasm, v1.8.1)
+emu: build/emu (1063941 B wasm, v1.8.1)

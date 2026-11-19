@@ -217,7 +217,7 @@ idle animation (DIM): frame  s  keys F3..G5  buttons
    7680  8.4  |-=-:.......................|  .  0/64
    8192  9.0  |=-:........................|  .  0/64
 LEDs: refresh 909 Hz lit, 909 Hz dim
-LEDs: host 131.4 ns per tick without dim LEDs, 146.5 ns with, 170.8 ns with a breath too
+LEDs: host 128.3 ns per tick without dim LEDs, 150.2 ns with, 159.0 ns with a breath too
 input debounce: all ok
 == upstream midi_uart_test
 uart: running status, realtime, SysEx, system common ok
@@ -1647,10 +1647,10 @@ regress:   DRUM     DRUM KIT            0 instr     0.0 ns
 regress:   NOISE    WIND                0 instr     0.0 ns
 regress:   FM6      TINE EP             0 instr     0.0 ns
 regress:   SLICE    CHOP                0 instr     0.0 ns
-regress:   idle                         0 instr    54.7 ns
-regress:   idle_drums                   0 instr   127.2 ns
-regress:   3parts_full_drums            0 instr   509.2 ns
-regress:   idle_click                   0 instr   171.2 ns
+regress:   idle                         0 instr    96.2 ns
+regress:   idle_drums                   0 instr   102.7 ns
+regress:   3parts_full_drums            0 instr   400.6 ns
+regress:   idle_click                   0 instr   115.2 ns
 regress: 111 golden renders (0 changed, 0 gone), 0 health failures, 0 voice / routing checks failed, 0 CPU entries over budget (0 notes), 0 crashes; 2.6 s
 emu: power-on LED sweep: at 200 ms the head on key 11, glow behind, dark ahead, buttons dark ok
 emu:   over by 1 s (~0.70 s)                                                      ok
@@ -1673,7 +1673,7 @@ emu: CC 22 twos 1 1 1 turns PRESETS as three detents of the panel's knob do     
 emu: CC 22 sign 1 1 1 turns PRESETS as three detents of the panel's knob do       ok
 emu: the heavy song plays (peak 0.193), twice the same samples                    ok
 emu: the same song from the native build (cc): 88200 frames, bit for bit          ok
-emu: 1 s of the heavy song (FM6 PHYS GRAIN chords + DRUM) in 18.2 ms: 1.8 % of real time ok
+emu: 1 s of the heavy song (FM6 PHYS GRAIN chords + DRUM) in 17.5 ms: 1.8 % of real time ok
 emu: all ok
 BGIRL: roles, editable demo/bounds, track selection, project roundtrip, autosave preservation, blank reset and note release PASS
 backup: numbers and CRC-32                                               ok
@@ -1713,7 +1713,7 @@ vocoder dual: 504 bit-identical 8/12/24-band ordered-pair/mask comparisons; 12 e
 BGIRL: roles, editable demo/bounds, track selection, project roundtrip, autosave preservation, blank reset and note release PASS
 .........
 ----------------------------------------------------------------------
-Ran 9 tests in 1.436s
+Ran 9 tests in 1.363s
 
 OK
 vocals: 1 whole + 2 chops; 22423 encoded bytes; id 03838fd53df752004436ae92b594a30eff2dc97c3570385a8b7d2132ee2bd445
@@ -1762,10 +1762,10 @@ dance redraw coalescing: 1000 triggers / 100 paints = 100 graph blits; 100 idle 
 dance persistence: normal project save/load retains musical mode/rate, resets progression, session style unchanged PASS
 dance sizes: masks=13824 telemetry=24 UI-cache=4 style=1 track=1856 project=3840 canvas=59520 graph-transfer=58560 bytes
 dance preservation: 512000 stereo frames +4000 RNG/note snapshots identical: disabled hook vs hidden/CRISP/GHOST PASS
-dance atomic: million single-writer trigger/resets, 895032 concurrent coherent reads PASS (host only)
+dance atomic: million single-writer trigger/resets, 798256 concurrent coherent reads PASS (host only)
 ..
 ----------------------------------------------------------------------
-Ran 2 tests in 0.039s
+Ran 2 tests in 0.027s
 
 OK
 Battle Circuit: fresh boot; 44 palette/style/LARGE round-trips; 20 legacy IDs; custom palette bytes; idle redraw PASS
@@ -1785,7 +1785,7 @@ STUDIO    14.2         12.2          6.0          5.2          3.4          1.6 
 minimum  12.00        9.00         5.00         4.00         2.20         1.25         4.50         4.50         4.50         4.50         4.50         4.50         1.80         3.00         3.00         7.00         4.50         4.50         3.00         2.50         1.80         4.50
 ..
 ----------------------------------------------------------------------
-Ran 2 tests in 0.089s
+Ran 2 tests in 0.081s
 
 OK
 splash logo: 224x145, 16288 B indexed RGB565 + alpha; source 0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a
@@ -2066,7 +2066,7 @@ CREW bytes: masks=55296 atomic=24 producer=96 phase=4 canvas=59520 track=1856 wi
 CREW audio/RNG preservation: disabled vs hidden/visible/covered, six-track playback +random arp, 512000 frames +4000 state snapshots identical PASS
 ...
 ----------------------------------------------------------------------
-Ran 3 tests in 0.015s
+Ran 3 tests in 0.017s
 
 OK
 SH-STYLE: old preset bytes, 2 sounds x6 tracks, descriptor ranges, MIDI/retrigger/locks/motion, user/project roundtrips, note-off/panic/STOP, shared8 PASS (1405 bytes)

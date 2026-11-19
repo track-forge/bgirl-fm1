@@ -2,7 +2,7 @@
 
 Stacks on [PR41](https://github.com/track-forge/bgirl-fm1/pull/41), frozen parent
 `82dc8f78479c7832f5ae5949de1d0e55ae97f8a6` / `feat/studio-cut-complete`.
-Runtime source: `dcb9ada7a76029755826ff1c2cc0867dcba33b6e`.
+Runtime source: `f304d82a4b9178edbeb482654af72c317cad60c2`.
 No merge, device build/flash, release or shared-preview deployment.
 **Technical verification is not Doug's visual/playability approval.**
 
@@ -22,6 +22,30 @@ Each comparison has the same fixture on parent#41 at left and this pass at right
 [Edge states](../img/stage-rollout/edge-states.png) ·
 [Native header close-ups](../img/stage-rollout/headers.png).
 Individual normal/LARGE native PNGs are alongside the comparison sheets.
+
+## Review correction — selection-frame clearance
+
+Doug spotted the TRACKS selection outline crossing PAD in the initial review strip.
+The14px canvas admitted the text bounds but did not reserve the outline pixels;
+canvas-only lint therefore missed the collision. [New regression fails on the
+pre-fix renderer](../img/stage-rollout/frame-collision-reproducer.txt).
+
+![Actual before/after selection clearance, nearest-neighbour enlargement](../img/stage-rollout/frame-clearance-repair.png)
+
+- TRACKS/LEVELS use six16px rows in the96px below the26px section header. Text
+  sits inside the outline, including punctuation and descenders; all six tracks,
+  bank pips, actual steps and mint playheads remain visible. No-flash gap-only
+  clearing and existing cached/input behavior remain intact.
+- The similar ARP octave boxes are14px high with cap-centered numbers. MIXER's
+  bottom REV label/gauge moves up2px to clear its selected-channel frame.
+- Added68 native frame audit cases: all6 selections in TRACKS/LEVELS, MIXER,
+  all4 octave boxes, plus unchanged LAB MOD/VOCODER and CUT event frames, across
+  normal/LARGE and FLAT/LINE. Tests locate actual framebuffer frame edges and
+  require intersecting glyph ink to stay strictly within them.376 printable
+  ASCII glyph/prefix samples separately exercise the row's complete name font.
+- All affected native PNGs/composites, resource and redraw receipts are refreshed.
+  Repaired current-head STAGE Chromium acceptance passes; the18-suite result file
+  is historical initial-STAGE evidence, not an18-suite rerun for this repair.
 
 ## What changed / what stays
 
@@ -60,14 +84,14 @@ No added persistent state, canvas, dancer cache or audio-thread work.
 
 ## Validation receipts
 
-- [Focused after](../img/stage-rollout/focused-after.txt): **2,576 cases**, zero
+- [Focused after](../img/stage-rollout/focused-after.txt): **2,644 cases**, zero
   layout, own-ink, neutrality, alignment or lost-measurement findings.37 scenarios
   ×12 palettes ×normal/LARGE ×FLAT/LINE =1,776; plus768 selected-track/bank/playhead
-  cases and32 new clock-phase pixel checks. Musical-state hashes exclude only
+  cases,32 new clock-phase pixel checks and68 frame-clearance audit cases. Musical-state hashes exclude only
   MIXER's existing ephemeral peak telemetry; parameters/steps/voices remain covered.
 - [Focused parent](../img/stage-rollout/focused-before.txt): the identical fixture,
   parent renderer/headers, **2,544 clean cases**; only new STAGE-specific pixel/cache
-  assertions and32 clock-phase pixel checks are omitted with `BGIRL_STAGE_BASELINE`.
+  assertions,68 frame audits,376 glyph/prefix samples and32 clock-phase pixel checks are omitted with `BGIRL_STAGE_BASELINE`.
 - Independent framebuffer assertions cover all six playheads, inactive mixer cells
   and16 clock phases; signature/cache assertions cover held-note changes, stopped
   CLOCK phase isolation, active CLOCK phase and timer-free stopped ARP.
@@ -88,7 +112,7 @@ No added persistent state, canvas, dancer cache or audio-thread work.
   [Before](../img/stage-rollout/layout-before.txt) / [after](../img/stage-rollout/layout-after.txt):
   zero own-ink/neutrality findings,466,800 alignment measurements, zero off by≥1px;
   258,042 column values and956 FM6 charts swept. This is not a blanket lint pass.
-- **18/18 actual Chromium/AudioWorklet suites pass:** [suite exit results](../img/stage-rollout/browser-results.json),
+- Initial STAGE acceptance: **18/18 actual Chromium/AudioWorklet suites passed** at `dcb9ada`; the frame repair reruns the STAGE browser and full host suite: [suite exit results](../img/stage-rollout/browser-results.json),
   [STAGE interaction receipt](../img/stage-rollout/browser-stage-results.json),
   [suite logs](../img/stage-rollout/browser-suites.txt). Normal/LARGE, all HOME views,
   real panel navigation/knob edits, bank2 inactive controls, MIXER, CLOCK play/stop,
@@ -102,14 +126,14 @@ No added persistent state, canvas, dancer cache or audio-thread work.
 
 | Resource | Parent | STAGE | Delta |
 |---|---:|---:|---:|
-| Default WASM bytes | 1,046,207 | 1,064,992 | +18,785 |
-| Native bgirl_test text bytes | 950,501 | 960,093 | +9,592 |
+| Default WASM bytes | 1,046,207 | 1,063,941 | +17,734 |
+| Native bgirl_test text bytes | 950,501 | 960,085 | +9,584 |
 | Native data / BSS bytes | 1,596 / 1,654,848 | same | 0 |
 | Font / icon array bytes | 84,283 / 8,753 | same | 0 |
 | Canvas / track / project-wire bytes | 59,520 / 1,856 / 3,840 | same | 0 |
 
 `ui_fonts.h`, `ui_icons.h`, `ui_keycaps.h`, `ui_palettes.h` are byte-identical.
-WASM SHA256: `7648f2a69c3617fc013f889923bf044a7ec7cdd51368837158702870cc969e67`.
+WASM SHA256: `10a85f9ff28213691db1f0dda71a5553ca288baa66254a21e44f1fea0c4aba1c`.
 
 [Before](../img/stage-rollout/draw-before.csv), [after](../img/stage-rollout/draw-after.csv),
 [delta](../img/stage-rollout/draw-delta.json):88 recipes,50 changed. Each of11 page/HOME
@@ -123,7 +147,7 @@ Normal idle / playback pixels for44,800 frames:
 | Context | Parent idle → STAGE | Parent playing → STAGE |
 |---|---:|---:|
 | SCOPE | 995,520 → 995,520 | 1,068,480 → 1,068,480 |
-| TRACKS / LEVELS (each) | 1,813,968 → 0 | 1,886,928 → 242,304 |
+| TRACKS / LEVELS (each) | 1,813,968 → 0 | 1,886,928 → 266,496 |
 | MIXER | 0 → 0 | 997,842 → 736,896 |
 | CLOCK | 995,520 → 0 | 1,068,480 → 336,480 |
 | ARP / ARP2 (each) | 995,520 → 0 | 1,068,480 → 72,960 |

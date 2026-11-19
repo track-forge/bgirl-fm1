@@ -156,30 +156,30 @@ LINT SLICE/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,6
 
 draw cost on the host (cc -O1; only the ratios mean anything on the device):
   screen            full redraw us   texts+icons   glyph px read
-  home                       176.2            32            8635
-  presets                    191.8            38           13245
-  step                       161.4            27            6918
-  roll_chords                160.9            27            6288
-  drum                       164.3            36            9129
-  mixer                      163.5            51           10926
-  menu                       201.1            33           13030
-  about_credits              318.9            48           40623
-  confirm_project            165.3            12            6615
-  HOME, a frame without force (lazy strips): 51.2 us, 2 texts
-  roll_chords: the panel redrawn 74.9 us; an unchanged frame (signature only) 1.10 us
-  roll_playing: the panel redrawn 76.7 us; an unchanged frame (signature only) 1.10 us
-  drum: the panel redrawn 74.7 us; an unchanged frame (signature only) 0.37 us
-  roll frame (header BPM 129->130 and card TUNE 19->20, strips only): 13.17 us, 1254 glyph px, 2682 px blitted; header + 4 cards redrawn whole: 56.56 us, 3783 glyph px, 15792 px blitted
+  home                       185.3            32            8635
+  presets                    192.9            38           13245
+  step                       156.2            27            6918
+  roll_chords                152.1            27            6288
+  drum                       156.8            36            9129
+  mixer                      164.1            51           10926
+  menu                       196.6            33           13030
+  about_credits              306.6            48           40623
+  confirm_project            165.6            12            6615
+  HOME, a frame without force (lazy strips): 54.5 us, 2 texts
+  roll_chords: the panel redrawn 77.3 us; an unchanged frame (signature only) 1.10 us
+  roll_playing: the panel redrawn 77.9 us; an unchanged frame (signature only) 1.08 us
+  drum: the panel redrawn 78.4 us; an unchanged frame (signature only) 0.38 us
+  roll frame (header BPM 129->130 and card TUNE 19->20, strips only): 12.92 us, 1254 glyph px, 2682 px blitted; header + 4 cards redrawn whole: 55.25 us, 3783 glyph px, 15792 px blitted
   MENU > LARGE:
-  home                       201.8            32            9568
-  edit_analog                188.6            31            8360
-  env                        160.3            28            7374
-  lfo                        163.3            26            7105
-  mixer                      175.3            51           12580
-  fx                         167.1            32            8641
-  clock                      164.0            26            9050
-  LARGE HOME, a frame without force (lazy strips): 40.3 us, 2 texts
-  LARGE ENV, a frame without force (lazy strips): 1.5 us, 0 texts
+  home                       183.0            32            9568
+  edit_analog                161.7            31            8360
+  env                        163.9            28            7374
+  lfo                        161.1            26            7105
+  mixer                      185.3            51           12580
+  fx                         166.5            32            8641
+  clock                      168.7            26            9050
+  LARGE HOME, a frame without force (lazy strips): 42.4 us, 2 texts
+  LARGE ENV, a frame without force (lazy strips): 1.6 us, 0 texts
 
 alignment: 466800 measurements of 70 places, 0 off by 1 px or more (OUTDIR/align.txt)
 
