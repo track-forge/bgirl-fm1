@@ -1028,20 +1028,22 @@ static uint16_t graph_plen[4][NTRK];                  /* .. each track's pattern
 static uint32_t graph_pden[4][NTRK];                  /* .. and its picture for SONG (project.c proj_density: 2 bits a cell) */
 static uint8_t graph_pcell[4][NTRK];                  /* .. in this many cells (min(LEN, 16)) */
 static uint32_t graph_pname_sig;
-static int graph_project_used(uint32_t slot)
+static int graph_project_used_mode(uint32_t slot, uint32_t song_sources)
 {
     static uint32_t ms, frame;
-    static uint8_t mask, ready;
-    if (!ready || fm1_ms - ms >= 500u || (ui.force && frame != ui.frame)) {
+    static uint8_t mask, ready, source_mode;
+    if (!ready || source_mode != song_sources || fm1_ms - ms >= 500u || (ui.force && frame != ui.frame)) {
         uint32_t i; mask = 0;
         for (i = 0; i < 4u; i++)
-            mask |= (uint8_t)((project_info(i, graph_pname[i], graph_plen[i], graph_pden[i], graph_pcell[i]) != 0) << i);
+            mask |= (uint8_t)(((song_sources ? song_source_info : project_info)(i, graph_pname[i], graph_plen[i], graph_pden[i], graph_pcell[i]) != 0) << i);
         graph_pname_sig = fnv(fnv(2166136261u, graph_pname, sizeof graph_pname), graph_plen, sizeof graph_plen);
         graph_pname_sig = fnv(fnv(graph_pname_sig, graph_pden, sizeof graph_pden), graph_pcell, sizeof graph_pcell);
-        ready = 1; ms = fm1_ms; frame = ui.frame;
+        ready = 1; source_mode = (uint8_t)song_sources; ms = fm1_ms; frame = ui.frame;
     }
     return (mask >> (slot & 3u)) & 1u;
 }
+static int graph_project_used(uint32_t slot) { return graph_project_used_mode(slot,0); }
+static int graph_song_used(uint32_t slot) { return graph_project_used_mode(slot,1); }
 static const char *graph_project_name(uint32_t slot)  /* (after graph_project_used) */
 {
     return graph_pname[slot & 3u];
@@ -1082,7 +1084,7 @@ static uint32_t sg_muldiv(uint32_t a, uint32_t b, uint32_t c)
 static uint32_t song_unit(const chain_row_t *r)        /* one pass of a section: its clock track's (1/48 quarters) */
 {
     uint32_t k = chain_clock(r), s = r->slot[k];
-    return s < 4u && graph_project_used(s) && graph_plen[s][k] ? graph_plen[s][k] : SG_BARU;
+    return s < 4u && graph_song_used(s) && graph_plen[s][k] ? graph_plen[s][k] : SG_BARU;
 }
 static void song_layout(song_lay_t *L)
 {
@@ -1305,7 +1307,7 @@ static uint32_t graph_signature(void)
         h ^= ui.song_row * 40503u + chain_config.count * 7919u + ui.song_trk * 3571u;
         h = fnv(h, chain_config.row, sizeof chain_config.row);
         h ^= chain.running ? (chain.row + 1u) * 104729u + chain.remaining * 1299709u : 0u;
-        for (i = 0; i < 4u; i++) h ^= (uint32_t)graph_project_used(i) << (24u + i);
+        for (i = 0; i < 4u; i++) h ^= (uint32_t)graph_song_used(i) << (24u + i);
         h += graph_pname_sig;
         {                                            /* the timeline: its view (following, ui_graph.c song_follow), the playhead */
             song_lay_t L;
@@ -2114,7 +2116,7 @@ static void sg_block(const song_lay_t *L, int32_t off, uint32_t k, uint32_t i, u
 {
     int32_t hi = SG_X0 + SG_W, y = SG_LY(k), bx = SG_X0 + L->x[i] - off, bw = L->x[j] - L->x[i] - SG_GAP, lx, w;
     int32_t x0 = bx > SG_X0 ? bx : SG_X0, x1 = bx + bw < hi ? bx + bw : hi, skip[4] = {0, 0, 0, 0};
-    int saved = graph_project_used(s), cur = c >= i && c < j;
+    int saved = graph_song_used(s), cur = c >= i && c < j;
     sg_fill_t F = {0, 0, 0, 0, 0};
     uint32_t p = chain.running && chain.row >= i && chain.row < j ? chain.row : 0xFFu;
     if (x1 <= x0)
@@ -2224,7 +2226,7 @@ static void graph_song(void)
         if (sp >= SG_X0 && sp < hi - 1) {              /* the playhead, across the lanes (INK on the cell selected) */
             for (k = 0; k < NTRK; k++) {
                 uint32_t s = c < L.n ? chain_config.row[c].slot[k] : CHAIN_SILENT;
-                int on = k == lane && s < 4u && graph_project_used(s) && sp >= SG_X0 + L.x[c] - off &&
+                int on = k == lane && s < 4u && graph_song_used(s) && sp >= SG_X0 + L.x[c] - off &&
                          sp + 2 <= SG_X0 + L.x[c + 1u] - off - SG_GAP;
                 cv_rect(sp, SG_LY(k), 2, SG_LH + (k + 1u < NTRK ? SG_LG : 0), on ? T_INK : T_ACCENT);
             }
@@ -2274,12 +2276,12 @@ static void graph_song(void)
         uint32_t s = chain_config.row[c].slot[lane];
         if (s >= 4u)
             cv_free_text(SG_X0, ly, fl, "SILENT", T_DIM, T_SURF, x0 - 10 - SG_X0);
-        else if (!graph_project_used(s))
+        else if (!graph_song_used(s))
             cv_free_text(SG_X0, ly, fl, "NOT SAVED", T_DIM, T_SURF, x0 - 10 - SG_X0);
         else if (graph_project_name(s)[0])
             cv_free_text(SG_X0, ly, fl, graph_project_name(s), T_MID, T_SURF, x0 - 10 - SG_X0);
     } else {                                           /* + ADD: how */
-        for (i = 0; i < 4u && !graph_project_used(i); i++)
+        for (i = 0; i < 4u && !graph_song_used(i); i++)
             ;
         cv_free_hint(SG_X0, ly + AF_M_CAP_Y + AF_M_CAP_H - AF_S_CAP_Y - AF_S_CAP_H,   /* (a key hint: S) */
                      i < 4u ? "[K3] ADD SECTION" : "[SAVE] PROJECT A-D", T_MID, T_SURF, x0 - 10 - SG_X0);

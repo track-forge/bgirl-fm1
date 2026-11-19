@@ -37,3 +37,7 @@ shutil.copytree(listening, Path(__file__).resolve().parents[1] / 'felucca/build/
 
 import package_logo
 package_logo.package()
+
+# Interchange descriptors must match this engine/layout without regenerating by surprise.
+subprocess.run([sys.executable, str(Path(__file__).resolve().parent/'song-snapshots/generate_layout.py'), '--check'], check=True)
+subprocess.run(['node', str(Path(__file__).resolve().parent/'song-snapshots/schema.mjs'), '--check'], check=True)

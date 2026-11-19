@@ -1,3 +1,4 @@
+import {fromWire, toWire, errors} from './song-snapshot.mjs';
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (C) 2026 Leo Kuroshita (@kurogedelic), Hügelton Instruments
 // Felucca in an AudioWorklet: felucca.wasm is the whole FM-1 firmware against a simulated FM-1
@@ -80,7 +81,7 @@ if (typeof registerProcessor === "function") {
           ex.web_boot();
           this.ex = ex;
           this.sentWrites = ex.web_flash_writes_count();
-          this.port.postMessage({ type: "ready", rate: ex.web_sample_rate() });
+          this.port.postMessage({ type: "ready", rate: ex.web_sample_rate(), restoreSong:!!ex.web_snapshot_restore_allowed() });
         } catch (err) {
           this.port.postMessage({ type: "error", message: String(err && err.message || err) });
         }
@@ -88,7 +89,36 @@ if (typeof registerProcessor === "function") {
       }
       const ex = this.ex;
       if (!ex) return;
-      if (m.type === "crew-info") {
+      if (m.type === "song-capture" || m.type === "song-validate" || m.type === "song-import" || m.type === "song-checkpoint") {
+        const result={type:"song-result",id:m.id};
+        try {
+          if (Date.now()>m.deadline) throw new Error("Snapshot request expired; no changes applied.");
+          if (m.type==="song-capture" || m.type==="song-checkpoint") {
+            result.active=!!ex.web_snapshot_active();
+            if(m.type!=="song-checkpoint" || result.active) {
+              if(this.queue.length)throw new Error("Release controls and wait for queued edits, then retry.");
+              const n=ex.web_snapshot_capture();
+              if(!n)throw new Error("Stop playback, release controls and close transfers before exporting/checkpointing. A referenced saved pattern may be missing.");
+              result.doc=fromWire(new Int32Array(ex.memory.buffer,ex.web_snapshot_buffer(),n).slice(),{build:"@BUILD_SHA@"});
+              if(result.active && this.songTitle!==undefined) {
+                result.doc.title=this.songTitle;
+                result.doc.metadata={...this.songMetadata,producer:result.doc.metadata.producer};
+              }
+              result.bytes=ex.web_snapshot_bytes();
+            }
+          } else {
+            const wire=toWire(m.doc);
+            if(wire.length>ex.web_snapshot_capacity())throw new Error("Logical snapshot capacity exceeded.");
+            new Int32Array(ex.memory.buffer,ex.web_snapshot_buffer(),wire.length).set(wire);
+            const err=m.type==="song-import" ? ex.web_snapshot_apply(wire.length) : ex.web_snapshot_validate(wire.length);
+            if(err)throw new Error(errors[err]||"Snapshot rejected");
+            if(m.type==="song-import") { this.queue.length=0; this.nextOk=0; this.songTitle=m.doc.title; this.songMetadata=m.doc.metadata||{}; }
+            result.bytes=ex.web_snapshot_bytes();result.active=!!ex.web_snapshot_active();
+          }
+        } catch(err) { result.error=String(err.message||err); }
+        this.port.postMessage(result);
+      }
+      else if (m.type === "crew-info") {
         this.port.postMessage({type:"crew-info",values:Array.from({length:13},(_,i)=>ex.web_bgirl_crew_info(i))});
       }
       else if (m.type === "dance-info") {
@@ -150,7 +180,7 @@ if (typeof registerProcessor === "function") {
 
     publish() {
       const ex = this.ex, mem = ex.memory.buffer;
-      const msg = { type: "frame" };
+      const msg = { type: "frame", portable: !!ex.web_snapshot_active() };
       const leds = [ex.web_lit_buttons(), ex.web_lit_keys(), ex.web_dim_buttons(), ex.web_dim_keys(), ex.web_dim_level(),
                     ex.web_breath_buttons(), ex.web_breath_keys(), ex.web_mid_keys ? ex.web_mid_keys() : 0];
       const an = ex.web_anim_levels ? ex.web_anim_levels() : 0;   // the power-on sweep: each LED's level

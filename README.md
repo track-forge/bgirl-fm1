@@ -8,6 +8,22 @@
 Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
 Browser development milestone only: **do not install on hardware**.
 
+## Portable browser songs
+
+**Export song** captures live unsaved music as readable `.bgirl.json`; edit it
+locally/with an agent, then **Import song** and audition without rebuilding.
+Stop playback and release controls first. All six sounds,64-step patterns,
+FM6, motion/locks and SONG sources travel together; named saves stay untouched.
+Imported sessions checkpoint in browser storage every2seconds while stopped;
+keep an exported file. Portable arrangements use JSON, not named-slot SAVE.
+[Format, offline validate/inspect/diff and refresh policy](docs/SONG_SNAPSHOTS.md).
+[Verification and local audition](docs/SONG_SNAPSHOTS_VERIFICATION.md).
+
+Compatible song-data changes need CLI validation/diff and an affected import/play
+smoke, **not** a rebuild/full engine suite. UI changes need affected browser checks;
+project/bridge/storage code needs the relevant regressions and one final root
+host run. [Scoped policy](AGENTS.md#song-snapshots--scoped-validation-budget).
+
 ## SH-STYLE collection
 
 Two real-capture, approximate ANALOG sounds: **SH 1-1** and **SH WIRE1**.

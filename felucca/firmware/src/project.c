@@ -423,6 +423,11 @@ static int proj_import(project_t *q, const void *b, int n) {
 /* Decoded and serialized workspaces belong to the main loop, never the audio ISR. */
 static project_t proj_scratch               /* decoded main-loop work, never audio ISR */
     __attribute__((section(".pool")));
+#if FELUCCA_WEB
+/* Browser interchange sources belong to the current runtime, never named slots. */
+static project_t portable_source[4];
+static uint8_t portable_mask, portable_session;
+#endif
 static char proj_name[PROJ_NAME_LEN + 1u]    /* the name of the music as it is now (loaded, saved, the editor's */
     __attribute__((section(".pool")));       /* runtime restore); "" = none. A save takes it unless one is given */
 #define PROJ_NO_SLOT 0xFFu
@@ -531,6 +536,9 @@ static void proj_kept_now(void);
 static int project_save_as(uint32_t slot, const char *name)
 {
     project_t *p = &proj_scratch;
+#if FELUCCA_WEB
+    if (portable_mask) { ui_message("EXPORT SONG FILE"); return 1; }
+#endif
     if (transport_busy()) {                            /* a flash erase silences the audio and stalls the */
         ui_message("STOP TO SAVE");                     /* sequencer (storage_hw.c): only while stopped */
         return 1;
@@ -624,6 +632,23 @@ static int project_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, 
     return 1;
 }
 
+/* SONG metadata follows the same source precedence as playback. The PROJECT
+ * browser deliberately keeps project_info's real named-slot metadata. */
+static int song_source_info(uint32_t slot, char *b, uint16_t *len48, uint32_t *den, uint8_t *n)
+{
+#if FELUCCA_WEB
+    if ((portable_mask >> (slot & 3u)) & 1u) {
+        const project_t *p=&portable_source[slot & 3u];
+        proj_name_get(b,(const uint8_t *)p->name);
+        for(uint32_t k=0;len48 && k<NTRK;k++)
+            len48[k]=(uint16_t)len48_of(p->t[k].p[P_SLEN],p->t[k].p[P_SDIV]);
+        for(uint32_t k=0;den && k<NTRK;k++) den[k]=proj_density(&p->t[k],&n[k]);
+        return 1;
+    }
+#endif
+    return project_info(slot,b,len48,den,n);
+}
+
 /* a stored project renamed in place (nothing else of it changes; the music playing is not touched, but the slot
  * it was loaded from / saved to: its name is the new one, the next SAVE's prefill): 0 done, 1 refused (playing,
  * an empty slot), 2 failed (the slot as it was) */
@@ -706,6 +731,9 @@ static int project_restore_runtime(const project_t *input)
     project_t *p = &proj_scratch;
     uint32_t i, k;
     if (!proj_ok(input) || !proj_engines_ok(input)) return 1;
+#if FELUCCA_WEB
+    portable_mask = portable_session = 0; /* every successful new/load/restore detaches old sources */
+#endif
     mom_back(0);                                  /* (ui_input.c MOMENTARY: the values as they were, then the load) */
     memset(drum_mute, 0, sizeof drum_mute);       /* (1.4.1: the DRUM lanes' mutes, performance state) */
     if (p != input) memcpy(p, input, sizeof *p);
@@ -875,6 +903,9 @@ static uint32_t chain_prepare(void)
             uint32_t s = chain_config.row[i].slot[k];
             if (s >= 4u || ((used >> s) & 1u))
                 continue;
+#if FELUCCA_WEB
+            if ((portable_mask >> s) & 1u) { used |= 1u << s; continue; }
+#endif
             if (!project_used(s))
                 return 3u + s;
             used |= 1u << s;
@@ -883,6 +914,10 @@ static uint32_t chain_prepare(void)
     for (i = 0; i < 4u; i++)
         if ((used >> i) & 1u) {
             project_t *p = &proj_scratch;
+#if FELUCCA_WEB
+            if ((portable_mask >> i) & 1u) memcpy(p, &portable_source[i], sizeof *p);
+            else
+#endif
             if (!proj_import(p, &proj_slot[i], sizeof(project_store_t))) return 3u + i;
             chain.source[i].motion = p->motion;
             /* A song keeps its current instruments. Engine-specific motion from
@@ -1032,6 +1067,11 @@ static void autosave_hold(void) { as.t = fm1_ms; }   /* the editor's transfers: 
 /* main loop, every pass (after settings_poll) */
 static void autosave_poll(void)
 {
+#if FELUCCA_WEB
+    /* A B6S1 autosave cannot own portable source patterns. Browser checkpoints
+     * retain the whole logical song instead; never persist dangling slot rows. */
+    if (portable_session) return;
+#endif
 #if FELUCCA_FLASH
     uint32_t sig;
     if (!flash_ok || fm1_ms - as.poll < AS_POLL_MS)

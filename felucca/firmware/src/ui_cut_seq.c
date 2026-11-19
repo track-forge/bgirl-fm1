@@ -84,7 +84,7 @@ static void graph_cut_song(void)
             int32_t bx=SG_X0+L.x[i]-off,ex=SG_X0+L.x[j]-off-SG_GAP,x0=bx>SG_X0?bx:SG_X0,x1=ex<hi?ex:hi;
             if(x1<=x0)continue;
             if(s>=4){cv_rect(x0,y+CS_LH/2,x1-x0,1,T_LINE);continue;}
-            int saved=graph_project_used(s);
+            int saved=graph_song_used(s);
             if(saved)cv_rect(x0,y,x1-x0,CS_LH,T_RAISE);else sg_frame(bx,ex-bx,y,CS_LH,1,SG_X0,hi,T_DIM);
             if(saved){
                 for(uint32_t q=i;q<j;q++){
@@ -135,10 +135,10 @@ static void graph_cut_song(void)
     }
     if(sp>=SG_X0 && sp<hi-1){cv_rect(sp,CS_Y,2,111-CS_Y,T_PLAY);cv_rect(sp-1,23,4,2,T_PLAY);}
     if(cur<L.n){
-        uint32_t s=chain_config.row[cur].slot[lane];const char *name=s>=4?"SILENT":!graph_project_used(s)?"NOT SAVED":graph_project_name(s);
-        cv_free_text(12,110,&AF_C,name,s>=4||!graph_project_used(s)?T_DIM:T_SUPPORT,T_BG,216);
+        uint32_t s=chain_config.row[cur].slot[lane];const char *name=s>=4?"SILENT":!graph_song_used(s)?"NOT SAVED":graph_project_name(s);
+        cv_free_text(12,110,&AF_C,name,s>=4||!graph_song_used(s)?T_DIM:T_SUPPORT,T_BG,216);
     }else{
-        uint32_t s;for(s=0;s<4 && !graph_project_used(s);s++);
+        uint32_t s;for(s=0;s<4 && !graph_song_used(s);s++);
         cv_free_hint(12,107,s<4?"[K3] ADD SECTION":"[SAVE] PROJECT A-D",T_SUPPORT,T_BG,216);
     }
 }

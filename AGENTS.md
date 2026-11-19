@@ -86,3 +86,18 @@ Read `docs/BGIRL_BASELINE_PLAN.md`, `README.md`, `docs/UPSTREAM.md` and
   tools/convert_crew.py ORIGINALS DEST. Do not overwrite original FLOORWORK.
 - Root tests include tests/run_crew_tests.sh; real browser tests/crew-browser.cjs.
   Technical acceptance is not art/seam approval or device fit. No manual deployment.
+
+## Song snapshots / scoped validation budget
+
+- Read `docs/SONG_SNAPSHOTS.md` for the browser-only logical interchange and paired
+  checkpoint policy. Do not turn portable source IDs into writes to named slots.
+- Routine compatible song JSON: shared CLI `validate`, semantic `diff`, and the
+  affected browser import/load/play smoke. No rebuild or full engine rerun.
+- Browser UI/JSON changes: schema/negative cases, actual file download/upload,
+  affected shell/browser tests. Rebuild only when installing changed WASM code.
+- Project/bridge/chain/storage changes: relevant codec, six-track, editor,
+  persistence, chain/input and browser tests; run root `./tests/run_tests.sh` once
+  at the frozen final runtime revision. Existing CI acceptance stays enabled.
+- Re-run only evidence invalidated by a code change/failure; do not regenerate
+  audio galleries or broaden unrelated fuzz matrices. DSP/release work needs its
+  own broader gates and is outside song-snapshot scope. No hardware claims.
