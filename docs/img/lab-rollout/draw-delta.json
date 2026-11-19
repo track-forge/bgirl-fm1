@@ -1,0 +1,402 @@
+[
+  {
+    "page": "ENV DEST",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": "0",
+    "pixels": "0",
+    "beforePixels": 995520,
+    "beforeBlits": 34,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "ENV DEST",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": "8",
+    "pixels": "72960",
+    "beforePixels": 1068480,
+    "beforeBlits": 42,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "ENV DEST",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5419200",
+    "beforePixels": 5916960,
+    "beforeBlits": 717,
+    "pixelDelta": -497760
+  },
+  {
+    "page": "FX",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": "31",
+    "pixels": "479328",
+    "beforePixels": 480297,
+    "beforeBlits": 32,
+    "pixelDelta": -969
+  },
+  {
+    "page": "VOCODER",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": "9",
+    "pixels": "82080",
+    "beforePixels": 1077600,
+    "beforeBlits": 43,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "VOCODER",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": "8",
+    "pixels": "72960",
+    "beforePixels": 1039200,
+    "beforeBlits": 41,
+    "pixelDelta": -966240
+  },
+  {
+    "page": "VOCODER",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": "34",
+    "pixels": "540396",
+    "beforePixels": 569676,
+    "beforeBlits": 35,
+    "pixelDelta": -29280
+  },
+  {
+    "page": "VOCODER",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5419200",
+    "beforePixels": 5975520,
+    "beforeBlits": 719,
+    "pixelDelta": -556320
+  },
+  {
+    "page": "EDIT 1",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": "9",
+    "pixels": "82080",
+    "beforePixels": 1077600,
+    "beforeBlits": 43,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "EDIT 1",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": "8",
+    "pixels": "72960",
+    "beforePixels": 1068480,
+    "beforeBlits": 42,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "EDIT 1",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": "34",
+    "pixels": "540396",
+    "beforePixels": 628236,
+    "beforeBlits": 37,
+    "pixelDelta": -87840
+  },
+  {
+    "page": "EDIT 1",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "703",
+    "pixels": "5507040",
+    "beforePixels": 5946240,
+    "beforeBlits": 718,
+    "pixelDelta": -439200
+  },
+  {
+    "page": "FILTER",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": "9",
+    "pixels": "82080",
+    "beforePixels": 1077600,
+    "beforeBlits": 43,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "FILTER",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": "8",
+    "pixels": "72960",
+    "beforePixels": 1068480,
+    "beforeBlits": 42,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "FILTER",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "704",
+    "pixels": "5536320",
+    "beforePixels": 5916960,
+    "beforeBlits": 717,
+    "pixelDelta": -380640
+  },
+  {
+    "page": "VOICE",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": "9",
+    "pixels": "82080",
+    "beforePixels": 1077600,
+    "beforeBlits": 43,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "VOICE",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": "8",
+    "pixels": "72960",
+    "beforePixels": 1068480,
+    "beforeBlits": 42,
+    "pixelDelta": -995520
+  },
+  {
+    "page": "VOICE",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": "31",
+    "pixels": "479328",
+    "beforePixels": 597417,
+    "beforeBlits": 36,
+    "pixelDelta": -118089
+  },
+  {
+    "page": "VOICE",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5419200",
+    "beforePixels": 6004800,
+    "beforeBlits": 720,
+    "pixelDelta": -585600
+  },
+  {
+    "page": "OP ENV",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": "703",
+    "pixels": "5507040",
+    "beforePixels": 5887680,
+    "beforeBlits": 716,
+    "pixelDelta": -380640
+  },
+  {
+    "page": "ENV DEST",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "32",
+    "pixels": "450048",
+    "beforePixels": 94848,
+    "beforeBlits": 16,
+    "pixelDelta": 355200
+  },
+  {
+    "page": "ENV DEST",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "LFO",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "32",
+    "pixels": "450048",
+    "beforePixels": 332928,
+    "beforeBlits": 32,
+    "pixelDelta": 117120
+  },
+  {
+    "page": "LFO",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "MOD",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "34",
+    "pixels": "478176",
+    "beforePixels": 100776,
+    "beforeBlits": 17,
+    "pixelDelta": 377400
+  },
+  {
+    "page": "MOD",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "FX",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "32",
+    "pixels": "450048",
+    "beforePixels": 94848,
+    "beforeBlits": 16,
+    "pixelDelta": 355200
+  },
+  {
+    "page": "FX",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "VOCODER",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "33",
+    "pixels": "453696",
+    "beforePixels": 100776,
+    "beforeBlits": 17,
+    "pixelDelta": 352920
+  },
+  {
+    "page": "VOCODER",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "INSERT",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "17",
+    "pixels": "395328",
+    "beforePixels": 5928,
+    "beforeBlits": 1,
+    "pixelDelta": 389400
+  },
+  {
+    "page": "INSERT",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "EDIT 1",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "32",
+    "pixels": "450048",
+    "beforePixels": 94848,
+    "beforeBlits": 16,
+    "pixelDelta": 355200
+  },
+  {
+    "page": "EDIT 1",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "702",
+    "pixels": "5444160",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 96960
+  },
+  {
+    "page": "FILTER",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "31",
+    "pixels": "425568",
+    "beforePixels": 94848,
+    "beforeBlits": 16,
+    "pixelDelta": 330720
+  },
+  {
+    "page": "FILTER",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "703",
+    "pixels": "5468640",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 121440
+  },
+  {
+    "page": "VOICE",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "32",
+    "pixels": "450048",
+    "beforePixels": 94848,
+    "beforeBlits": 16,
+    "pixelDelta": 355200
+  },
+  {
+    "page": "VOICE",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "700",
+    "pixels": "5395200",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 48000
+  },
+  {
+    "page": "OP ENV",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": "64",
+    "pixels": "566784",
+    "beforePixels": 284544,
+    "beforeBlits": 48,
+    "pixelDelta": 282240
+  },
+  {
+    "page": "OP ENV",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": "703",
+    "pixels": "5468640",
+    "beforePixels": 5347200,
+    "beforeBlits": 700,
+    "pixelDelta": 121440
+  }
+]

@@ -1594,11 +1594,12 @@ static int test_display_preferences(void)
                  settings.palette == 6 && T_BG == UI_PALETTES[6].c1 && ux.light && ui.menu == 1 && !song.octave &&
                  memcmp(before, host_screen, sizeof before) && !memcmp(sounds, trk, sizeof sounds));
     turn(EN_K1, 1);
-    bad += check("COLOR KNOB 1 steps on to HI-CON, NIGHT (#50: true black), MONO (1.0.2: black and white), then wraps to GREY",
+    bad += check("COLOR KNOB 1 steps on to HI-CON, NIGHT (#50: true black), MONO, CIRCUIT, STUDIO, then wraps to GREY",
                  settings.palette == 7 && (turn(EN_K1, 1), settings.palette == 8u) && T_BG == 0u &&
                  str_eq(UI_PALETTES[8].name, "NIGHT") && (turn(EN_K1, 1), settings.palette == UI_BW_INDEX) &&
                  str_eq(UI_PALETTES[UI_BW_INDEX].name, "MONO") && T_BG == 0u && T_TEXT == 0xFFFFu &&
                  (turn(EN_K1, 1), settings.palette == UI_CIRCUIT_INDEX) &&
+                 (turn(EN_K1, 1), settings.palette == UI_STUDIO_INDEX) &&
                  (turn(EN_K1, 1), settings.palette == UI_GREY_INDEX) && str_eq(UI_PALETTES[UI_GREY_INDEX].name, "GREY"));
     settings.lowcut = 2;
     ui.menu_sel = MI_LOWCUT;
@@ -2083,7 +2084,8 @@ static int test_mono_screens(void)
  * value strip, its last frame is the static render; unchanged digits stay; the direction follows the sign; a
  * change mid-roll retargets; a fast turn, another shape, a page / track / palette change and ui.force snap. */
 static uint16_t roll_shot[240 * 240];
-static const page_t ROLL_PG = {"CLOCK", FAM_TRK, SC_GLOBAL, GR_NONE, {G_BPM, G_SWING, G_CLOCK, G_TUNE}};
+/* Synthetic legacy-card page: migrated STAGE readouts intentionally snap. */
+static const page_t ROLL_PG = {"CLOCK", FAM_HOME, SC_GLOBAL, GR_NONE, {G_BPM, G_SWING, G_CLOCK, G_TUNE}};
 static void roll_settle(void)                     /* CLOCK + TUNE, nothing rolling, no knob hot */
 {
     uint32_t k;
@@ -2140,10 +2142,11 @@ static int test_roll(void)
     n = 0;
     for (e = 0; e < NENGINES; e++)
         for (id = 0; id < NPAGES && eng_ok(e); id++) {
-            uint32_t c;
+            uint32_t c;page_t legacy;
             ui_power_on(); set_engine_of(TSEL, e);
             ui.home = 0; ui.page = (uint8_t)id; page_entered();
             if (!page_visible(id) || PAGES[id].graph == GR_MOD) continue;
+            legacy=PAGES[id];legacy.fam=FAM_HOME;page_over=&legacy;
             ui.force = 1; ui_draw();
             for (c = 0; c < 4u; c++) {
                 int16_t *vp;
@@ -2163,9 +2166,10 @@ static int test_roll(void)
                 }
                 *vp = (int16_t)v0;
             }
+            page_over=0;
         }
     ok &= n > 500u;
-    bad += check("roll: every page and engine: a name (enum, even ALG 1..8, note, ON/OFF) snaps, numbers roll", ok);
+    bad += check("roll: legacy card formats across every page/engine: enums snap, numbers roll", ok);
 
     /* TUNE 0 -> 1 (card 4): a roll of ROLL_FRAMES frames, the last one the static render */
     ui_power_on(); roll_settle();
@@ -2290,7 +2294,7 @@ static int test_roll(void)
 static int test_soak_cards(void)
 {
     uint32_t seed = 63u, f, quiet = 0, old = 0, stale = 0, cmp = 0, c;
-    static uint16_t shot[240 * CARD_H];
+    static uint16_t shot[240 * LG_CARD_H];
 #define SOAK_RND(n) ((seed = seed * 1103515245u + 12345u) >> 8) % (n)
     ui_power_on();
     ui.frame = 0xFFFFFF00u;
@@ -2325,11 +2329,11 @@ static int test_soak_cards(void)
             for (c = 0; c < 5u && !ui.roll[c].from[0]; c++) {}
             if (c < 5u)
                 continue;
-            memcpy(shot, &host_screen[Y_LABEL * 240], sizeof shot);
+            memcpy(shot,&host_screen[readout_y()*240],240*card_h()*sizeof(uint16_t));
             ui.force = 1;
             ui_draw();
             cmp++;
-            stale += memcmp(shot, &host_screen[Y_LABEL * 240], sizeof shot) != 0;
+            stale += memcmp(shot,&host_screen[readout_y()*240],240*card_h()*sizeof(uint16_t))!=0;
         }
     }
 #undef SOAK_RND
@@ -2567,7 +2571,8 @@ static int sg_seen(const song_lay_t *L, uint32_t r)  /* row r's block (r == n: +
     int32_t a = L->x[r], b = r < L->n ? L->x[r + 1u] - SG_GAP : L->x[r] + SG_ADDW;
     return a >= sgv.off && b <= sgv.off + SG_W;
 }
-static uint16_t sg_px(int32_t x, int32_t y) { return swap16(host_screen[(uint32_t)(Y_GRAPH + y) * 240u + (uint32_t)x]); }
+static uint16_t sg_px(int32_t x, int32_t y) { return swap16(host_screen[(uint32_t)(graph_y() + y) * 240u + (uint32_t)x]); }
+static int32_t csg_y(uint32_t k){return CS_Y+(int32_t)k*CS_PITCH;}
 static int test_song_timeline(void)
 {
     song_lay_t L;
@@ -2632,21 +2637,20 @@ static int test_song_timeline(void)
     turn(EN_K1, 1); frames(800);
     bad += check("SONG timeline: the cursor moved while playing: its block in view", ui.song_row == 1u && sg_seen(&L, 1));
     seq_stop(); chain_stop(); frames(100);
-    /* styles: a slot not saved outlined (DIM), the selected one filled (THEME), the others RAISE; + ADD dashed */
+    /* CUT styles: missing slot outlined DIM; selection framed, saved fill RAISE; + ADD dashed. */
     chain_config.count = 3;
     chain_config.row[0] = chain_row_of(0, 1); chain_config.row[1] = chain_row_of(3, 1); chain_config.row[2] = chain_row_of(0, 1);
     ui.song_row = 0; fm1_ms += 1000u; go_page(GR_SONG); frames(100);
     song_layout(&L);
-    x = SG_X0 + L.x[1] + 4;
-    ok = sg_px(SG_X0 + L.x[0] + 4, SG_Y + SG_LH - 2) == T_THEME && sg_px(SG_X0 + L.x[2] + 4, SG_Y + SG_LH - 2) == T_RAISE;
-    ok &= sg_px(x, SG_Y) == T_DIM && sg_px(x, SG_Y + SG_LH - 2) == T_SURF && sg_px(SG_X0 + L.x[1], SG_Y + 3) == T_DIM;
-    bad += check("SONG timeline: selected THEME, others RAISE, a slot not saved only outlined (DIM)", ok);
+    x = SG_X0 + L.x[1] + 12;
+    ok = sg_px(SG_X0 + L.x[0] + 4, CS_Y + CS_LH - 1) == T_ACCENT && sg_px(SG_X0 + L.x[2] + 4, CS_Y + CS_LH - 2) == T_RAISE;
+    ok &= sg_px(x, CS_Y) == T_DIM && sg_px(x, CS_Y + CS_LH - 2) == T_BG && sg_px(SG_X0 + L.x[1], CS_Y + 3) == T_DIM;
+    bad += check("SONG CUT: selection framed, other blocks RAISE, missing slot outlined DIM", ok);
     x = SG_X0 + L.x[3];
-    bad += check("SONG timeline: + ADD's slot dashed (DIM), THEME when selected",
-                 sg_px(x, SG_Y) == T_DIM && sg_px(x + 1, SG_Y) == T_DIM && sg_px(x + 2, SG_Y) == T_SURF &&
-                 sg_px(x + 4, SG_Y) == T_DIM && sg_px(x + 4, SG_Y + 3) == T_SURF);
-    ui.song_row = 3; frames(100);
-    bad += check("SONG timeline: + ADD selected", sg_px(x, SG_Y) == T_THEME && sg_px(x + 2, SG_Y) == T_SURF);
+    bad += check("SONG CUT: + ADD vertical edge dashed DIM, empty interior",
+                 sg_px(x,CS_Y)==T_DIM && sg_px(x,CS_Y+1)==T_DIM && sg_px(x,CS_Y+2)==T_BG && sg_px(x+2,CS_Y+3)==T_BG);
+    ui.song_row=3;frames(100);
+    bad += check("SONG CUT: selected + ADD edge ACCENT",sg_px(x,CS_Y)==T_ACCENT && sg_px(x,CS_Y+2)==T_BG);
     chain_defaults(&chain_config);
     ui.song_row = 0;
     return bad;
@@ -3068,14 +3072,14 @@ static int test_product_ux(void)
         uint16_t graph[240 * H_GRAPH], columns[240 * (Y_SEP_END - Y_LABEL)];
         ui_power_on(); palette_set(p); settings.zoom = 1;
         open_family(FAM_ENV); frame();
-        memcpy(graph, host_screen + Y_GRAPH * 240, sizeof graph);
-        memcpy(columns, host_screen + Y_LABEL * 240, sizeof columns);
+        memcpy(graph, host_screen + graph_y() * 240, sizeof graph);
+        memcpy(columns, host_screen + readout_y() * 240, sizeof columns);
         ui.hot_col = 1; ui.hot_t = 40; ui.force = 1; ui_draw();
-        ok &= !memcmp(graph, host_screen + Y_GRAPH * 240, sizeof graph);
+        ok &= !memcmp(graph, host_screen + graph_y() * 240, sizeof graph);
         int changed = 0;
         for (uint32_t y = 0; y < Y_SEP_END - Y_LABEL; y++) for (uint32_t x = 0; x < 240; x++) {
-            uint16_t old = columns[y * 240 + x], now = host_screen[(Y_LABEL + y) * 240 + x];
-            if (x >= 64 && x < 119) changed |= old != now;
+            uint16_t old = columns[y * 240 + x], now = host_screen[(readout_y() + y) * 240 + x];
+            if (x >= CARD_X(1) && x < CARD_X(1)+CARD_W) changed |= old != now;
             else ok &= old == now;
         }
         ok &= changed;
@@ -4466,12 +4470,12 @@ static int test_chord_page(void)
 }
 
 /* the STEP page's piano roll (ui_graph.c graph_roll), read back from the screen: per column the rows whose centre
- * pixel (the bar's middle, x + 6) is a bar colour, against the notes the step sounds (its own; a TIE: the note
+ * pixel (x + 5, away from slide endpoints and the playhead) is a bar colour, against the notes the step sounds (its own; a TIE: the note
  * before's; a REST: none) */
 static int pr_is_bar(uint32_t x, uint32_t y)
 {
     uint16_t c = swap16(host_screen[y * 240u + x]);
-    return c == T_THEME || c == T_ACCENT || c == T_TEXT;
+    return c == T_RHYTHM || c == T_ACCENT || c == T_TEXT;
 }
 static int pr_columns_match(const track_t *t, uint32_t *nbars)
 {
@@ -4484,7 +4488,7 @@ static int pr_columns_match(const track_t *t, uint32_t *nbars)
             if (n >= 0 && rr >= 0 && rr < PR_ROWS) want |= 1u << rr;
         }
         for (r = 0; r < PR_ROWS; r++)
-            if (pr_is_bar((uint32_t)(PR_X0 + (int32_t)i * PR_CW + 6), Y_GRAPH + PR_Y0 + r * PR_RH + 2u)) got |= 1u << r;
+            if (pr_is_bar((uint32_t)(PR_X0 + (int32_t)i * PR_CW + 5), graph_y() + PR_Y0 + r * PR_RH + 2u)) got |= 1u << r;
         if (got != want) {
             printf("ui:   roll column %u: rows %05x drawn, %05x wanted\n", base + i, got, want);
             ok = 0;
@@ -4803,7 +4807,7 @@ static int test_piano_roll(void)
     key_down(7); frames(200);                                         /* a key held: its row lit on the strip */
     {
         int32_t r = (int32_t)proll.lo + PR_ROWS - 1 - (int32_t)kb_chord[7][0];
-        uint16_t c = r >= 0 && r < PR_ROWS ? swap16(host_screen[(Y_GRAPH + PR_Y0 + (uint32_t)r * PR_RH + 1u) * 240u + PR_KX + 7]) : 0;
+        uint16_t c = r >= 0 && r < PR_ROWS ? swap16(host_screen[(graph_y() + PR_Y0 + (uint32_t)r * PR_RH + 1u) * 240u + PR_KX + 7]) : 0;
         bad += check("  a key held: its row on the keyboard strip is the accent", kb_chn[7] && c == T_ACCENT);
     }
     key_up(7); frames(100);
@@ -4872,16 +4876,13 @@ static int test_bughunt_ui2(void)
     {   /* 3. MIXER: the knob just turned is the one drawn in the accent (K1 LEVEL, K2 PAN, K3 REV, K4 the MUTE badge) */
         uint32_t k, a[4][4], ok = 1;
         for (k = 0; k < 4u; k++) {
-            int32_t X = CARD_X(0), Y = Y_GRAPH;
-            ui_power_on();
-            settings.palette = 1; palette_set(1);
-            go_page(GR_TRK); frame(); frame();
-            turn(EN_K1 + k, 1);                                       /* (K4 right: MUTE on, its badge shown) */
-            ui.force = 1; frame();
-            a[k][0] = accent_in(X + 4, Y + 37, X + 38, Y + 71);       /* LEVEL */
-            a[k][1] = accent_in(X + 3, Y + 84, X + 28, Y + 115);      /* PAN */
-            a[k][2] = accent_in(X + 30, Y + 84, X + 55, Y + 115);     /* REV */
-            a[k][3] = accent_in(X + 22, Y + 4, X + 56, Y + 20);       /* the MUTE badge */
+            int32_t X = 8, Y;
+            ui_power_on();settings.palette = 1;palette_set(1);go_page(GR_TRK);frame();frame();
+            turn(EN_K1+k,1);ui.force=1;frame();Y=graph_y()+26;
+            a[k][0]=accent_in(X+2,Y+37,X+49,Y+47);
+            a[k][1]=accent_in(X+2,Y+graph_h()-50,X+49,Y+graph_h()-40);
+            a[k][2]=accent_in(X+2,Y+graph_h()-38,X+49,Y+graph_h()-28);
+            a[k][3]=accent_in(X+39,Y+1,X+49,Y+13);
         }
         for (k = 0; k < 4u; k++) {
             uint32_t j;
@@ -8006,6 +8007,14 @@ static void cin_beat(void)                       /* the audio until the count-in
     for (k = 0; k < 4000u && cin_left == left && seq_counting(); k++)
         events_block(CTL);
 }
+static int countin_page_restored(void)
+{
+    static uint16_t shot[240 * H_GRAPH];
+    uint32_t y=graph_y(),h=graph_h();
+    memcpy(shot,host_screen+y*240,240*h*sizeof(uint16_t));
+    ui.force=1;ui_draw();
+    return !memcmp(shot,host_screen+y*240,240*h*sizeof(uint16_t));
+}
 static int test_click_menu(void)
 {
     int bad = 0, ok;
@@ -8087,14 +8096,14 @@ static int test_click_menu(void)
     ok = transport_req == 2u;
     events_block(CTL);
     frame();
-    ok &= !seq_counting() && !song.playing && (song.rec & 1u) && px_at(16, CI_Y + 4) == px_at(16 + 56, CI_Y + 4);
+    ok &= !seq_counting() && !song.playing && (song.rec & 1u) && countin_page_restored();
     bad += check("PLAY while counting in stops it: nothing plays, still armed, the page back", ok);
     press(B_PLAY);
     events_block(CTL);
     ok = seq_counting() && cin_left == 4u;
     for (i = 0; i < 4u; i++) cin_beat();
     frame();
-    ok &= !seq_counting() && song.playing && trk[0].seq_idx == 0u && px_at(16, CI_Y + 4) == px_at(16 + 56, CI_Y + 4);
+    ok &= !seq_counting() && song.playing && trk[0].seq_idx == 0u && countin_page_restored();
     bad += check("PLAY armed and stopped: the count-in again; at its end the sequencer plays from step 1, the page back", ok);
     press(B_PLAY);
     events_block(CTL);
@@ -8308,7 +8317,7 @@ static int test_large(void)
     ui_power_on();
     song.playing = 0;
     frame();
-    ok = !(ui_prefs & PREF_LARGE) && large_kind() == LK_OFF && card_h() == CARD_H && graph_y() == Y_GRAPH;
+    ok = !(ui_prefs & PREF_LARGE) && large_kind() == LK_OFF && card_h() == CARD_H && graph_y() == 28;
     ok &= MI_LARGE == MI_STYLE + 1u && str_eq(MI_NAME[MI_LARGE], "LARGE") && menu_flag(MI_LARGE) &&
           str_eq(menu_flag(MI_LARGE)->name[0], "OFF") && str_eq(menu_flag(MI_LARGE)->name[1], "ON");
     ui.force = 1; frame();
@@ -8324,24 +8333,18 @@ static int test_large(void)
     press(B_HOME);
     bad += check("#15 MENU > LARGE: OFF by default, under STYLE; KNOB 1 right / OCT+ ON, left / OCT- OFF", ok && !ui.menu);
 
-    /* HOME: tall cards (rows 28..132) and the strip (136..198); the footer as it was */
+    /* STAGE keeps a real graph above the LARGE readouts. */
     frame();
-    ok = ui.home && large_kind() == LK_TALL && card_h() == LG_CARD_H && graph_y() == LG_Y_GRAPH && strip_kind() == SK_SCOPE;
-    ok &= lg_px(30, Y_SEP_END + 1) == T_SURF && off[(Y_SEP_END + 1) * 240 + 30] == swap16(T_BG);     /* a card where the gap was */
-    ok &= lg_px(30, LG_Y_GRAPH - 2) == T_BG && off[(LG_Y_GRAPH - 2) * 240 + 30] == swap16(T_SURF);   /* a gap in the panel */
-    ok &= lg_px(30, LG_Y_GRAPH + 1) == T_SURF;
-    for (c = 0; c < 4u; c++)                                      /* each column's K pill, over its knob */
-        ok &= lg_px(CARD_X(c) + 8, Y_LABEL + LG_MY + LG_MH / 2) == T_KEY;
-    ok &= !memcmp(off + Y_FOOT * 240, host_screen + Y_FOOT * 240, 240u * H_FOOT * sizeof *off);
-    bad += check("#15 LARGE ON: HOME's cards tall (a K1..K4 pill over each column), the scope a strip, the footer kept", ok);
-
-    /* the value in L: CLOCK's BPM 124 stands about twice as tall as in M */
-    go_title("CLOCK"); frame();
-    ok = large_kind() == LK_TALL && strip_kind() == SK_TITLE && cur_page()->id[0] == G_BPM && lg_value_rows(0) >= AF_L_CAP_H - 3;
-    ui_prefs = 0; ui.force = 1; frame();
-    ok &= lg_value_rows(0) <= AF_M_CAP_H + 2;
-    ui_prefs = PREF_LARGE; ui.force = 1; frame();
-    bad += check("#15 LARGE: a card value in L (CLOCK's BPM 120: about 21 rows of figures, M's 11)", ok);
+    ok=ui.home && large_kind()==LK_TALL && card_h()==64 && graph_y()==28 && graph_h()==102 && readout_y()==134;
+    for(c=0;c<4;c++)ok &= accent_in(CARD_X(c)+2,readout_y(),CARD_X(c)+COL_W-2,readout_y()+2)==0;
+    ok &= !memcmp(off+Y_FOOT*240,host_screen+Y_FOOT*240,240u*H_FOOT*sizeof *off);
+    bad += check("#15 LARGE STAGE HOME: full 102px graph above 64px readouts; footer retained",ok);
+    go_title("CLOCK");frame();ok=large_kind()==LK_TALL && strip_kind()==SK_NONE && cur_page()->id[0]==G_BPM && graph_h()==102 && card_h()==64;
+    int rows=0;for(int y=readout_y()+15;y<readout_y()+45;y++)for(int x=CARD_X(0)+3;x<CARD_X(0)+54;x++)if(lg_px(x,y)==T_TEXT){rows++;break;}
+    ok &= rows>=AF_L_CAP_H-3;
+    ui_prefs=0;ui.force=1;frame();rows=0;for(int y=readout_y()+14;y<readout_y()+29;y++)for(int x=CARD_X(0)+3;x<CARD_X(0)+54;x++)if(lg_px(x,y)==T_TEXT){rows++;break;}
+    ok &= rows<=AF_V_CAP_H+2;ui_prefs=PREF_LARGE;ui.force=1;frame();
+    bad += check("#15 LARGE CLOCK: native large numeric face, actual phase graph and four readouts",ok);
 
     /* a knob turned: its own card redrawn, the other three not */
     go_title("ENV"); frame(); frames(600);
@@ -8349,27 +8352,27 @@ static int test_large(void)
     turn(EN_K2, 3);
     {
         int32_t x, y, diff[4] = {0, 0, 0, 0};
-        for (y = Y_LABEL; y < Y_LABEL + LG_CARD_H; y++)
+        for (y = readout_y(); y < (int32_t)(readout_y() + card_h()); y++)
             for (c = 0; c < 4u; c++)
                 for (x = CARD_X(c); x < CARD_X(c) + CARD_W; x++)
                     diff[c] += off[y * 240 + x] != host_screen[y * 240 + x];
-        ok = large_kind() == LK_TALL && strip_kind() == SK_ADSR && diff[1] && !diff[0] && !diff[2] && !diff[3];
+        ok = large_kind() == LK_TALL && strip_kind() == SK_NONE && graph_y()==28 && graph_h()==102 && card_h()==64 && diff[1] && !diff[0] && !diff[2] && !diff[3];
     }
-    bad += check("#15 LARGE: ENV tall with its ADSR in the strip; KNOB 2 turned redraws card 2 only", ok);
+    bad += check("#15 LARGE: ENV 28px readouts below its ADSR; KNOB 2 turned redraws card 2 only", ok);
 
     /* per page type: lists and rolls keep the layout, the layers too; MIXER's tracks in the strip */
     go_page(GR_BROWSE); frame();
-    ok = large_kind() == LK_LABEL && card_h() == CARD_H && graph_y() == Y_GRAPH && graph_h() == H_GRAPH;
+    ok = large_kind() == LK_LABEL && card_h() == CARD_H && graph_y() == 28 && readout_y()==154 && graph_h() == H_GRAPH;
     go_page(GR_ROLL); frame();
     ok &= large_kind() == LK_LABEL;
     go_page(GR_TRK); frame();
-    ok &= large_kind() == LK_TALL && strip_kind() == SK_TRK && lg_px(CARD_X(0) + 8, LG_Y_GRAPH + 56) == T_SURF;
+    ok &= large_kind() == LK_TALL && strip_kind() == SK_NONE && graph_h()==102 && readout_y()==134;
     go_title("ENV"); frame();
     btn_down(B_GLO); frames(800);
     ok &= ui.layer && large_kind() == LK_LABEL && card_h() == CARD_H;
     btn_up(B_GLO); frame(); frame();
-    ok &= !ui.layer && large_kind() == LK_TALL && lg_px(30, LG_Y_GRAPH - 2) == T_BG;
-    bad += check("#15 LARGE: PRESETS and the roll keep the layout (labels in M), the layers too; MIXER tall, its tracks in the strip", ok);
+    ok &= !ui.layer && large_kind() == LK_TALL && readout_y()==134 && lg_px(30, readout_y()-1) == T_BG;
+    bad += check("#15 LARGE: PRESETS graph above compact readouts; roll/layers keep their geometry; MIXER graph above tall readouts", ok);
 
     {   /* saved with the settings; settings from before it: OFF (and so again: idempotent) */
         persist_t p, q;
@@ -8384,7 +8387,7 @@ static int test_large(void)
         q = p;
         ok &= settings_import(&q, (int)sizeof q) == 1 && !ui_prefs;
         ui.force = 1; frame();
-        ok &= large_kind() == LK_OFF && lg_px(30, Y_SEP_END + 1) == T_BG;
+        ok &= large_kind() == LK_OFF && card_h()==CARD_H && readout_y()==154 && graph_h()==H_GRAPH;
         bad += check("#15 LARGE saved with the settings; settings from before it: OFF (idempotent)", ok);
     }
     ui_prefs = 0;
@@ -8896,16 +8899,16 @@ static int test_song_lanes_drawn(void)
     go_page(GR_SONG); frames(100);
     song_layout(&L);
     xb = SG_X0 + L.x[1] - 1;                         /* the boundary between sections 1 and 2 */
-    y0 = SG_LY(0) + SG_LH - 1; y1 = SG_LY(1) + SG_LH - 1; y2 = SG_LY(2) + SG_LH - 1;   /* (under the letters) */
-    ok = sg_px(xb, SG_LY(3) + SG_LH - 1) == T_RAISE;  /* T4: B B -: one block over the boundary */
+    y0 = csg_y(0) + CS_LH - 1; y1 = csg_y(1) + CS_LH - 1; y2 = csg_y(2) + CS_LH - 1;   /* (under the letters) */
+    ok = sg_px(xb, csg_y(3) + CS_LH - 1) == T_RAISE;  /* T4: B B -: one block over the boundary */
     ok &= sg_px(xb, y1) != T_RAISE && sg_px(xb, y1) != T_THEME;   /* T2: A then B: two blocks, the gap */
     ok &= sg_px(SG_X0 + L.x[0] + 4, y2) != T_RAISE && sg_px(SG_X0 + L.x[0] + 4, y2) != T_THEME;   /* T3 "-": nothing */
     bad += check("SONG lanes drawn: a run of one slot one block, another slot a new one, \"-\" a gap", ok);
-    ok = sg_px(SG_X0 + L.x[1] + 2, y0) == T_THEME && sg_px(SG_X0 + L.x[0] + 2, y0) == T_RAISE && sg_px(xb, y0) == T_RAISE;
-    bad += check("SONG lanes drawn: the cell (section 2, T1) THEME, the rest of its block RAISE", ok);
+    ok = sg_px(SG_X0+L.x[1]+2,y0)==T_ACCENT && sg_px(SG_X0+L.x[0]+20,y0-1)==T_RAISE && sg_px(xb,y0)==T_RAISE;
+    bad += check("SONG CUT: only the selected section framed ACCENT, merged run remains RAISE", ok);
     ui.song_trk = 2; ui.song_row = 0; frames(100);
-    ok = sg_px(SG_X0 + L.x[0] + 4, SG_LY(2)) == T_THEME && sg_px(SG_X0 + L.x[0], SG_LY(2) + 4) == T_THEME &&
-         sg_px(SG_X0 + L.x[0] + 4, SG_LY(2) + 4) != T_THEME;
+    ok = sg_px(SG_X0 + L.x[0] + 4, csg_y(2)) == T_ACCENT && sg_px(SG_X0 + L.x[0], csg_y(2) + 4) == T_ACCENT &&
+         sg_px(SG_X0 + L.x[0] + 4, csg_y(2) + 4) != T_ACCENT;
     bad += check("SONG lanes drawn: the cursor on a \"-\" cell: its outline only", ok);
     chain_prepare(); events_block(32);
     for (k = 0; k < 600u; k++) events_block(32);
@@ -8913,10 +8916,10 @@ static int test_song_lanes_drawn(void)
     ok = 1;
     {
         int32_t sp = SG_X0 + song_playx(&L) - sgv.off;
-        for (k = 0; k < NTRK; k++) ok &= sg_px(sp, SG_LY(k) + 1) == T_ACCENT;
-        ok &= sp > SG_X0 + 4 && sg_px(sp, SG_Y + SG_H) == T_ACCENT && sg_px(sp, SG_RY + 3) == T_ACCENT;
+        for (k = 0; k < NTRK; k++) ok &= sg_px(sp, csg_y(k) + 1) == T_PLAY;
+        ok &= sp > SG_X0 + 4 && sg_px(sp, CS_Y+NTRK*CS_PITCH-2)==T_PLAY && sg_px(sp,110)==T_PLAY;
     }
-    bad += check("SONG lanes drawn: the playhead crosses the four lanes to the ruler (ACCENT)", ok);
+    bad += check("SONG CUT: PLAY stripe crosses all six lanes and the bar ruler", ok);
     seq_stop(); frames(50);
     ui_prefs &= ~PREF_ANIM_OFF;
     chain_defaults(&chain_config);
@@ -8932,8 +8935,8 @@ static uint32_t sg_bar(int32_t x, int32_t k)          /* lane k's bar height at 
 {
     uint32_t n = 0;
     int32_t y;
-    for (y = SG_LY(k) + SG_PAD; y < SG_LY(k) + SG_PAD + SG_PH; y++)
-        n += sg_px(x, y) == T_THEME || sg_px(x, y) == T_INK;
+    for (y = csg_y(k) + 2; y < csg_y(k) + 2 + 7; y++)
+        n += sg_px(x,y)==T_RHYTHM;
     return n;
 }
 static int test_song_pictures(void)
@@ -8972,24 +8975,24 @@ static int test_song_pictures(void)
     ok = 1;
     for (i = 4; i < 16u; i++) {                      /* (cells 0..3 hold the letter) */
         int32_t x = sx + (int32_t)((2u * i + 1u) * (uint32_t)wt / 32u);
-        ok &= sg_bar(x, 2) == lv[i] * SG_PH / 3u && sg_px(x, SG_LY(2) + SG_LH - 2) == T_RAISE;
+        ok &= sg_bar(x, 2) == lv[i] * 7 / 3u && sg_px(x, csg_y(2) + CS_LH - 2) == T_RAISE;
     }
-    bad += check("SONG pictures: drawn in the lane, a bar a cell as high as its level (THEME on RAISE)", ok);
+    bad += check("SONG CUT: true per-cell density heights in the lane (RHYTHM on RAISE)", ok);
     ui.song_trk = 2; frames(100);                     /* the cell selected: INK bars on THEME */
     ok = 1;
     for (i = 4; i < 16u; i++) {
         int32_t x = sx + (int32_t)((2u * i + 1u) * (uint32_t)wt / 32u), y;
         uint32_t n = 0;
-        for (y = SG_LY(2) + SG_PAD; y < SG_LY(2) + SG_PAD + SG_PH; y++) n += sg_px(x, y) == T_INK;
-        ok &= n == lv[i] * SG_PH / 3u && sg_px(x, SG_LY(2) + SG_LH - 2) == T_THEME;
+        for (y = csg_y(2) + 2; y < csg_y(2) + 2 + 7; y++) n += sg_px(x,y)==T_RHYTHM;
+        ok &= n == lv[i] * 7 / 3u && sg_px(x, csg_y(2) + CS_LH - 2) == T_RAISE;
     }
-    bad += check("SONG pictures: in the cell selected INK bars on THEME", ok);
+    bad += check("SONG CUT: selected cell retains true RHYTHM density bars on RAISE", ok);
     chain_config.row[0].repeat = 2;                  /* x2: the pattern twice, a notch between */
     ui.song_trk = 0; frames(100);
     song_layout(&L);
     sx = SG_X0 + L.x[0]; wt = L.x[1] - L.x[0] - SG_GAP;
-    ok = sg_bar(sx + wt / 2 + (int32_t)(5u * (uint32_t)wt / 32u + (uint32_t)wt / 64u), 2) == SG_PH &&
-         sg_px(sx + wt / 2, SG_LY(2) + SG_PAD + 1) == T_SURF && sg_px(sx + wt / 2, SG_LY(2) + 1) == T_RAISE;
+    ok = sg_bar(sx + wt / 2 + (int32_t)(5u * (uint32_t)wt / 32u + (uint32_t)wt / 64u), 2) == 7 &&
+         sg_bar(sx+(wt+1)/2,2)==0 && sg_px(sx + wt / 2, csg_y(2) + 1) == T_RAISE;
     bad += check("SONG pictures: REPS 2 draws the pattern twice, notched between (the block whole)", ok);
     trk[2].p[P_SLEN] = 32;                           /* LEN 32: two steps a cell, the mean rounded up */
     memset(trk[2].step, 0, sizeof trk[2].step);
@@ -9370,7 +9373,7 @@ static int test_fx_map_columns(void)
                 for (c = 0; c < 4u; c++)
                     px[c] = tr_px(LC_X(c) + 27, Y_GRAPH + 4 + (LF_H + 4) * (int32_t)r + 1);
                 ok &= px[0] == px[2] && px[1] == px[3] && (pal ? px[0] == px[1] : px[0] != px[1]);
-                ok &= !st || pal || px[0] == T_SURF;
+                ok &= !st || pal || px[0] == T_BG;
             }
             ui.layer = 0;
         }

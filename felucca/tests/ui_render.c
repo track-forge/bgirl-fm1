@@ -322,6 +322,9 @@ static uint64_t fmp_mask[CV_MAX];
 static uint16_t fmp_save[CV_MAX];
 static uint8_t fmp_kind[FMP_MAX], fmp_a[FMP_MAX], fmp_b[FMP_MAX];
 static uint32_t fmp_n, fmp_charts;
+#ifndef UI_LINT_LIMIT
+#define UI_LINT_LIMIT 600u
+#endif
 static void finding(const char *what, const rbox_t *b, const rbox_t *o);
 static void fmp_find(uint32_t alg, const char *what, uint32_t i, int32_t x, int32_t y, uint32_t j)
 {
@@ -413,9 +416,12 @@ static void fm6_hook(uint32_t kind, uint32_t a, uint32_t b)
     fmp_n++;
 }
 
+#ifndef UI_LINT_LIMIT
+#define UI_LINT_LIMIT 600u
+#endif
 static void finding(const char *what, const rbox_t *b, const rbox_t *o)
 {
-    static char seen[600][64];
+    static char seen[UI_LINT_LIMIT][64];
     static uint32_t nseen;
     char key[64];
     uint32_t i;
@@ -423,7 +429,7 @@ static void finding(const char *what, const rbox_t *b, const rbox_t *o)
     snprintf(key, sizeof key, "%.20s|%.14s|%.24s", cur_name, what, b->s);
     for (i = 0; i < nseen && strcmp(seen[i], key); i++) ;
     if (i < nseen) return;                       /* each finding once per screen */
-    if (nseen < 600u) strcpy(seen[nseen++], key);
+    if (nseen < UI_LINT_LIMIT) strcpy(seen[nseen++], key);
     else return;
     fprintf(rep, "LINT %-22s %-32s '%s' (%d,%d)-(%d,%d)", cur_name, what, b->s, b->x0, b->y0, b->x1, b->y1);
     if (o) fprintf(rep, " / '%s' (%d,%d)-(%d,%d)", o->s, o->x0, o->y0, o->x1, o->y1);
@@ -532,6 +538,27 @@ static void song_bands(void)
     uint32_t i, nl = 0;
     int32_t py = (int32_t)Y_GRAPH, base = -1;
     if (ui.home || ui.menu || ui.layer || ui.confirm || name_on() || cur_page()->graph != GR_SONG) return;
+    if(design_context()==DC_CUT_SEQ){
+        py=(int32_t)graph_y();
+        for(i=0;i<nscr;i++){
+            const rbox_t *b=&scr[i];
+            if(b->y1<=py || b->y0>=py+(int32_t)graph_h())continue;
+            nsong_txt++;
+            if(b->y0>=py && b->y1<=py+22 && b->x0>=8 && b->x1<=232)continue;
+            int lane=0;
+            for(int32_t k=0;k<NTRK;k++)lane|=b->y0>=py+CS_Y+k*CS_PITCH && b->y1<=py+CS_Y+k*CS_PITCH+CS_LH;
+            if(lane && b->x0>=4 && b->x1<=SG_X0+SG_W)continue;
+            if(!strcmp(b->s,"+") && b->y0>=py+CS_Y && b->y1<=py+CS_Y+NTRK*CS_PITCH-2 && b->x0>=SG_X0 && b->x1<=SG_X0+SG_W)continue;
+            if(b->y0>=py+107 && b->y1<=py+(int32_t)graph_h() && b->x0>=8 && b->x1<=232){
+                if((b->flags&4u) && strcmp(b->s,"icon"))continue;
+                nl++;if(base<0)base=b->y1;
+                if(nl>2 || b->y1-base>3 || base-b->y1>3)finding("SONG CUT: second info line",b,0);
+                continue;
+            }
+            finding("SONG CUT: outside bands",b,0);
+        }
+        return;
+    }
     for (i = 0; i < nscr; i++) {
         const rbox_t *b = &scr[i];
         int32_t k, lane = 0;
@@ -2248,6 +2275,7 @@ static void al_table(void)
             al_count, al_nst, al_fail, al_lost);
 }
 
+#ifndef BGIRL_RENDER_LIBRARY
 int main(int argc, char **argv)
 {
     const char *out = argc > 1 ? argv[1] : "build/ui_new";
@@ -2554,3 +2582,5 @@ int main(int argc, char **argv)
            al_fail ? " (see align.txt)" : "");
     return nfind || nink || mono_bad || al_fail ? 1 : 0;
 }
+
+#endif /* BGIRL_RENDER_LIBRARY */

@@ -127,3 +127,9 @@ by those owners.
 ## Radio
 
 Felucca never enables the Bluetooth / Wi-Fi radio of the hardware.
+
+BGIRL also bundles unmodified `assets/fonts/ChakraPetch-Medium.ttf` and
+`assets/fonts/Michroma-Regular.ttf` under SIL OFL1.1. Copyrights/terms are retained
+in `assets/fonts/OFL-ChakraPetch.txt` and `assets/fonts/OFL-Michroma.txt`.
+`assets/fonts/BGIRL-SOURCES.md` pins their source. No JIANT artwork or renderer
+source is imported.

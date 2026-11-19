@@ -1,0 +1,2079 @@
+== upstream storage_test
+empty flash loads nothing                      ok
+save A                                         ok
+load returns A                                 ok
+save B                                         ok
+load returns B (newer seq)                     ok
+torn save keeps B                              ok
+header not written keeps B                     ok
+save A again                                   ok
+load returns A                                 ok
+both copies corrupt -> nothing                 ok
+other objects untouched                        ok
+settings save/load                             ok
+CRC-32 is zlib's (check value 0xCBF43926)      ok
+newer copy rotten -> the older one loads       ok
+save over the rotten copy                      ok
+... loads the new data                         ok
+both headers broken -> nothing                 ok
+data stays in the Felucca regions              ok
+FM6 user preset patches (and the retired bank) in the sectors 0x9F000 / 0xFE000 ok
+the autosave in its own sectors 0xE5000 / 0xE6000, nothing else touched ok
+a bank copy does not read as the patches object (its type) ok
+st_save_to: the first patches write into A, the bank's older copy; the bank's B still loads ok
+the next save goes to B (over the bank), A/B as any object ok
+FM6 patches: the sector tails stay erased      ok
+every payload/header byte cut keeps old data   ok
+erase failure keeps old data                   ok
+write protection is a save error               ok
+save sequence wraps                            ok
+wrapped sequence loads new data                ok
+save after sequence wrap                       ok
+invalid object load does no flash access       ok
+invalid object save does no flash access       ok
+wrapped object rejected                        ok
+small destination rejects whole object         ok
+oversized save rejected                        ok
+storage test passed
+== upstream upreset_test
+UP_PUT frame < 640 bytes                       ok
+UP_PUT parses                                  ok
+UP_PUT values (negative v14 too)               ok
+pattern: rest drops flags, tie has no note     ok
+UP_PUT short frame -> args                     ok
+every short prefix rejected without record changes ok
+short optional tail rejected                   ok
+UP_PUT slot 32 -> args                         ok
+UP_PUT bad engine -> args                      ok
+UP_PUT engine 1 (DIGITAL): kept as it is       ok
+  a bank read keeps it engine 1 (its values DIGITAL's) ok
+UP_PUT empty name -> args                      ok
+UP_PUT 13-char name -> args                    ok
+UP_PUT 12-char name ok                         ok
+name shown upper case                          ok
+bank fits one object                           ok
+bank save                                      ok
+bank load: the record is back                  ok
+other slots empty                              ok
+bank 0 never written -> empty                  ok
+banks in 0xDC000..0xDFFFF                      ok
+bank with another record size -> empty         ok
+record with another version -> empty           ok
+a version 3 record (a drum grid) is used       ok
+UP_PUT kind 1: a grid record, accents only on hits ok
+UP_PUT kind 0: a note pattern (version 2)      ok
+UP_PUT short grid rejected, record unchanged   ok
+UP_PUT unknown kind rejected                   ok
+UP_PUT trailing byte rejected (no category; two bytes) ok
+a grid record: bank round trip                 ok
+bank load: PHYS DRUM -> DRUM engine, MEMB kept ok
+UP_PUT of PHYS DRUM -> DRUM engine             ok
+bank load: SAMPLE PERC -> DRUM kit, FLUTE kept ok
+  migrated again: as it is                     ok
+UP_PUT of SAMPLE PERC -> DRUM kit              ok
+np < P_COUNT: mapped by count                  ok
+old record (np 53): SLICER and matrix defaults, E0..E7 kept ok
+old record (np 57): SLICER kept, matrix defaults, E0..E7 kept ok
+v4 / v5 records of 91, 89 and 69 parameters: E0..E7 at P_E0, lane levels and chord keys defaults ok
+np == P_COUNT: as stored                       ok
+steps -> pattern                               ok
+empty sequencer -> empty pattern               ok
+category: UP_PUT's last byte, none = the engine's ok
+category: kept through the bank on flash       ok
+category: a version 3 grid -> 5 with it, values kept; one that cannot be packed keeps none ok
+user preset test passed
+== upstream input_test
+debounce: press 2 frames, release 8 frames, frame 1100 us
+clean press: contact -> press avg 1746 us, max 2297 us; release -> note off max 8897 us
+clean presses: one press and one release each, every key and button      ok
+clean press: counted within 2.3 ms of the contact (2 frames)             ok
+clean release: the note ends within 10 ms                                ok
+press stat (first closed frame -> press): avg 1100 us over 1
+the press stat counts the note keys' presses (one frame after the first) ok
+bouncy press (<= 3 ms of bounce): first touch -> press avg 2511 us, max 5186 us; settled -> press max 2298 us; last bounce -> note off max 8899 us
+2000 bouncy presses: exactly one note-on / press and one release each    ok
+no note ends while its key is held                                       ok
+no hanging note 12 ms after the last bounce of a release                 ok
+bouncy press: counted within 2.3 ms of the contact settling, or sooner   ok
+bouncy release: the note ends within 10 ms of the last bounce            ok
+a 150 us glitch plays no note                                            ok
+10 notes 40 ms apart (20 ms held, bouncy): 10 note-ons, 10 releases      ok
+encoder 0: one cycle -> 1 step(s)
+an encoder detent cycle is one step                                      ok
+#63 a still knob: one contact chattering or both lost together never steps ok
+encoder at speed: 720 turns of 12 detents, 0 miscounted (worst by 0)
+#126 12-detent turns up to 300 detents/s (even) / 150/s (bunched in half a click): every detent ok
+#126 slow turns (3..40 detents/s), contacts bouncing 1.5 ms: one step a click (0 off) ok
+#126 120 detents/s, bouncing 0.2 ms: 8 right then 6 left at once -> 8, then 2 ok
+LEDs, bus 0 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim HI: a pulse every frame on its own column, 3208..3208 ns (target 3200 +-30 %) ok
+LEDs HI, bus 0: the pulse spans 16..16 bits of the shift (the shift shorter than the pulse: the rest waited)
+LEDs, bus 1 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim HI: a pulse every frame on its own column, 3208..3208 ns (target 3200 +-30 %) ok
+LEDs HI, bus 1: the pulse spans 16..16 bits of the shift (the shift shorter than the pulse: the rest waited)
+LEDs, bus 2 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim HI: a pulse every frame on its own column, 3125..3375 ns (target 3200 +-30 %) ok
+LEDs HI, bus 2: the pulse spans 11..12 bits of the shift (no wait)
+LEDs, bus 4 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim HI: a pulse every frame on its own column, 3208..3208 ns (target 3200 +-30 %) ok
+LEDs HI, bus 4: the pulse spans 5..5 bits of the shift (no wait)
+LEDs, bus 0 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim LO: a pulse every frame on its own column, 1583..1583 ns (target 1600 +-30 %) ok
+LEDs LO, bus 0: the pulse spans 16..16 bits of the shift (the shift shorter than the pulse: the rest waited)
+LEDs, bus 1 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim LO: a pulse every frame on its own column, 1583..1583 ns (target 1600 +-30 %) ok
+LEDs LO, bus 1: the pulse spans 11..11 bits of the shift (no wait)
+LEDs, bus 2 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim LO: a pulse every frame on its own column, 1375..1625 ns (target 1600 +-30 %) ok
+LEDs LO, bus 2: the pulse spans 4..5 bits of the shift (no wait)
+LEDs, bus 4 tick(s) an access: lit every frame, own column only, dark at the latch ok
+  dim LO: a pulse every frame on its own column, 1208..1708 ns (target 1600 +-30 %) ok
+LEDs LO, bus 4: the pulse spans 1..2 bits of the shift (no wait)
+#119 breath HI, bus 1: own column, the writes, lit / dim never breathing, in step ok
+  peak 60.8 % of lit (50..70), from the peak (57.7 %), dark at half a period ok
+  smooth: 32-frame means step <= 12.3 % of lit (<= 15 % of the peak + 2 frames), monotonic ok
+  flicker: dark runs 3 fr over 50 % of the peak (<= 9: ~10 ms), 8 over 25 %, 28 at all ok
+  the glow still 3208..3208 ns (target 3208 +-30 %)                      ok
+#119 breath HI, bus 2: own column, the writes, lit / dim never breathing, in step ok
+  peak 61.0 % of lit (50..70), from the peak (57.9 %), dark at half a period ok
+  smooth: 32-frame means step <= 12.2 % of lit (<= 15 % of the peak + 2 frames), monotonic ok
+  flicker: dark runs 3 fr over 50 % of the peak (<= 9: ~10 ms), 7 over 25 %, 38 at all ok
+  the glow still 3208..3208 ns (target 3208 +-30 %)                      ok
+#119 breath LO, bus 1: own column, the writes, lit / dim never breathing, in step ok
+  peak 29.2 % of lit (25..35), from the peak (29.2 %), dark at half a period ok
+  smooth: 32-frame means step <= 6.2 % of lit (<= 15 % of the peak + 2 frames), monotonic ok
+  flicker: dark runs 7 fr over 50 % of the peak (<= 9: ~10 ms), 22 over 25 %, 58 at all ok
+  the glow still 1500..1625 ns (target 1583 +-30 %)                      ok
+#119 breath LO, bus 2: own column, the writes, lit / dim never breathing, in step ok
+  peak 32.3 % of lit (25..35), from the peak (29.2 %), dark at half a period ok
+  smooth: 32-frame means step <= 6.3 % of lit (<= 15 % of the peak + 2 frames), monotonic ok
+  flicker: dark runs 7 fr over 50 % of the peak (<= 9: ~10 ms), 13 over 25 %, 39 at all ok
+  the glow still 1458..1708 ns (target 1583 +-30 %)                      ok
+mid level HI: lit 1 frame in 8, evenly (every 8 frames, ~113 Hz), the glow between, in step ok
+  its level 15.5 % of lit (1/8 + the glow), above the glow, below a breath's peak ok
+mid level LO: lit 1 frame in 12, evenly (every 12 frames, ~75 Hz), the glow between, in step ok
+  its level 9.8 % of lit (1/12 + the glow), above the glow, below a breath's peak ok
+power-on sweep DIM: 640 frames (704 ms) and its end, then fm1_led_anim_on() 0 ok
+  every LED every frame as its level asks: lit frames (sigma-delta), the glow under / alone ok
+  32 frames: lit frames within 1 of the level; at 4 /64 and up a dark run <= 16 frames ok
+  the picture: one head, full, left to right in place order; a tail of 4..5 keys ok
+  the buttons: dark until frame 352, up to 16 /64, down to the end       ok
+  the end: nothing lit, the glow on every LED; nothing breathing or mid  ok
+  then the tick as before: 33 ticks, the same line writes, no extra one  ok
+power-on sweep (DIM): frame  ms  keys F3..G5 (black and white by place)  buttons
+     0    0  |:                          |     0/64
+    32   35  |*@-.                       |     0/64
+    64   70  |-=+%+:                     |     0/64
+    96  105  |.:--+#%.                   |     0/64
+   128  140  |...::-=%=:                 |     0/64
+   160  176  |......:-+##:               |     0/64
+   192  211  |.......::-=*=:             |     0/64
+   224  246  |..........:-+##:.          |     0/64
+   256  281  |............:-=*%=.        |     0/64
+   288  316  |..............:--+#:       |     0/64
+   320  352  |................::-*@-.    |     0/64
+   352  387  |..................:-=+#*   |     0/64
+   384  422  |....................::-=@-.|  .  0/64
+   416  457  |......................::=+%|  .  0/64
+   448  492  |........................::-|  :  6/64
+   480  528  |..........................:|  - 11/64
+   512  563  |...........................|  - 13/64
+   544  598  |...........................|  :  8/64
+   576  633  |...........................|  :  5/64
+   608  668  |...........................|  .  0/64
+   640  704  |...........................|  .  0/64
+power-on sweep OFF: 640 frames (704 ms) and its end, then fm1_led_anim_on() 0 ok
+  every LED every frame as its level asks: lit frames (sigma-delta), the glow under / alone ok
+  32 frames: lit frames within 1 of the level; at 4 /64 and up a dark run <= 16 frames ok
+  the picture: one head, full, left to right in place order; a tail of 4..5 keys ok
+  the buttons: dark until frame 352, up to 16 /64, down to the end       ok
+  the end: nothing lit, dark (no glow); nothing breathing or mid         ok
+  then the tick as before: 33 ticks, the same line writes, no extra one  ok
+power-on sweep: a key down at frame 200: done the next frame, the glow left ok
+idle animation DIM: endless (12288 frames, 13 s), every LED every frame as its level asks ok
+  one soft light (11..23 /64 at it), drifting F3 -> G5 and back each 9 s, falling away ok
+  the buttons breathe: the glow (1/64) .. 8 /64 (lit frames 0..8); the glow under every LED ok
+  a key down ends it before its next frame (the LEDs as left); fm1_led_anim_stop too; the sweep is no idle ok
+idle animation OFF: endless (12288 frames, 13 s), every LED every frame as its level asks ok
+  one soft light (11..23 /64 at it), drifting F3 -> G5 and back each 9 s, falling away ok
+  the buttons breathe: the glow (1/64) .. 8 /64 (lit frames 0..8); no glow ok
+  a key down ends it before its next frame (the LEDs as left); fm1_led_anim_stop too; the sweep is no idle ok
+idle animation (DIM): frame  s  keys F3..G5  buttons
+      0  0.0  |=-:........................|  .  0/64
+    512  0.6  |-=-:.......................|  .  0/64
+   1024  1.1  |..::-=-....................|  .  0/64
+   1536  1.7  |.......:=-::...............|  .  0/64
+   2048  2.3  |............-=-:...........|  .  0/64
+   2560  2.8  |................::-::......|  :  4/64
+   3072  3.4  |....................:-=-:..|  :  6/64
+   3584  3.9  |.......................:-=-|  :  7/64
+   4096  4.5  |........................:-=|  :  8/64
+   4608  5.1  |.......................:-=:|  :  7/64
+   5120  5.6  |....................:-=-...|  :  6/64
+   5632  6.2  |................:-=:.......|  :  4/64
+   6144  6.8  |............-=-:...........|  .  0/64
+   6656  7.3  |.......-=-:................|  .  0/64
+   7168  7.9  |..::=-:....................|  .  0/64
+   7680  8.4  |-=-:.......................|  .  0/64
+   8192  9.0  |=-:........................|  .  0/64
+LEDs: refresh 909 Hz lit, 909 Hz dim
+LEDs: host 128.3 ns per tick without dim LEDs, 150.2 ns with, 159.0 ns with a breath too
+input debounce: all ok
+== upstream midi_uart_test
+uart: running status, realtime, SysEx, system common ok
+clock: timestamps and USB/TRS source, no active sensing ok
+uart: channels 1, 2, 3, 10, 16 -> USB-MIDI packets   ok
+usb: ota_wire_send packets (CIN 4.. then 5/6/7)      ok
+usb: received frame == the bytes between F0 and F7   ok
+usb: a frame while one is pending is dropped         ok
+usb: a truncated frame is replaced by the next one   ok
+usb: an oversized frame (698 B) is not taken         ok
+usb: soft key -> uboot_req, not a frame              ok
+usb: upgrade key -> ota_req, not a frame             ok
+usb: bytes outside F0..F7 are ignored                ok
+usb: send with a full ring and no host fails at once ok
+usb: send with a full ring times out (200 ms)        ok
+midi parser test passed
+== upstream project_test
+codec exact six-track editable fields, dormant notes/rests, FM6 OWN, vocal IDs, all MIDI routes, 16 chain rows,128 motion PASS
+codec 20000 checksum-valid damaged records: 10558 accepted valid, remaining atomically refused PASS
+codec 3839/3840/3841-byte boundaries, untouched destination, invalid values, every truncation, header/count/version/hash and legacy rejection PASS
+== upstream persistence_test
+persist: editor display change while playing is applied and reports deferred saving ok
+persist: STOP commits the deferred palette setting                          ok
+persist: repeating an unchanged editor preference succeeds without erasing  ok
+persist: editor reports failed saving while preserving the previous flash setting ok
+persist: failed editor preference retries through the existing persistence path ok
+persist: the retired font weight is refused without a write                 ok
+persist: MENU_SET while playing: applied, rc 4 (queued until STOP), no erase ok
+persist: STOP commits the MENU setting (LEDS OFF in the settings record)    ok
+persist: MENU_SET stopped: rc 0, saved at once (LARGE, HOLD, SPEAKER EQ), the others kept ok
+persist: repeating an unchanged MENU_SET: rc 0, no erase                    ok
+persist: MENU_SET with a failing flash: applied, rc 3, the saved setting kept ok
+persist: ... and retried by the settings path                               ok
+persist: playing: settings queued, no erase, runtime kept                   ok
+persist: pending PLAY: settings still queued, no erase                      ok
+persist: pending SONG: settings still queued, no erase                      ok
+persist: STOP: latest settings saved and request cleared                    ok
+persist: unchanged settings do not erase                                    ok
+persist: failed settings retry waits through clock wrap                     ok
+persist: settings retry succeeds after 1000 ms                              ok
+persist: failed project save keeps RAM and old flash                        ok
+persist: successful project save publishes new RAM                          ok
+persist: pending PLAY: project save leaves slot and flash                   ok
+persist: failed first project save leaves slot empty                        ok
+persist: a project's name goes to flash and comes back                      ok
+persist: failed project rename: SAVE ERROR, the slot and flash as they were ok
+persist: pending PLAY: no rename, no erase                                  ok
+persist: project rename: flash has the new name, the music as it was        ok
+persist: failed project erase (cut before its record): ERASE ERROR, the project in RAM and flash ok
+persist: project erase refused while playing and on an empty slot (no flash erase) ok
+persist: project erase: the slot empty in RAM and flash (no older copy comes back), the others kept ok
+persist: an erased slot takes a new save                                    ok
+persist: damaged FUN7 slot (hash ok, n > 4) is refused                      ok
+persist: loading it says EMPTY SLOT and keeps the steps                     ok
+persist: old project rejected without live-state mutation                   ok
+persist: old slot explicitly overwritten as B6S1                            ok
+persist: SONG sources use the same step bounds                              ok
+persist: failed first preset save restores empty bank                       ok
+persist: preset initial save                                                ok
+persist: failed preset save rolls back bank and generation                  ok
+persist: failed preset erasure retains both the sound and its favorite      ok
+persist: failed preset save keeps old flash                                 ok
+persist: failed preset erase keeps record and loaded label                  ok
+persist: successful preset erase clears loaded label                        ok
+persist: pending PLAY: preset save blocked                                  ok
+persist: pending SONG: preset save blocked                                  ok
+persist: preset invalid slot blocked before access                          ok
+persist: PLAY consumed before the save snapshot still blocks a project write ok
+persist: PLAY consumed before the preset snapshot still blocks a bank write ok
+persist: PLAY consumed before the settings snapshot defers the write        ok
+persist: FM6 bank -> user presets: B slots get the bank's newest patches    ok
+persist:   .. written into A (the bank's older copy); the bank's newest copy (B) still whole ok
+persist:   .. UP_LOAD 1 plays the bank's B3, SLOT OWN                       ok
+persist:   .. UP_LOAD 2 (F2) plays F2, SLOT F2                              ok
+persist:   .. UP_LOAD 3 (an empty B5) plays the init voice, as before       ok
+persist:   .. the next boot: done (no write), the same patches              ok
+persist: a power cut at any step of the migration loses nothing (the next boot redoes it) ok
+persist: a cut while a preset's patch is written: the others kept, that preset without one ok
+persist: saved again: its patch, and the bank's sectors now both hold the patches object ok
+persist: no bank: nothing to move, nothing written                          ok
+persist: autosave: power-on with none: nothing restored; 2 min unchanged: no write ok
+persist: autosave: a change: no write within 10 s, one once idle 10 s (one erase) ok
+persist: autosave: 10 min unchanged after it: no more writes                ok
+persist: autosave: the selected track / PROJECT's slot pick alone: no write ok
+persist: autosave: changed while playing: no write until stopped and idle 10 s, then one ok
+persist: autosave: a key held, a voice sounding: no write (an erase stops the audio); after, idle 10 s: one ok
+persist: autosave: two writes at least 60 s apart                           ok
+persist: autosave: none during an editor transfer (autosave_hold), one after ok
+persist: autosave: power-on restores it (steps, tempo, name; RESTORED); no write after (unchanged) ok
+persist: autosave: after a crash / hang / failed boot: not restored, nothing written ok
+persist: autosave: RESTORE LAST OFF: none restored, none written            ok
+persist: autosave: the newest copy damaged: the copy before it is restored  ok
+persist: autosave: both copies damaged: ignored, power-on as new            ok
+persist: autosave: a record that is no project: ignored                     ok
+persist: autosave: a write cut short (power off): the copy before is restored ok
+persist:   a 4-hour session (3 h editing and playing, 1 h idle): 19 autosave writes
+persist: autosave wear: a session's writes stay far below one a minute      ok
+persist:   worst case, 8 h of a change every 11 s: 436 writes (218 per sector)
+persist: autosave wear, worst case: at most one write a minute (480 in 8 h) ok
+persistence test passed
+== upstream ui_test
+ui: the L face holds every glyph of the strings drawn in it                    ok
+ui: power-on: the four sounds, every sequencer empty, no undo copy             ok
+ui: PRESETS on HOME loads the sound: steps, LEN, DIV untouched                 ok
+ui: ..ARP, SCL, the SLICER and the mix stay the track's                        ok
+ui: ..and no warning about the sequence                                        ok
+ui: RAVE (an ARP preset) leaves the arp off; it suggests pattern 13 ARP        ok
+ui: browsing on, into another engine: the steps still untouched                ok
+ui: browsing keeps the copy from before the first load                         ok
+ui: SAVE held: the sound back (UNDO/REDO T1 SOUND); steps recorded since stay  ok
+ui: SAVE held does not open the SAVE pages                                     ok
+ui: SAVE held again: the loads again (redo)                                    ok
+ui: a load after the undo: its own copy; the mix (LEVEL) is never swapped      ok
+ui: SAVE tap opens the SAVE pages (on release)                                 ok
+ui: TOOLS INIT: the sound only (steps and SLICER kept), a copy of T2           ok
+ui: a user preset keeps its pattern in the record (format unchanged)           ok
+ui: a user preset load: the sound only (steps, DIV kept); the copy is now T1's ok
+ui: undo of a user preset load                                                 ok
+ui: a project load drops the copy and takes none                               ok
+ui: SAMPLE factory browsing has four melodic presets and no PERC               ok
+ui: SAMPLE: old SET 1 / preset 1 (TRANH) play PIANO; browsing and knobs skip them ok
+ui: SAMPLE / GRAIN SET 4 (PERC, retired): a PIANO alias, knobs skip it, USR1..3 stay 5..7 ok
+ui: B6S1 does not run legacy SAMPLE conversion; mix and steps retained         ok
+ui: new codec retains engine identity rather than migrating                    ok
+ui: SAMPLE PERC user preset: loads as a DRUM track (its kit)                   ok
+ui:   its GM hits play as drums                                                ok
+ui: factory preset 4 of another engine stays that engine's                     ok
+ui: SAMPLE preset 4 (once PERC): DRUM's kit                                    ok
+ui: B6S1 rejects legacy project rather than converting GM tracks               ok
+ui: undo copy 1668 bytes
+ui: 1.2: PHRASES is a SAVE page (SAVE > PHRASES)                               ok
+ui: KNOB 2 loads nothing (the knobs only pick)                                 ok
+ui: LOAD into an empty sequencer: at once, LOADED 01 ACID                      ok
+ui: ..the sound and the track's settings untouched                             ok
+ui: a loaded pattern, untouched: the next one without asking (03 MELODY)       ok
+ui: SAVE held: back past both loads (empty again), the sound untouched         ok
+ui: edited steps: the REPLACE T1 SEQUENCE? dialog                              ok
+ui: OCT- keeps them                                                            ok
+ui: OCT+ loads (12 BEAT), then HOLD SAVE: UNDO                                 ok
+ui: SAVE held: the user's steps and LEN back                                   ok
+ui: user presets with a pattern are listed after the factory ones              ok
+ui: LOAD U06: its 16 steps, LEN 16 (at most), DIV and SWING                    ok
+ui: over a project's steps: the dialog                                         ok
+ui: PRESETS: a factory preset's suggested pattern becomes the pick             ok
+ui: REC on TRACKS: arms the selected track, PLAY starts                        ok
+ui: REC again disarms (the transport runs on)                                  ok
+ui: REC held: its layer, closed when let go; no dialog, the arming as it was   ok
+ui: #133 REC on SEQ > STEP: arms the selected track for step recording, PLAY does not start ok
+ui: REC again disarms (the transport runs on)                                  ok
+ui: REC held: its layer, closed when let go; no dialog, the arming as it was   ok
+ui: REC on ARP: arms the selected track, PLAY starts                           ok
+ui: REC again disarms (the transport runs on)                                  ok
+ui: REC held: its layer, closed when let go; no dialog, the arming as it was   ok
+ui: REC on HOME records without changing the screen                            ok
+ui: SEQ opens STEP                                                             ok
+ui: STEP, armed and playing: a key does not write the cursor step              ok
+ui: #133 STEP, not armed: the key only plays (nothing written, the cursor stays) ok
+ui: #133 STEP, armed and stopped: the key writes the cursor step (and moves on) ok
+ui: ARP on: the key held is not recorded                                       ok
+ui: ARP on: the note the arp plays is recorded                                 ok
+ui: #133 STEP, not armed, stopped: a key sounds, writes nothing, the cursor stays ok
+ui: #133 STEP, not armed, playing: nothing written either                      ok
+ui: #133 another track armed: the selected track's STEP writes nothing         ok
+ui: #133 REC on STEP arms step recording: stopped, KEYS WRITE STEPS            ok
+ui: #133 armed, stopped: a key writes its note into the cursor step (only), letting go moves on one ok
+ui: #133 keys held together: one chord step (POLY), the cursor moves on once all are up ok
+ui: #133 MONO: one note, the last key                                          ok
+ui: #133 the last step of LEN 8: written, the cursor wraps to step 1           ok
+ui: #133 PLAY with the track armed: live recording at the play head (the cursor and its step stay) ok
+ui: #133 REC again disarms: the keys only play, nothing written                ok
+ui: #133 the DRUM grid unchanged: white keys toggle steps armed or not, REC from stop starts PLAY ok
+ui: #133 STEP, not armed, stopped: a key sounds, writes nothing, the cursor stays ok
+ui: #133 STEP, not armed, playing: nothing written either                      ok
+ui: #133 another track armed: the selected track's STEP writes nothing         ok
+ui: #133 REC on STEP arms step recording: stopped, KEYS WRITE STEPS            ok
+ui: #133 armed, stopped: a key writes its note into the cursor step (only), letting go moves on one ok
+ui: #133 keys held together: one chord step (POLY), the cursor moves on once all are up ok
+ui: #133 MONO: one note, the last key                                          ok
+ui: #133 the last step of LEN 8: written, the cursor wraps to step 1           ok
+ui: #133 PLAY with the track armed: live recording at the play head (the cursor and its step stay) ok
+ui: #133 REC again disarms: the keys only play, nothing written                ok
+ui: #133 the DRUM grid unchanged: white keys toggle steps armed or not, REC from stop starts PLAY ok
+ui: 1.2 MENU: SCOPE OUT / MIX, STEP PREVIEW OFF / ON, CHORD ENTRY HOLD / ADD: 0 by default, a bit each ok
+ui: STEP PREVIEW OFF (the default): moving the cursor sounds nothing           ok
+ui: STEP PREVIEW ON: KNOB 1 to a step sounds it once on the track (a chord whole; chance not rolled), a 1/16 at GATE ok
+ui: STEP PREVIEW: PRESETS moves the cursor too and sounds it; an empty step sounds nothing ok
+ui: STEP PREVIEW never writes: the steps, the arming and the motion as they were ok
+ui: STEP PREVIEW: not while playing (live recording included); armed and stopped it sounds; step entry's move does not ok
+ui: STEP PREVIEW on the DRUM grid: KNOB 1 to a step sounds its hits, writes nothing ok
+ui: #155 CHORD ENTRY ADD: REC on STEP arms step recording, KEYS ADD TO STEP    ok
+ui: #155 ADD: keys one after another build the cursor step's chord (up to 4), the cursor stays ok
+ui: #155 ADD: a key whose note is there takes it out (the others keep their order); then there is room ok
+ui: #155 ADD: KNOB 1 moves on; a written step gets notes beside its own; the last one out leaves a REST ok
+ui: #155 ADD: a TIE step becomes a note step; MONO keeps one note (another key replaces it, the same takes it out) ok
+ui: #155 ADD: keys held together add each; EDIT clears the step and moves on as before ok
+ui: #155 ADD, not armed: the keys only play, nothing written                   ok
+ui: #92 PRESETS on STEP (and 1.5.1's DETAIL): the step cursor; the sound and the steps stay ok
+ui: #94 PRESETS on USER, PROJECT, PHRASES, SONG, AUTOMATION: the selection (KNOB 1's); nothing loaded ok
+ui: #94 PRESETS on TOOLS does nothing                                          ok
+ui: #94 PRESETS elsewhere (EDIT, ENV, LFO, FX, SCL, ARP, MIXER, GLOBAL, ...): the next sound, the steps stay ok
+ui: #94   SAVE held undoes each of those loads                                 ok
+ui: #92 the DRUM grid: PRESETS moves the cursor (and the page), as KNOB 1; wraps ok
+ui: #94 the menu: PRESETS still moves the selection                            ok
+ui: ROUT CH1-4 (default): channel 1 -> part 1, channel 10 ignored              ok
+ui: a note into another track tells the UI                                     ok
+ui: MIDI IN -> T1 shown                                                        ok
+ui: ROUT changes: note-off releases original owner, new note uses selection    ok
+ui: note-off after selection follows the note-on's track                       ok
+ui: same MIDI channel/pitch on a new selected track releases its old owner     ok
+ui: both note-offs after a MIDI ownership change leave neither track held      ok
+ui: same channel/pitch across a ROUT change cannot leave its previous part held ok
+ui: MIDI ownership transfer releases old ARP keys and respects explicit HOLD   ok
+ui: MIDI ownership transfer releases old ARP keys and respects explicit HOLD   ok
+ui: MIDI overflow releases held notes and latched ARP, keeps transport running ok
+ui: MIDI accepts a fresh note after overflow recovery                          ok
+ui: MENU > MIDI > MIDI IN: CH1-4 / SEL / CH5-8 .. CH13-16, the project's ROUT (G_ROUTE) ok
+ui: #192 PRESETS on T3: MIDI IN SEL plays the loaded sound, CH1-4 channel 1 stays T1 (channel 3 T3) ok
+ui: SAVE opens USER with SAVE selected, without writing a slot                 ok
+ui: SAVE then OCT+ opens NAME (the automatic name), writes nothing yet         ok
+ui: ..OCT+ again stores the edited sound with that name (SAVE, OCT+, OCT+)     ok
+ui: 1.5 (#173): SAVE again: PRESETS (the engines and sounds, one tap on)       ok
+ui: 1.2: SAVE again: PHRASES (the patterns, after the sounds)                  ok
+ui: SAVE again still cycles to PROJECT                                         ok
+ui: SAVE from HOME returns directly to USER, even after visiting PROJECT       ok
+ui: direct SAVE still asks before overwriting an occupied slot                 ok
+ui: project save while playing: refused, STOP TO SAVE                          ok
+ui: user preset save while playing: refused                                    ok
+ui: a pending PLAY cannot save a project                                       ok
+ui: a pending PLAY cannot save a user preset                                   ok
+ui: a pending SONG cannot save a user preset                                   ok
+ui: PROJECT KNOB 4 picks SAVE, saves nothing                                   ok
+ui: OCT+ while playing: STOP TO SAVE, no NAME                                  ok
+ui: stopped, an empty slot: OCT+ opens NAME (no name yet: PROJECT A)           ok
+ui: ..OCT+ saves it unnamed, SAVE dropped                                      ok
+ui: a used slot: the OVERWRITE? dialog                                         ok
+ui: OCT- keeps the slot                                                        ok
+ui: OCT+ (YES): NAME, the slot not written yet                                 ok
+ui: OCT+ overwrites it                                                         ok
+ui: KNOB 3 LOAD, OCT+, nothing changed since the save: loaded at once; LOAD stays picked ok
+ui: 1.8 LOAD over changes not saved: the LOAD PROJECT A? dialog, nothing loaded yet ok
+ui: 1.8   OCT- keeps the changes                                               ok
+ui: 1.8   OCT+ (YES): the project back                                         ok
+ui: USER SAVE over a used slot: the OVERWRITE? dialog                          ok
+ui: YES: NAME with the sound's name (not the old slot's)                       ok
+ui: OCT+ stores the sound there                                                ok
+ui: USER ERASE while playing: STOP TO SAVE                                     ok
+ui: HOME: OCT+ shifts the octave (lit)                                         ok
+ui: PATTERNS: OCT+ breathes (a pattern to load), OCT- lit                      ok
+ui: ..OCT+ loads it, the octave stays                                          ok
+ui: ..the same pattern again would change nothing: OCT+ dark                   ok
+ui: ..another one picked: OCT+ breathes again                                  ok
+ui: ..the footer: OCT+ LOAD / OCT- BACK                                        ok
+ui: OCT- + OCT+ together: no load, no HOME, no octave change                   ok
+ui: a press that began elsewhere does not load                                 ok
+ui: PATTERNS: OCT- goes HOME (the octave stays)                                ok
+ui: TOOLS: nothing picked, OCT+ dark                                           ok
+ui: KNOB 1 picks CLEAR, the steps stay; OCT+ breathes                          ok
+ui: ..the footer: OCT+ CLEAR / OCT- CANCEL                                     ok
+ui: KNOB 1 left drops it                                                       ok
+ui: OCT- cancels the pick (still on TOOLS)                                     ok
+ui: TOOLS CLEAR first asks confirmation                                        ok
+ui: OCT+ clears the pattern, the pick dropped                                  ok
+ui: nothing to clear: OCT+ dark                                                ok
+ui: TOOLS INIT first asks confirmation                                         ok
+ui: KNOB 2 INIT, OCT+: SOUND INIT                                              ok
+ui: OCT- with nothing picked: HOME                                             ok
+ui: a dialog: OCT+ breathes, OCT- lit                                          ok
+ui: ..it answers on release, not on the press                                  ok
+ui: ..OCT+ let go: cleared                                                     ok
+ui: back on SEQ: the octave LEDs again                                         ok
+ui: #94 MIXER: the PRESETS knob loads the next sound; the steps and the mix stay ok
+ui: #94 MIXER: SAVE held undoes it                                             ok
+ui: MIXER KNOB 4 right: MUTE ON (the selected track stays)                     ok
+ui: KNOB 1 changes LEVEL only (MUTE stays)                                     ok
+ui: KNOB 2 changes PAN                                                         ok
+ui: MIXER KNOB 4 left: MUTE OFF                                                ok
+ui: ALGORITHM selects the track                                                ok
+ui: SEQ > STEP on a DRUM track is the grid (keys to the UI), GRID in the footer ok
+ui: the lanes: KICK SNARE CLAP HATCL HATOP TOM RIM BELL on GM 36 38 39 42 46 45 37 56 ok
+ui: black key 2: lane 2 (SNARE) selected                                       ok
+ui: white key 5: SNARE on step 5, the cursor there                             ok
+ui: LEDs: white key 5 lit, black key 2 lit, ACC and the page keys dark (LEN 16) ok
+ui: LEDs: the step playing inverted (a hit goes dark, an empty step lights)    ok
+ui: white key 5 again: off, an empty step (REST)                               ok
+ui: ACC held: a tap adds the hit accented, again drops the accent only; the LEDs show accents ok
+ui: KNOB 1 STEP, 2 LANE, 3 HIT on / off, 4 ACC (an accent adds the hit)        ok
+ui: EDIT: the cursor step cleared, on to the next                              ok
+ui: pages: black keys 11 / 10 up / down (the cursor along); past LEN a key does nothing ok
+ui: GM notes on the grid: a low tom / crash on their lanes; an edit makes the lane its hit ok
+ui: grid keys in the ISR: white keys and ACC silent, black key 4 plays HAT CL (42) ok
+ui: REC on the grid: lane keys record hits, quantised (the next step late), no TIE holds ok
+ui: REC on HOME: GM keys quantised into the grid (35 a note on the KICK lane)  ok
+ui: PATTERNS 12 BEAT into a DRUM track: the grid (hits, the accents on 1 5 9 13) ok
+ui: ..its KICK lane on the white key LEDs (1 7 9 12)                           ok
+ui: a sound load keeps the grid; on ANALOG its hits play as their GM notes     ok
+ui: BEAT over the user's steps: the dialog, then SAVE held brings them back    ok
+ui: HOME held (the menu): the keys are no longer the grid's                    ok
+ui: a message keeps the header's transport and BPM (drawn right of x 80)       ok
+ui: UPDATE MODE countdown drawn over the menu                                  ok
+ui: FAV and LIST mark/filter the current sound without loading or touching its steps ok
+ui: one favorite occupies one display row, without repeated copies             ok
+ui: a DRUM sound can be a favorite on any track                                ok
+ui: filtered browsing crosses DRUM and synth sounds while retaining the track's pattern and ARP ok
+ui: unmarking the current sound leaves it loaded even when outside the filtered list ok
+ui: browsing from a nonfavorite selects the last favorite                      ok
+ui: empty favorites explains LIST ALL and retains the current sound and steps  ok
+ui: LIST ALL restores the full browser without an implicit load                ok
+ui: user slot 32 has its own favorite reference                                ok
+ui: overwriting or renaming a user slot retains its star                       ok
+ui: successful erasure removes the user slot star and source label             ok
+ui: reusing the erased slot does not restore its old star                      ok
+ui: categories: every factory preset of every engine has one (the table's strings == the preset counts) ok
+ui:   KNOB 4: ALL, FAV, then BASS: the list holds the factory basses only, the sound not loaded ok
+ui:   the PRESETS knob steps through basses only (every engine), and round     ok
+ui:   .. right to SH-ISH and no further (no wrap)                              ok
+ui:   OTHER is empty (no factory sound): NO SOUNDS IN LIST, the sound stays    ok
+ui:   kept with the settings ([15][11], an unknown value: none); FAV clears it, ALL at the left end ok
+ui:   #197 LIST / FAV (KNOB 4 / 3): saved once idle or the page left, never on a detent ok
+ui: NAME: USER SAVE starts at the sound's category (a factory BASS)            ok
+ui:   KNOB 3 steps the category (no wrap below BASS); OCT+ writes it with the name ok
+ui:   the user preset is in the LEAD list (after the factory leads), not in BASS ok
+ui:   a rename starts at the slot's own category and writes the new one, the sound as it was ok
+ui:   saving a sound loaded from a user preset starts at that preset's category ok
+ui:   a version 2 record: listed by its engine (DRUM); a rename with a category makes it version 4, same sound ok
+ui:   a version 1 PHYS record keeps its version (MODEL 2 = DUST): no category  ok
+ui: NAME: PROJECT's KNOB 3 types a random name (adjective + noun, at most 12), another one each detent ok
+ui: COLOR OCT+ previews the next palette (PAPER, light) without closing the menu ok
+ui: COLOR KNOB 1 steps on to HI-CON, NIGHT (#50: true black), MONO, CIRCUIT, STUDIO, then wraps to GREY ok
+ui: the expanded menu retains all three SPEAKER modes (OCT+ / OCT- step them, stopping at the ends) ok
+ui: #42 SPEAKER EQ: FLAT (old OFF) / LOWCUT / BASS+ on KNOB 1, fx_lowcut follows ok
+ui: HOME leaves display preferences without changing musical state (OCT- no longer closes) ok
+ui: MENU tabs: DISPLAY CONTROL AUDIO MIDI SYSTEM (8 8 6 8 8 rows: 1.6.1 2ND CORE, a FELUCCA_CPU2=0 build SYSTEM 7; 1.8: CLEAR ALL; 1.5.5: SELECT, T1..T4 CHANNEL, AUTO SELECT, SCREEN WAKE), 1..8 each in a run, fit the page; tab gaps constant (S, LARGE) ok
+ui: MENU: PRESETS moves within the tab and wraps there (COLOR .. HOME)         ok
+ui: MENU: ALGORITHM steps between the tabs and wraps, each tab back at its last row ok
+ui: MENU: any of KNOB 1..4 changes the selected row's value in any tab, the menu stays ok
+ui: MENU > SYSTEM > 2ND CORE (1.6.1): OFF by default (bit 7 clear), OFF / ON (BETA) in words, a restart message each way ok
+ui: MENU: OCT+ / OCT- step every value row up / down (COLOR wraps, the rest stop), the menu stays ok
+ui: MENU: on an ON / OFF row OCT+ / a knob right is ON, OCT- / left OFF (ANIM, USB SERIAL, RESTORE LAST too) ok
+ui: MENU: HOME pressed closes it, held too (no reopen); held opens it again at the same tab and row ok
+ui: MENU SYSTEM: OCT+ opens ABOUT, INFO (OCT- back to the tab) and CALIBRATION; OCT- does nothing on them ok
+ui: MENU: HOME closes ABOUT too; reopened at the tabs; a value row breathes OCT- / OCT+ where they can go ok
+ui: MENU tabs slide with ANIM ON (their strip only, settled within 6 frames), snap with ANIM OFF ok
+ui: MENU > AUDIO > TUNE: the project's G_TUNE, -50 .. +50 cents (OCT one, a knob as far as it turned) ok
+ui: MENU > MIDI > MIDI IN: the project's G_ROUTE (ROUT), its names             ok
+ui: TUNE / MIDI IN: nothing in the settings record; the autosave sees the change (the music's) ok
+ui: TUNE / MIDI IN: saved with the project and loaded back (round trip; each project its own) ok
+ui: ABOUT opens one document with scrollable license text and credits          ok
+ui: ABOUT QR keeps its complete white quiet zone above the fixed footer        ok
+ui: PRESETS scrolls ABOUT with its header and controls fixed                   ok
+ui: PRESETS continues from ABOUT into CREDITS without changing pages           ok
+ui: OCT+ does not switch pages or alter the octave in the document             ok
+ui: the continuous document stops at its final credit                          ok
+ui: scrolling back through CREDITS returns to ABOUT's top                      ok
+ui: OCT- returns to the menu without changing sounds or patterns               ok
+ui: reopening ABOUT starts the continuous document at the top                  ok
+ui: USB power shows a steady bolt inside the battery without animation         ok
+ui: USB suspension restores the battery outline and measured level             ok
+ui: battery operation retains all three ADC level thresholds                   ok
+ui: SONG empty: PLAY does not start                                            ok
+ui: SONG missing source: refuses before changing any track                     ok
+ui: SONG rows saved and loaded with their project                              ok
+ui: SONG prepares while stopped, no starts over a pending start                ok
+ui: SONG starts all tracks at source step 0, recording paused                  ok
+ui: SONG first row repeats without a gap                                       ok
+ui: SONG row change: four tracks together, sounds unchanged                    ok
+ui: SONG playing: step edits, clears, recording and undo are blocked           ok
+ui: SONG end: stops and restores editable patterns, timing and record arms     ok
+ui: SONG source projects stay unchanged                                        ok
+ui: SONG transition preserves fractional block time on all tracks              ok
+ui: SONG manual STOP restores the previous pattern                             ok
+ui: PROJECT load during SONG stops it before loading new timing                ok
+ui: SONG page (GLO's, 1.2) empty PLAY explains how to start                    ok
+ui: SONG PAT knob (K3) on + ADD adds the first section: every track on A, one repeat ok
+ui: SONG section, pat and repeat knobs build a chain (the new section a copy, T1 B) ok
+ui: SONG K2 picks the lane (T3), K3 runs A..D then - (silent)                  ok
+ui: SONG K2 stays in T1..T6, K3 back from - to C                               ok
+ui:   .. on T6: C                                                              ok
+ui: SONG white key B (B3) sets the cell's slot, silently; its LED lit          ok
+ui: SONG: the other keys play as anywhere                                      ok
+ui: SONG white key C (C4) on + ADD adds a section, a copy with the cell on C   ok
+ui: SONG OCT chord does not start playback or leave the page                   ok
+ui: SONG OCT+ on release starts, pending start blocks SAVE                     ok
+ui: SONG pending start cannot write a project                                  ok
+ui: SONG PLAY cancels a pending start                                          ok
+ui: SONG K4 on a section: its repeats (at most 16), never the count            ok
+ui: SONG append row stays bounded at 16                                        ok
+ui: CLEAR SONG requires explicit confirmation                                  ok
+ui: cancel preserves the full song                                             ok
+ui: confirmed CLEAR SONG keeps musical steps                                   ok
+ui: #266 MENU > SYSTEM > CLEAR ALL asks, OCT- keeps, OCT+ a new project (no steps, automation, song) ok
+ui: 1.8 SEQ > STEP: EDIT clears the step, SAVE held puts it back               ok
+ui: SONG timeline: 1 + 4 + 1 bars fitted, the widths by bars, + ADD's slot at the end ok
+ui: SONG timeline: a block far shorter than the rest keeps the least width (its letter) ok
+ui: SONG timeline: a long song scrolls (6 px a bar), no + ADD at 16 rows       ok
+ui: SONG timeline: ANIM OFF, the cursor's block in view at once, every row     ok
+ui: SONG timeline: ANIM ON, the view glides to the cursor's block, then holds it ok
+ui: SONG timeline: the cursor on + ADD (after 12 rows): its slot in view       ok
+ui: SONG timeline: playing row 10 far from the cursor (row 1): the playing block in view ok
+ui: SONG timeline: the cursor moved while playing: its block in view           ok
+ui: SONG CUT: selection framed, other blocks RAISE, missing slot outlined DIM  ok
+ui: SONG CUT: + ADD vertical edge dashed DIM, empty interior                   ok
+ui: SONG CUT: selected + ADD edge ACCENT                                       ok
+ui: SONG of rows (one slot each): bit for bit as before lanes, block by block (song_probe.h) ok
+ui: SONG lanes prepare: the slots the lanes name (A, B), the silent ones none  ok
+ui: SONG lanes: each track its own slot's steps and LEN (T1 A, T2 B, T3 -, T4 B) ok
+ui:   section 1 lasts T1's loop (A: 4 x 1/16)                                  ok
+ui: SONG lanes: T1 "-" releases its note; all four from step 1 together; T3 plays A with its automation ok
+ui: SONG lanes: T1 silent: the section counts T2's loop (B: 6 x 1/16) x 2, the silent lanes stay silent ok
+ui: SONG lanes: every lane silent: nothing plays for a 4/4 bar (16 x 1/16); T3's automation back ok
+ui: SONG lanes: B A B A: T3 B's 1/8 and QUANTIZE OFF, the others theirs        ok
+ui: SONG lanes: the end (T1 B's 8 steps) stops; the working patterns, LEN DIV and QUANTIZE back ok
+ui: SONG lanes: a lane on an empty slot refuses (PATTERN C EMPTY); a silent song needs none ok
+ui: SONG lanes: a slot past "-" is no section                                  ok
+ui: SONG lanes drawn: a run of one slot one block, another slot a new one, "-" a gap ok
+ui: SONG CUT: only the selected section framed ACCENT, merged run remains RAISE ok
+ui: SONG lanes drawn: the cursor on a "-" cell: its outline only               ok
+ui: SONG CUT: PLAY stripe crosses all six lanes and the bar ruler              ok
+ui: SONG pictures: a slot's picture is that track's steps (rest 0, tie 1, note / hit 2, accent 3), the others their own ok
+ui: SONG CUT: true per-cell density heights in the lane (RHYTHM on RAISE)      ok
+ui: SONG CUT: selected cell retains true RHYTHM density bars on RAISE          ok
+ui: SONG pictures: REPS 2 draws the pattern twice, notched between (the block whole) ok
+ui: SONG pictures: LEN 32, two steps a cell (their mean rounded up); saved again: read again ok
+ui: SONG pictures: LEN 5, a cell a step                                        ok
+ui: header: no letter at power-on; "1 B" after PROJECT SAVE to B               ok
+ui: header: an edit since marks it ("B*"), on that track only                  ok
+ui: header: a load of B "B", a save to A "A"; LEN and automation edits mark it, undone clear it ok
+ui: header: a PHRASES pattern shows none, SAVE held (undo) brings the letter back ok
+ui: header: a song playing: its section's slot ("1 B", T2 "-"); a message hides it; STOP: "A" ok
+ui: REC stays on every page, SONG stopped asks for pattern recording (STEP: step recording, stopped) ok
+ui: REC in the MENU does nothing (the menu stays, no arm, no transport start)  ok
+ui: REC in ABOUT does nothing (the document and its scroll stay)               ok
+ui: 1.2: HOME tapped on HOME opens the four-channel MIXER                      ok
+ui: MIXER K3 edits reverb, never sequence length                               ok
+ui: 1.2: HOME cycles HOME > MIXER > CLOCK > HOME (CLOCK: BPM SWG CLK, HOME's LED); from any other page HOME ok
+ui: 1.2: HOME held still opens the menu                                        ok
+ui: 1.2: GLO opens SONG directly, again SONG (no GLOBAL, no SYSTEM, no MIXER)  ok
+ui: 1.2: SEQ held on HOME is SEQ TOOLS (no SONG, no tap on release)            ok
+ui: REC cannot write borrowed patterns while SONG is armed                     ok
+ui: operator envelope pages are hidden on non-DIGITAL instruments              ok
+ui: DIGITAL retired: engine 1 asked for loads FM6; the OP ENV / OP LEVEL pages never show ok
+ui: CHANCE is per step and starts at backward-compatible 100 percent           ok
+ui: CHANCE controls clamp to 0..100 without changing adjacent steps            ok
+ui: REC plus a sound knob records motion through the UI                        ok
+ui: stopping returns the original sound after a recorded knob gesture          ok
+ui: #93 the page is AUTOMATION (GR_EVENTS inside)                              ok
+ui: MOTION playback OFF preserves its stored events                            ok
+ui: MOTION clear always asks confirmation                                      ok
+ui: #93   the dialog asks CLEAR T1 AUTOMATION?                                 ok
+ui: confirmed MOTION clear removes events and SAVE hold restores them          ok
+ui: motion-clear UNDO restores the recorded events                             ok
+ui: #93 the events used up: AUTOMATION FULL                                    ok
+ui: MOTION: a recorded knob marks its HOME card (and no other)                 ok
+ui: MOTION: PLAY OFF takes the icon off the card, the events stay              ok
+ui: MOTION: PLAY ON again shows it; only on the track that has the motion      ok
+ui: MOTION: a mix parameter's event marks its MIXER card (PAN)                 ok
+ui: MOTION: CLEAR takes the icon off every card                                ok
+ui: PLAY's green and REC LEDs stay lit across time and audio block phase       ok
+ui: the power-on LED sweep: the UI leaves the LEDs alone while it runs, takes them after ok
+ui: all palettes: active column is subtle, stable-size, no zoom over graph     ok
+ui: sample waveform is bounded, matches audio IMA decode and leaves voices intact ok
+ui: 1.5 (#173): SAVE cycles USER > PRESETS > PHRASES > PROJECT > TOOLS > USER  ok
+ui: 1.2: SEQ has STEP and AUTOMATION only; SONG is GLO's only page, PHRASES SAVE's, MIXER and CLOCK HOME's (their LED HOME) ok
+ui: 1.2: no GLOBAL, no SYSTEM page; HOME > CLOCK has BPM SWG CLK (three knobs), TUNE and ROUT on no page ok
+ui: 1.2: a remembered page no longer in its family (or none) lands on the family's first; GLO always SONG, HOME always the MIXER first ok
+ui: AUTOMATION + ADD CHANCE: step 4's CHANCE 50 %, nothing else; its row selected ok
+ui:   KNOB 4 the CHANCE, KNOB 2 moves it to the next step (the old one back to 100 %) ok
+ui:   SAVE held: the move undone (the sound and LEN untouched); held again: redone ok
+ui:   at 100 % it stays listed while edited; another row picked: gone (nothing stored) ok
+ui: AUTOMATION RATCH: + ADD x2, KNOB 4 to x4, EDIT x1; each one undo (SAVE held), the step's flags only ok
+ui:   the rows: PLAY, QUANTIZE, by step (CHANCE, RATCH, NUDGE, then its locks / events), + ADD; one there: ALREADY LISTED ok
+ui:   EDIT on the NUDGE row: back to 0                                         ok
+ui:   while a song plays: STOP TO EDIT, nothing changes                        ok
+ui: GREY: every pixel of every page, HOME, menu, ABOUT, dialog and countdown is gray ok
+ui: MONO (black and white): every pixel of every page, HOME, menu, ABOUT, dialog and countdown is neutral ok
+ui: roll: numbers of one shape roll by the sign of the change; names, length, sign changes snap ok
+ui: roll: legacy card formats across every page/engine: enums snap, numbers roll ok
+ui: roll: a card's value rolls for 9 frames (TUNE 0 -> 1), the value itself at once ok
+ui: roll: the roll's last frame is pixel-identical to the static render        ok
+ui: roll: a mid-roll frame differs from the static render inside the value strip only ok
+ui: roll: header BPM 120 -> 121 and a card 10 -> 11: only the strip changes, unchanged digits stay put ok
+ui: roll: an increase rolls up, a decrease down (-5 -> -6 is down)             ok
+ui: roll: a change mid-roll retargets (from the last value, restarted) and ends static ok
+ui: roll: a change within 40 ms of the last one snaps (a fast turn)            ok
+ui: roll: a sign / length change (0 -> -1) and a name (CLK) snap               ok
+ui: roll: a page, track, palette or engine change and ui.force snap            ok
+ui: roll: MONO roll frames are gray                                            ok
+ui: #63 soak: 150000 random frames, wrapping clocks, motion: no roll lasts, cards = a forced redraw ok
+ui: duplicate button mappings recover to the default panel                     ok
+ui: duplicate knob mappings recover to the default panel                       ok
+ui: out-of-range panel data recovers without an invalid shift                  ok
+ui: a valid reversed knob mapping is retained                                  ok
+ui: FX tap: nothing on press, the FX page when let go                          ok
+ui:   a second tap: the next page of the family (VOCODER)                      ok
+ui:   held 0.35 s (HOLD 0.4): still a tap, the map never shown                 ok
+ui: FX held past 0.4 s: the map (not before); let go: no page, the map gone    ok
+ui: menu HOLD 0.6 s (KNOB 1): FX held 0.5 s is a tap, no map                   ok
+ui:   HOLD is saved with the settings and read back                            ok
+ui: menu LEDS: DIM HI by default; KNOB 1 OFF < DIM LO < DIM HI < INV < INV LO < INV HI (stops at the ends), OCT+ / OCT- the same; a change from the editor redraws the shown MENU ok
+ui:   LEDS is saved with the settings and read back (all four); DIM HI saves the field as before (0) ok
+ui: FX + a key: the map at once; no voice, no MIDI, no recording, no step written ok
+ui:   the key let go: its effect off, no note-off sent                         ok
+ui:   FX let go after a combo: no tap, the map gone                            ok
+ui: FX let go first: the key holds its effect and the map; a new key is a note ok
+ui: FX + G4 / A4: OCT UP / OCT DN held, silent, no MIDI; KNOB 4 turns; B4 FLANGER, D5 REV THROW, F5 nothing; FX let go: K4 0 ok
+ui: REVERB page: TYPE HALL (power-on) / ROOM / SPRING on KNOB 1 (SIZE, DAMP beside it); a project keeps SPRING ok
+ui:   CHORUS page: CRT CDP                                                     ok
+ui: a key held before FX stays a note: note-on, note-off, nothing left held    ok
+ui: FX + KNOB 1 / 2: the macros, not ATK, not recorded; FX let go: back to 0, no tap ok
+ui: in the layer: PLAY plays; SAVE (tap and hold), ENV, HOME (hold) do nothing ok
+ui:   a page button pressed with FX, let go after it: still nothing            ok
+ui: ENV LFO SCL ARP GLO EDIT act when let go, not on press (ENV LFO ARP held long: the same) ok
+ui: EDIT on STEP clears the step when let go (not on press)                    ok
+ui: HOME (menu) hold of 0.7 s unchanged; SEQ held: its layer, no page (1.2)    ok
+ui: in the menu: no layer, FX + a key plays the key; FX let go: no page        ok
+ui: in a dialog: FX held shows no map and taps nothing                         ok
+ui: UBOOT countdown over the layer: the map closes, effects off; OCT- + OCT+ untouched ok
+ui: map LEDs: held lit, the 14 effects breathe (1.5.1: D5 E5 the throws), F5 G5 and a too-long REPEAT dark ok
+ui: #39 FX / GLO / SCL / EDIT + KNOB 1..4, let go while turning: no page under the layer changes ok
+ui:   0.3 s after FX is let go KNOB 1 is ARP MODE again; a knob turned with FX opened no FX page ok
+ui:   FX tapped while a knob turns: no FX page, no ARP change                  ok
+ui: #102 FX GLO SCL EDIT (held, combo, locked) x KNOB 1..4, detents counted mid-pass: the layer's only ok
+ui:   HOME with REC: FX's KNOB 1..4, GLO's KNOB 2..4 record no automation, HOME's sound stays ok
+ui:   FX LATCH: FILTER stays after FX is let go, HOME's KNOB 1 never moves; FX + OCT- turns it off ok
+ui:   no layer: a detent counted mid-pass is HOME's KNOB 1, once               ok
+ui: #40 FX + KNOB 4: DEPTH rises to the right, falls to the left; SHIMR (OCT UP) rises to the right ok
+ui:   FX LATCH OFF by default: a key's effect ends when it is let go           ok
+ui:   FX LATCH ON: FX + C4 latches LPF, CRUSH stays at 30 after FX is let go   ok
+ui:   the FX LED lit while something is on; a mute key latches; C4 again: LPF off ok
+ui:   FX + OCT-: every latched effect and macro off (no octave)                ok
+ui:   FX LATCH: FX + OCT- quick (before HOLD): all off, no octave, no page     ok
+ui:   FX LATCH: FX + OCT- in one frame / held: no octave; OCT- alone: the octave ok
+ui:   FX LATCH OFF: FX + OCT- quick / held shifts the octave (no page); FX tap: the FX page; GLO + OCT- quick: put back, no octave ok
+ui:   the menu turns the latched effects off; MENU > FX LATCH: OCT+ / KNOB 1 right ON, OCT- / left OFF ok
+ui:   FX LATCH saved with the settings; settings from before it: OFF           ok
+ui: FX map: settings of 0 (before 1.2) are the default: 1.1.5's ten keys, B4 FLANGER, C5 PHASER, D5 E5 the throws ok
+ui:   FX + B4 held + PRESETS: PHASER, REV THROW, ECHO THROW, NONE, round to REPEAT 1/8 and back, each held at once; no sound load ok
+ui:   EDIT with the key held: its default (FLANGER) back, the layer open       ok
+ui:   the key let go: PRESETS changes nothing (HOLD A KEY: ASSIGN); FX let go: the map saved ok
+ui:   the map with the settings (exported, imported: B4 OCT DN, the rest default); older settings: default ok
+ui:   locked (FX double tap): G3 held + PRESETS: REPEAT 1/32; EDIT: 1/16, the lock stays; no key: EDIT closes it ok
+ui:   the map's cells: G3 1/8 (remapped), B4 FLNG, D5 VERB, E5 ECHO (1.5.1's throws), F5 empty ok
+ui: #83 FX GLO SCL EDIT double tapped: the map stays open with no button held, over the page as it was ok
+ui:   a tap of the button closes it, no page opens                             ok
+ui: #183 FX GLO SCL EDIT SEQ REC locked: PLAY starts and stops (no RESTART without GLO held) ok
+ui:   GLO locked: a black key mutes (silent, no MIDI), KNOB 1 T1 LEVEL, OCT- puts back, still locked ok
+ui:   FX locked: a key's effect while held, KNOB 2 CRUSH; closed: the macros snap back ok
+ui:   SCL locked: a key sets ROOT, KNOB 2 SCL, the page stays ENV              ok
+ui:   EDIT locked: KNOB 1 the engine; INIT's dialog closes the lock            ok
+ui:   LFO, HOME, another layer's button, the menu close it (and act as always) ok
+ui:   its button held after the lock: a peek, let go closes it; KNOB 1 is ENV's again ok
+ui:   unchanged: a tap opens the page, slow taps cycle, a tap then a peek or a combo: no lock ok
+ui:   another button between the taps: no lock; PLAY in a locked layer plays, the lock stays ok
+ui:   EDIT on STEP (it clears the step): two quick taps clear two steps, no lock ok
+ui: REC layer: REC held on STEP AUTOMATION USER PHRASES SONG TOOLS ENV MIXER HOME opens it ok
+ui:   no CLEAR dialog any more, nothing armed, cleared or started (#91's hold replaced) ok
+ui:   it opens after MENU > HOLD (0.3 .. 0.6 s), not the old 0.7 s             ok
+ui:   a tap still arms / disarms when let go (HOME starts PLAY, STEP: step recording) ok
+ui:   REC held + PLAY: plays, and REC let go before HOLD still arms (no combo) ok
+ui:   a song playing: STOP TO RECORD; REC in another layer still arms / disarms ok
+ui: REC + F3: CLEAR T2's sequence at once (no dialog, the key silent), nothing armed ok
+ui:   SAVE held undoes the clear                                               ok
+ui:   empty: NOTHING TO CLEAR; a song playing: STOP TO EDIT; armed and playing: clears, records on ok
+ui: REC + G3 CLICK OFF>REC>ON, A3 COUNT-IN OFF>1 BAR>2 BARS, B3 LEVEL MID>HIGH>LOW: MENU's values ok
+ui:   applied at once (click.c, seq.c), saved when the layer closes, kept with the settings ok
+ui:   KNOB 1..3 CLICK COUNT-IN LEVEL, stopping at the ends; KNOB 4 nothing; the page untouched ok
+ui:   OCT- puts back CLICK and the cleared track; no octave shift              ok
+ui:   LEDs: CLEAR breathes (dark when empty), CLICK / COUNT-IN lit when on, LEVEL with the click ok
+ui: #83 REC double tapped: locked, the arming as before; keys, knobs, PLAY; a REC tap closes it ok
+ui:   playing: the transport stays; in GLO's lock a REC tap arms, GLO stays locked ok
+ui: 1.2: SEQ held opens SEQ TOOLS on every page and HOME (no SONG, the page stays) ok
+ui: 1.2: a tap on STEP: DETAIL (1.5.1), AUTOMATION, then STEP again (three SEQ pages; the hint until the layer was opened) ok
+ui:   from elsewhere the SEQ page shown last; one remembered that left SEQ: STEP ok
+ui:   G3 REVERSE: steps 1..LEN mirrored, C4 + its tie as C4 then the tie, the lock moves with E4 ok
+ui:   SAVE held: the reverse undone (steps and the lock)                       ok
+ui:   B3 / A3 SHIFT > <: one step round inside LEN (the lock with it); back again: as it was ok
+ui:   F3 CLEAR: steps 1..LEN empty (no dialog), past LEN kept, the locks of the steps cleared go ok
+ui:   OCT-: the track as the layer opened (steps, locks, LEN); KNOB 1..4 LEN DIV SWING GATE ok
+ui:   C4 RANDOM (melodic): the rhythm kept, new notes in the scale near the middle (40 seeds) ok
+ui:   D4 COOK x12: each press changes it, the rhythm and the scale kept, "COOKED 12" ok
+ui:   SAVE held after COOKs: the last one undone only                          ok
+ui:   an empty pattern: COOK says NOTHING TO COOK; RANDOM writes 8ths with rests, in the scale ok
+ui:   DRUM RANDOM: kick 3..5 (one on 1), snare on 2 and 4 (+ a ghost), hat 8..12; 60 seeds ok
+ui:   DRUM COOK x10: each press changes it, the kick on 1 stays                ok
+ui:   E4 BEAT: four on the floor, 2 and 4, 8th hats; black key 3 the lane, B4 FILL 1 / 2 / 4 / none ok
+ui:   A4 / G4 / C5: the lane reversed (its accents with it), cleared, at random; the others stay ok
+ui:   LEDs: the tools breathe, the lane lit (DRUM); a melodic track: no BEAT, no lane keys ok
+ui:   double tapped on STEP: locked over STEP, the keys act; a tap closes it   ok
+ui:   while a song plays: STOP TO EDIT, nothing changes                        ok
+ui: 1.4.1 EDIT quick actions: DRUM 8 (black keys 1..8), every other engine none ok
+ui:   DRUM: EDIT + black key 1 / 6: KICK / TOM muted (latched; LEDs dark), again: on (lit); 9..11 dark ok
+ui:   the mutes take no undo copy, record nothing (no sound load)              ok
+ui:   a white key loads its engine (the mutes go with the sound); ANALOG's black keys dark, inert; OCT- back ok
+ui:   OCT- in the layer: the lanes' mutes as it opened (KICK muted, CLAP BELL not) ok
+ui:   EDIT locked: a black key toggles its lane, OCT- puts it back; closed: kept ok
+ui:   while playing: HATCL muted at once                                       ok
+ui:   a model kit: the cells and messages its lanes' names (CG, CONGA MUTED)   ok
+ui:   the DRUM grid redraws when a lane is muted / unmuted                     ok
+ui:   not saved: a sound load into the track and a project load clear them     ok
+    low band energy: the beat 1.072e+12, KICK muted 4.507e+11 (-3.8 dB); the kicks alone 1.028e+12, muted 0
+ui:   KICK muted: the beat as with no kick struck, the kicks alone silent; unmuted: as before (bit for bit) ok
+ui:   every lane muted: silent                                                 ok
+ui:   HATOP muted mid-ring, unmuted: it sounds on bit for bit as if never muted (a channel mute) ok
+ui: MENU: ALGORITHM and PRESETS reach every row, each tab a page of its own    ok
+ui: #46 MENU > ANIM: ON by default, KNOB 1 / OCT steps OFF ON IDLE (1.2), the values 0 ON 1 OFF 2 IDLE ok
+ui: #46 ANIM OFF: the card values and the header BPM snap (no rolling digits), the frame is static ok
+ui: #46 ANIM OFF: the piano roll's view jumps to the notes (ON: it glides)     ok
+ui: #46 ANIM saved with the settings; settings from before it: ON              ok
+ui: MENU > STYLE: FLAT by default, KNOB 1 / OCT-+ FLAT / LINE, LINE drawn (rules, no SURF) ok
+ui:   STYLE saved with the settings and read back; older settings and unknown values: FLAT, PIXEL: LINE (idempotent) ok
+    head stopped    x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head stopped    x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head stopped    x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head stopped    x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head stopped    x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head stopped    x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head play+REC   x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head play+REC   x  23.. 32 ink rows  7..16 centre 12.0 (+0.0)
+    head play+REC   x  91.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head play+REC   x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head play+REC   x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head play+REC   x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head play+REC   x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head song       x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head song       x  23.. 32 ink rows  6..16 centre 11.5 (-0.5)
+    head song       x  85.. 98 ink rows  5..18 centre 12.0 (+0.0)
+    head song       x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head song       x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head song       x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head song       x 180..193 ink rows  5..18 centre 12.0 (+0.0)
+    head song       x 199..207 ink rows  5..17 centre 11.5 (-0.5)
+    head song       x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head message    x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head message    x  66..111 ink rows  5..17 centre 11.5 (-0.5)
+    head message    x 116..133 ink rows  5..17 centre 11.5 (-0.5)
+    head message    x 137..173 ink rows  5..17 centre 11.5 (-0.5)
+    head message    x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head OCT        x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head OCT        x  91.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head OCT        x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head OCT        x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head OCT        x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head OCT        x 162..185 ink rows  7..16 centre 12.0 (+0.0)
+    head OCT        x 191..207 ink rows  5..16 centre 11.0 (-1.0)
+    head OCT        x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head USB        x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head USB        x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head USB        x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head USB        x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head USB        x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head USB        x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head keycap     x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head keycap     x  89..118 ink rows  5..17 centre 11.5 (-0.5)
+    head keycap     x 123..150 ink rows  7..16 centre 12.0 (+0.0)
+    head keycap     x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head REC other  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head REC other  x  23.. 32 ink rows  7..16 centre 12.0 (+0.0)
+    head REC other  x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head REC other  x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head REC other  x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head REC other  x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head REC other  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM turn   x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head BPM turn   x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM turn   x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head BPM turn   x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head BPM turn   x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head BPM turn   x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM LOCK   x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head BPM LOCK   x  84.. 93 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM LOCK   x 100..113 ink rows  5..18 centre 12.0 (+0.0)
+    head BPM LOCK   x 119..123 ink rows  6..16 centre 11.5 (-0.5)
+    head BPM LOCK   x 127..144 ink rows  5..16 centre 11.0 (-1.0)
+    head BPM LOCK   x 149..154 ink rows  7..15 centre 11.5 (-0.5)
+    head BPM LOCK   x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head NO SAMPLE  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head NO SAMPLE  x  70.. 83 ink rows  5..18 centre 12.0 (+0.0)
+    head NO SAMPLE  x  89..109 ink rows  5..17 centre 11.5 (-0.5)
+    head NO SAMPLE  x 114..169 ink rows  5..17 centre 11.5 (-0.5)
+    head NO SAMPLE  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head REC layer  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head REC layer  x  23.. 32 ink rows  7..16 centre 12.0 (+0.0)
+    head REC layer  x  96..119 ink rows  5..17 centre 11.5 (-0.5)
+    head REC layer  x 124..144 ink rows  7..16 centre 12.0 (+0.0)
+    head REC layer  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head EDIT lock  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head EDIT lock  x  87..112 ink rows  5..17 centre 11.5 (-0.5)
+    head EDIT lock  x 117..137 ink rows  7..16 centre 12.0 (+0.0)
+    head EDIT lock  x 147..152 ink rows  7..15 centre 11.5 (-0.5)
+    head EDIT lock  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head GLO turn   x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head GLO turn   x  84.. 93 ink rows  7..16 centre 12.0 (+0.0)
+    head GLO turn   x 100..113 ink rows  5..18 centre 12.0 (+0.0)
+    head GLO turn   x 119..123 ink rows  6..16 centre 11.5 (-0.5)
+    head GLO turn   x 127..144 ink rows  5..16 centre 11.0 (-1.0)
+    head GLO turn   x 149..154 ink rows  7..15 centre 11.5 (-0.5)
+    head GLO turn   x 164..187 ink rows  5..17 centre 11.5 (-0.5)
+    head GLO turn   x 192..212 ink rows  7..16 centre 12.0 (+0.0)
+    head msg2       x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head msg2       x  47.. 90 ink rows  7..16 centre 12.0 (+0.0)
+    head msg2       x  94..107 ink rows  7..16 centre 12.0 (+0.0)
+    head msg2       x 111..118 ink rows  7..15 centre 11.5 (-0.5)
+    head msg2       x 121..149 ink rows  7..15 centre 11.5 (-0.5)
+    head msg2       x 153..183 ink rows  7..16 centre 12.0 (+0.0)
+    head msg2       x 187..193 ink rows  7..15 centre 11.5 (-0.5)
+    head msg2       x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head beat 2     x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head beat 2     x  91.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head beat 2     x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head beat 2     x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head beat 2     x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head beat 2     x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head count-in   x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head count-in   x  23.. 32 ink rows  7..16 centre 12.0 (+0.0)
+    head count-in   x  91.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head count-in   x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head count-in   x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head count-in   x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head count-in   x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head battery 1  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head battery 1  x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head battery 1  x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head battery 1  x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head battery 1  x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head battery 1  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head battery 0  x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head battery 0  x  89.. 98 ink rows  7..16 centre 12.0 (+0.0)
+    head battery 0  x 105..118 ink rows  5..18 centre 12.0 (+0.0)
+    head battery 0  x 124..128 ink rows  6..16 centre 11.5 (-0.5)
+    head battery 0  x 132..149 ink rows  5..16 centre 11.0 (-1.0)
+    head battery 0  x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM 90     x   4.. 19 ink rows  4..19 centre 12.0 (+0.0)
+    head BPM 90     x  94..103 ink rows  7..16 centre 12.0 (+0.0)
+    head BPM 90     x 110..123 ink rows  5..18 centre 12.0 (+0.0)
+    head BPM 90     x 128..145 ink rows  5..17 centre 11.5 (-0.5)
+    head BPM 90     x 216..235 ink rows  7..16 centre 12.0 (+0.0)
+ui: header: every element's ink centred on row 12 (+-1 px), every state, FLAT and LINE, every palette ok
+ui: header: three slots: track at 4, BPM / message on x 120, octave to 208, battery 214..236 (GLO with the tempo turned: the label right of the BPM and its lock) ok
+ui: header metronome: still on every beat, as stopped                          ok
+ui: header metronome: a beat changes nothing in the header                     ok
+    head group  60 BPM stopped ink x  94..145 centre 120.0 (play state  94.., metronome 110..)
+    head group  60 BPM playing ink x  96..145 centre 121.0 (play state  96.., metronome 110..)
+    head group 120 BPM stopped ink x  89..149 centre 119.5 (play state  89.., metronome 105..)
+    head group 120 BPM playing ink x  91..149 centre 120.5 (play state  91.., metronome 105..)
+    head group 200 BPM stopped ink x  89..149 centre 119.5 (play state  89.., metronome 105..)
+    head group 200 BPM playing ink x  91..149 centre 120.5 (play state  91.., metronome 105..)
+ui: header: the group (play state .. BPM / lock) centred on x 120 (+-1 px): 2 and 3 digits, stopped and playing, BPM LOCK off and on ok
+ui: header: the play state and the metronome stay put on PLAY / STOP and while the tempo changes ok
+ui: #48 DIV / RATE / TIME / SLICER RATE step longest -> shortest, every value once, the ends hold ok
+ui: #48 the pages' knobs step the divisions by length (SEQ TOOLS, ARP, DLY, SLICER) ok
+ui: #52 KNOB ACCEL: OFF by default; ON, slow (>= 26 ms a detent) and lone quick detents: 1 step each ok
+ui: #52 KNOB ACCEL ON: 20 ms a detent x2, 15 ms x3, 10 ms x4 from a turn's third detent; reversal x1 ok
+  #126 a flick of 12 detents over 126 ms on -100..100: 47 steps
+ui: #126 KNOB ACCEL ON over a range above 64: 10 ms x5 .. 6 ms x8; a 12-detent flick ~120 ms: 47 ok
+ui: #52 KNOB ACCEL: never on narrow values or lists; 20000 random reads keep the sign, x1..x8, slow = x1 ok
+ui: #52 KNOB ACCEL on MIXER LEVEL: a fast turn of 8 detents moves 20 (OFF: 8)  ok
+  #126 FX FILTER, 12 detents: ON 10 ms 52, OFF 12, ON 60 ms 12, ON 6 right 6 left 0
+ui: #126 KNOB ACCEL on the FX layer (FILTER: a 12-detent flick >= 35, OFF 12, slow 12) and GLO LEVEL ok
+ui: #52 KNOB ACCEL saved with the settings; settings from before it: OFF       ok
+ui: MENU > USB LEVEL: MASTER by default, KNOB 1 / OCT+ FIXED, left / OCT- MASTER, saved, the audio follows ok
+ui: MENU > AUDIO: CLICK OFF / REC / ON, CLICK LEVEL LOW / MID / HIGH, COUNT-IN OFF / 1 BAR / 2 BARS; OFF MID OFF by default ok
+ui: MENU > AUDIO: PRESETS to CLICK, CLICK LEVEL, COUNT-IN, TUNE; knobs / OCT step them, applied at once ok
+ui: CLICK / CLICK LEVEL / COUNT-IN saved and read back; a stored 3 the default; older settings OFF / MID / OFF ok
+ui: count-in from the UI: REC on STEP arms, PLAY counts in (STEP entry paused); 4 3 2 1 on screen; PLAY's green on the beats ok
+ui: PLAY while counting in stops it: nothing plays, still armed, the page back ok
+ui: PLAY armed and stopped: the count-in again; at its end the sequencer plays from step 1, the page back ok
+ui: #67 MENU > USB SERIAL: ON by default, the console presented (misc / IAD, as before) ok
+ui:   KNOB 1 left / OCT- OFF, right ON; the menu closed (HOME): audio + MIDI only, class 0 ok
+ui:   saved with the settings (older ones: ON); at boot the device enumerates with the saved choice ok
+ui:   OFF: the soft key (SysEx on the MIDI endpoint) still asks for UPDATE MODE ok
+ui: #58 BPM LOCK OFF (the default): SELECT sets the tempo as before            ok
+ui: #58 MENU > BPM LOCK: KNOB 1 right / OCT+ ON, left / OCT- OFF; SELECT in the menu is no tempo ok
+ui: #58 BPM LOCK ON: SELECT leaves the tempo on HOME and the pages, "BPM LOCKED" once per turn burst ok
+ui: #58 BPM LOCK ON: HOME > CLOCK KNOB 1 still sets the tempo                  ok
+ui: #58 BPM LOCK ON: GLO + SELECT sets the tempo (a combo: the map, no GLO page; OCT- puts it back) ok
+ui: #58 BPM LOCK ON: GLO + F4 TAP still sets the tempo                         ok
+ui: #58 BPM LOCK saved with the settings; settings from before it: OFF (idempotent) ok
+ui: #15 MENU > LARGE: OFF by default, under STYLE; KNOB 1 right / OCT+ ON, left / OCT- OFF ok
+ui: #15 LARGE STAGE HOME: full 102px graph above 64px readouts; footer retained ok
+ui: #15 LARGE CLOCK: native large numeric face, actual phase graph and four readouts ok
+ui: #15 LARGE: ENV 28px readouts below its ADSR; KNOB 2 turned redraws card 2 only ok
+ui: #15 LARGE: PRESETS and the roll keep the layout (labels in M), the layers too; MIXER graph above tall readouts ok
+ui: #15 LARGE saved with the settings; settings from before it: OFF (idempotent) ok
+ui: #51 every sound browsed (HOME, PRESETS; stopped, playing): no step, ARP off, nothing held, no start ok
+ui: NAME: USER SAVE into an empty slot opens NAME, prefilled with the automatic name ok
+ui:   DELETE removes the character before the cursor, down to empty            ok
+ui:   a white key types its first letter; tapped again within 0.8 s: the next one, cycling (A B A) ok
+ui:   another key keeps the letter and types its own (A, C)                    ok
+ui:   0.8 s without a tap keeps it: the cursor moves on                        ok
+ui:   a second tap within 0.8 s (0.43 s later) still cycles (C -> D)           ok
+ui:   a three-letter key (IJK) cycles to K; SPACE keeps it and adds a space    ok
+ui:   DELETE, cursor left twice, a letter inserted at the cursor               ok
+ui:   cursor right stops at the end                                            ok
+ui:   D# switches to 123: one tap, one character (2, 0, +), no cycling         ok
+ui:   back to ABC: the last key (0-.) gives 0, then -, then .                  ok
+ui:   KNOB 1 moves the cursor, KNOB 2 changes the character there (+ -> SPACE, wrapping) ok
+ui:   KNOB 2 on: SPACE + 5 = E                                                 ok
+ui:   KNOB 1 to the end, KNOB 2 adds a character there (A)                     ok
+ui:   .. and turns it back past SPACE to the last symbol (+)                   ok
+ui:   12 characters at most: NAME FULL, nothing typed                          ok
+ui:   DELETE held 0.64 s: one, then it repeats after 0.45 s, every 0.09 s (3 in all) ok
+ui:   keys in NAME: no voice, no MIDI, nothing recorded (seq.c: song.grid 2)   ok
+ui:   LEDs: every key lit, the cycling key (LM) blinks                         ok
+ui:   OCT- cancels: nothing written, back on the USER page                     ok
+ui:   OCT+ while playing: STOP TO SAVE, NAME stays                             ok
+ui:   OCT+ stopped: saved as typed, the trailing space dropped (CB 2)          ok
+ui:   overwrite: the dialog, then NAME                                         ok
+ui:   SAVE held, FX held: nothing in NAME (no undo, no map, no page)           ok
+ui:   EDIT on an empty slot: EMPTY SLOT                                        ok
+ui:   EDIT on a used slot: NAME (rename) with its name                         ok
+ui:   OCT+: renamed (CB W), the sound stored there unchanged                   ok
+ui:   a name deleted to nothing: the automatic one                             ok
+ui:   SAVE of a sound that came from U03: prefilled with U03's name            ok
+ui: PROJECT SAVE: NAME, typed, saved: the slot has the name, the project too   ok
+ui:   loading it brings its name back (the next save's prefill)                ok
+ui:   EDIT renames a project (PNPN); its music unchanged                       ok
+ui:   EDIT on an empty project slot: EMPTY SLOT                                ok
+ui:   HOME held in NAME: the menu, NAME closed                                 ok
+ui: EDIT opens EDIT 1, when let go (not on press)                              ok
+ui: no ENGINE page (engines are the EDIT layer's)                              ok
+ui: EDIT cycle (ANALOG): EDIT 1 EDIT 2 FILTER VOICE VOICE 2 VOICE 3 EDIT 1     ok
+ui: EDIT cycle (engine 1 asked for: FM6, DIGITAL retired): EDIT 1 EDIT 2 OPERATOR OP ENV OPERATOR 2 VOICE .. VOICE 3 ok
+ui: EDIT cycle (DRUM): EDIT 1 EDIT 2 LANES LANES 2 VOICE VOICE 2 VOICE 3 EDIT 1 ok
+ui: LANES 2: KNOB 2 turns TOM's level (100 % by default), the other lanes stay ok
+ui: a factory preset load: every lane 100 % again                              ok
+ui: LANES 2 of a track no longer DRUM falls back to EDIT 1                     ok
+ui: an OP page of a track no longer DIGITAL falls back to EDIT 1               ok
+ui: EDIT remembers its last page (as every family)                             ok
+ui: SLICES: SLICE's EDIT cycle EDIT 1 EDIT 2 SLICES VOICE VOICE 2 VOICE 3 EDIT 1 ok
+ui: SLICES on BREAK: its 16 slices shown, KNOB 1 picks; edits need USR1-3 (DIV unchanged) ok
+ui: SLICES on an empty USR2: NO SAMPLE, no slices; edits: "USR2 EMPTY"         ok
+ui: SLICES on PIANO: its 16 slices shown; edits need USR1-3 (DIV unchanged)    ok
+ui: SLICES on USR1: the first KNOB 2 turn takes the 8 slices as MAN (DIV MAN), moves slice 3's start ok
+ui: SLICES: KNOB 3 picks SPLIT, OCT+ splits the slice (again: it stays picked) ok
+ui: SLICES: KNOB 4 picks JOIN, OCT+ joins to the slice before; not the first slice ok
+ui: SLICES: after the last slice the END marker: KNOB 2 trims the tail         ok
+ui: SLICES: DIV 16 over a slot's MAN slices: KNOB 2 goes back to them (DIV MAN), keeps them ok
+ui: SLICES: a key picks the slice it plays; the keys of the selected slice are lit ok
+ui: SLICES: OCT- drops the pick, then goes HOME                                ok
+ui: SLICES: on another engine the page is not there (EDIT 1)                   ok
+ui: SLICES: left by an engine change not yet drawn: KNOB 2 and OCT+ change nothing ok
+ui: SLICES: a re-upload of the same length redraws the waveform                ok
+ui: missing sample: the power-on sounds have their samples (no alert)          ok
+ui: SAMPLE on an empty USR2: NO SAMPLE once (not again on a note)              ok
+ui: SAMPLE: another empty slot is said; back to it after a sample: said again  ok
+ui: GRAIN on an empty USR2: said                                               ok
+ui: SLICE on an empty USR3: said; PIANO: not (it has its sample)               ok
+ui: a project load with an empty slot: LOADED, then NO SAMPLE                  ok
+ui: missing sample: the icon and NO SAMPLE fit the header                      ok
+ui: GLO SCL EDIT: a tap opens the page, held past HOLD the map (no page), a key: the map at once ok
+ui:   after a tap "HOLD [BTN] QUICK" until the layer has been opened once      ok
+ui:   the seen bits are kept with the settings (a spare favorites byte)        ok
+ui: GLO + black key 2: T2 MUTE latched (SET), silent, no MIDI; LEDs: sounding lit, muted dark ok
+ui:   again: unmuted; C4: UNMUTE ALL                                           ok
+ui: GLO + A3 held: SOLO T3 (the others muted), lasts while the key is held, not P_MUTE ok
+ui: GLO + F4 x3 at 0.5 s: TAP 120 BPM; with CLK EXT: dimmed, it says why       ok
+ui: GLO KNOB 3: T3 LEVEL from any page; OCT-: mutes and levels as it opened, no octave ok
+ui: GLO + PLAY: RESTART playing (from the top, not stopped); stopped: PLAY     ok
+ui: SCL + D#4, then G3: ROOT D#, G (latched); KNOB 2: SCL; LEDs: root lit, the scale breathes ok
+ui:   OCT- in SCL: ROOT and SCL as the layer opened                            ok
+ui: EDIT + white key n: the n-th engine shown (FM6 2nd, DRUM last), while playing; steps, LEN, SLICER stay ok
+ui:   SAVE held: UNDO back to before the layer's loads, the steps untouched    ok
+ui:   the first 13 engines in PRESETS order have their white keys from F3 (ADPCM, the 14th, only with ENG; never DIGITAL) ok
+ui:   KNOB 2: the engine's next sound, KNOB 3 FAV; OCT-: the sound as the layer opened ok
+ui:   KNOB 1: the next engine                                                  ok
+ui:   #124 SAMPLE: KNOB 2 right PIANO, FLUTE, SAX (No. 1 2 3), both ways round the list, never the alias ok
+ui: EDIT + the key after the engines: INITIALIZE SOUND? dialog (closes the layer, no tap); OCT+ inits ok
+ui: in the menu: no GLO layer, GLO + a key plays it; GLO let go: no page       ok
+ui: in a dialog: SCL held shows no map and taps nothing                        ok
+ui: GLO then EDIT: GLO's layer; EDIT ignored (no layer, no page, its keys notes) ok
+ui: SCL tapped again: the CHORD page (CHRD VOIC, the chord graph)              ok
+ui:   CHRD OFF: the page says what to do, MONO gray                            ok
+ui:   KNOB 1: CHRD DIA3, KNOB 2: VOIC OPEN                                     ok
+ui:   a key plays the chord, the graph shows it (C), MONO gray                 ok
+ui:   a sound load keeps CHRD and VOIC (SCL settings)                          ok
+ui:   a kit (DRUM): the page says so, MONO gray                                ok
+ui: SCL layer: KNOB 1 ROOT, 3 CHRD, 4 VOIC (QNT TRN untouched); OCT- puts them back ok
+ui:   its map and cards MONO gray                                              ok
+ui: REC in NAME does nothing (no arm, no transport start); NAME stays          ok
+ui: REC in the menu does nothing (then PLAY: nothing either)                   ok
+ui: REC in the OVERWRITE? dialog does nothing; OCT+ then opens NAME            ok
+ui: UNDO of a sound load on FM6: the track's edited patch back; REDO: the load's ok
+ui:   the EDIT layer's OCT- after an engine pick: FM6 with the track's edited patch ok
+ui: UNDO after load, editor patch, load: the editor's patch back               ok
+ui: ARP LED: none without an ARP; flashes on the beat, the bar's first beat longer ok
+ui:   the beat counter runs (a bar of blocks wraps the beat of the bar)        ok
+ui: USER ERASE: the ERASE U02? dialog; OCT- keeps the preset, OCT+ erases it   ok
+ui:   an empty slot: no dialog, EMPTY SLOT                                     ok
+ui: AUTOMATION on a DRUM track: no grid (title, LEDs), a white key toggles no hit ok
+ui: AUTOMATION on a melodic track: a key writes no step, EDIT clears none; + ADD CHANCE the chance ok
+ui:   STEP still: armed, a key writes the cursor step                          ok
+ui: ALGORITHM ignored with a layer's button held (OCT- puts back all); then T2 ok
+ui: TOOLS: DELETE ROW / CLEAR SONG / CLEAR PAT with nothing there: NOTHING TO ..; a song: its dialog ok
+ui: REC in every layer: arms the track and starts PLAY; the layer stays, no page ok
+ui: SET layers: the OCT- LED lit (UNDO), OCT+ dark; after: the octave; FX: the octave ok
+ui: EDIT tap = RENAME on USER: no layer hint over NAME (elsewhere the hint as before) ok
+ui: dead FX held from a dialog: no map, the key plays a note, no effect        ok
+ui: dead GLO held from a dialog: no map, the key plays a note                  ok
+ui: STEP entry with CHRD: POLY the chord, MONO its root, as live recording writes ok
+ui: MIXER: K1..K4 light LEVEL / PAN / REV / the MUTE badge, nothing else       ok
+ui: rename of the loaded slot: the music's name follows, SAVE prefills it      ok
+ui: NAME: PLAY stops a running transport (never starts), REC ignored, then OCT+ saves ok
+ui: piano roll: the C-1 label stays inside the panel (every palette)           ok
+ui: EDIT: INIT's map cell (after the engines) and its key agree                ok
+ui: piano roll: ACID's bars drawn at their notes' rows, ties carried, rests empty ok
+ui:   the view holds the page's notes (A2..A3 in 21 rows), MONO gray           ok
+ui:   4-note chords stacked, their ties carry all four                         ok
+ui:   LEN 32, the cursor on page 2: its 16 steps drawn                         ok
+ui:   notes moved two octaves: the view follows over frames (not at once), then rests ok
+ui:   nothing changed: the graph is not drawn again                            ok
+ui:   after the follow the bars match again                                    ok
+ui:   a key held: its row on the keyboard strip is the accent                  ok
+ui: stopped, nothing held: no key lit                                          ok
+ui: playing: C4 and E4 of step 1 light keys 8 and 12 (from F3), track 2's G4 does not ok
+ui: the selected track's notes: track 2's G4 on key 15                         ok
+ui: a key held still lights with them                                          ok
+ui: the keys follow the octave and TRN; notes off the keyboard are not shown   ok
+ui: QNT SNAP: only the key of the note itself lights, not the keys rounding onto it ok
+ui: the ARP's note lights its key too                                          ok
+ui: a note above the keyboard (G#7) lights nothing                             ok
+ui: stopped: the notes end, their keys go dark                                 ok
+ui: the layer's map and the DRUM grid keep their keys; elsewhere a kit's hits light the keys that play them ok
+ui: #89 HOME, stopped: no step's keys lit                                      ok
+ui: #89 STEP, stopped: the cursor step's C4 and E4 light keys 8 and 12         ok
+ui: #89 the step's keys follow the octave; notes off the keyboard are not shown ok
+ui: #89 a key held lights with them                                            ok
+ui: #89 KNOB 1 moves the cursor and the keys follow its step (REST, empty, off the keys: dark) ok
+ui: #89 playing: the keys show what plays, not the cursor step                 ok
+ui: #89   (the cursor on G4's step changes nothing while playing)              ok
+ui: #89 stopped again: the cursor step's keys                                  ok
+ui: #89 AUTOMATION (same cursor): no step keys                                 ok
+ui: #89 the DRUM grid keeps its map                                            ok
+ui: #81 USB MIDI C4 into the selected track lights key 8 (C4)                  ok
+ui:   another track's MIDI notes light nothing; selected, its G4 lights key 15 ok
+ui:   note-off: dark                                                           ok
+ui:   TRS MIDI IN: E4 lights key 12 while held                                 ok
+ui:   ROUT SEL: channel 10 into the selected track lights its key              ok
+ui:   the keys follow the octave; notes off the keyboard are not shown         ok
+ui:   QNT SNAP: only the lowest key giving the note lights                     ok
+ui:   a note the pedal holds stays lit until the pedal is up                   ok
+ui:   with a key held and the sequencer's notes: all of them lit               ok
+ui:   the layer's map and the DRUM grid keep their keys over the MIDI notes    ok
+ui: SCL KNOB 3 QNT: OFF SNAP WHITE SEQ SEQ+T, SEQ+T last (1.5.6, #218; default OFF) ok
+ui: QNT SEQ: the keys snap as SNAP; C#4 F#4 of a step play C4 F4 in C major, the step keeps C#4 F#4 ok
+ui: QNT SEQ saved and loaded with the project                                  ok
+ui: HOME: its button lit, ENV and PLAY (stopped) glow, the keys glow, none lit ok
+ui: a key held lit over the glow; PLAY running: its green, its own LED dark    ok
+ui: a layer's map: the keys lit or dark (no glow), the buttons still glow      ok
+ui: LEDS INV: the page's button, PLAY running and a key held go dark, the rest lit, no glow ok
+ui: LEDS INV: the layer's button breathes (not inverted); a layer's map stays lit / dark as in DIM ok
+ui: #119 FX GLO SCL EDIT, held and locked, every LEDS mode: the keys that can be pressed breathe ok
+ui:   ..held / in effect lit, never the glow, the layer's button breathes, steady over time ok
+ui:   ..closed: nothing breathes                                               ok
+ui:   ..the breath's peak follows LEDS (DIM LO ~30 % of lit, else ~60 %)       ok
+ui: #119 a dialog: OCT+ breathes (not lit, not the glow), OCT- lit (INV: dark), every LEDS mode ok
+ui: STEP piano roll, stopped, LEDS OFF: buttons and keys as the mode says (1 lit, 0 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, stopped, LEDS DIM LO: buttons and keys as the mode says (1 lit, 26 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, stopped, LEDS DIM HI: buttons and keys as the mode says (1 lit, 26 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, stopped, LEDS INV: buttons and keys as the mode says (26 lit, 0 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, playing, LEDS OFF: buttons and keys as the mode says (1 lit, 0 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, playing, LEDS DIM LO: buttons and keys as the mode says (1 lit, 26 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, playing, LEDS DIM HI: buttons and keys as the mode says (1 lit, 26 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP piano roll, playing, LEDS INV: buttons and keys as the mode says (26 lit, 0 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, stopped, LEDS OFF: buttons and keys as the mode says (2 lit, 4 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, stopped, LEDS DIM LO: buttons and keys as the mode says (2 lit, 23 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, stopped, LEDS DIM HI: buttons and keys as the mode says (2 lit, 23 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, stopped, LEDS INV: buttons and keys as the mode says (2 lit, 4 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, playing, LEDS OFF: buttons and keys as the mode says (3 lit, 3 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, playing, LEDS DIM LO: buttons and keys as the mode says (3 lit, 22 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, playing, LEDS DIM HI: buttons and keys as the mode says (3 lit, 22 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: STEP DRUM grid, playing, LEDS INV: buttons and keys as the mode says (3 lit, 3 glow) ok
+ui:   the mid level: the grid's beats in DIM HI / LO only, never a lit key     ok
+ui: DRUM grid beats, LEDS OFF: steps 1 9 13 glow (nothing else does), the hits 3 5 lit ok
+ui: DRUM grid beats, LEDS DIM LO: steps 1 9 13 at the mid level over the glow, the hits 3 5 lit ok
+ui: DRUM grid beats, LEDS DIM HI: steps 1 9 13 at the mid level over the glow, the hits 3 5 lit ok
+ui:   another lane, LEN 12, DIV, the playhead, page 2: the beats as the steps show ok
+ui: DRUM grid beats, LEDS INV: steps 1 9 13 glow (nothing else does), the hits 3 5 lit ok
+ui: #127 SCALE LEDS OFF (the default): every key glows as before               ok
+ui: #127 MENU > CONTROL > SCALE LEDS ON (a bit of its own); C major: the white keys, the root C4 C5 ok
+ui: #127 LEDS OFF: the scale glows, the root brighter; the keys held lit over it ok
+ui: #127 LEDS DIM LO: the scale glows, the root brighter; the keys held lit over it ok
+ui: #127 LEDS DIM HI: the scale glows, the root brighter; the keys held lit over it ok
+ui: #127 LEDS INV: root lit, the scale mid, the others glow; the keys held dark ok
+ui: #127 the keys as they play: ROOT D, TRN +2                                 ok
+ui: #127 QNT SNAP: the keys of the scale; QNT WHITE: all the white keys, its roots; CHR: every key ok
+ui: #127 a layer, a DRUM track (its keys as before) and the DRUM grid keep their own LEDs ok
+ui: #127 SCALE LEDS OFF again: the bit clears                                  ok
+ui: SCREEN OFF: MENU > DISPLAY row, NEVER 5 15 30 60 MIN, NEVER by default (stored 0, 1.1.5.1) ok
+ui: SCREEN OFF: 30 MIN untouched -> DISPOFF + SLPIN once; dark: nothing drawn  ok
+ui: SCREEN OFF: a button wakes it (SLPOUT, 120 ms, the page redrawn, DISPON), swallowed ok
+ui: SCREEN OFF: HOME held to wake: no menu, no HOME tap after                  ok
+ui: SCREEN OFF: SAVE held to wake: no undo, no SAVE page                       ok
+ui: SCREEN OFF: REC held to wake: nothing armed, no clear, no transport        ok
+ui: SCREEN OFF: a key wakes it silently (no note on, none off), the next one plays ok
+ui: SCREEN OFF: a knob wakes it; turns until it rests 0.3 s change nothing (K1..4, PRESETS, ALGO, SELECT) ok
+ui: SCREEN OFF: NEVER stays on for hours; 5 MIN goes dark after 5; PLAY to wake starts nothing ok
+ui: SCREEN OFF: a dialog, the count-in, UPDATE MODE keep it on and wake it; the crash screen at once ok
+ui: SCREEN OFF: saved with the settings (0, 1.1.5's 30 MIN, and unknown = NEVER) ok
+ui: SCREEN OFF: the MENU row steps NEVER .. 60 MIN (OCT-/+, any knob), stops at the ends ok
+ui: SCREEN OFF: the sound bit for bit as with NEVER while dark (sequencer playing) ok
+ui: SCREEN WAKE: MENU > MIDI row, +MIDI (default, bit 5 of ui_prefs2 clear) / PANEL ok
+ui: SCREEN WAKE: older settings (the byte 0, PER3) read +MIDI; PANEL saved and read back ok
+ui: SCREEN WAKE +MIDI: a USB note-on wakes it (SLPOUT, DISPON) and plays (not swallowed); keys after play ok
+ui: SCREEN WAKE +MIDI: a TRS note-on wakes it and plays                        ok
+ui: SCREEN WAKE +MIDI: a note-on resets the idle time (on for hours while played; dark 30 MIN after the last) ok
+ui: SCREEN WAKE +MIDI: clock, CCs, bend, aftertouch, note-offs, SysEx, unheard channels neither wake it nor keep it on ok
+ui: SCREEN WAKE PANEL: MIDI notes play but neither wake it nor keep it on; a key wakes it, swallowed ok
+ui: SCREEN WAKE: the MENU row steps PANEL / +MIDI (up +MIDI), stops at the ends ok
+ui: SCREEN WAKE +MIDI: a note with the menu up or in NAME keeps it on 30 MIN, not for ever (its flag taken) ok
+ui: ANIM IDLE: the idle animation after a minute without input (not before), with the glow (LEDS DIM) ok
+ui:   it has the LEDs: ui_leds writes none                                     ok
+ui:   a knob turned ends it at once and is not swallowed (the value turns)     ok
+ui:   a key held ends it (the scan does at once) and counts as input: a minute again ok
+ui:   never while playing, armed, in the menu, a dialog or a layer; back when they end ok
+ui:   ANIM ON / OFF: none; LEDS OFF: no glow                                   ok
+ui:   kept with the settings ([15][10] bit 0; 0, every older setting: ANIM ON) ok
+ui: MOMENTARY: LFO held, KNOB 1 / 2 on HOME change their values; LFO let go puts them back (no LFO page) ok
+ui:   LFO alone still opens its page                                           ok
+ui:   without LFO a turn stays                                                 ok
+ui:   OCT+ with LFO held keeps them (no octave shift), LFO let go then changes nothing ok
+ui:   a global FX value (REVERB SIZE) too: back on release                     ok
+ui:   a momentary turn is not recorded as automation (armed and playing)       ok
+ui:   a sound load with LFO held: the values back first (the undo copy is the sound as it was), the load stays ok
+ui:   on STEP (and the action pages, the lists) the knobs act as ever          ok
+ui:   #195 MIXER: LEVEL PAN REV MUTE momentary (not recorded), back on release; without LFO they stay ok
+ui:   with a layer's button held the knobs are the layer's                     ok
+ui:   at most 8 values: MOMENTARY FULL, the turn does nothing                  ok
+ui: FM6 charts: the 32 algorithms' routes, carriers and feedback operator equal fm6_core.c's ok
+ui: FM6 charts: carriers on the bottom row, modulators a row up, one per cell, at most 4 rows ok
+ui: FM6 ops: FM6's EDIT cycle EDIT 1 EDIT 2 OPERATOR OP ENV OPERATOR 2 VOICE VOICE 2 EDIT 1 ok
+ui: FM6 ops: OPERATOR KNOB 4 on OP 3: its LEVEL byte only; F5 -> SLOT OWN      ok
+ui: FM6 ops: SAVE held undoes the gesture (patch and SLOT F5 back), again redoes; one undo per gesture ok
+ui: FM6 ops: 6 operators x 14 bytes, each knob writes its byte only (+-1, 0..its highest), SLOT OWN ok
+    OP 2 LEVEL 80: HF share 0.0014 -> 0.0067
+ui: FM6 ops: the sound: a modulator's LEVEL brightens it; back to 0 the same sound again ok
+    OP 1 LEVEL 79: energy x0.032; COARSE 2: zero crossings 49 -> 97; ATK RATE 29: the first 2048 samples' energy x0.000; FIXED: zero crossings 2
+ui: FM6 ops: a carrier's LEVEL lowers it, COARSE 2 an octave up, ATK RATE 29 slower, FIXED 10 Hz; undone: as before ok
+ui: FM6 ops: the macros apply on top of the edited patch (MRAT adds to COARSE, MLVL darker); the patch stays ok
+ui: FM6 ops: the edited patch round-trips through a project and a user preset (SLOT OWN) ok
+ui: FM6 ops: the pages on FM6 only; a turn while recording writes no automation ok
+ui: #309 FM6 footer: the preset's name on F5 and on its edited patch (OWN)     ok
+ui: #309 FM6 footer: the bank voice's name on B1, and on OWN after a load      ok
+ui: #309 FM6 footer: back on F5, the preset's name                             ok
+ui: six overview rows fit graph and show independent selection/step/mute/record state ok
+ui: 1.5 #173: the FX map's columns alternate light / dark (FLAT, LINE; MONO: one grey) ok
+ui: 1.5 MENU > SYSTEM > HELP: OFF by default, ON a bit of its own (ui_prefs2 bit 3) ok
+ui: 1.5 HELP: a hint for every page, HOME, LEVELS, the grid and every layer; each fits its row, no word dropped ok
+ui: 1.5 HELP ON: a page entered (a button, HOME) shows its hint ~2 s, then not; OFF: never ok
+ui: #181 PRESETS / ALGORITHM on MIXER, HOME, HOME > TRACKS, ENV (FLAT, LINE, LARGE): redrawn, no blank frame ok
+ui: 1.8 STEP: KNOB 2 on a step, SAVE held: the note back (not the sound loaded before), again redoes ok
+ui: 1.8 STEP: a step entered by the keys, SAVE held takes it out               ok
+ui: 1.8 DRUM grid: hits put in a row, SAVE held takes them out together        ok
+ui: 1.8 PLAY stops from the menu and a dialog (they stay), starts nothing there ok
+ui: 1.8 dialogs: DELETE SECTION 2? with its slots and repeats; INITIALIZE T3 SOUND? ok
+ui: 1.8 an external clock lost: NO CLOCK (TRS)                                 ok
+ui: power-on: track 2 is FM6 PAD (TRK_DEF, was DIGITAL PAD)                    ok
+ui: PRESETS: the list holds every engine's presets but DIGITAL's               ok
+ui: PRESETS KNOB 2: the engines in order, DIGITAL skipped, back to the first   ok
+ui: engines shown ANALOG FM6 PHASE ... NOISE SLICE DRUM ADPCM (ENGINE_ORDER); PRESETS lists them so ok
+ui: a DIGITAL user preset loads as FM6: the converted patch its own (SLOT OWN), preset = FM6 PAD ok
+ui:   .. and the main loop keeps that patch (not a factory one)                ok
+ui:   the record stays DIGITAL in the bank, listed with FM6's sounds (EDIT KNOB 2) ok
+ui:   saved again: an FM6 user preset with SLOT OWN and the converted patch beside it ok
+ui:   .. which loads back: the same patch, SLOT OWN                            ok
+ui: engine 1 asked for: DIGITAL E.PIANO converted (FM6, PTCH TINE EP, the patch named E.PIANO) ok
+ui: a DIGITAL preset number (apply_preset_to): its sound converted (BELL)      ok
+ui: a track left on engine 1 any other way: the main loop converts it (BASS -> FM BASS) ok
+ui: favourites: DIGITAL PAD / FUNK KEY -> FM6 PAD / PLUCK, engine 1's cleared  ok
+ui: all passed
+== upstream midi_control_test
+ui: USB maximum bend is exactly the default +2 semitones                       ok
+ui: USB minimum bend is exactly the default -2 semitones                       ok
+ui: bend centre is zero                                                        ok
+ui: RPN0 supports semitone and cent bend sensitivity                           ok
+ui: selecting NRPN cancels RPN data entry                                      ok
+ui: bend is smoothed toward the target in the real voice renderer              ok
+ui: bend smoothing reaches the exact target without changing saved pitch       ok
+ui: Reset Controllers centres bend and preserves RPN sensitivity               ok
+ui: existing modwheel/expression/aftertouch stay routed to the track           ok
+ui: drum track ignores pitch bend                                              ok
+ui: pedal holds a released synth note and its owner                            ok
+ui: pedal release releases its held note                                       ok
+ui: All Notes Off honours sustain rather than hard-killing                     ok
+ui: Reset Controllers releases pedal-held notes                                ok
+ui: drum note-offs do not accumulate pedal-held owners                         ok
+ui: All Sound Off ignores pedal and discards all track ownership               ok
+ui: USB/TRS channels can share one sounding note with independent owners       ok
+ui: one channel's note-off preserves another channel's hold                    ok
+ui: last channel owner releases the shared note                                ok
+ui: MIDI release cannot cut a still-held local keyboard note                   ok
+ui: local release after MIDI release ends the shared note                      ok
+ui: note-off follows its note-on across selected-track changes                 ok
+ui: preset panic forgets old pedal owners so later pedal-up preserves new notes ok
+ui: queue overflow recovers ownership and releases stuck notes                 ok
+ui: USB mode ignores TRS Start                                                 ok
+ui: USB Start begins at step zero                                              ok
+ui: USB six pulses advance exactly one 16th step                               ok
+ui: external Stop preserves step position and releases sequence notes          ok
+ui: external Continue resumes the existing step position                       ok
+ui: lost clock times out and releases transport notes                          ok
+ui: Start after timeout restarts cleanly at the master's phase                 ok
+ui: external-clock playback applies recorded motion                            ok
+ui: external Stop restores the musical parameter base                          ok
+ui: TRS mode ignores USB Start                                                 ok
+ui: TRS Start begins at step zero                                              ok
+ui: TRS six pulses advance exactly one 16th step                               ok
+ui: external Stop preserves step position and releases sequence notes          ok
+ui: external Continue resumes the existing step position                       ok
+ui: lost clock times out and releases transport notes                          ok
+ui: Start after timeout restarts cleanly at the master's phase                 ok
+ui: external-clock playback applies recorded motion                            ok
+ui: external Stop restores the musical parameter base                          ok
+ui: wrong-source clocks cannot advance the ARP                                 ok
+ui: selected-source MIDI clock advances the ARP                                ok
+ui: TRS realtime interleaving preserves the incomplete note message            ok
+ui: external clock timestamps survive uint32 millisecond wrap                  ok
+ui: local PLAY waiting for missing external clock also times out               ok
+ui: ARP HOLD on the external clock plays the upper octave                      ok
+ui: external Stop ends the sounding ARP note                                   ok
+ui: external Stop keeps the latched HOLD chord                                 ok
+ui: Continue plays the latched chord again                                     ok
+ui: a lost external clock stops the transport and ends the ARP note            ok
+ui: a tap while the external transport is stopped sounds                       ok
+ui: its ARP gate still ends in real time                                       ok
+ui: internal clock: STOP leaves the free-running ARP note to its gate          ok
+ui: internal clock: the ARP keeps stepping after STOP                          ok
+ui: a USB burst fills the MIDI ring without overflowing it                     ok
+ui: the packet that does not fit is refused (left for the next poll)           ok
+ui: TRS MIDI into a ring full of USB still fits (no overflow)                  ok
+ui: the ring drains with no panic: the held note keeps sounding                ok
+ui: the refused packet is taken once the ring has room                         ok
+ui: the held note survives all 88 events                                       ok
+ui: free space below one packet refuses a whole packet                         ok
+ui: ROUT defaults to CH1-4                                                     ok
+ui: CH1-4: note-ons on channels 5..16 (USB and TRS) play nothing               ok
+ui: CH1-4: channels 2 and 4 still play parts 2 and 4                           ok
+ui: CH1-4: pitch bend on channels 5, 10, 16 bends no part                      ok
+ui: CH1-4: CC1 / CC11 and aftertouch on channels 5..16 reach no MOD source     ok
+ui: CH1-4: RPN on channel 5 changes nothing                                    ok
+ui: CH1-4: a channel 5 sustain pedal does not hold channel 2's note            ok
+ui: CH1-4: CC120 / CC123 / CC121 on channels 5..16 leave parts 1..4 sounding   ok
+ui: CH1-4: panic on channel 2 still works                                      ok
+ui: SEL: channels 1, 5, 10, 16 all play the selected track                     ok
+ui: SEL: bend, CC1 and aftertouch from channels 5..16 reach the selected track ok
+ui: SEL: channel 5 pedal holds its note                                        ok
+ui: SEL -> CH1-4 releases channels 5..16's notes (pedal-held too), keeps channel 1's ok
+ui: .. and resets their bend: each part follows its own channel 1..4           ok
+ui: channel 1's note-off still releases its note after the switch              ok
+ui: ROUT: CH1-4 SEL (stored 0 1, as before), CH5-8 CH9-12 CH13-16 appended, 1.5.5 TRACK ok
+ui: ROUT CH5-8: channels 5..8 play tracks 1..4 (notes, bend, CC map, CC1, panic); the rest ignored ok
+ui: ROUT CH9-12: channels 9..12 play tracks 1..4; the rest ignored             ok
+ui: ROUT CH13-16: channels 13..16 play tracks 1..4; the rest ignored           ok
+ui: ROUT CH5-8 -> CH9-12 lets go of channels 5..8 (pedal-held too, bend reset); -> SEL keeps notes ok
+ui: ROUT CH13-16: the USB clock (Start, pulses, Stop) runs the transport as ever ok
+ui: MIDI out: the keys of track 3 send on channel 3 (CH1-4, SEL), 7 (CH5-8), 11 (CH9-12), 15 (CH13-16) ok
+ui: TRACK: T1..T4 CHANNEL (MENU > MIDI) 1..16 OMNI OFF, channels 1..4 by default (song.mch all 0) ok
+ui: CH1-4 (for the comparison): channels 1..4 play tracks 1..4, 5..16 nothing  ok
+ui: TRACK with T5/T6 OFF: first four channels retain CH1-4 behavior            ok
+ui: TRACK: T1 on 10, T2 on 2, T3 OMNI (every other channel), T4 OFF (none; the selected track too) ok
+ui: TRACK: bend, CC1, aftertouch, the CC map (CC7) and All Notes Off on channel 10 reach T1 only ok
+ui: TRACK: a learned CC (T3 PAN) from channel 10 sets T3; from a channel no track hears, nothing ok
+ui: TRACK: T1 and T2 both on 10: the first (T1) plays it                       ok
+ui: TRACK: T1 10 -> 11 lets go of channel 10 (pedal-held too, bend reset); 11 plays, 10 is ignored ok
+ui: TRACK -> CH5-8 -> TRACK: each switch lets go of what the new routing does not hear ok
+ui: TRACK: a PC on channel 10 loads T1's; on 3 (T3 OFF) and 1 (no track) nothing ok
+ui: TRACK: MIDI out of track 3's keys on its channel 12; OMNI / OFF on channel 3 ok
+ui: AUTO SELECT OFF (the default): a note into T2 lights its cushion ~90 ms, says MIDI IN -> T2, T1 stays ok
+ui: AUTO SELECT ON: a note into T3 selects it; T2 right after does not (hold-off), 300 ms later it does ok
+ui:   a chord across T1 and T4: the lower selected once, no flicker; the selected track with another: stays ok
+ui:   SEL: every note is the selected track's (no switch); TRACK: T4 on 10 selected; not with the menu up ok
+ui:   a note in the menu or NAME: its light there, the flag taken; no AUTO SELECT from it later ok
+ui:   a step held for a lock (DRUM grid): no switch while held (the lock on its own track), the next note after ok
+ui: power-on parts: ANALOG, FM6, LOFI, DRUM                                    ok
+ui: CC5 7 72 73 75 91 93 94: GLIDE LEVEL REL ATK DEC REV CHO DLY, 0..127 over their range ok
+ui: CC10 PAN: 0 left, 64 centre, 127 right                                     ok
+ui: CC74 / CC71 on ANALOG: CUT / RES                                           ok
+ui: CC74 on FM6 (channel 2): MLVL, bipolar (127: +63)                          ok
+ui: CC71 on FM6 (no resonance): ignored                                        ok
+ui: CC74 on DRUM (channel 4): TONE                                             ok
+ui: every engine's CC74 / CC71 target is a continuous EDIT value (or none)     ok
+ui: CC74 / CC71 on WHEEL: ignored                                              ok
+ui: CC121 resets no mapped parameter (RP-015)                                  ok
+ui: CCs outside the map change nothing                                         ok
+ui: ROUT CH1-4: mapped CCs on channels 5..16 reach no part                     ok
+ui: ROUT SEL: channel 10's CC7 sets the selected track's LEVEL                 ok
+ui: armed and playing: CC74 records a motion event of CUT on the selected track ok
+ui:   another track (channel 2, not selected): not recorded                    ok
+ui:   stopped: the patch's own CUT comes back                                  ok
+ui: not armed: the CC is the new value, no event                               ok
+ui: MIDI LEARN: nothing learned at power-on (every older setting: all 0)       ok
+ui:   an unlearned CC changes nothing (as before)                              ok
+ui: GLO + D4: MIDI LEARN on (the D4 cell / LED lit), the map closes with GLO   ok
+ui:   no parameter picked yet: a CC learns nothing, sets nothing               ok
+ui:   EDIT 2 KNOB 1 picks T1 CUT; CC1 / CC64 / CC0 are passed over; CC20 is learned ok
+ui:   CC20 sets T1 CUT on any channel ROUT hears; the knob again shows its CC  ok
+ui:   ROUT CH1-4: CC20 on channel 10 is ignored as before                      ok
+ui:   GLO + KNOB 2 picks T2 LEVEL; CC74 learned: T2 LEVEL, no more T1 CUT (the standard map) ok
+ui:   learning again replaces: CUT on CC21 drops CC20; CC21 on RES drops CUT's ok
+ui:   OCT- clears the picked parameter's CC (OCT- again: none), no octave      ok
+ui:   OCT- keeps CC16 learned on another parameter                             ok
+ui:   16 learned: the 17th says LEARN FULL, nothing replaced; CC1 / 64 / 123 are never learned ok
+ui: OCT+: LEARN DONE (the map stays, OCT± shift the octave again)             ok
+ui: GLO + D4 twice: on, then LEARN DONE                                        ok
+ui: MENU > MIDI > LEARN CLEAR: OCT+ asks (1.8), OCT- keeps, OCT+ again clears every CC (LEARN CLEARED; none: NOTHING LEARNED) ok
+ui: MIDI LEARN codes with 1.5's P_E0 103: common ids + 1 (INSERT MIX, ESYNC), engine ML_E0 + k; all ids round trip ok
+ui: PC on ch 1: the audio side only notes it (track 1, program 3), nothing loaded there ok
+ui:   the main loop loads track 1's preset 3                                   ok
+ui:   as PRESETS loads it: steps, LEVEL, ARP, SLICER kept; INSERT, TYPE, ESYNC the preset's ok
+ui:   two before a frame: the last loads; a run of PCs is one undo (SAVE held: the sound before) ok
+ui:   a RELOAD to the editor for the selected track's load, none for another's ok
+ui:   every engine: 0.. its presets in PRESETS' order (no alias twice); past the last ignored ok
+ui:   SAMPLE: PC 1 is FLUTE (not PIANO's alias); PC 4 (once PERC) does not turn the track into DRUM ok
+ui:   DRUM: 0..8 the nine kits (STD 80 10 66 55 77 DEEP TIGHT PERC; HAND CYM H+CYM skipped), then seven standalone modes; only KIT; 16.. ignored ok
+ui:   FM6: 0..7 its presets (PC 4: PAD, SLOT F5, its DTUN)                     ok
+ui:   FM6: 8.. the voice bank B1..B32 through SLOT (the rest stays), an empty or no bank ignored ok
+ui:   ROUT CH1-4: a PC on channels 5..16 is ignored                            ok
+ui:   ROUT SEL: any channel the selected track; CH5-8: channel 6 track 2, channel 1 ignored ok
+ui:   TRS MIDI IN: a PC (one data byte) and the next under running status      ok
+ui:   MIDI LEARN waiting: a PC is not taken for a CC, it loads                 ok
+MIDI control/clock integration tests passed
+== upstream midi_drift_test
+source 2, 120 BPM, jitter 0, interpolate 0, T1: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 120 BPM, jitter 0, interpolate 0, T2: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 120 BPM, jitter 0, interpolate 0, T3: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 120 BPM, jitter 0, interpolate 0, T4: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 120 BPM, jitter 0, interpolate 0, T5: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 120 BPM, jitter 0, interpolate 0, T6: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+ui: long-run transport keeps running without input overflow                    ok
+source 1, 120 BPM, jitter 1, interpolate 1, T1: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 120 BPM, jitter 1, interpolate 1, T2: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 120 BPM, jitter 1, interpolate 1, T3: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 120 BPM, jitter 1, interpolate 1, T4: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 120 BPM, jitter 1, interpolate 1, T5: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 120 BPM, jitter 1, interpolate 1, T6: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+ui: long-run transport keeps running without input overflow                    ok
+source 2, 97 BPM, jitter 1, interpolate 1, T1: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 97 BPM, jitter 1, interpolate 1, T2: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 97 BPM, jitter 1, interpolate 1, T3: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 97 BPM, jitter 1, interpolate 1, T4: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 97 BPM, jitter 1, interpolate 1, T5: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 97 BPM, jitter 1, interpolate 1, T6: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+ui: long-run transport keeps running without input overflow                    ok
+source 1, 240 BPM, jitter 1, interpolate 1, T1: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 240 BPM, jitter 1, interpolate 1, T2: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 240 BPM, jitter 1, interpolate 1, T3: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 240 BPM, jitter 1, interpolate 1, T4: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 240 BPM, jitter 1, interpolate 1, T5: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 1, 240 BPM, jitter 1, interpolate 1, T6: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+ui: long-run transport keeps running without input overflow                    ok
+source 2, 40 BPM, jitter 0, interpolate 0, T1: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 40 BPM, jitter 0, interpolate 0, T2: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 40 BPM, jitter 0, interpolate 0, T3: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 40 BPM, jitter 0, interpolate 0, T4: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 40 BPM, jitter 0, interpolate 0, T5: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+source 2, 40 BPM, jitter 0, interpolate 0, T6: seq 0.0000 ms, ARP 0.0000 ms after 20 min
+ui: sequencer phase stays within 2 ms of counted wire pulses                   ok
+ui: ARP phase stays within 2 ms without loop resets                            ok
+ui: polymetric lengths, rates and held ARP chords are retained                 ok
+ui: long-run transport keeps running without input overflow                    ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: tempo changes preserve sequence phase against wire pulse count             ok
+ui: tempo changes preserve ARP phase against wire pulse count                  ok
+ui: Start and seven queued clocks enter the first step before consuming progress ok
+ui: musical counter wrap preserves forward track progress                      ok
+ui: Start and seven queued clocks enter the first step before consuming progress ok
+ui: musical counter wrap preserves forward track progress                      ok
+MIDI LONG-RUN PHASE: PASS
+== upstream swing_test
+swing: track SWG + global SWG, at most 100 (0+0 30+20 60+40 100+0 0+100 70+50 100+100) ok
+swing: sequencer: SWG 100 + global 100 -> 100: steps 1.40 x / 0.60 x, pairs = 2 steps ok
+swing: sequencer: SWG 100 + global 0 -> 100: steps 1.40 x / 0.60 x, pairs = 2 steps ok
+swing: sequencer: SWG 0 + global 100 -> 100: steps 1.40 x / 0.60 x, pairs = 2 steps ok
+swing: sequencer: SWG 30 + global 20 -> 50: steps 1.20 x / 0.80 x, pairs = 2 steps ok
+swing: sequencer: SWG 0 + global 0 -> 0: steps 1.00 x / 1.00 x, pairs = 2 steps    ok
+swing: step_samples at 100 + 100: 1.4 x and 0.6 x of the straight step (was 1.8 x / 0.2 x) ok
+swing: SLICER step lengths == the sequencer's (one helper) at 100+100, 100+0, 0+100, 80+70, 0+0 ok
+swing: SLICER on the sequencer's step, SWG 40..100 + global 100, 131 BPM, 4 tracks ok
+swing: display: SWG / global SWG / ARP SWG 100 -> 100 %, 50 -> 50 %; 0..127 percents unchanged ok
+swing: all ok
+regress: 2 renders not in build/host/bgirl-golden.txt (new: GOLDEN_UPDATE=1 adds them)
+regress: voices: budget of 8 across 4 parts: 4 POLY parts, random notes: at most 8 voices active (budget 8), VOICE part at most 3 (cap 4), 908 voices taken, 0 still fading after their block, all free 1.78 s after the note-offs ok
+regress: voices: reuse before the stolen tail fades: same-note retrigger and full local-cap replacement before the fade: at most 8 voices, both MONO parts kept, all released ok
+regress: voices: budget after a live mode change: POLY / UNISON chord -> MONO / LEGATO / UNISON: extra voices reclaimed, leads kept, budget 8 ok
+regress: voices: budget after voice mode changes: POLY -> MONO / LEGATO and lower UNISON cap: at most 8 voices, all four leads kept, all released ok
+regress: voices: note-offs after live voice mode changes: 76 cases: all 16 VCE pairs, both key-up orders and caps 8 / 4; no stale fallback, MONO / LEGATO / UNISON priority leads and fallback preserved ok
+regress: samples: high-rate one-shot ends: 80 one-shot ends, both polarities and full scale, 1x..8x rate: terminal interpolation bounded ok
+regress: voices: a stolen voice fades: 5 takes; largest sample step at a take 669 vs 1192 before it (0.56 x, limit 1.50 x) ok
+regress: voices: MONO keeps its note: MONO part held its note through 868 voices taken from the others: lost in 0 blocks ok
+regress: voices: LEGATO keeps its note: LEGATO part held its note through 868 voices taken from the others: lost in 0 blocks ok
+regress: voices: UNISON keeps its note: UNISON part held its note through 875 voices taken from the others: lost in 0 blocks ok
+regress: voices: VOICE engine cap: VOICE engine, 8 keys: at most 4 voices in POLY, 4 in UNISON (cap 4); freed after release ok
+regress: routing: no hanging notes: 14129 random MIDI / key events on ch 1-4, 5, 10, 16 and the keys, track selection changing, 3 rounds (ROUT CH1-4, SEL, switching): no gate left on, every voice free ok
+regress: CPU: no instruction counter on this host (proc_pid_rusage); the budget is not checked
+regress: CPU, one part with 8 notes held (VOICE 4), heaviest preset per engine (instructions / ns per sample):
+regress:   ANALOG   SAW LEAD            0 instr     0.0 ns
+regress:   PHASE    BRASS               0 instr     0.0 ns
+regress:   LOFI     PULSE LD            0 instr     0.0 ns
+regress:   SAMPLE   PIANO               0 instr     0.0 ns
+regress:   VOICE    CHOIR AAH           0 instr     0.0 ns
+regress:   TRIO     FAT BASS            0 instr     0.0 ns
+regress:   WHEEL    FULL ORGAN          0 instr     0.0 ns
+regress:   GRAIN    CLOUD PAD           0 instr     0.0 ns
+regress:   PHYS     BELL TREE           0 instr     0.0 ns
+regress:   DRUM     DRUM KIT            0 instr     0.0 ns
+regress:   NOISE    WIND                0 instr     0.0 ns
+regress:   FM6      TINE EP             0 instr     0.0 ns
+regress:   SLICE    CHOP                0 instr     0.0 ns
+regress:   idle                         0 instr    96.2 ns
+regress:   idle_drums                   0 instr   102.7 ns
+regress:   3parts_full_drums            0 instr   400.6 ns
+regress:   idle_click                   0 instr   115.2 ns
+regress: 111 golden renders (0 changed, 0 gone), 0 health failures, 0 voice / routing checks failed, 0 CPU entries over budget (0 notes), 0 crashes; 2.6 s
+emu: power-on LED sweep: at 200 ms the head on key 11, glow behind, dark ahead, buttons dark ok
+emu:   over by 1 s (~0.70 s)                                                      ok
+emu: boots: the splash, then HOME (95 colours), the HOME LED lit                  ok
+emu: silent at rest                                                               ok
+emu: a key sounds (peak 0.073) and lights its LED                                 ok
+emu: a MIDI note in (USB-MIDI's queue) sounds (peak 0.078)                        ok
+emu: KNOB 1 redraws the screen                                                    ok
+emu: PLAY: the sequencer runs, PLAY's green LED                                   ok
+emu: PLAY again stops it                                                          ok
+emu: FX held: its button and the effects' keys breathe, none lit; let go: nothing ok
+emu: the page's breath peaks 0.80 0.80 0.58 0.58 ~ 0.80 (HI) 0.58 (LO)            ok
+emu: SAVE, OCT+, OCT+: user preset 1 written (2 sectors kept)                     ok
+emu: a fresh instance with the kept sectors has it; one without does not          ok
+emu: absolute (the default) CC 22 (PRESETS): its first value takes its place, then +3, -2; CC 27 MASTER; CC 74, 28 the firmware's ok
+emu: relative CC 22: 64+-n, two's complement, sign bit; CC 27 absolute in each    ok
+emu: CC 22 abs 64 65 66 67 turns PRESETS as three detents of the panel's knob do  ok
+emu: CC 22 bin 65 65 65 turns PRESETS as three detents of the panel's knob do     ok
+emu: CC 22 twos 1 1 1 turns PRESETS as three detents of the panel's knob do       ok
+emu: CC 22 sign 1 1 1 turns PRESETS as three detents of the panel's knob do       ok
+emu: the heavy song plays (peak 0.193), twice the same samples                    ok
+emu: the same song from the native build (cc): 88200 frames, bit for bit          ok
+emu: 1 s of the heavy song (FM6 PHYS GRAIN chords + DRUM) in 17.5 ms: 1.8 % of real time ok
+emu: all ok
+BGIRL: roles, editable demo/bounds, track selection, project roundtrip, autosave preservation, blank reset and note release PASS
+backup: numbers and CRC-32                                               ok
+backup: 7-bit pack / unpack round trip                                   ok
+backup: trailing bytes refused                                           ok
+backup: capture lists every object, empty ones as 0                      ok
+backup: capture -> file -> bytes round trip                              ok
+backup: a device that changes during capture fails the capture           ok
+backup: a damaged file is refused                                        ok
+backup: a file without the current music is refused                      ok
+backup: a short manifest is refused                                      ok
+backup: restore validates every byte before the first write              ok
+backup: restore order: projects, banks, samples, settings, live music last ok
+backup: restored objects equal the source                                ok
+backup: 13 objects: id 8 (the retired FM6 bank, empty) and id 9 (the user presets' FM6 patches) ok
+backup: an archive of 1.0..1.0.2 (12 objects, the bank as id 8) still reads ok
+backup: an archive of the 11 objects before FM6 still reads              ok
+backup: an archive missing another object is refused                     ok
+backup: a 1.0.2 archive (id 8, the bank) restores, its bank after the user presets ok
+backup: a 1.0.3 archive onto older firmware: id 9 skipped, the rest restored ok
+backup: a 1.0.3 archive restores id 9                                    ok
+backup: a refused chunk aborts that object and stops before the live music ok
+backup web tests passed
+speech: original pitch, one-shot note-off, latest phrase/no fallback PASS
+vocoder: real carrier/pitch independence, Freeze beyond sample, release, stop/panic PASS
+routing: pre-level capture, carrier sends suppressed, speech level/pan PASS
+routing: invalid source, no stale/consonant bleed, mute, explicit dry balance PASS
+storage: route/bank/controls roundtrip, load unfrozen, preset reference clearing PASS
+clean break: authentic baseline FUNA fixture rejected without decoded/live state mutation PASS
+DSP: 32000 stressed frames bounded and finite PASS
+state: DSP=688 bytes; captures=280 bytes; track=1856 bytes; bank=54357 bytes
+demo: FX pages2-4 vocoder; electro drums/bass preserved, T3 TRIO FAT BASS/dry monitor OFF, old VOX replaced PASS
+six-track vocoder: 270 extra ordered-pair/core-mask comparisons and T5/T6 failure recovery PASS
+vocal whole/chop dual: 216 bit-identical ordered-pair/mask comparisons, 16 each reject/partial/complete failures, including T5/T6 and nonzero vocal input PASS
+eligible carrier engines: 182 additional split comparisons PASS
+vocoder dual: 504 bit-identical 8/12/24-band ordered-pair/mask comparisons; 12 each rejected/partial/completed-failed jobs; <=1 render/track/block PASS
+BGIRL: roles, editable demo/bounds, track selection, project roundtrip, autosave preservation, blank reset and note release PASS
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 1.363s
+
+OK
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 03838fd53df752004436ae92b594a30eff2dc97c3570385a8b7d2132ee2bd445
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 03838fd53df752004436ae92b594a30eff2dc97c3570385a8b7d2132ee2bd445
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 9c7c7f48213786fa5b4e2a6c5130f8ff7843df8d87cd155d5fe6d7b985a5aa8a
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 2348975bf36ebd7352547408a85778034bfb74ac40c50e79b65e5eb55d8cc333
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 2348975bf36ebd7352547408a85778034bfb74ac40c50e79b65e5eb55d8cc333
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 2348975bf36ebd7352547408a85778034bfb74ac40c50e79b65e5eb55d8cc333
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 2348975bf36ebd7352547408a85778034bfb74ac40c50e79b65e5eb55d8cc333
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id c0a8894b7f5b56f9657d8a348816d8b382d6cd9b5e155b6fe8e1191a946b7051
+vocals: 1 whole + 2 chops; 22423 encoded bytes; id 9c7c7f48213786fa5b4e2a6c5130f8ff7843df8d87cd155d5fe6d7b985a5aa8a
+duration g0 j0 frames84736 expected84588 pos42294
+duration g1 j0 frames9280 expected9216 pos46902
+duration g1 j1 frames12672 expected12544 pos53174
+duration g1 j2 frames10880 expected10752 pos58550
+duration g1 j3 frames18304 expected18176 pos67638
+duration g1 j4 frames9344 expected9216 pos72246
+duration g1 j5 frames24832 expected24684 pos84588
+vocal entries: 7 exact boundaries, decoder checkpoints, note maps and tap-to-end durations PASS
+vocal lifetime: original rate despite pitch/loop/reverse/decay/BPM, newest/no fallback, captured view/source, STOP/panic/missing/invalid silence PASS
+vocal persistence: B6S1 exact ID/view/offset/root/steps; version6 presets; mismatch survives save/reload silently; explicit rebinding; factory non-vocal semantics retained PASS
+vocal sequence BPM60: quarter-note spacing ~44100 frames PASS
+vocal sequence BPM180: quarter-note spacing ~14700 frames PASS
+vocal/ordinary SLICE: all128 learned-CC VIEW/DIV mappings use source-specific bounds PASS
+structs: undo=1668 project=7296
+resources: audio=42294 entries=84 groups=4 source=976 fingerprint=48 const-UI-descriptors=64 undo-ID=8 project-ID=48 track=1856 bytes
+duration g0 j0 frames84736 expected84588 pos42294
+duration g1 j0 frames9280 expected9216 pos46902
+duration g1 j1 frames12672 expected12544 pos53174
+duration g1 j2 frames10880 expected10752 pos58550
+duration g1 j3 frames18304 expected18176 pos67638
+duration g1 j4 frames9344 expected9216 pos72246
+duration g1 j5 frames24832 expected24684 pos84588
+vocal entries: 7 exact boundaries, decoder checkpoints, note maps and tap-to-end durations PASS
+vocal lifetime: original rate despite pitch/loop/reverse/decay/BPM, newest/no fallback, captured view/source, STOP/panic/missing/invalid silence PASS
+vocal persistence: B6S1 exact ID/view/offset/root/steps; version6 presets; mismatch survives save/reload silently; explicit rebinding; factory non-vocal semantics retained PASS
+vocal sequence BPM60: quarter-note spacing ~44100 frames PASS
+vocal sequence BPM180: quarter-note spacing ~14700 frames PASS
+vocal/ordinary SLICE: all128 learned-CC VIEW/DIV mappings use source-specific bounds PASS
+structs: undo=1668 project=7296
+resources: audio=42294 entries=84 groups=4 source=976 fingerprint=48 const-UI-descriptors=64 undo-ID=8 project-ID=48 track=1856 bytes
+dance triggers: empty, first, 27/wrap/coalesce, probability, 4-note CHORD once, HOLD/release, ARP OFF, stopped internal arp, all-off/panic/project reset/isolation PASS
+dance external MIDI: START/pulses advance, STOP holds, CONTINUE/pulses resume PASS
+dance pixels: 576 compositions (12 palettes x FLAT/LINE x 12 poses x 2 styles) incl. wrap, CRISP erasure, GHOST intersection/previous, style redraw, LARGE, no hidden/idle drawing PASS
+dance redraw coalescing: 1000 triggers / 100 paints = 100 graph blits; 100 idle attempts = 0 blits PASS
+dance persistence: normal project save/load retains musical mode/rate, resets progression, session style unchanged PASS
+dance sizes: masks=13824 telemetry=24 UI-cache=4 style=1 track=1856 project=3840 canvas=59520 graph-transfer=58560 bytes
+dance preservation: 512000 stereo frames +4000 RNG/note snapshots identical: disabled hook vs hidden/CRISP/GHOST PASS
+dance atomic: million single-writer trigger/resets, 798256 concurrent coherent reads PASS (host only)
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.027s
+
+OK
+Battle Circuit: fresh boot; 44 palette/style/LARGE round-trips; 20 legacy IDs; custom palette bytes; idle redraw PASS
+palette  text/bg      text/surf    mid/bg       mid/surf     dim/bg       line/bg      theme/bg     theme/surf   accent/bg    accent/surf  ink/sel      ink/theme    sel/bg       rec/bg       rec/surf     text/raise_  ink/rec      ink/key      key/bg       key/surf     ink/dim      ink/accent
+GREY      16.8         13.7          8.7          7.1          3.7          1.5          9.5          7.7          6.2          5.1          6.4          9.5          6.4          6.0          4.9          9.8          6.0         10.4         10.4          8.5          3.7          6.2
+GREEN     17.3         14.1          8.8          7.1          3.8          1.6         10.5          8.5         13.9         11.3          6.9         10.5          6.9          5.8          4.7         10.2          5.8         10.5         10.5          8.5          3.8         13.9
+AMBER     16.9         14.0          8.5          7.0          3.8          1.6         10.2          8.5         11.4          9.4          6.7         10.2          6.7          5.8          4.8         10.0          5.8         10.5         10.5          8.7          3.8         11.4
+ICE       16.9         14.0          8.5          7.1          3.8          1.6          8.8          7.3          8.4          7.0          6.0          8.8          6.0          5.7          4.8         10.1          5.7         10.5         10.5          8.8          3.8          8.4
+VIOLET    16.7         14.3          8.7          7.4          3.7          1.6          7.2          6.2         12.4         10.6          5.1          7.2          5.1          5.8          4.9         10.3          5.8         10.4         10.4          8.9          3.7         12.4
+ROSE      17.0         14.7          8.5          7.4          3.8          1.6          7.3          6.3         13.9         12.0          5.2          7.3          5.2          5.8          5.0         10.7          5.8         10.6         10.6          9.1          3.8         13.9
+PAPER     14.7         12.2          5.7          4.7          2.6          1.4          7.7          6.3          5.5          4.5          4.7          7.7          4.7          5.5          4.5          9.5          5.5          7.7          7.7          6.4          2.6          5.5
+HI-CON    20.4         16.6          9.7          7.9          3.8          1.5         17.0         13.9         13.8         11.2         10.6         17.0         10.6          6.3          5.1         11.6          6.3         11.9         11.9          9.7          3.8         13.8
+NIGHT     14.2         12.0          7.0          5.9          3.0          1.4         11.8         10.0         20.4         17.3          7.6         11.8          7.6          6.3          5.3          9.2          6.3          8.4          8.4          7.1          3.0         20.4
+MONO      21.0         21.0         21.0         21.0          2.6          2.6         21.0         21.0          6.5          6.5         21.0         21.0         21.0          6.3          6.3          8.0          6.3         21.0         21.0         21.0          2.6          6.5
+CIRCUIT   17.1         13.0          8.8          6.7          3.7          1.6         14.3         10.9         17.1         13.0          9.5         14.3          9.5          7.4          5.6          9.2          7.4         10.5         10.5          8.0          3.7         17.1
+STUDIO    14.2         12.2          6.0          5.2          3.4          1.6         14.1         12.1          6.2          5.4          9.3         14.1          9.3          8.1          7.0         10.6          8.1          9.0          9.0          7.8          3.4          6.2
+minimum  12.00        9.00         5.00         4.00         2.20         1.25         4.50         4.50         4.50         4.50         4.50         4.50         1.80         3.00         3.00         7.00         4.50         4.50         3.00         2.50         1.80         4.50
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.081s
+
+OK
+splash logo: 224x145, 16288 B indexed RGB565 + alpha; source 0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a
+splash logo: 224x145, 16288 B indexed RGB565 + alpha; source 0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a
+FM6 BG-first browsing, inverse positions, engine stepping and stable MIDI programs PASS
+drums: all128 pitches x5 identities, tap/velocity/extremes/retrigger/clap/MIDI/keys/sequence/STOP PASS
+choke: previous tail, both same-block orders, track orders, opt-out, asymmetric, panic PASS
+FM: sustained 8s every MIDI24..52 bass, every MIDI48..72 character, bounded/release PASS
+persistence: ten edited project/user sounds, OWN patches, B6S1 + vocal fingerprints PASS
+chirp sweep9st->root in 139.320 ms
+rapid mono retriggers, four-note live chord/stacking/release, pitch contour, autosave precedence, slot isolation PASS
+signature bank PASS
+signature dual: 28 bit-identical serial/threaded grouped-hat comparisons, both track orders PASS
+capacity startup electro          1628 / 3840 pack=1
+capacity empty                    734 / 3840 pack=1
+capacity six FM6                  1236 / 3840 pack=1
+capacity six FM6 +128 motion      1748 / 3840 pack=1
+capacity dense six x64 x4         5972 / 3840 pack=0
+capacity dense + all params       6692 / 3840 pack=0
+RAM track_t=1856 tracks=11136 engine_pool=77328 project=7296 motion=516 chain=116 wire=3840
+six solo T1 energy 43.9838
+six solo T2 energy 6.89974
+six solo T3 energy 4.03555
+six solo T4 energy 0.439824
+six solo T5 energy 0.122501
+six solo T6 energy 0.0291112
+six runtime audio/64-step tracks, engines, T5/T6 motion, undo, banks, MIDI learn/reset, channels1-6, ownership, eight-voice stress, full-save atomicity, autosave throttle PASS
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: SH-STYLE editor                                                        ok
+editor: clarity DESC/SET:8/12/24, legacy/log ms formats, range reload and5ms endpoint ok
+editor: INFO explicitly tags display capabilities after SONG without changing command 33 ok
+editor: INFO 1.5.5: 4B 01 11, a step's condition after its nudge               ok
+editor: INFO 1.6: 45 01 5, CUSTOM's colours, last                              ok
+editor: UI_SET updates the actual palette and reports RAM-only saving          ok
+editor: out-of-range palette leaves the display unchanged                      ok
+editor: the retired font weight is not supported (rc 2), UI_STATE says 127     ok
+editor: unsupported preference is reported without applying it                 ok
+editor: FAV_SET marks DRUM as a normal engine                                  ok
+editor: FAV_GET reads the bounded favorite range                               ok
+editor: empty user slot cannot be starred                                      ok
+editor: saved user slot can be starred without changing its sound              ok
+editor: favorite range cannot cross the end of user slots                      ok
+editor: short favorite writes return an error without reading absent bytes     ok
+editor: UI_STATE rejects unexpected request bytes                              ok
+editor: SONG still responds through its original command                       ok
+editor: MOTION op 5 sets a lock: rc 0, two records, then their kinds 0 1       ok
+editor: MOTION query as before 1.1: no kinds, the lock's id without bit 7      ok
+editor: MOTION op 7: the query with the kinds                                  ok
+editor: MOTION op 5 refuses step 64 (rc 1)                                     ok
+editor: MOTION op 6 on step 2: its automation event stays                      ok
+editor: MOTION op 6, 127: every lock goes, the automation stays                ok
+editor: MOTION 1.2: 128 records on one track; op 5's reply as before: max 64, its first 64 listed ok
+editor:   the 129th: rc 2 (full)                                               ok
+editor:   op 8: count and max as two 7-bit bytes (128), all 128 records, then their kinds ok
+editor:   op 8 with a further byte: no reply                                   ok
+editor: realtime bytes interleaved in SysEx do not enter the editor frame      ok
+editor: a non-realtime status aborts SysEx without changing parameters         ok
+editor: a valid request works after an aborted frame                           ok
+editor: a channel event in another USB packet aborts an unfinished SysEx       ok
+editor: USB channel packets reject mismatched CIN and high data bits           ok
+editor: USB program and channel pressure keep their one-byte payload           ok
+editor: USB MIDI ring stops at capacity across counter wrap                    ok
+editor: USB rejects new messages until the audio consumer clears overflow      ok
+editor: USB resumes after the audio consumer clears overflow                   ok
+editor: old fixed-four FL namespace refused with no mutation/reply             ok
+editor: F6 namespace selects track6 and rejects track7                         ok
+editor: invalid track selection leaves track6 selected                         ok
+editor: UART DMA overrun never combines a stale partial note with new data     ok
+editor: UART receives a complete fresh note after DMA recovery                 ok
+editor: UART discards running-status data after lost bytes until a new status  ok
+editor: UART recovers immediately on a complete channel message                ok
+editor: UART queue overflow latches the same recovery flag as USB              ok
+editor: UART rejects a new stream until audio clears overflow                  ok
+editor: UART resumes valid running status after audio clears overflow          ok
+editor: legacy 8-byte step writes preserve lane data                           ok
+editor: full grid step writes preserve high lane bits and constrain accents    ok
+editor: partial or oversized step payloads never mutate a valid step           ok
+editor: TRACK_STEP accepts its legacy payload on an unselected track           ok
+editor: TRACK_STEP rejects an incomplete grid extension                        ok
+editor: STEP_SET with the ratchet: x3 kept, replied after the chance, flags without it ok
+editor: STEP_SET without the ratchet (an older editor) keeps the step's own    ok
+editor: STEP_SET refuses a ratchet outside 1..4 and leaves the step            ok
+editor: TRACK_STEP sets the ratchet of any track (x4, then back to x1)         ok
+editor: STEP_SET with the nudge (-5): kept, replied + 8 after the ratchet; a write without it keeps it ok
+editor: STEP_SET refuses a nudge byte above 15 and leaves the step             ok
+editor: TRACK_STEP sets the nudge of any track (+7)                            ok
+editor: STEP_SET with the condition (1:4, FILL, none); without it a chance of 100 keeps it, 40 % replaces it ok
+editor: STEP_SET refuses a condition byte above 11 and leaves the step         ok
+editor: TRACK_STEP sets the condition of any track (!FILL)                     ok
+editor: sample erase waits for STOP and refuses a stalled audio ISR            ok
+editor: sample erase stops transport before touching flash                     ok
+editor: 257 decoded sample bytes are rejected without a truncated write        ok
+editor: a dangling packed-data mask is rejected                                ok
+editor: sample writes cancel a pending PLAY before flash access                ok
+editor: an oversized sample header is rejected without programming flash       ok
+editor: complete sample header and CRC publish a valid slot                    ok
+editor: repeated END of the same published header does not rewrite live zones  ok
+editor: END cannot change published sample zones without BEGIN                 ok
+editor: user-preset STORE does not mutate RAM when audio cannot stop           ok
+editor: user-preset ERASE reports failure when audio cannot stop               ok
+editor: SONG sets and queries the complete chain without changing selection    ok
+editor: SONG invalid repeats leave the chain unchanged                         ok
+editor: SONG cannot replace a chain while its start is pending                 ok
+editor: SONG PLAY refuses extra argument bytes                                 ok
+editor: SONG op 5 sets sections (T1 A, T2 B, T3 -, T4 A x3; all - x1), the reply in lanes ok
+editor: SONG op 4 queries them as set                                          ok
+editor: SONG op 0 (v6 editors): a row per section, its clock lane's slot (T1 A; all - : A) ok
+editor: SONG op 5: a slot past - (5) refused, the sections kept                ok
+editor: SONG op 1 (v6): no - in a row of one slot                              ok
+editor: SONG op 5 waits for a pending start (rc 2)                             ok
+editor: INFO says the lanes: 57 01 04                                          ok
+editor: SET of QUANTIZE waits while a song plays (its slots set it)            ok
+editor: PROJECT refuses an invalid slot instead of wrapping to slot 0          ok
+editor: UP_STORE rejects bytes after its name terminator without saving        ok
+editor: a successful PROJECT save confirms its slot                            ok
+editor: PROJECT never confirms an old used slot when STOP timed out            ok
+editor: FM6_GET factory 4: the packed record                                   ok
+editor: FM6_PUT track 3: rc 0, the track's patch, SLOT OWN (not F4: the name differs) ok
+editor:   .. the main loop keeps it                                            ok
+editor: FM6_GET track 3: as sent                                               ok
+editor: FM6_PUT of a factory patch unchanged: SLOT shows it (F6)               ok
+editor: SLOT OWN -> F2 loads the factory patch                                 ok
+editor:   .. and back to OWN brings the own patch back                         ok
+editor: a SLOT past OWN is OWN: the patch stays, nothing reloads               ok
+editor: FM6_GET of the bank: rc 3, no bank                                     ok
+editor: FM6_PUT to the bank: rc 3, no bank                                     ok
+editor: FM6_ERASE: rc 3, no bank                                               ok
+editor: FM6_LIST: 8 factory names, nbank 0                                     ok
+editor: UP_STORE of an FM6 track: FM6_GET user 6 gives its patch               ok
+editor: FM6_PUT user 6, then GET: stored in range (a level of 120 -> 99)       ok
+editor:   .. UP_LOAD 6 plays it, SLOT OWN                                      ok
+editor:   .. a rename keeps it                                                 ok
+editor: a DRUM user preset has no patch: GET rc 2, PUT rc 1                    ok
+editor: an empty user slot: PUT rc 1; past the slots: GET rc 1                 ok
+editor: an erased preset's patch is gone (GET rc 2)                            ok
+editor: FM6_PUT: a fifth track or a short record: rc 1                         ok
+editor: FM6_GET of an unknown target: rc 1                                     ok
+editor: UP_PUT stores a v4 record (no flash here: kept in RAM)                 ok
+editor: UP_PUT keeps every value (PAN -20, FLT -40, min and max)               ok
+editor: UP_GET returns the values and the pattern UP_PUT sent                  ok
+editor:   .. then kind 0 and (1.2) the category: none sent, ANALOG's (OTHER)   ok
+editor: UP_PUT with a category (after the kind's 16 bytes; past the last: rc 1), UP_GET and UP_LIST give it ok
+editor: WATCH 1 starts watching                                                ok
+editor: WATCH 1 while watching keeps a pending change: CHANGED still goes out  ok
+editor: WATCH 0 then WATCH 1 starts from the values as they are (no push)      ok
+editor: WATCH 3 while watching: CHANGED kept, TRACK_CHANGED from the mix as it is ok
+editor: WATCH after a USB reset starts over                                    ok
+editor: the editor's own PRESET: no RELOAD, no CHANGED for what it loaded, a pending CHANGED stays ok
+editor: PRESET of other engines: no push at all                                ok
+editor: SET of G_ENGSEL: no RELOAD                                             ok
+editor: a RELOAD due before the editor's PRESET still goes out                 ok
+editor: not watching: PRESET as before, WATCH then starts from it              ok
+editor: BACKUP_PUT begin through ep1_take                                      ok
+editor: 256-byte pieces in 64-byte USB packets at full speed: every piece taken (rc 0) ok
+editor: abort through ep1_take                                                 ok
+editor: pipelined: the first piece is taken, the second (sent before its reply) dropped whole ok
+editor: ... so the next piece is refused (rc 1, offset), as a host that waits never sees ok
+editor: MENU_DESC: 33 items (... 1.5.5, then 1.6.1 2ND CORE id 32 last: OFF / ON (BETA), OFF by default), names, defaults ok
+editor: MENU_DESC (1.0.5): after the names (TUNE: the unit) each item's tab, index and name (DISPLAY CONTROL AUDIO MIDI SYSTEM) ok
+editor: MENU_DESC: the tab comes after every byte of the 1.0.4 reply (older editors ignore it) ok
+editor: MENU_DESC: no CALIBRATION / INFO / ABOUT; an index past the list answers index, 127 (no item) ok
+editor: MENU_DESC / MENU_SET with the wrong length: no reply                   ok
+editor: MENU_SET: every setting applied as the menu does (palette, EQ, USB LEVEL, CLICK, COUNT-IN at once, RESTORE LAST, SCALE LEDS, SCREEN OFF, SCOPE, STEP PREVIEW, CHORD ENTRY, HOME, HELP, SELECT, T1..T4 CHANNEL, AUTO SELECT, SCREEN WAKE, 2ND CORE ON (bit 7 of ui_prefs2; none in a FELUCCA_CPU2=0 build)), read back ok
+editor: MENU_SET: a flag back to its default leaves the other flags            ok
+editor: MENU_SET: out-of-range values clamped, the reply says the value the device took (TUNE -50..50) ok
+editor: MENU_SET: an unknown id answers rc 1, id and value echoed, nothing changed ok
+editor: MENU_SET while the MENU page is shown: the page redraws (ui.force)     ok
+editor: MENU_SET USB SERIAL OFF: reply first, applied ~200 ms later (the device re-enumerates) ok
+editor: MENU_SET USB SERIAL ON: applied later (with the MENU open: when it closes); unchanged: no drop ok
+editor: DESC of DRUM KIT: STD 66 10 77 80 10 66 55 77 (1..3 as the kits they play) ok
+editor: SET of DRUM KIT 1..3 lands on 66 10 77 (and replies it)                ok
+editor: a user preset of DRUM KIT 3 (H+CYM) loads as 77                        ok
+editor: a project of DRUM KIT 1..3 loads as 66 10 77 (STD stays)               ok
+editor: LEARN_GET: 16 entries, all empty at first                              ok
+editor: LEARN_SET op 0: learns (DRUM's TONE on CC74); CC20 again replaces its parameter ok
+editor: LEARN_SET refuses CC64 / CC120, track 4, a parameter past P_COUNT (rc 1); a 17th: rc 5 (full) ok
+editor: LEARN_SET op 1 clears one CC, op 2 all; unknown ops rc 1; GET with arguments: no reply ok
+editor: PALETTE_GET: none stored (flags 0), five colours: the palette in use   ok
+editor:   PALETTE_GET takes no arguments                                       ok
+editor: PALETTE_SET: colours that are hard to read are shown too (a preview: the editor warns, the device does not refuse) ok
+editor:   and stored (op 1: rc as UI_SET, no rc 5)                             ok
+editor:   a way back: op 2 removes it                                          ok
+editor:   a value out of range, an unknown op: rc 1, nothing stored            ok
+editor: PALETTE_SET op 0 (preview): the colours are shown at once, nothing is stored ok
+editor:   the other tokens derived as for any palette (SEL, MID, INK), not GREY ok
+editor: PALETTE_SET op 3: the preview dropped, the palette in use again        ok
+editor: PALETTE_SET op 1: stored, in use (flags 3), five colours little endian in the settings' bytes ok
+editor: PALETTE_GET after: flags 3 and the stored colours (r5 g6 b5, three 7-bit bytes each) ok
+editor: UI_PALETTES: CUSTOM listed last while one is stored                    ok
+editor: UI_SET 0: CUSTOM (10) selectable like a built-in palette, a built-in one leaves it stored (settings.palette the base) ok
+editor: MENU COLOR: 11 values while CUSTOM is stored (CUSTOM last), MENU_SET reaches it ok
+editor: UI_STATE: the palette byte is 10 while CUSTOM is in use                ok
+editor: PALETTE_SET op 2: removed (flags 0, bytes 0), the built-in palette is back, COLOR has 10 values again ok
+editor: UI_SET 0 with CUSTOM (10) but none stored: rc 1                        ok
+editor: settings: CUSTOM kept by an export and an import, in use after palette_apply ok
+editor: settings: colours that are hard to read are kept as saved (the user's choice) ok
+editor: settings: a CUSTOM of 1.6 (BG SURF TEXT THEME ACCENT) is read as the five of 1.7, once ok
+editor: settings: a flags byte without the stored bit: none, the colours zero; the bits past the two dropped ok
+editor test passed
+release 50: code63 actual49.101639ms
+release 100: code83 actual101.404358ms
+release 150: code94 actual151.107132ms
+clarity: legacy fixture + exact8/12 hashes, release tables, 45 saved auditions, preset, motion/locks, transitions, bounded output PASS; DSP=688 track=1856 project=7296
+12/24 clarity native/WASM: 176400 frames bit-identical, nonzero PASS
+editor: all128 log and127 legacy millisecond labels agree with firmware table PASS
+Mega: bytes=1628 margin=2212 maxvoices=8 steals=0 peak=0.26321411 RMS=0.03157951 mod=743339508
+Mega: fresh/explicit equality, MIDI mapping, four loops/bounds/no steals, STOP/restart/overload, exact codec, edited save/autosave priority, blank PASS
+Mega: two complete loops /661500 native-WASM frames bit-identical PASS
+CREW ping-pong: all256 phase bins, both endpoints, reverse traversal and wrap PASS
+CREW preferences: fresh default, one-time saved-settings upgrade, unrelated bytes/IDLE preserved, later HOME choices retained PASS
+CREW activity: sustained/release/settle/freeze, stopped live, mute/solo inhibition, new attack, rejected/deferred, mono priority/legato, one-shot, stolen, panic/project, phase wrap/BPM PASS
+CREW external START/STOP/CONTINUE: exact GRID musical units, BPM-independent phase, stopped local phase, CONTINUE preserves, START resets PASS
+CREW pixels: 3168 exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS
+CREW whole-word: 1M actual producer publications/resets with concurrent snapshot reads PASS
+CREW bytes: masks=55296 atomic=24 producer=96 phase=4 canvas=59520 track=1856 wire=3840 graph=58560
+CREW audio/RNG preservation: disabled vs hidden/visible/covered, six-track playback +random arp, 512000 frames +4000 state snapshots identical PASS
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.017s
+
+OK
+SH-STYLE: old preset bytes, 2 sounds x6 tracks, descriptor ranges, MIDI/retrigger/locks/motion, user/project roundtrips, note-off/panic/STOP, shared8 PASS (1405 bytes)
+SH-STYLE native/WASM: 176400 frames bit-identical, finite/bounded/nonzero, including release PASS
+ui_render: PNGs in local/stage-lab-cut/after/<palette>/ and local/stage-lab-cut/after/sheet_<palette>.png
+STUDIO icons: inherited IDs +150 exact alpha cells unchanged; 12 original size-specific SVG cells/decoder parity, padding, distinct silhouettes PASS
+ui_render: PNGs in local/lab-rollout/after/lab/<palette>/ and local/lab-rollout/after/lab/sheet_<palette>.png
+ui_render: PNGs in local/cut-rollout/after/native/<palette>/ and local/cut-rollout/after/native/sheet_<palette>.png
+ui_render: PNGs in local/cut-complete/after/native/<palette>/ and local/cut-complete/after/native/sheet_<palette>.png
+ui_render: PNGs in local/stage-rollout/after/native/<palette>/ and local/stage-rollout/after/native/sheet_<palette>.png

@@ -85,6 +85,8 @@ static struct {
     uint16_t pal[5];             /* the five as stored: color1 color2 color3 primary secondary (the editor shows them) */
     uint16_t bg, surf, text, theme, accent;
     uint16_t mid, dim, line, sel, tint, ink, rec, raise, key, lane, grid, ok;
+    uint16_t rhythm, support, play, stage; /* derived, never persisted */
+    uint8_t studio;
     uint8_t light, mono, circuit; /* CIRCUIT geometry; never stored in settings */
     uint8_t style;               /* MENU > STYLE (ui.c style_apply): ST_FLAT, ST_LINE */
     uint32_t gen;                /* bumped by palette_set (the text ramps follow) */
@@ -98,6 +100,10 @@ static struct {
 #define T_BG ux.bg               /* background */
 #define T_SURF ux.surf           /* dialogs, menu rows, mixer strips */
 #define T_TEXT ux.text           /* primary text */
+#define T_RHYTHM ux.rhythm          /* occupied sequencer events */
+#define T_SUPPORT ux.support        /* structure, not disabled text */
+#define T_PLAY ux.play              /* transport / playhead, not edit focus */
+#define T_STAGE ux.stage            /* restrained performance accent */
 #define T_THEME ux.theme         /* values, curves, the gauge's end line */
 #define T_ACCENT ux.accent       /* the one active thing: hot knob, cursor, playhead */
 #define T_MID ux.mid             /* labels, units, secondary text */
@@ -159,6 +165,7 @@ static void palette_set(uint32_t i)
     ux.mono = !cust && i == UI_GREY_INDEX;
     ux.pal[0] = p->c1; ux.pal[1] = p->c2; ux.pal[2] = p->c3; ux.pal[3] = p->primary; ux.pal[4] = p->secondary;
     ux.circuit = !cust && i == UI_CIRCUIT_INDEX;
+    ux.studio = !cust && i == UI_STUDIO_INDEX;
     ux.bg = p->c1; ux.text = p->c3; ux.theme = p->c2; ux.accent = p->secondary; ux.rec = p->primary;
     ux.mono = !cust && i == UI_GREY_INDEX;
     ux.mid = ux_mix(ux.bg, ux.text, UI_MID_PCT);
@@ -180,6 +187,18 @@ static void palette_set(uint32_t i)
         ux.dim = ux.line = ux.raise = ux.lane = UI_BW_GREY;   /* the one grey: inactive, tracks, wells */
         ux.tint = ux.grid = p->c1;
     }
+    if(ux.studio) {
+        ux.mid=UI_STUDIO_SUPPORT;
+        surf=UI_STUDIO_SURFACE;
+        ux.surf=ux.style?ux.bg:surf;
+        ux.raise=ux_mix(surf,ux.text,UI_STUDIO_RAISE_PCT);
+        ux.lane=ux_mix(ux.surf,ux.theme,10);
+        ux.grid=ux_mix(ux.surf,ux.text,6);
+    }
+    ux.rhythm=ux.studio?UI_STUDIO_RHYTHM:ux.theme;
+    ux.support=ux.studio?UI_STUDIO_SUPPORT:ux.mid;
+    ux.play=ux.studio?ux.theme:ux.text;
+    ux.stage=ux.studio?ux.rec:ux.theme;
     ux.gen++;                                    /* the text ramps change with the coverage curve */
 }
 

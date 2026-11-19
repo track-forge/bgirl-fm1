@@ -1,0 +1,10 @@
+focused findings=0 ink=0 mono=0 align=0 lost=0 canvas=59520
+stage idle100 pixels=2508
+stage focus100 pixels=499092
+lab idle100 pixels=2508
+lab focus100 pixels=499092
+cut idle100 pixels=0
+cut focus100 pixels=499092
+env idle100 pixels=2508
+env focus100 pixels=499092
+total pixels=1361726196

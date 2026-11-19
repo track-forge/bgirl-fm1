@@ -99,6 +99,15 @@ static int32_t cv_icon_mid(int32_t x, int32_t cy, uint32_t size, uint32_t id, ui
     GFX_HOOK_ALIGN(0, 0, 0, 2 * cy, AL_V | AL_PASS, "header icon on its middle");
     return cv_icon_in(x, 0, 0, 2 * cy, size, id, fg, bg);
 }
+/* Shared section marker. Existing page identity stays in the footer and the
+ * compact right caption; this is presentation, not a navigation owner. */
+static void section_heading(uint32_t icon,const char *title,uint16_t color)
+{
+    GFX_HOOK_ALIGN(10,AF_H_CAP_Y,26,AF_H_CAP_Y+AF_H_CAP_H,AL_HV,"BGIRL section icon");
+    cv_icon_in(10,AF_H_CAP_Y,16,AF_H_CAP_H,16,icon,color,T_BG);
+    cv_text_on(32,0,&AF_H,title,T_TEXT,T_BG);
+}
+
 #define ICON_NONE 0xFFu                   /* no icon (empty column) */
 #define ICON_AUTO 0xFEu                   /* draw_column: look the label up */
 #define ICON_GAP 2                        /* px between the icon and the label */

@@ -1,0 +1,12 @@
+Parent and current FELUCCA_SLICE=0 compile logs are byte-identical; both exit1.
+In file included from felucca/tests/ui_test.c:158:
+felucca/tests/../firmware/src/upreset.c: In function ‘up_load’:
+felucca/tests/../firmware/src/upreset.c:512:102: error: ‘SLC_SRC_VOCALS’ undeclared (first use in this function)
+  512 |         if((r->ver==UP_VER_VOCAL || (r->ver>=UP_VER_CLARITY && r->engine==13 && r->packed[r->np-8u]==SLC_SRC_VOCALS+64u)) && r->np<=UP_VOCAL_AT)
+      |                                                                                                      ^~~~~~~~~~~~~~
+felucca/tests/../firmware/src/upreset.c:512:102: note: each undeclared identifier is reported only once for each function it appears in
+felucca/tests/ui_test.c: In function ‘ui_power_on’:
+felucca/tests/ui_test.c:177:13: error: ‘sp’ undeclared (first use in this function); did you mean ‘sl’?
+  177 |     memset(&sp, 0, sizeof sp);                    /* simulated power-on: no slice cursor from an earlier soak */
+      |             ^~
+      |             sl

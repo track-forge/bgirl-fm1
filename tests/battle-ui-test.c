@@ -23,7 +23,9 @@ static void shot(const char *out,const char *name) {
 int main(int argc,char **argv) {
     const char *out=argc>1?argv[1]:NULL;
     web_nor_erase();web_boot();advance();
-    assert(settings.palette==UI_CIRCUIT_INDEX && ux.circuit && ui_style==ST_FLAT);
+    assert(settings.palette==UI_STUDIO_INDEX && !ux.circuit && ui_style==ST_FLAT);
+    assert(ux.studio && T_RHYTHM!=T_THEME && T_ACCENT!=T_RHYTHM && T_ACCENT!=T_REC);
+    assert(T_PLAY==T_THEME && T_STAGE==T_REC && T_TEXT!=T_THEME);
     persist_t p,q;
     static const char *names[]={"GREY","GREEN","AMBER","ICE","VIOLET","ROSE","PAPER","HI-CON","NIGHT","MONO"};
     static const uint8_t old[]={1,2,3,5,0,4,5,3,2,3,4,7,6,6,6,6,6,6,6,7};
@@ -33,7 +35,7 @@ int main(int argc,char **argv) {
         for(uint32_t style=0;style<2;style++) for(uint32_t large=0;large<2;large++) {
             settings.palette=k;ui_style=style;ui_prefs=large?PREF_LARGE:0;
             settings_export(&p);assert(p.palette==UI_PAL_TAG+k);
-            memset(&settings,0,sizeof settings);settings_init();assert(ux.circuit);
+            memset(&settings,0,sizeof settings);settings_init();assert(!ux.circuit && settings.palette==UI_STUDIO_INDEX);
             assert(settings_import(&p,sizeof p)==1);settings_init();style_apply();
             assert(settings.palette==k && ui_style==style && !!(ui_prefs&PREF_LARGE)==large);
             assert(ux.circuit==(k==UI_CIRCUIT_INDEX));
@@ -43,7 +45,8 @@ int main(int argc,char **argv) {
     const uint16_t custom[]={RGB(12,20,28),RGB(130,200,240),RGB(240,248,255),RGB(255,120,80),RGB(220,240,255)};
     cpal_store(custom);ui_cpal_flags|=CPAL_ACTIVE;palette_apply();settings_export(&p);
     memset(&favorites,0,sizeof favorites);assert(settings_import(&p,sizeof p)==1);settings_init();style_apply();
-    assert(cpal_on() && !ux.circuit && !memcmp(ux.pal,custom,sizeof custom));
+    assert(cpal_on() && !ux.circuit && !ux.studio && !memcmp(ux.pal,custom,sizeof custom));
+    assert(T_RHYTHM==T_THEME && T_SUPPORT==T_MID && T_PLAY==T_TEXT && T_STAGE==T_THEME);
     settings_export(&q);assert(!memcmp(&p,&q,sizeof p));
     ui_cpal_flags=0;settings.palette=UI_CIRCUIT_INDEX;ui_style=ST_FLAT;ui_prefs=0;style_apply();palette_apply();
     /* No idle redraw added by the skin. */

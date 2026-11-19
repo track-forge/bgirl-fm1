@@ -1,0 +1,2 @@
+PR40 to CUT completion: ui_fonts.h, ui_icons.h, ui_keycaps.h, ui_palettes.h byte-identical.
+Font payload84283 B; icons8753 B; canvas59520 B. No source art/audio asset changes.

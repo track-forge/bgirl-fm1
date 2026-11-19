@@ -23,8 +23,8 @@ static void pixels(void) {
         ui.force=1;paint();
         for(uint32_t y=0;y<96;y++)for(uint32_t x=0;x<96;x++) {
             uint32_t bit=128u>>(x&7u),off=y*12u+x/8u;
-            uint16_t expected=crew_masks[crew_moves[track]][pose][off]&bit ? T_THEME : T_SURF;
-            assert(web_fb[(Y_GRAPH+22u+y)*240u+72u+x]==swap16(expected));
+            uint16_t expected=crew_masks[crew_moves[track]][pose][off]&bit ? T_TEXT : T_BG;
+            assert(web_fb[(graph_y()+22u+y)*240u+132u+x]==swap16(expected));
         }
     }
     ui_prefs|=PREF_LARGE;assert(large_kind()==LK_LABEL && graph_h()==122);ui_prefs&=~PREF_LARGE;
@@ -35,7 +35,7 @@ static void pixels(void) {
     ui.home=1;ui.force=1;paint();before=crew_graph_paints;
     for(uint32_t i=0;i<1000;i++) {fm1_ms++;crew_phase+=1234567;crew_publish(32);draw_graph();}
     assert(crew_graph_paints-before<=15);
-    puts("CREW pixels: 2904 exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS");
+    printf("CREW pixels: %u exact forward/backward single-dancer compositions, old-pixel erasure, six identities, palettes/styles, LARGE, idle/hidden/cap PASS\n",NPALETTES*2u*NTRK*22u);
 }
 static uint32_t done;
 static void *producer(void *unused) {

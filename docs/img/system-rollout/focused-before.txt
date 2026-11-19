@@ -1,0 +1,16 @@
+LINT project_named-normal-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+free   learn_wait-normal-flat ellipsised 'PULSE…'
+free   learn_wait-normal-flat ellipsised 'DRUM…'
+LINT project-normal-flat    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project_erase-normal-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-normal-line    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project_named-large-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-large-flat     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project_erase-large-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-large-line     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-full-normal-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-old-format-normal-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-full-large-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-old-format-large-flat ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT project-full-large-line ellipsised (not free text)       '…' (185,58)-(194,60)
+SYSTEM cases=4656 scenes=95 findings=240 ink=0 neutral=0 align=0 lost=0 canvas=59520

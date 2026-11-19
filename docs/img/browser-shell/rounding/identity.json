@@ -1,0 +1,26 @@
+{
+  "runtimeSource": "cedb7c66aec42fad895d84fa85d3b09fd016c83b",
+  "styleBlockIdenticalToSquareShell": true,
+  "allInputAudioStorageMidiSourceIdenticalToSquareShell": true,
+  "assets": [
+    {
+      "file": "felucca.wasm",
+      "bytes": 1069461,
+      "sha256": "be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0",
+      "identicalToParent43": true
+    },
+    {
+      "file": "worklet.js",
+      "bytes": 11354,
+      "sha256": "14d9af7d9183ec8ff4582766e5b519a3ffa2891a1c3d5dfd3367187a916710e1",
+      "identicalToParent43": true
+    }
+  ],
+  "htmlSourceBytes": {
+    "parent43": 44947,
+    "squareShell44": 50544,
+    "roundedShell44": 50943,
+    "roundingDelta": 399,
+    "totalDeltaFrom43": 5996
+  }
+}

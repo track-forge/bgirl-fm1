@@ -1,0 +1,56 @@
+{
+  "baseUrl": "http://127.0.0.1:8814/bgirl-fm1/",
+  "runtimeSource": "b7373d54c36b5063d11673764f3bec91685dde14",
+  "servedHtmlMatchesSourceWithVersionSubstitution": true,
+  "assets": [
+    {
+      "file": "index.html",
+      "bytes": 50542,
+      "sha256": "8f8d4234ef902c4a8fe8096c3e4e6cbe04958b36fa04d73005e3b59c24ac0a4a",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "worklet.js",
+      "bytes": 11354,
+      "sha256": "14d9af7d9183ec8ff4582766e5b519a3ffa2891a1c3d5dfd3367187a916710e1",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "felucca.wasm",
+      "bytes": 1069461,
+      "sha256": "be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "fonts/InterTight-latin.woff",
+      "bytes": 43520,
+      "sha256": "9649d738583b6878f917816d95e1622729305cd20fb49004bc44bbb17e5479dc",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "fonts/ChakraPetch-latin.woff",
+      "bytes": 11864,
+      "sha256": "5174e4cc4fa402cac6ee6ed5cae31ca0c50251bb0b7b0dfcc2ecb9f8990cabba",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "fonts/OFL-InterTight.txt",
+      "bytes": 4382,
+      "sha256": "73aeb48eba2c48bb73c2b5a1718df9e0968b7f1f1f7bfd8e02cbd748766dd921",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "fonts/OFL-ChakraPetch.txt",
+      "bytes": 4395,
+      "sha256": "4a1d840eb0b2df8553804d844960a15773ca5af5d5c9803745307db8c617540b",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "branding/bgirl-fm1-wordmark.png",
+      "bytes": 490406,
+      "sha256": "0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a",
+      "servedMatchesBuild": true
+    }
+  ],
+  "noticeFormatting": "Copied OFL notices have trailing whitespace removed; licence text unchanged."
+}

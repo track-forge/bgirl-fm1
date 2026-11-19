@@ -1,0 +1,752 @@
+[
+  {
+    "index": 0,
+    "title": "ENV",
+    "family": "FAM_ENV",
+    "scope": "SC_TRACK",
+    "graph": "GR_ADSR",
+    "bindings": [
+      "P_ATK",
+      "P_DEC",
+      "P_SUS",
+      "P_REL"
+    ],
+    "phase": "LAB",
+    "status": "approved #36"
+  },
+  {
+    "index": 1,
+    "title": "ENV DEST",
+    "family": "FAM_ENV",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_ED_FLT",
+      "P_ED_PIT",
+      "P_ED_SHP",
+      "P_ESYNC"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 2,
+    "title": "LFO",
+    "family": "FAM_LFO",
+    "scope": "SC_TRACK",
+    "graph": "GR_LFO",
+    "bindings": [
+      "P_LRATE",
+      "P_LWAVE",
+      "P_LPHASE",
+      "P_LFADE"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 3,
+    "title": "LFO 2",
+    "family": "FAM_LFO",
+    "scope": "SC_TRACK",
+    "graph": "GR_LFO",
+    "bindings": [
+      "P_LSYNC",
+      "P_LTRIG",
+      "P_LPOL",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 4,
+    "title": "LFO DEST",
+    "family": "FAM_LFO",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_LD_PIT",
+      "P_LD_FLT",
+      "P_LD_SHP",
+      "P_LD_AMP"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 5,
+    "title": "MOD",
+    "family": "FAM_LFO",
+    "scope": "SC_TRACK",
+    "graph": "GR_MOD",
+    "bindings": [
+      "0xFF",
+      "P_M1SRC",
+      "P_M1DST",
+      "P_M1AMT"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 6,
+    "title": "FX",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_FX",
+    "bindings": [
+      "P_DIST",
+      "P_CHOR",
+      "P_DLY",
+      "P_REV"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 7,
+    "title": "VOCODER",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_VCARR",
+      "P_VBANDS",
+      "P_VWET",
+      "P_VMON"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 8,
+    "title": "VOC INPUT",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_VHOLD",
+      "P_VMTRIM",
+      "P_VCTRIM",
+      "P_VCONS"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 9,
+    "title": "VOC COLOR",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_VLOW",
+      "P_VMID",
+      "P_VHIGH",
+      "P_VREL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 10,
+    "title": "VOC TIME",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_VRANGE",
+      "P_VREL",
+      "P_VCONS",
+      "P_VWET"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 11,
+    "title": "SLICER",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_SLCR",
+    "bindings": [
+      "P_SLCR",
+      "P_SLPAT",
+      "P_SLRATE",
+      "P_SLDEPTH"
+    ],
+    "phase": "CUT",
+    "status": "approved #41"
+  },
+  {
+    "index": 12,
+    "title": "INSERT",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_INS",
+    "bindings": [
+      "P_ITYPE",
+      "P_IA",
+      "P_IB",
+      "P_IC"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 13,
+    "title": "INSERT 2",
+    "family": "FAM_FX",
+    "scope": "SC_TRACK",
+    "graph": "GR_INS",
+    "bindings": [
+      "P_IMIX",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 14,
+    "title": "DLY",
+    "family": "FAM_FX",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_NONE",
+    "bindings": [
+      "G_DTIME",
+      "G_DFDBK",
+      "G_DCOLOR",
+      "G_DMIX"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 15,
+    "title": "REVERB",
+    "family": "FAM_FX",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_NONE",
+    "bindings": [
+      "G_RTYPE",
+      "G_RSIZE",
+      "G_RDAMP",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 16,
+    "title": "CHORUS",
+    "family": "FAM_FX",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_NONE",
+    "bindings": [
+      "G_CRATE",
+      "G_CDEPTH",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 17,
+    "title": "SCL",
+    "family": "FAM_SCL",
+    "scope": "SC_TRACK",
+    "graph": "GR_SCALE",
+    "bindings": [
+      "P_ROOT",
+      "P_SCALE",
+      "P_QUANT",
+      "P_TRANS"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 18,
+    "title": "CHORD",
+    "family": "FAM_SCL",
+    "scope": "SC_TRACK",
+    "graph": "GR_CHORD",
+    "bindings": [
+      "P_CHRD",
+      "P_VOIC",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 19,
+    "title": "EDIT 1",
+    "family": "FAM_EDIT",
+    "scope": "SC_ENGINE",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_E0",
+      "P_E1",
+      "P_E2",
+      "P_E3"
+    ],
+    "phase": "LAB/CUT",
+    "status": "approved #39/#41 (engine-specific)"
+  },
+  {
+    "index": 20,
+    "title": "EDIT 2",
+    "family": "FAM_EDIT",
+    "scope": "SC_ENGINE",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_E4",
+      "P_E5",
+      "P_E6",
+      "P_E7"
+    ],
+    "phase": "LAB/CUT",
+    "status": "approved #39/#41 (engine-specific)"
+  },
+  {
+    "index": 21,
+    "title": "FILTER",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_FTYPE",
+      "P_E4",
+      "P_E5",
+      "P_E7"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 22,
+    "title": "LANES",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_LN0",
+      "P_LN1",
+      "P_LN2",
+      "P_LN3"
+    ],
+    "phase": "CUT",
+    "status": "approved #41"
+  },
+  {
+    "index": 23,
+    "title": "LANES 2",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_LN4",
+      "P_LN5",
+      "P_LN6",
+      "P_LN7"
+    ],
+    "phase": "CUT",
+    "status": "approved #41"
+  },
+  {
+    "index": 24,
+    "title": "SLICES",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_SLICES",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "CUT",
+    "status": "approved #41"
+  },
+  {
+    "index": 25,
+    "title": "OPERATOR",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_FMOP",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #36"
+  },
+  {
+    "index": 26,
+    "title": "OP ENV",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_FMENV",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 27,
+    "title": "OPERATOR 2",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_FMOP2",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "LAB",
+    "status": "approved #36"
+  },
+  {
+    "index": 28,
+    "title": "OP1 ENV",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_ADSR",
+    "bindings": [
+      "P_FM1_ATK",
+      "P_FM1_DEC",
+      "P_FM1_SUS",
+      "P_FM1_REL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 29,
+    "title": "OP2 ENV",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_ADSR",
+    "bindings": [
+      "P_FM2_ATK",
+      "P_FM2_DEC",
+      "P_FM2_SUS",
+      "P_FM2_REL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 30,
+    "title": "OP3 ENV",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_ADSR",
+    "bindings": [
+      "P_FM3_ATK",
+      "P_FM3_DEC",
+      "P_FM3_SUS",
+      "P_FM3_REL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 31,
+    "title": "OP4 ENV",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_ADSR",
+    "bindings": [
+      "P_FM4_ATK",
+      "P_FM4_DEC",
+      "P_FM4_SUS",
+      "P_FM4_REL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 32,
+    "title": "OP LEVEL",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_FM1_LEVEL",
+      "P_FM2_LEVEL",
+      "P_FM3_LEVEL",
+      "P_FM4_LEVEL"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 33,
+    "title": "VOICE",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_VOICE",
+      "P_GLIDE",
+      "P_GLMODE",
+      "P_PRIO"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 34,
+    "title": "VOICE 2",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_ALLOC",
+      "P_DETUNE",
+      "P_PAN",
+      "P_MUTE"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 35,
+    "title": "VOICE 3",
+    "family": "FAM_EDIT",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_SPRD",
+      "P_ATSNS",
+      "P_ATDST",
+      "P_ATAMT"
+    ],
+    "phase": "LAB",
+    "status": "approved #39"
+  },
+  {
+    "index": 36,
+    "title": "SONG",
+    "family": "FAM_GLO",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_SONG",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "CUT",
+    "status": "approved #40"
+  },
+  {
+    "index": 37,
+    "title": "USER",
+    "family": "FAM_SAVE",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_USER",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "SYSTEM",
+    "status": "this SYSTEM pass"
+  },
+  {
+    "index": 38,
+    "title": "PRESETS",
+    "family": "FAM_SAVE",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_BROWSE",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "SYSTEM",
+    "status": "this SYSTEM pass"
+  },
+  {
+    "index": 39,
+    "title": "PHRASES",
+    "family": "FAM_SAVE",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_PATS",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "SYSTEM",
+    "status": "this SYSTEM pass"
+  },
+  {
+    "index": 40,
+    "title": "PROJECT",
+    "family": "FAM_SAVE",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_SLOTS",
+    "bindings": [
+      "G_SLOT",
+      "0xFF",
+      "G_LOAD",
+      "G_SAVE"
+    ],
+    "phase": "SYSTEM",
+    "status": "this SYSTEM pass"
+  },
+  {
+    "index": 41,
+    "title": "TOOLS",
+    "family": "FAM_SAVE",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_TOOLS",
+    "bindings": [
+      "G_CLRSEQ",
+      "G_INITSND",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "SYSTEM",
+    "status": "this SYSTEM pass"
+  },
+  {
+    "index": 42,
+    "title": "ARP",
+    "family": "FAM_ARP",
+    "scope": "SC_TRACK",
+    "graph": "GR_ARP",
+    "bindings": [
+      "P_AMODE",
+      "P_ARATE",
+      "P_AOCT",
+      "P_AGATE"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 43,
+    "title": "ARP 2",
+    "family": "FAM_ARP",
+    "scope": "SC_TRACK",
+    "graph": "GR_NONE",
+    "bindings": [
+      "P_ASWING",
+      "P_APROB",
+      "P_AHOLD",
+      "P_AORDER"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 44,
+    "title": "ARP DANCE",
+    "family": "FAM_ARP",
+    "scope": "SC_TRACK",
+    "graph": "GR_DANCE",
+    "bindings": [
+      "P_AMODE",
+      "P_ARATE",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 45,
+    "title": "STEP",
+    "family": "FAM_SEQ",
+    "scope": "SC_STEP",
+    "graph": "GR_ROLL",
+    "bindings": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "phase": "CUT",
+    "status": "approved #40"
+  },
+  {
+    "index": 46,
+    "title": "DETAIL",
+    "family": "FAM_SEQ",
+    "scope": "SC_STEP",
+    "graph": "GR_ROLL",
+    "bindings": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "phase": "CUT",
+    "status": "approved #40"
+  },
+  {
+    "index": 47,
+    "title": "AUTOMATION",
+    "family": "FAM_SEQ",
+    "scope": "SC_TRACK",
+    "graph": "GR_EVENTS",
+    "bindings": [
+      "0xFF",
+      "0xFF",
+      "0xFF",
+      "0xFF"
+    ],
+    "phase": "CUT",
+    "status": "approved #40"
+  },
+  {
+    "index": 48,
+    "title": "MIXER",
+    "family": "FAM_TRK",
+    "scope": "SC_TRK",
+    "graph": "GR_TRK",
+    "bindings": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  },
+  {
+    "index": 49,
+    "title": "CLOCK",
+    "family": "FAM_TRK",
+    "scope": "SC_GLOBAL",
+    "graph": "GR_NONE",
+    "bindings": [
+      "G_BPM",
+      "G_SWING",
+      "G_CLOCK",
+      "0xFF"
+    ],
+    "phase": "STAGE",
+    "status": "approved #42"
+  }
+]

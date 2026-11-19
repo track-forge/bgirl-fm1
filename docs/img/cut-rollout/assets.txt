@@ -1,0 +1,2 @@
+PR39 to CUT: ui_fonts.h, ui_icons.h, ui_keycaps.h and ui_palettes.h are byte-identical.
+Font payload: 84283 B. Icon payload: 8753 B. Canvas: 59520 B. No source art changes.

@@ -1,0 +1,4 @@
+PR41 -> STAGE: ui_fonts.h, ui_icons.h, ui_keycaps.h, ui_palettes.h byte-identical.
+Font array payload84283 B; icon array payload8753 B; canvas59520 B.
+All36 tracked dancer source/metadata/asset files byte-identical (see manifest).
+No audio asset changes, no new persistent state or source buffers.

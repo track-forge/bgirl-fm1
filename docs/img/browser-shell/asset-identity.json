@@ -1,0 +1,59 @@
+{
+  "runtimeSource": "b7373d54c36b5063d11673764f3bec91685dde14",
+  "base": "c0ecb3a42a7926cae986e77e86d23e9240966d1e",
+  "assets": [
+    {
+      "file": "felucca/build/emu/felucca.wasm",
+      "bytes": 1069461,
+      "sha256": "be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0",
+      "identicalToParent": true
+    },
+    {
+      "file": "felucca/build/emu/worklet.js",
+      "bytes": 11354,
+      "sha256": "14d9af7d9183ec8ff4582766e5b519a3ffa2891a1c3d5dfd3367187a916710e1",
+      "identicalToParent": true
+    },
+    {
+      "file": "felucca/build/gen/ui_fonts.h",
+      "bytes": 457295,
+      "sha256": "94b9d319adfa2ac8524cd7de4698529e657a2a5ff4da83fec707a018fb774812",
+      "identicalToParent": true
+    },
+    {
+      "file": "felucca/build/gen/ui_icons.h",
+      "bytes": 54551,
+      "sha256": "44b7aa77f141144da4db8a3a0a5be7c3c915598286c029c7f798a04b3ddaa4f4",
+      "identicalToParent": true
+    },
+    {
+      "file": "felucca/build/gen/ui_keycaps.h",
+      "bytes": 36075,
+      "sha256": "ed629fcccd0b84da40f46b23989ebbb838858eee06ecbf872c183be5244d82b8",
+      "identicalToParent": true
+    },
+    {
+      "file": "felucca/build/gen/ui_palettes.h",
+      "bytes": 2173,
+      "sha256": "fec1505e0fd345563e9b2115f35a79a2eb3f5e42fdea38dd5e00a34c6e3ce574",
+      "identicalToParent": true
+    }
+  ],
+  "htmlSourceBytes": {
+    "before": 44947,
+    "after": 50544,
+    "delta": 5597
+  },
+  "browserFonts": [
+    {
+      "file": "felucca/web/emu/fonts/InterTight-latin.woff",
+      "bytes": 43520,
+      "sha256": "9649d738583b6878f917816d95e1622729305cd20fb49004bc44bbb17e5479dc"
+    },
+    {
+      "file": "felucca/web/emu/fonts/ChakraPetch-latin.woff",
+      "bytes": 11864,
+      "sha256": "5174e4cc4fa402cac6ee6ed5cae31ca0c50251bb0b7b0dfcc2ecb9f8990cabba"
+    }
+  ]
+}

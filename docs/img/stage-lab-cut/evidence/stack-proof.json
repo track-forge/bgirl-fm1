@@ -1,0 +1,38 @@
+{
+  "before": {
+    "draw_column": [
+      "288",
+      "dynamic,bounded"
+    ],
+    "draw_graph": [
+      "416",
+      "dynamic,bounded"
+    ],
+    "draw_columns": [
+      "944",
+      "dynamic,bounded"
+    ],
+    "ui_draw": [
+      "240",
+      "dynamic,bounded"
+    ]
+  },
+  "after": {
+    "draw_column": [
+      "272",
+      "dynamic,bounded"
+    ],
+    "draw_graph": [
+      "416",
+      "dynamic,bounded"
+    ],
+    "draw_columns": [
+      "944",
+      "dynamic,bounded"
+    ],
+    "ui_draw": [
+      "240",
+      "dynamic,bounded"
+    ]
+  }
+}

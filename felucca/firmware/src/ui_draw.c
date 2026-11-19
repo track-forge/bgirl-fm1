@@ -187,8 +187,8 @@ static void head_geo(head_geo_t *g, const char *bpm)
     char z[8] = "0000000";
     z[str_len(bpm) < 7u ? str_len(bpm) : 7u] = 0;
     text_ink(&AF_M, z, g->b);
-    icon_ink(16, ICON_TEMPO, ib);
-    if (icon_cell(&sz, ICON_TEMPO) >= 0)
+    icon_ink(16, ICON_BG_VINYL, ib);
+    if (icon_cell(&sz, ICON_BG_VINYL) >= 0)
         c = (int32_t)sz;
     icon_ink(16, ICON_X_STOP, pb);                     /* the play state's slot: the wider of stop and play */
     pw = pb[2] - pb[0];
@@ -214,11 +214,11 @@ static void head_metro(int32_t x0, int32_t beat)
 {
     int32_t ib[4], c = 16;
     uint32_t sz = 16;
-    icon_ink(16, ICON_TEMPO, ib);
-    if (icon_cell(&sz, ICON_TEMPO) >= 0)
+    icon_ink(16, ICON_BG_VINYL, ib);
+    if (icon_cell(&sz, ICON_BG_VINYL) >= 0)
         c = (int32_t)sz;
     cv_flip = (uint8_t)(beat > 0 && (beat & 1));
-    cv_icon_mid(x0 - (cv_flip ? c - ib[2] : ib[0]), H_HEAD / 2, 16, ICON_TEMPO, beat == 0 ? T_ACCENT : T_MID, T_BG);
+    cv_icon_mid(x0 - (cv_flip ? c - ib[2] : ib[0]), H_HEAD / 2, 16, ICON_BG_VINYL, beat == 0 ? T_ACCENT : T_MID, T_BG);
     cv_flip = 0;
 }
 /* the width cv_free_hint(x, .., s, .., maxw) draws (its word, keycap and the ellipsised rest) */
@@ -328,7 +328,7 @@ static void draw_head(void)
     static int8_t metro_beat;
     char b[16];
     head_geo_t g;
-    int32_t beat = -1;                                 /* the metronome stands still (its swing removed in 1.1.5) */
+    int32_t beat = -1;                                 /* the vinyl beat icon stays still (same header behavior since 1.1.5) */
     uint32_t rec = (song.rec >> song.sel) & 1u ? 2u : song.rec != 0u;   /* 2 the selected track armed, 1 another */
     char sl[3];
     int slot = head_slot(sl);
@@ -455,6 +455,13 @@ static void draw_gaps(uint32_t y, uint32_t h)
 /* full redraw: the strips (header, cards, panel, footer) cover the rest; only the BG between them is filled */
 static void draw_frame(void)
 {
+    if (design_context()) {
+        gap_rows(H_HEAD,graph_y());
+        gap_rows(graph_y()+graph_h(),readout_y());
+        gap_rows(readout_y()+card_h(),Y_FOOT);
+        draw_gaps(readout_y(),card_h());
+        return;
+    }
     uint32_t ch = card_h(), gy = graph_y(), gh = graph_h();   /* (MENU > LARGE: tall cards, a strip) */
     gap_rows(H_HEAD, Y_LABEL);
     gap_rows(Y_LABEL + ch, gy);
@@ -638,6 +645,39 @@ static void draw_column_tall(uint32_t c, const char *label, const char *val, con
     cv_blit((uint32_t)CARD_X(c), Y_LABEL);
 }
 
+/* A four-knob instrument register below the visual, not four floating cards.
+ * Names, units and K1..4 remain explicit; focus uses a bracket as well as hue.
+ * LARGE retains the 28px numeric face and whole-range face selection. */
+static void design_column(uint32_t c,const char *label,const char *val,const char *unit,
+                          uint16_t vc,int32_t ratio,int hot,int mot,const card_span_t *sp)
+{
+    int tall=design_tall();
+    const aafont_t *lf=(ui_prefs&PREF_LARGE) && ink_w(&AF_V,label)<=51?&AF_V:&AF_C;
+    const aafont_t *vf=&AF_V;
+    char k[3]={'K',(char)('1'+c),0};
+    uint32_t h=card_h();
+    if(tall) {
+        uint32_t f=sp->fn?span_face(c,sp,label):tall_face(val);
+        vf=f==0?&AF_L:f==1?&AF_V:&AF_C;
+        LARGE_HOOK(val,f==0?0:f==2?3:!large_face_has(val)?1:2);
+    } else if(ink_w(vf,val)>51) vf=&AF_C;
+    cv_begin(COL_W,h,T_BG);
+    /* LINE stays open; FLAT has a quiet register surface. */
+    uint16_t bg=ux.style?T_BG:T_SURF;
+    cv_rect(0,0,COL_W,h,bg);cv_bg=bg;
+    if(hot) {cv_rect(0,0,2,h,T_ACCENT);cv_rect(0,0,COL_W,2,T_ACCENT);}
+    else cv_rect(0,0,COL_W,1,mot?T_THEME:T_LINE);
+    cv_text_fit(3,1,lf,label,hot?T_ACCENT:mot?T_THEME:T_TEXT,bg,51);
+    int32_t vy=tall?(vf==&AF_L?22-AF_L_CAP_Y:vf==&AF_V?25-AF_V_CAP_Y:26-AF_C_CAP_Y):14;
+    uint16_t value_ink=vc==T_DIM?T_DIM:hot?T_ACCENT:T_TEXT;
+    cv_text_in(0,vy,COL_W,vf,val,value_ink,bg);
+    int32_t ky=tall?49:29;
+    cv_text_on(3,ky,&AF_C,k,label[0]||val[0]?T_MID:T_DIM,bg);
+    if(unit[0])cv_text_r(54,ky,&AF_C,unit,T_MID,bg);
+    if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,hot?T_ACCENT:vc==T_DIM?T_DIM:(design_context()==DC_CUT || design_context()==DC_CUT_SEQ || design_context()==DC_CUT_MORE)?T_RHYTHM:T_THEME);
+    cv_blit((uint32_t)CARD_X(c),readout_y());
+}
+
 /* one card = one knob: [icon] LABEL / value unit / gauge on a SURF card, redrawn only when it changed.
  * The value is M, or S when M is too wide (engine names, long ENUMs); the unit S after it. The gauge is
  * a 3 px rounded bar: BG track, THEME fill. The knob just turned (hot): icon, label, value and gauge in
@@ -678,7 +718,7 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
     key[n + 1] = (char)('A' + ((vc >> 4) & 15u));
     key[n + 2] = (char)('A' + ((vc >> 8) & 15u));
     key[n + 3] = (char)('A' + (vc >> 12));
-    key[n + 4] = (char)(' ' + (ratio < 0 ? 0 : 1 + ratio * (COL_W - 10) / 1000));   /* the gauge's own pixel (as
+    key[n + 4] = (char)(' ' + (ratio < 0 ? 0 : 1 + ratio * (design_context()?56:COL_W - 10) / 1000));   /* the gauge's own pixel (as
                                                         * drawn: gw; ratio / 20 missed a pixel inside a step, #63 soak) */
     key[n + 5] = (char)(icon == ICON_NONE ? '~' : '!' + icon % 90u);
     key[n + 6] = (char)('0' + hot + 2 * mot + 4 * (int)kind);
@@ -693,6 +733,14 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
     if (kind == LK_TALL)
         ui.roll[c].from[0] = 0;                         /* (a tall card: no rolling digits) */
     strip = !snap && str_eq(key, ui.col[c]);
+    if (design_context() || ui.layer) {
+        ui.roll[c].from[0]=0;
+        if(strip) return;
+        ui.roll[c].sig=sig;
+        str_cpy(ui.col[c],key,sizeof ui.col[c]);
+        design_column(c,label,val,unit,vc,ratio,hot,mot,&sp);
+        return;
+    }
     if (strip && !ui.roll[c].from[0])
         return;
     if (strip) {                                        /* rolling: the value strip only */
@@ -988,7 +1036,7 @@ static void draw_columns(void)
             card_mot_of(vp);
             card_span_of(d);
             if (home_levels())                         /* 1.5: T1..T4 LEVEL, the track's cushion, muted: DIM */
-                draw_column(c, mix_base()?"T5-6":"T1-4", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
+                draw_column(c, mix_track(c)==0?"T1":mix_track(c)==1?"T2":mix_track(c)==2?"T3":mix_track(c)==3?"T4":mix_track(c)==4?"T5":"T6", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
             else
                 draw_column(c, d->label, val, unit, VAL(c), RATIO(d, enum_rank(d, *vp)), param_icon(d, *vp));
         }
@@ -1572,27 +1620,27 @@ static void draw_confirm(void)
     confirm_text(a, b);
     lcd_fill(0, H_HEAD, 240, 240 - H_HEAD, T_BG);
     ui.head_sig = ~0u;
-    cv_begin(DLG_W, DLG_H, T_BG);                     /* a SURF card: warning, the question, the detail, two buttons */
+    cv_begin(DLG_W, DLG_H, T_BG);                     /* warning, question, detail and two explicit key choices */
     if (ux.style)                                     /* LINE: no card, a 1 px rule round it */
-        cv_rrect(0, 0, DLG_W, DLG_H, 8, T_RULE, T_BG);
-    cv_rrect(!!ux.style, !!ux.style, DLG_W - 2 * !!ux.style, DLG_H - 2 * !!ux.style, 8 - !!ux.style, T_SURF,
+        cv_frame(0, 0, DLG_W, DLG_H, T_LINE);
+    cv_rrect(!!ux.style, !!ux.style, DLG_W - 2 * !!ux.style, DLG_H - 2 * !!ux.style, 0, T_BG,
              ux.style ? T_RULE : T_BG);
     GFX_HOOK_ALIGN(0, 0, DLG_W, 0, AL_H, "dialog icon centred");
-    cv_icon_in(0, 12, DLG_W, 0, 16, ui.confirm == CF_CLEAR_MOTION ? ICON_X_MOTION_DEL : ICON_X_WARN, T_ACCENT, T_SURF);
+    cv_icon_in(0, 12, DLG_W, 0, 16, ui.confirm == CF_CLEAR_MOTION ? ICON_X_MOTION_DEL : ICON_X_WARN, T_WARN, T_BG);
     if (text_w(tf, a) > DLG_W - 16)
         tf = &AF_S;
     GFX_HOOK_ALIGN(0, 0, DLG_W, 0, AL_H, "dialog question centred");
-    cv_text_in(0, 34, DLG_W, tf, a, T_TEXT, T_SURF);
+    cv_text_in(0, 34, DLG_W, tf, a, T_TEXT, T_BG);
     if (b[0]) {
         char f[32];
         text_fit(f, sizeof f, b, &AF_M, DLG_W - 16);    /* a name: free text (M: what is selected, as the question) */
         GFX_HOOK_ALIGN(0, 0, DLG_W, 0, AL_H, "dialog detail centred");
-        cv_text_flags(ink_in(&AF_M, f, DLG_W), 55, &AF_M, f, T_MID, T_SURF, 8u | (f[str_len(f) - 1u] == ELLIPSIS));
+        cv_text_flags(ink_in(&AF_M, f, DLG_W), 55, &AF_M, f, T_MID, T_BG, 8u | (f[str_len(f) - 1u] == ELLIPSIS));
     }
-    cv_rrect(10, 80, 90, 26, 6, T_RAISE, T_SURF);     /* OCT-: NO */
+    cv_frame(10, 80, 90, 26, T_LINE);     /* OCT-: NO */
     GFX_HOOK_ALIGN(10, 80, 100, 106, AL_HV | AL_N(2), "dialog button NO");
-    cv_key_hint(10 + HALF_UP(90 - kh_ink(KC_OCTDN, "NO")), 80 + HALF_UP(26 - KC_H), KC_OCTDN, "NO", 1, T_RAISE);   /* (ink centred) */
-    cv_rrect(108, 80, 90, 26, 6, T_THEME, T_SURF);    /* OCT+: YES (on the THEME fill: an INK keycap, THEME label) */
+    cv_key_hint(10 + HALF_UP(90 - kh_ink(KC_OCTDN, "NO")), 80 + HALF_UP(26 - KC_H), KC_OCTDN, "NO", 1, T_BG);   /* (ink centred) */
+    cv_rect(108, 80, 90, 26, T_THEME);    /* OCT+: YES (on the THEME fill: an INK keycap, THEME label) */
     {
         int32_t x = 108 + HALF_UP(90 - kh_ink(KC_OCTUP, "YES"));
         GFX_HOOK_ALIGN(108, 80, 198, 106, AL_HV | AL_N(2), "dialog button YES");

@@ -97,9 +97,24 @@ new **F6** SysEx namespace (`7D 46 36`) and advertised counts.
 [Exact host/browser checks, RAM findings, and audition recipe](docs/SIX_TRACK_VERIFICATION.md).
 No hardware RAM/deadline/flash-compatibility claim.
 
+## STAGE / LAB / CUT — first-screen review
+
+Working firmware samples now recompose **CREW HOME / STAGE**, **FM operator / LAB**,
+**drum STEP / CUT**, and the shared **ENV** cross-check. The four physical knobs,
+existing navigation and musical state remain unchanged. New **STUDIO** colors are
+an appended palette, chosen only for fresh settings; saved/custom palettes win.
+JIANT's face configuration is adapted locally; LARGE retains appropriate enlarged readouts and working charts.
+
+[STUDIO iteration 2: warmer color semantics, crown/LAB/CUT icons and native comparisons](docs/STUDIO_ITERATION_2_VERIFICATION.md).
+[Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
+**Doug approved the foundation, LAB, complete CUT and STAGE.** The stacked [STAGE pass](docs/ui/STAGE_VERIFICATION.md) completes HOME SCOPE/TRACKS/LEVELS, MIXER/CLOCK, ARP/ARP2/SCL/CHORD and ARP DANCE framing. The stacked [SYSTEM pass](docs/ui/SYSTEM_VERIFICATION.md) completes SAVE-family browsers, settings menus, naming/confirmations and hold layers with native normal/LARGE comparisons for review. Browser-shell work and hardware gates remain in the [rollout ledger](docs/ui/ROLLOUT.md).
+[Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
+[Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
+[Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).
+
 ## Battle Circuit visual identity
 
-The fresh-state UI now uses **CIRCUIT**: crisp mint/near-black display, squared
+The earlier Battle Circuit milestone introduced **CIRCUIT**: crisp mint/near-black display, squared
 technical cells, reverse-video focus, and a bone/black browser shell. Existing
 saved COLOR / STYLE / LARGE / CUSTOM choices are preserved. To opt in on a saved
 session, hold HOME → COLOR → CIRCUIT; HOME exits. No musical behavior changes.
@@ -358,3 +373,5 @@ repeating endpoints; T1/T6 windmill is reframed larger and T4 worm uses seconds1
 [Animation refinement](docs/CREW_MOTION_REFINEMENT.md).
 Browser/host evidence only; human art approval and physical-device fit remain
 separate. No project format, demo arrangement, engine/BSP pins or voice budget change.
+
+Browser-shell STUDIO review: [desktop/mobile comparisons, input/accessibility evidence and local recipe](docs/ui/BROWSER_SHELL_VERIFICATION.md). This is browser/host evidence, not physical-device readiness.

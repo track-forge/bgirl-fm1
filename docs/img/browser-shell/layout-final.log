@@ -1,0 +1,4 @@
+ui_render: centered logo splash has no text or backing rectangle
+ui_render: MENU > LARGE: 1673 knobs swept tall, 0 whose values change size (#251); 908 in L, 750 in M, 15 in S
+ui_render: 233 screens x 12 palettes + the page/value sweep; 0 lint findings, 596 ellipsised free texts (13 distinct), 0 inks on their own colour, 0 GREY / MONO pixels off gray / neutral; report local/browser-shell/lint/report.txt
+ui_render: alignment: 334403 measurements of 58 places, 0 off by 1 px or more

@@ -1,0 +1,37 @@
+{
+  "beforeSource": "1dcbbb691b31edc1473dca485a7ea20e353a669d",
+  "afterRuntime": "cedb7c66aec42fad895d84fa85d3b09fd016c83b",
+  "beforeUrl": "http://127.0.0.1:8815/",
+  "afterUrl": "http://127.0.0.1:8814/bgirl-fm1/",
+  "method": "Independent Chromium pages; document.fonts.ready; deep equality of ordered hit labels/roles/style bounds, canvas size/style and computed STUDIO variables",
+  "viewports": [
+    {
+      "width": 1300,
+      "height": 1000,
+      "targets": 49,
+      "canvasAndHitGeometryIdentical": true,
+      "allStudioColorsIdentical": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "targets": 49,
+      "canvasAndHitGeometryIdentical": true,
+      "allStudioColorsIdentical": true
+    },
+    {
+      "width": 320,
+      "height": 740,
+      "targets": 49,
+      "canvasAndHitGeometryIdentical": true,
+      "allStudioColorsIdentical": true
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "targets": 49,
+      "canvasAndHitGeometryIdentical": true,
+      "allStudioColorsIdentical": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "runtimeSource": "80aa1e411a96dd159281d19f8f8aee4c862728f6",
+  "baselineSource": "c7116c5451bcfca9325ce71a71f7356ab1bd1b2c",
+  "webBuildExit": 0,
+  "baselineRootTestsExit": 0,
+  "finalRootTestsExit": 0,
+  "focusedTestsExit": 0,
+  "spacingTestsExit": 0,
+  "comprehensiveLintExit": 1,
+  "inheritedLayoutFindings": 4044,
+  "afterLayoutFindings": 4388,
+  "newFindingsOnExistingPalettes": 0,
+  "hardware": "not tested",
+  "humanApproval": "pending"
+}

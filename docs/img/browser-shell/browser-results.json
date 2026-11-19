@@ -1,0 +1,44 @@
+{
+  "runtimeSource": "b7373d54c36b5063d11673764f3bec91685dde14",
+  "url": "http://127.0.0.1:8814/bgirl-fm1/",
+  "passed": 19,
+  "total": 19,
+  "suites": {
+    "splash": 0,
+    "browser-smoke": 0,
+    "vocoder": 0,
+    "mega": 0,
+    "demo": 0,
+    "vocal": 0,
+    "dance": 0,
+    "crew": 0,
+    "six": 0,
+    "sh-style": 0,
+    "system": 0,
+    "signature": 0,
+    "clarity": 0,
+    "stage": 0,
+    "lab": 0,
+    "cut": 0,
+    "cut-samples": 0,
+    "stage-full": 0,
+    "browser-shell": 0
+  },
+  "finalSkinRepeats": [
+    "browser-shell",
+    "browser-smoke",
+    "splash",
+    "vocoder",
+    "mega",
+    "demo",
+    "vocal"
+  ],
+  "clarityFixture": "retained STAGE archive copied unchanged; gallery-fixture.json",
+  "supersededFailures": [
+    "Initial host LED breath ratios corrected in CSS without changing tests/tolerances",
+    "Exploratory batch used nonexistent browser-smoke-browser.cjs; correct smoke invoked successfully",
+    "Initial clarity gallery HTTP 404; existing archive restored unchanged and test rerun"
+  ],
+  "humanListening": "not performed",
+  "physicalHardware": "not tested"
+}

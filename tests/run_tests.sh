@@ -76,3 +76,22 @@ node tests/mega-wasm.mjs
 ./tests/run_crew_tests.sh
 # Additive SH-STYLE collection, unchanged ANALOG DSP and exact native/WASM output.
 ./tests/run_sh_style_tests.sh
+
+# First-screen presentation matrix, real firmware renderer / inherited lint hooks.
+./tests/run_stage_tests.sh
+python3 tests/test_studio_icons.py
+
+# Approved LAB continuation and engine/page visibility matrix.
+./tests/run_lab_tests.sh
+
+# CUT sequencing: real firmware layouts, all banks, preserved musical state.
+./tests/run_cut_tests.sh
+
+# Remaining CUT: sample/slice/lane presentation and state-preserving render matrix.
+./tests/run_cut_samples_tests.sh
+
+# STAGE: complete performance layouts, track banks and clock/cache contracts.
+./tests/run_stage_full_tests.sh
+
+# SYSTEM pages, menu rows, naming, confirmation and hold-map presentation.
+./tests/run_system_tests.sh

@@ -34,3 +34,11 @@ thanks the work below; each keeps its own licence (see [LICENSE](LICENSE), [LICE
   [gospodindilly-ops](https://github.com/gospodindilly-ops) (the second core, #247),
   [bonszaimusic](https://www.youtube.com/@bonszaimusic) / [fgunited](https://github.com/fgunited)
   (external MIDI-clock sequencer and ARP phase drift fix, #269; TRS MIDI clock timestamping under CC load, #258)
+
+## BGIRL first-screen typography
+
+- Chakra Petch by The Chakra Petch Project Authors; Michroma by The Michroma
+  Project Authors. SIL OFL1.1; unmodified font files and individual notices in
+  `assets/fonts/`. Configuration reference: JIANT at
+  `b5be0d4fa493ccf4c15e3a5255afe134b6d99107`; BGIRL retains Felucca's renderer,
+  glyph ABI, generator and original fallback/LARGE faces.

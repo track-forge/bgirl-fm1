@@ -388,6 +388,33 @@ static const page_t *cur_page(void) { return page_over ? page_over : &PAGES[ui.p
  *            AUTOMATION, SLICES), HOME with MENU > HOME TRACKS (1.3) and the quick layers' maps: the layout as it
  *            is, the card labels in M;
  *   LK_OFF   LARGE off; the menu (its own LARGE: ui_menu.c), the dialogs and NAME keep their own layout in every case. */
+/* Presentation only: no navigation IDs, input bindings or persisted state. */
+static int name_on(void);
+enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE, DC_CUT_SEQ, DC_CUT_MORE, DC_STAGE_MORE, DC_SYSTEM };
+static uint32_t design_context(void)
+{
+    const page_t *pg=cur_page();
+    if (ui.layer || ui.menu || ui.confirm || name_on()) return DC_NONE;
+    if (ui.home) return home_crew() ? DC_STAGE : DC_STAGE_MORE;
+    if(pg->fam==FAM_SAVE) return DC_SYSTEM;
+    if(pg->fam==FAM_ARP || pg->fam==FAM_SCL || pg->fam==FAM_TRK) return DC_STAGE_MORE;
+    if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2 || (pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_FM6)) return DC_LAB;
+    if (pg->graph==GR_ADSR) return DC_ENV;
+    if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
+    if (pg->graph==GR_ROLL || pg->graph==GR_EVENTS || pg->graph==GR_SONG) return DC_CUT_SEQ;
+    if(pg->graph==GR_SLICES || pg->graph==GR_SLCR || pg->id[0]==P_LN0 || pg->id[0]==P_LN4 ||
+       (pg->scope==SC_ENGINE && (ENGINES[TSEL->eng_req%NENGINES]==&ENG_SAMPLE
+#if FELUCCA_SLICE
+        || ENGINES[TSEL->eng_req%NENGINES]==&ENG_SLICE
+#endif
+       ))) return DC_CUT_MORE;
+    if ((pg->fam==FAM_ENV || pg->fam==FAM_LFO || pg->fam==FAM_FX || pg->fam==FAM_EDIT) &&
+        pg->graph!=GR_SLICES && pg->graph!=GR_SLCR && pg->id[0]!=P_LN0 && pg->id[0]!=P_LN4 &&
+        !(pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_SAMPLE)) return DC_LAB_MORE;
+    return DC_NONE;
+}
+static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV || c==DC_LAB_MORE || (c==DC_STAGE_MORE && !(ui.home && home_tracks()) && cur_page()->graph!=GR_DANCE) || (c==DC_CUT_MORE && cur_page()->graph!=GR_SLICES)); }
+static uint32_t readout_y(void) { return design_context() ? (design_tall()?134u:154u) : Y_LABEL; }
 enum { LK_OFF, LK_LABEL, LK_TALL };
 static uint32_t large_kind(void)
 {
@@ -403,9 +430,9 @@ static uint32_t large_kind(void)
            g == GR_SLICES || g == GR_EVENTS || g == GR_DANCE ? LK_LABEL : LK_TALL;
 }
 /* the geometry of the page shown: the cards' height, the panel's top and height */
-static uint32_t card_h(void) { return large_kind() == LK_TALL ? LG_CARD_H : CARD_H; }
-static uint32_t graph_y(void) { return large_kind() == LK_TALL ? LG_Y_GRAPH : Y_GRAPH; }
-static uint32_t graph_h(void) { return large_kind() == LK_TALL ? LG_H_GRAPH : H_GRAPH; }
+static uint32_t card_h(void) { if(design_context())return design_tall()?64u:CARD_H; return large_kind() == LK_TALL ? LG_CARD_H : CARD_H; }
+static uint32_t graph_y(void) { if(design_context())return 28u; return large_kind() == LK_TALL ? LG_Y_GRAPH : Y_GRAPH; }
+static uint32_t graph_h(void) { if(design_context())return design_tall()?102u:H_GRAPH; return large_kind() == LK_TALL ? LG_H_GRAPH : H_GRAPH; }
 static int large_face_has(const char *s)                /* every glyph of s in the sparse L face */
 {
     for (; *s; s++)

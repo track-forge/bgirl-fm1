@@ -1,0 +1,7 @@
+{
+  "runtimeSource": "cedb7c66aec42fad895d84fa85d3b09fd016c83b",
+  "command": "./tests/run_tests.sh",
+  "exitCode": 0,
+  "log": "host.log",
+  "normalization": "trailing whitespace only"
+}

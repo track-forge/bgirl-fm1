@@ -1,0 +1,25 @@
+{
+  "runtimeSource": "cedb7c66aec42fad895d84fa85d3b09fd016c83b",
+  "url": "http://127.0.0.1:8814/bgirl-fm1/",
+  "assets": [
+    {
+      "file": "index.html",
+      "bytes": 50941,
+      "sha256": "f91509c1a543d025ce7cb310742ef963f17e37f282940d6534fbbfc3a02d6277",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "felucca.wasm",
+      "bytes": 1069461,
+      "sha256": "be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0",
+      "servedMatchesBuild": true
+    },
+    {
+      "file": "worklet.js",
+      "bytes": 11354,
+      "sha256": "14d9af7d9183ec8ff4582766e5b519a3ffa2891a1c3d5dfd3367187a916710e1",
+      "servedMatchesBuild": true
+    }
+  ],
+  "htmlMatchesSourceWithVersionSubstitution": true
+}

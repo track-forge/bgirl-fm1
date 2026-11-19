@@ -1,0 +1,1 @@
+One exact-build browser batch lost the local HTTP server during reload and returned ERR_CONNECTION_REFUSED for remaining suites. No assertions waived. Restarted a dedicated detached loopback server and reran all six suites against the final WASM. See browser-results.json and browser-suites.txt for final results.

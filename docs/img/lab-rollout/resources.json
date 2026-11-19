@@ -1,0 +1,15 @@
+{
+  "runtimeSource": "88066c6",
+  "wasmBefore": 1013012,
+  "wasmAfter": 1019490,
+  "wasmSHA256": "390ece73037b8bc3264d6cdf2264371defd0d32df6e66853aef999a4c55725e5",
+  "fontsBeforeAndAfter": 84283,
+  "fontHeaderByteIdentical": true,
+  "iconsBefore": 8397,
+  "iconsAfter": 8753,
+  "canvasBeforeAndAfter": 59520,
+  "hostSize": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 939093\t   1596\t1654848\t2595537\t 279ad1\tfelucca/build/host/bgirl_test\n",
+  "changedDrawRecipes": 40,
+  "drawRecipeCount": 80,
+  "nativeVisiblePageSizeVariants": 550
+}

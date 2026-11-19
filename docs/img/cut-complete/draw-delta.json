@@ -1,0 +1,450 @@
+[
+  {
+    "page": "EDIT 1-4",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 29280
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": -3,
+    "pixels": -87840
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": -8,
+    "pixels": -234240
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": -3,
+    "pixels": -87840
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 29280
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICER-0",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": -9,
+    "pixels": -263520
+  },
+  {
+    "page": "SLICER-0",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICER-0",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICER-0",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES-10",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "LANES-10",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "LANES-10",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 29280
+  },
+  {
+    "page": "LANES-10",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "0",
+    "scenario": "idle44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "0",
+    "scenario": "play44800frames",
+    "blits": -34,
+    "pixels": -995520
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "0",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 29280
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "0",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 16,
+    "pixels": 355200
+  },
+  {
+    "page": "EDIT 1-4",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 7680
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 22200
+  },
+  {
+    "page": "EDIT 2-4",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 7680
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 1,
+    "pixels": 24480
+  },
+  {
+    "page": "EDIT 1-13",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "EDIT 2-13",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICES-13",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICER-0",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "SLICER-0",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 9,
+    "pixels": 220320
+  },
+  {
+    "page": "SLICER-0",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 17,
+    "pixels": 379680
+  },
+  {
+    "page": "SLICER-0",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 3,
+    "pixels": 121440
+  },
+  {
+    "page": "LANES-10",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES-10",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES-10",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 16,
+    "pixels": 355200
+  },
+  {
+    "page": "LANES-10",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "1",
+    "scenario": "idle44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "1",
+    "scenario": "play44800frames",
+    "blits": 0,
+    "pixels": 0
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "1",
+    "scenario": "knob100x128frames",
+    "blits": 16,
+    "pixels": 355200
+  },
+  {
+    "page": "LANES 2-10",
+    "large": "1",
+    "scenario": "track100x896frames",
+    "blits": 0,
+    "pixels": 0
+  }
+]

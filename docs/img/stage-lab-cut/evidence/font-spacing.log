@@ -1,0 +1,13 @@
+  S 12px x4 phases: 216 pairs, gap error max 0.204 px, rms 0.093 px, 0 over 0.25 px ok
+    worst: 'im' +0.20, 'i-' +0.20, 'll' +0.19, 'll' +0.19, 'ev' -0.19, 'In' +0.18, 'id' +0.18, 'iv' +0.18, 'er' -0.17, 'op' +0.17
+  M 15px x4 phases: 216 pairs, gap error max 0.239 px, rms 0.116 px, 0 over 0.25 px ok
+    worst: 'ra' +0.24, 'el' -0.22, 'lt' +0.22, 'lo' +0.21, 'le' +0.20, 'st' -0.20, 'mu' -0.20, 'im' +0.19, 'el' -0.19, 'ed' -0.19
+  L 28px x2 phases: 83 pairs, gap error max 0.382 px, rms 0.167 px, 0 over 0.5 px ok
+    worst: 'IN' +0.38, 'LT' +0.32, 'NO' +0.32, 'IT' +0.31, 'SA' -0.30, 'CC' -0.29, 'AL' +0.27, 'WI' -0.26, 'LU' +0.23, 'CU' +0.23
+  C 12px x4 phases: 216 pairs, gap error max 0.196 px, rms 0.087 px, 0 over 0.25 px ok
+    worst: 'im' +0.20, 'ck' +0.18, 'ta' +0.18, 'ay' +0.18, 'tr' +0.18, 'se' +0.17, 'nt' -0.17, 'id' -0.16, 'ca' +0.16, 'tt' -0.16
+  V 15px x4 phases: 216 pairs, gap error max 0.236 px, rms 0.104 px, 0 over 0.25 px ok
+    worst: 'um' +0.24, 'xe' +0.22, 'xe' +0.22, 'on' +0.21, 'tc' +0.21, 'el' +0.21, 've' +0.21, 'on' +0.20, 'te' +0.20, 'pe' +0.19
+  H 18px x2 phases: 83 pairs, gap error max 0.425 px, rms 0.176 px, 0 over 0.5 px ok
+    worst: 'UM' +0.42, 'LU' +0.38, 'YO' +0.37, 'AS' +0.33, 'EV' -0.32, 'EL' +0.30, 'ES' -0.28, 'ET' -0.28, 'EA' -0.28, 'WI' -0.26
+text spacing: ok
