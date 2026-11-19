@@ -4,7 +4,7 @@ Stacked on [PR42](https://github.com/track-forge/bgirl-fm1/pull/42),
 `feat/studio-stage-rollout`, exact parent
 `c6cc2619153a07a5860eb0cd9832dbc27e197aa3` (including the PAD frame repair).
 Doug approved STAGE and authorized this complete SYSTEM pass. Runtime source:
-`993edf200aef62649bbd299d039402924c5e710b`; subsequent commits add tests/evidence only.
+`ba43d9f3d93105cfc8ce8ddeec80818189deb614`; subsequent commits add tests/evidence only.
 No merge, shared deployment or physical-device build/flash.
 
 ## Actual native screens
@@ -58,19 +58,25 @@ These are real firmware RGB565 output at 240×240, not design mockups.
 
 TOOLS now draws action readiness and focus, so its graph signature includes action,
 CLEAN, section count/selection, chain busy state, steps and motion count. Unchanged
-idle frames remain suppressed. Actual frame-edge/glyph tests accompany the layout.
+idle frames remain suppressed. Actual frame-edge/glyph tests accompany the layout. CHANS also hashes all six
+channel settings: an inherited cache omission kept T5/T6 edits invisible until
+another menu change. A no-force repaint test reproduces that failure on the
+pre-fix renderer and now passes for all six tracks; panel browser checks edit
+T5/T6 live. No MIDI setting semantics change.
 
 ## Native and whole-UI verification
 
 [Focused result](../img/system-rollout/focused-after.txt) /
 [common parent scenes](../img/system-rollout/focused-before.txt).
 
-- 95 named scenes across 12 palettes × normal/LARGE × FLAT/LINE, plus oversized
+- **6,900 passing native cases**: 95 named scenes across 12 palettes × normal/LARGE × FLAT/LINE, plus oversized
   PROJECT/old-format scenes, all menu rows and values, every USER/PROJECT slot,
   restored custom palette/T5–6, all 15 confirmation kinds and all six targets.
 - Actual framebuffer borders vs recorded full glyph ink, including dense menus,
   selected slots and confirmation choices. Setting-label truncation is forbidden.
-- Hashes of tracks/steps, motion, song chain and stored user/project banks remain
+- Independent scene clocks advance beyond the existing project-summary cache
+  interval so screenshots cannot inherit a previous fixture's slot names.
+  Hashes of tracks/steps, motion, song chain and stored user/project banks remain
   unchanged by rendering. Oversized save refusal preserves these same hashes.
   The old-format UI fixture models the flag set by NOR discovery (this native
   renderer has FELUCCA_FLASH=0); the real codec/NOR refusal is covered by host tests.
@@ -89,8 +95,29 @@ idle frames remain suppressed. Actual frame-edge/glyph tests accompany the layou
   readout positions and LINE's intentionally open BG map cells. FX alternation,
   inactive cells, control behavior, persistence and all audio goldens remain tested.
 
-Full host run and final browser receipts are recorded below when complete; GitHub
-CI is independently reported against the final PR head, never inferred from local tests.
+Final-build actual-browser acceptance: **6/6 suites PASS** — SYSTEM, smoke,
+LAB, CUT, CUT samples and STAGE full. [Suite exits](../img/system-rollout/browser-results.json),
+[logs](../img/system-rollout/browser-suites.txt), [SYSTEM interaction receipt](../img/system-rollout/browser-system-results.json),
+[live T5/T6 LARGE image](../img/system-rollout/channels56-large.png).
+SYSTEM alone exercises 10 page visits, 12 menu-tab visits and 24 hold-layer visits,
+naming cancel/save, overwrite cancel, reload persistence and live CHANS edits in
+normal/LARGE, with zero page errors. [Server retry receipt](../img/system-rollout/browser-retry.txt)
+records a prior local-server connection failure; no assertion was waived.
+
+GitHub CI is independently reported against the final PR head, never inferred
+from local tests.
+
+**Full root host/UI/audio runner: PASS, exit 0** at the repaired runtime.
+[Complete host log](../img/system-rollout/host-tests.txt) /
+[exit, binary hash and test-fixture hashes](../img/system-rollout/host-exit.json).
+All **111 golden renders unchanged**, zero health/voice/routing failures;
+native/WASM heavy-song output is bit-identical across 88,200 frames. Storage,
+user/project persistence, input/debounce, MIDI control/clock/drift, swing,
+six-track codecs/editor, vocoder serial/threaded/failure recovery, vocal IDs,
+sound banks, CREW/dancer preservation and the 150,000-frame UI soak pass.
+Foundation/LAB/CUT/CUT-completion/STAGE/SYSTEM render suites all pass.
+An earlier foreground runner was terminated by its command wrapper; final proof
+is the complete detached runner's zero exit, not that partial wrapper status.
 
 ## Size, assets and redraw receipts
 
@@ -102,14 +129,14 @@ CI is independently reported against the final PR head, never inferred from loca
 
 | Resource | PR42 | SYSTEM |
 |---|---:|---:|
-| Browser WASM | 1,063,941 B | 1,069,391 B (+5,450) |
+| Browser WASM | 1,063,941 B | 1,069,461 B (+5,520) |
 | Native bgirl_test text (same compiler/flags) | 960,085 B | 961,837 B (+1,752) |
 | Native data / BSS | 1,596 / 1,654,848 B | unchanged |
 | Fonts / icons | 84,283 / 8,753 B | unchanged |
 | Shared canvas / track / project wire | 59,520 / 1,856 / 3,840 B | unchanged |
 
 Fonts/icons/keycaps/palette generated headers are byte-identical to PR42.
-WASM SHA256: `b7057150929b116af87b928a84887b347cbe2e1f09a173f042163c07a7f05c2b`.
+WASM SHA256: `be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0`.
 No second framebuffer, heap allocation or audio-path work is added.
 
 78 fresh-process redraw recipes cover 13 surfaces × normal/LARGE × three recipes

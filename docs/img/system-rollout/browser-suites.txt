@@ -26,7 +26,7 @@
   normalAndLarge: true,
   physicalFamilyNavigation: true,
   knobEditChecks: 10,
-  audioPeak: 0.119903564453125,
+  audioPeak: 0.11904144287109375,
   errors: [],
   hardware: 'not tested',
   visualApproval: 'Doug review pending'
@@ -37,7 +37,7 @@
   panelNavigation: true,
   editChecks: 8,
   savedProjectAndSongSection: true,
-  audioPeak: 0.1217041015625,
+  audioPeak: 0.121978759765625,
   errors: [],
   hardware: 'not tested',
   visualApproval: 'Doug review pending'
@@ -50,7 +50,7 @@
   sampleAndSliceEngineSelection: true,
   drumLaneEditing: true,
   slicerTransport: true,
-  audioPeak: 0.14306640625,
+  audioPeak: 0.14257049560546875,
   errors: [],
   hardware: 'not tested',
   visualApproval: 'Doug review pending'
@@ -64,7 +64,7 @@
   inactiveLevelKnobs: true,
   mixerAndClock: true,
   arpScaleChordDance: true,
-  audioPeak: 0.10416412353515625,
+  audioPeak: 0.1090240478515625,
   errors: [],
   hardware: 'not tested',
   visualApproval: 'Doug review pending'

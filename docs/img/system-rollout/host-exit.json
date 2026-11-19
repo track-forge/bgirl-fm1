@@ -1,0 +1,11 @@
+{
+  "source": "ba43d9f3d93105cfc8ce8ddeec80818189deb614",
+  "exitCode": 0,
+  "wasmSHA256": "be56caac9c5730998513a3573619610e78ad6025721e0cd5f4f3f95c299230a0",
+  "testFixtureSHA256": {
+    "tests/system-render.c": "7cffeb3b5c9cf01767ac21a43b76d6fdfaceaa445bd123849f1026479e70a8cb",
+    "tests/run_system_tests.sh": "8dbcfad23bfbd4ed249cf111f467b6a0d3b7518a55bfb5cee7e4174e6c762dc8",
+    "tests/run_tests.sh": "50eb5aef7de7c799af6e9984d67eb8c56f6504d94bf076358b8c1cd8fc06208e",
+    "tests/system-browser.cjs": "de9a957f9855f4792b4b08874154293b63de0cec933b21f66c2ceeb18113b970"
+  }
+}

@@ -22,13 +22,17 @@ static void clear_frame(int x,int y,int w,int h,uint16_t color){
   }
  }
 }
+/* ui_render state() restarts the simulated clock, but the project-summary cache
+ * is static. Give independent scenes a monotonic timestamp beyond its refresh
+ * interval so an earlier scene cannot supply another scene's slot names. */
+static void system_draw(int scene){static uint32_t ms;fm1_ms=(ms+=501u);draw(scene);}
 int main(int argc,char **argv){
  const char *out=argc>1?argv[1]:"local/system-rollout/after/native";char path[512],name[96];
  snprintf(path,sizeof path,"%s/report.txt",out);rep=fopen(path,"w");assert(rep);uint32_t cases=0;
  for(uint32_t p=0;p<NPALETTES;p++)for(int large=0;large<2;large++)for(int style=0;style<2;style++)for(uint32_t s=0;s<NELEM(scenes);s++){
   setup(scenes[s]);pal(p);ui_style=style;style_apply();ui_prefs=(ui_prefs&~PREF_LARGE)|(large?PREF_LARGE:0);
   snprintf(name,sizeof name,"%s-%s-%s",S_NAME[scenes[s]],large?"large":"normal",style?"line":"flat");cur_name=name;
-  uint32_t before=music_state();draw(scenes[s]);assert(before==music_state());lint();mono_check();cases++;
+  uint32_t before=music_state();system_draw(scenes[s]);assert(before==music_state());lint();mono_check();cases++;
   if(p==UI_STUDIO_INDEX)write_ppm(out,"STUDIO",name);
  }
  /* Oversized saves and old-format refusal use the real project codec/UI. */
@@ -47,7 +51,7 @@ int main(int argc,char **argv){
    uint32_t before=music_state();project_load(1);assert(before==music_state());assert(str_eq(ui.msg,"OLD FORMAT: OVERWRITE"));
   }
   snprintf(name,sizeof name,"%s-%s-%s",edge?"project-old-format":"project-full",large?"large":"normal",style?"line":"flat");cur_name=name;
-  uint32_t before=music_state();draw(S_PROJECT);assert(before==music_state());lint();cases++;
+  uint32_t before=music_state();system_draw(S_PROJECT);assert(before==music_state());lint();cases++;
   if(p==UI_STUDIO_INDEX)write_ppm(out,"STUDIO",name);
  }
 #ifndef BGIRL_SYSTEM_BASELINE
@@ -55,13 +59,13 @@ int main(int argc,char **argv){
  for(int large=0;large<2;large++)for(int style=0;style<2;style++){
   for(uint32_t row=0;row<MI_COUNT;row++){
    setup(S_MENU);pal(UI_STUDIO_INDEX);ui.menu_sel=row;ui_prefs=large?PREF_LARGE:0;ui_style=style;style_apply();
-   cur_name="menu-row-clearance";draw(S_MENU);lint();
+   cur_name="menu-row-clearance";system_draw(S_MENU);lint();
    clear_frame(MR_X,mr_y(row-mtab_first(menu_tab())),MR_W,mr_h(),T_ACCENT);cases++;
   }
   for(uint32_t row=0;row<MI_VALUES;row++)if(menu_valued(row))for(uint32_t value=0;value<menu_n(row);value++){
    setup(S_MENU);ui.menu_sel=row;menu_put(row,value);pal(UI_STUDIO_INDEX);
    ui_prefs=(ui_prefs&~PREF_LARGE)|(large?PREF_LARGE:0);ui_style=style;style_apply();cur_name="menu-value-clearance";
-   draw(S_MENU);lint();clear_frame(MR_X,mr_y(row-mtab_first(menu_tab())),MR_W,mr_h(),T_ACCENT);cases++;
+   system_draw(S_MENU);lint();clear_frame(MR_X,mr_y(row-mtab_first(menu_tab())),MR_W,mr_h(),T_ACCENT);cases++;
    /* Setting labels are not free names: don't hide collisions with ellipsis. */
    int32_t row_y=mr_y(row-mtab_first(menu_tab()));
    for(uint32_t i=0;i<nscr;i++)if(scr[i].x0==MR_LX&&scr[i].y0>=row_y&&scr[i].y1<=row_y+mr_h())
@@ -69,29 +73,29 @@ int main(int argc,char **argv){
   }
   for(uint32_t slot=0;slot<UP_SLOTS;slot++){
    setup(S_USER);pal(UI_STUDIO_INDEX);ui.uslot=slot;ui_prefs=large?PREF_LARGE:0;ui_style=style;style_apply();
-   cur_name="user-slot-clearance";draw(S_USER);lint();
+   cur_name="user-slot-clearance";system_draw(S_USER);lint();
    int first=clamp((int)slot-2,0,UP_SLOTS-6);clear_frame(8,graph_y()+26+16*(slot-first),224,16,T_ACCENT);cases++;
   }
   for(uint32_t slot=0;slot<4;slot++){
    setup(S_PROJECT);pal(UI_STUDIO_INDEX);song.g[G_SLOT]=slot+1;ui_prefs=large?PREF_LARGE:0;ui_style=style;style_apply();
-   cur_name="project-slot-clearance";draw(S_PROJECT);lint();clear_frame(8,graph_y()+28+23*slot,224,16,T_ACCENT);cases++;
+   cur_name="project-slot-clearance";system_draw(S_PROJECT);lint();clear_frame(8,graph_y()+28+23*slot,224,16,T_ACCENT);cases++;
   }
   /* Restored/custom colors and both track banks, on every scene. */
   for(uint32_t scene=0;scene<NELEM(scenes);scene++){
    setup(scenes[scene]);pal(UI_STUDIO_INDEX);uint16_t custom[5]={0x1082,0x3186,0xffff,0x7ff0,0xfabf};cpal_store(custom);ui_cpal_flags|=CPAL_ACTIVE;palette_apply();
    ui_prefs=(ui_prefs&~PREF_LARGE)|(large?PREF_LARGE:0);ui_style=style;style_apply();song.sel=5;
-   snprintf(name,sizeof name,"custom-bank2-%s-%d-%d",S_NAME[scenes[scene]],large,style);cur_name=name;uint32_t before=music_state();draw(scenes[scene]);assert(before==music_state());lint();cases++;
+   snprintf(name,sizeof name,"custom-bank2-%s-%d-%d",S_NAME[scenes[scene]],large,style);cur_name=name;uint32_t before=music_state();system_draw(scenes[scene]);assert(before==music_state());lint();cases++;
   }
  }
  /* Every confirmation kind and target/bank, preserving all underlying music. */
  for(int large=0;large<2;large++)for(int style=0;style<2;style++)for(uint32_t kind=CF_CLEAR_SEQ;kind<=CF_LEARN_CLEAR;kind++)for(uint32_t target=0;target<NTRK;target++){
   setup(S_USER);pal(UI_STUDIO_INDEX);ui_prefs=large?PREF_LARGE:0;ui_style=style;style_apply();ui.confirm=kind;ui.confirm_trk=target;
-  cur_name="confirmation-target";uint32_t before=music_state();draw(S_CONFIRM_SEQ);assert(before==music_state());lint();
+  cur_name="confirmation-target";uint32_t before=music_state();system_draw(S_CONFIRM_SEQ);assert(before==music_state());lint();
   clear_frame(DLG_X+10,DLG_Y+80,90,26,T_LINE);cases++;
  }
  /* A real channel edit must repaint without a forced redraw, including T5/6. */
  for(uint32_t track=0;track<NTRK;track++){
-  setup(S_MENU);pal(UI_STUDIO_INDEX);ui.menu_sel=MI_TCH1+track;draw(S_MENU);
+  setup(S_MENU);pal(UI_STUDIO_INDEX);ui.menu_sel=MI_TCH1+track;system_draw(S_MENU);
   uint64_t pixels=blit_px;menu_put(ui.menu_sel,menu_step(ui.menu_sel,1));nscr=npend=nrules=0;ui_draw();
   assert(blit_px>pixels);cases++;
  }
@@ -101,7 +105,7 @@ int main(int argc,char **argv){
  /* Full-frame overlay exit equality (not just a count of clear calls). */
  uint16_t expected[240*240];
  for(uint32_t l=1;l<LAYER_N;l++){
-  cur_name="overlay-exit";setup(S_USER);pal(UI_STUDIO_INDEX);ui.msg_t=0;draw(S_USER);memcpy(expected,host_screen,sizeof expected);
+  cur_name="overlay-exit";setup(S_USER);pal(UI_STUDIO_INDEX);ui.msg_t=0;system_draw(S_USER);memcpy(expected,host_screen,sizeof expected);
   nscr=npend=nrules=0;ui.layer=l;ui.force=1;ui_draw();nscr=npend=nrules=0;ui.layer=0;ui.force=1;ui_draw();
   /* Drawing increments frame but the stopped list and its register are static. */
   assert(!memcmp(expected+24*240,host_screen+24*240,sizeof expected-24*240*sizeof(uint16_t)));cases++;
