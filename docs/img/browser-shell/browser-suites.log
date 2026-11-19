@@ -1,0 +1,293 @@
+
+### splash (exit 0)
+{
+  logoPixels: 32480,
+  transparentPixels: 10595,
+  outsidePixels: 25120,
+  placement: { x: 8, y: 47, width: 224, height: 145 },
+  text: 'none',
+  background: 'current palette, no backing rectangle',
+  bootTransition: 'original timing, splash replaced by instrument',
+  panelTargets: 49,
+  inscription: 'absent in desktop/mobile',
+  errors: [],
+  hardware: 'not tested'
+}
+
+
+### browser-smoke (exit 0)
+{
+  demoPeak: 0.11682891845703125,
+  distinctTrackScreens: 4,
+  savedSectors: 1,
+  errors: [],
+  humanListening: 'not performed',
+  physicalMidiClock: 'not tested'
+}
+
+
+### vocoder (exit 0)
+{
+  peaks: {
+    'speech-dry': 0.0749969482421875,
+    'speech-8': 0.2862396240234375,
+    'speech-12': 0.2862396240234375
+  },
+  normalPanelKnobChangedScreen: true,
+  referenceFiles: 5,
+  pageErrors: [],
+  humanListening: 'pending'
+}
+
+
+### mega (exit 0)
+{
+  peak: 0.2517852783203125,
+  stop: true,
+  restart: true,
+  cancel: true,
+  sixDistinctScreens: true,
+  normalPadEdit: true,
+  manualProjectSave: true,
+  autosaveReload: true,
+  mobile: true,
+  errors: []
+}
+
+
+### demo (exit 0)
+{
+  startupAndExplicitDemo: 'bundled G6 matching bank',
+  peak: 0.2605438232421875,
+  stopped: 0,
+  seconds: 9,
+  pageErrors: []
+}
+
+
+### vocal (exit 0)
+{
+  bank: 'Installed bank a0fce7527ad0f979 · 1 parent groups. Human listening approval pending.',
+  peaks: {
+    'vocal-whole-dry': 0.073883056640625,
+    'vocal-whole-wet': 0.1123504638671875,
+    'vocal-chops-dry': 0.0760040283203125,
+    'vocal-chops-wet': 0.136016845703125
+  },
+  tapPeak: 0.063079833984375,
+  normalPanelChanged: true,
+  projectRestoredState: 4102,
+  pageErrors: [],
+  humanListening: 'pending'
+}
+
+
+### dance (exit 0)
+{
+  navigation: 'ARP/ARP2/DANCE cycle',
+  acceptedArp: 'HOLD release, hidden progression, track isolation, no-notes idle, rate/mode/swing/prob controls',
+  persistence: 'panel project save and reload; style resets',
+  loads: [ { style: 0, samples: [Array] }, { style: 1, samples: [Array] } ],
+  errors: [],
+  hardware: 'unverified',
+  humanListening: 'not performed'
+}
+
+
+### crew (exit 0)
+{
+  tracks: 6,
+  visibleDancers: 1,
+  distinctScreens: 6,
+  peak: 0.11724853515625,
+  viewsRestored: [ 0, 1, 2, 3 ],
+  mute: true,
+  stoppedLive: true,
+  emptyTrackIsolated: true,
+  hiddenAndCoveredNoPaint: true,
+  loads: [ 0.08391162249283668 ],
+  errors: [],
+  humanArtApproval: 'pending',
+  hardware: 'unverified'
+}
+
+
+### six (exit 0)
+{
+  tracks: 6,
+  voiceBudget: 8,
+  distinctScreens: 6,
+  auditionPeak: 0.039154052734375,
+  autosaveReload: true,
+  manualSlotSaved: true,
+  fullPreservesFlash: true,
+  latchedControlReset: true,
+  cancelPreservesPanel: true,
+  errors: [],
+  humanListening: 'not performed'
+}
+
+
+### sh-style (exit 0)
+{
+  sounds: 2,
+  selectedTracks: 6,
+  panelBrowsing: true,
+  panelEdits: true,
+  noteOffStop: true,
+  saveReloadBoth: true,
+  desktopMobile: true,
+  peaks: [ 0.0879364013671875, 0.1004791259765625 ],
+  pageErrors: []
+}
+
+
+### system (exit 0)
+{
+  normalAndLarge: true,
+  pages: 10,
+  menus: 12,
+  layers: 24,
+  namingCancel: true,
+  soundSave: true,
+  overwriteCancel: true,
+  reloadPreservesSettingsAndSectors: true,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+
+
+### signature (exit 0)
+{
+  sounds: 10,
+  fm6BGFirst: true,
+  confirmCancel: true,
+  templatesStopped: true,
+  demoPeaks: [ 0.270050048828125, 0.1065521240234375, 0.1660308837890625 ],
+  panelSelection: true,
+  saveReload: true,
+  vocalDemoPreserved: true,
+  mobile: true,
+  pageErrors: []
+}
+
+
+### clarity (exit 0)
+{
+  peaks: {
+    'clarity-whole': 0.144927978515625,
+    'clarity-chops': 0.1474151611328125,
+    'clarity-arrangement': 0.192962646484375,
+    'clarity-carrier-only': 0.076934814453125,
+    'clarity-dry': 0.0683441162109375
+  },
+  modePanel: '8/12/24',
+  releasePanel: '5/500ms',
+  freeze: true,
+  cancel: true,
+  persistence: true,
+  mobile: true,
+  pageErrors: [],
+  humanApproval: 'pending'
+}
+
+
+### stage (exit 0)
+{
+  audioPeak: 0.08937835693359375,
+  normalAndLarge: true,
+  physicalNavigation: true,
+  knobEdits: true,
+  errors: [],
+  approval: 'Doug review pending',
+  hardware: 'not tested'
+}
+
+
+### lab (exit 0)
+{
+  normalAndLarge: true,
+  physicalFamilyNavigation: true,
+  knobEditChecks: 10,
+  audioPeak: 0.11974334716796875,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+
+
+### cut (exit 0)
+{
+  normalAndLarge: true,
+  panelNavigation: true,
+  editChecks: 8,
+  savedProjectAndSongSection: true,
+  audioPeak: 0.12213897705078125,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+
+
+### cut-samples (exit 0)
+{
+  normalAndLarge: true,
+  panelNavigation: true,
+  editChecks: 18,
+  sampleAndSliceEngineSelection: true,
+  drumLaneEditing: true,
+  slicerTransport: true,
+  audioPeak: 0.14221954345703125,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+
+
+### stage-full (exit 0)
+{
+  normalAndLarge: true,
+  homeViews: 3,
+  panelNavigation: true,
+  editChecks: 2,
+  inactiveLevelKnobs: true,
+  mixerAndClock: true,
+  arpScaleChordDance: true,
+  audioPeak: 0.10712432861328125,
+  errors: [],
+  hardware: 'not tested',
+  visualApproval: 'Doug review pending'
+}
+
+
+### browser-shell (exit 0)
+{
+  viewports: [
+    [ 'desktop', 1300, 1000 ],
+    [ 'mobile', 390, 844 ],
+    [ 'narrow', 320, 740 ],
+    [ 'landscape', 844, 390 ],
+    [ 'zoom-equivalent', 650, 500 ]
+  ],
+  keyboardNotes: 'Enter/Space, key-up, focus-loss, repeat',
+  buttonFocusRelease: true,
+  selectIsolation: true,
+  relativeAndGlobalInput: true,
+  captureLossRelease: true,
+  contrast: [
+    { name: 'body', ratio: 14.161040337428263, min: 4.5 },
+    { name: 'support', ratio: 7.3572633171078685, min: 4.5 },
+    { name: 'panel labels', ratio: 9.027767791634107, min: 4.5 },
+    { name: 'action ink', ratio: 13.821857899514233, min: 4.5 },
+    { name: 'focus', ratio: 6.219359726926171, min: 3 },
+    { name: 'control edges', ratio: 3.846557795010396, min: 3 }
+  ],
+  focusAfterStartupAndResize: true,
+  panelTargets: 49,
+  unpoweredTargetsSkipped: true,
+  reducedMotion: true,
+  noExternalRequests: true,
+  errors: [],
+  scope: 'Browser wrapper only; no spoken firmware readout or hardware claim'
+}

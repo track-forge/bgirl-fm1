@@ -1,0 +1,7 @@
+{
+  "command": "./tests/run_tests.sh",
+  "exitCode": 0,
+  "runtimeSource": "b7373d54c36b5063d11673764f3bec91685dde14",
+  "log": "host-final.log",
+  "logNormalization": "trailing whitespace only; raw original retained in workspace tmp/browser-shell/host-final.log"
+}

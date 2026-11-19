@@ -1,9 +1,9 @@
 # Approved STUDIO rollout ledger
 
-Current SYSTEM implementation stacks on [PR42](https://github.com/track-forge/bgirl-fm1/pull/42)
-/ `c6cc2619153a07a5860eb0cd9832dbc27e197aa3`, branch `feat/studio-stage-rollout`.
-Doug approved STAGE including the frame-clearance repair and authorized SYSTEM as
-one complete set. No implicit merge or deployment; issue35 remains open.
+Current browser-shell implementation stacks on [PR43](https://github.com/track-forge/bgirl-fm1/pull/43)
+/ `c0ecb3a42a7926cae986e77e86d23e9240966d1e`, branch `feat/studio-system-rollout`.
+Doug authorized proceeding to the browser shell after the complete SYSTEM pass.
+No implicit merge or deployment; issue35 remains open pending final review.
 
 ## Coverage units
 
@@ -27,7 +27,7 @@ one complete set. No implicit merge or deployment; issue35 remains open.
 | Approved CUT completion / PR41 | SAMPLE and SLICE EDIT1/2, SLICES, SLICER, drum LANES1/2 | [Native comparisons and verification](CUT_COMPLETION_VERIFICATION.md); Doug approved; no new editor or time stretching |
 | Approved STAGE / PR42 | Other HOME views, MIXER/CLOCK, ARP/SCL/CHORD and ARP DANCE framing | [Native comparisons and verification](STAGE_VERIFICATION.md); Doug approved; existing dancer assets and choreography unchanged |
 | SYSTEM / this stack | USER/PRESETS/PHRASES/PROJECT/TOOLS, menus, overlays and dialogs | [Native comparisons and verification](SYSTEM_VERIFICATION.md); Doug review pending |
-| Browser shell | Align wrapper typography/color and focus/accessibility | Pending, after firmware coverage |
+| Browser shell / this stack | STUDIO wrapper typography/color, focus/input isolation, responsive controls | [Comparisons and verification](BROWSER_SHELL_VERIFICATION.md); Doug visual/playability review pending |
 | Hardware | LCD contrast/legibility, transfer/tearing, linker fit/RAM/stack, audio deadlines | Not tested; separate authorized gate |
 
 ## Dynamic surfaces / state audit

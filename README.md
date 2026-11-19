@@ -373,3 +373,5 @@ repeating endpoints; T1/T6 windmill is reframed larger and T4 worm uses seconds1
 [Animation refinement](docs/CREW_MOTION_REFINEMENT.md).
 Browser/host evidence only; human art approval and physical-device fit remain
 separate. No project format, demo arrangement, engine/BSP pins or voice budget change.
+
+Browser-shell STUDIO review: [desktop/mobile comparisons, input/accessibility evidence and local recipe](docs/ui/BROWSER_SHELL_VERIFICATION.md). This is browser/host evidence, not physical-device readiness.
