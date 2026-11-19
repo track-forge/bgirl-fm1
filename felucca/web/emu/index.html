@@ -9,7 +9,7 @@
 <title>BGIRL — Felucca electro edition</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%230b0b0d%22/%3E%3Cpath d=%22M3 3h7L7 7h6l-8 6 2-5H3z%22 fill=%22%2375f5be%22/%3E%3C/svg%3E">
 <meta name="description" content="BGIRL FM1: open-source classic electro in your browser—drums, bass, vocoded speech and arp-driven floorwork on Felucca.">
-<meta name="theme-color" content="#d8d2bf">
+<meta name="theme-color" content="#181420">
 <meta property="og:title" content="BGIRL FM1 — Felucca electro edition">
 <meta property="og:description" content="Classic electro in a box. Play the open-source browser instrument.">
 <meta property="og:type" content="website">
@@ -18,11 +18,15 @@
 <style>
 /* DotGothic16 (SIL OFL 1.1, fonts/OFL.txt), cut to printable ASCII, for the knob labels */
 @font-face { font-family: "DotGothic16"; src: url("fonts/DotGothic16-subset.woff") format("woff"); font-display: swap; }
-:root { --bg: #d8d2bf; --fg: #151a17; --dim: #414a43; --rule: #73796b;
-        --body: #151a17; --tray: #091310; --part: #25372f; --edge: #597064; --label: #d7f9e7;
-        --lit: #75f5be; --green: #75f5be; --orange: #ff7847; color-scheme: light; }
+/* STUDIO roles match gen_ui_palettes.py; browser colors are full RGB. */
+@font-face { font-family: "Inter Tight"; src: url("fonts/InterTight-latin.woff") format("woff"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Chakra Petch"; src: url("fonts/ChakraPetch-latin.woff") format("woff"); font-weight: 500; font-display: swap; }
+:root { --bg: #181420; --fg: #e9e3d6; --dim: #b9acce; --rule: #76688d;
+        --body: #282030; --tray: #181420; --part: #40344e; --edge: #9a8bd2; --label: #e9e3d6;
+        --lit: #a8f0cf; --green: #a8f0cf; --orange: #ff8f88; --rhythm: #d1b7ff;
+        --focus: #e46eb7; color-scheme: dark; }
 html, body { background: var(--bg); }
-body { margin: 0; color: var(--fg); font: 13px/1.6 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; }
+body { margin: 0; color: var(--fg); font: 16px/1.6 "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; }
 main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 32px; }
 @media (orientation: portrait) and (max-width: 700px) { main { padding: 8px 8px 24px; } }
 a { color: inherit; }
@@ -34,39 +38,39 @@ a { color: inherit; }
 .hit.knob { cursor: ns-resize; border-radius: 50%; }
 .hit:focus-visible { outline: 2px solid var(--lit); outline-offset: 2px; }
 .face { transition: fill .05s; }
-.dim .face.btn { fill: #30473c; }
+.dim .face.btn { fill: #40344e; }
 .lit .face.btn { fill: var(--lit); }
-.lit text { fill: #091310; }
+.lit text { fill: #181420; }
 .green .face.btn { fill: var(--green); }
-.green text { fill: #0d2414; }
-.face.key { fill: #091310; stroke: var(--edge); stroke-width: 1.5; }
-.slit { fill: #30473c; transition: fill .05s; }
-.dim .slit { fill: #78998a; }
-.lit .slit { fill: #d7f9e7;  }
+.green text { fill: #181420; }
+.face.key { fill: #181420; stroke: var(--edge); stroke-width: 1.5; }
+.slit { fill: #40344e; transition: fill .05s; }
+.dim .slit { fill: #9a8bd2; }
+.lit .slit { fill: #e9e3d6;  }
 /* #119: what can be pressed breathes, dark .. ~60 % of lit and back (bsp/boards/fm1/fm1_input.h fm1_led_breath, ~1.1 s; MENU >
  * LEDS DIM LO ~30 %): the peaks between dark and lit at ~0.8 / ~0.58 on screen (the LED's share, gamma-encoded) */
-@keyframes breath-btn { 0%, 100% { fill: #30473c; } 50% { fill: #67d2a4; } }
-@keyframes breath-slit { 0%, 100% { fill: #30473c; } 50% { fill: #b6d5c5; } }
-@keyframes breath-btn-lo { 0%, 100% { fill: #30473c; } 50% { fill: #58ac87; } }
-@keyframes breath-slit-lo { 0%, 100% { fill: #30473c; } 50% { fill: #91ae9f; } }
+@keyframes breath-btn { 0%, 100% { fill: #40344e; } 50% { fill: #93cab5; } }
+@keyframes breath-slit { 0%, 100% { fill: #40344e; } 50% { fill: #c7c0bb; } }
+@keyframes breath-btn-lo { 0%, 100% { fill: #40344e; } 50% { fill: #7ca199; } }
+@keyframes breath-slit-lo { 0%, 100% { fill: #40344e; } 50% { fill: #a29a9d; } }
 .breath .face.btn { animation: breath-btn 1.13s ease-in-out infinite; }
 .breath .slit { animation: breath-slit 1.13s ease-in-out infinite; }
 .dimlo .breath .face.btn { animation-name: breath-btn-lo; }
 .dimlo .breath .slit { animation-name: breath-slit-lo; }
 @media (prefers-reduced-motion: reduce) {
   .breath .face.btn, .breath .slit { animation: none; }
-  .breath .face.btn { fill: #58ac87; }
-  .breath .slit { fill: #91ae9f; }
+  .breath .face.btn { fill: #7ca199; }
+  .breath .slit { fill: #a29a9d; }
 }
 /* the DRUM grid's beats (bsp/boards/fm1/fm1_input.h fm1_led_mid): a steady level between the glow and lit, ~15 % (DIM LO ~10 %) */
-.mid .slit { fill: #9cbeac; }
-.dimlo .mid .slit { fill: #91ae9f; }
+.mid .slit { fill: #b6acc8; }
+.dimlo .mid .slit { fill: #a29a9d; }
 .held .face { stroke: var(--lit); stroke-width: 3; }
 .latched .face { stroke: var(--orange); stroke-width: 3; }
 .start { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px;
-         background: rgba(9, 19, 16, .92); border-radius: 0; }
+         background: rgba(24, 20, 32, .96); border-radius: 0; }
 .start[hidden] { display: none; }
-.start button { font: inherit; font-size: 18px; padding: 12px 28px; background: var(--lit); color: #091310; border: 0; cursor: pointer; }
+.start button { font: inherit; font-size: 18px; padding: 12px 28px; background: var(--lit); color: #181420; border: 0; cursor: pointer; }
 .start button:disabled { opacity: .4; cursor: progress; }
 .start p { margin: 0; max-width: 32em; text-align: center; color: #fff; }
 .keys, footer { margin: 16px 0 0; color: var(--dim); text-align: center; }
@@ -76,7 +80,7 @@ kbd { font: 600 11px ui-monospace, Menlo, monospace; border: 1px solid var(--rul
 footer { margin-top: 12px; font-size: 12px; }
 footer nav a { margin: 0 6px; }
 footer small { font-size: 11px; opacity: .8; }
-/* Battle Circuit: equipment typography, cassette identifiers, no external assets. */
+/* STUDIO shell: bone type, mint actions, lilac rhythm, magenta focus. */
 .masthead { display: flex; align-items: end; justify-content: space-between; gap: 16px;
   border-top: 8px solid var(--fg); border-bottom: 2px solid var(--fg); padding: 18px 0 14px; }
 h1 { margin: 0; font: 950 clamp(64px, 12vw, 132px)/.8 Impact, 'Arial Narrow', sans-serif;
@@ -85,7 +89,7 @@ h1 { margin: 0; font: 950 clamp(64px, 12vw, 132px)/.8 Impact, 'Arial Narrow', sa
 .catalog strong { display: inline-block; background: var(--fg); color: var(--bg); padding: 2px 8px; }
 .catalog span { display: block; }
 .deckline { font: 700 11px/1.6 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
-.deckline::before { content: ''; display: inline-block; width: 10px; height: 10px; margin-right: 8px; background: #a33616; }
+.deckline::before { content: ''; display: inline-block; width: 10px; height: 10px; margin-right: 8px; background: var(--orange); }
 button, select, summary { font: 600 12px/1.5 ui-monospace, monospace; }
 button, select { max-width: 100%; border: 1px solid var(--fg); border-radius: 0; padding: 9px 12px;
   background: transparent; color: var(--fg); }
@@ -93,10 +97,10 @@ button { cursor: pointer; margin: 3px 3px 3px 0; min-height: 40px; }
 button:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
 button:disabled { opacity: .5; cursor: default; }
 button:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible {
-  outline: 3px solid #276149; outline-offset: 3px; }
+  outline: 3px solid var(--focus); outline-offset: 3px; }
 .hit:focus-visible { outline: 3px solid var(--lit); }
 section { border-top: 2px solid var(--fg); padding: 18px 0 22px; margin-top: 24px; }
-h2 { font: 800 20px/1.2 ui-monospace, monospace; letter-spacing: -.04em; margin: 0 0 12px; }
+h2 { font: 500 clamp(22px, 3vw, 28px)/1.2 "Chakra Petch", sans-serif; letter-spacing: -.04em; margin: 0 0 12px; }
 section h2::before { content: attr(data-id); font-size: 12px; border: 1px solid; padding: 4px 6px; margin-right: 10px; vertical-align: middle; }
 section p { max-width: 78ch; }
 summary { cursor: pointer; padding: 12px 0; }
@@ -109,11 +113,10 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   .deckline { font-size: 10px; }
   section button { min-height: 44px; }
 }
-/* Preserve the selected wordmark and marketing content from main's branding PR.
-   Monochrome treatment is CSS only; original image and provenance stay intact. */
+/* Original wordmark and provenance stay intact; no recolored derivative asset. */
 .wordmark { line-height: 0; }
 .wordmark img { display: block; width: clamp(150px, 36vw, 420px); max-width: 100%; height: auto;
-  filter: grayscale(1); mix-blend-mode: multiply; }
+  object-fit: contain; }
 .hero { padding-bottom: 12px; }
 .tagline { font-size: clamp(20px, 3vw, 32px); line-height: 1.2; font-weight: 800; max-width: 30ch; margin: 20px 0 10px; }
 .hero-copy { max-width: 76ch; }
@@ -124,9 +127,52 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
 .feature-chips span { border: 1px solid var(--rule); padding: 4px 8px; font: 600 11px/1.6 ui-monospace, monospace; text-transform: uppercase; }
 .intro-card { border-top: 2px solid var(--fg); padding: 16px 0; margin-top: 0; }
 .intro-card p { margin: 6px 0; }
+/* Keep the instrument first; banks and listening labs follow in document order. */
+.skip-link { position: absolute; left: 16px; top: -100px; z-index: 10; padding: 12px; background: var(--lit); color: var(--bg); }
+.skip-link:focus { top: 8px; }
+.masthead { border-top-color: var(--rhythm); }
+.catalog { color: var(--dim); }
+.catalog span:last-child { color: var(--rhythm); }
+.cta { background: var(--lit); color: var(--bg); border-color: var(--lit); min-height: 24px; }
+.cta.secondary { color: var(--fg); border-color: var(--rule); }
+.cta:hover { background: var(--fg); color: var(--bg); }
+.feature-chips span { color: var(--rhythm); }
+.device { scroll-margin-top: 16px; }
+.device:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.instrument-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 20px; margin-top: 24px; }
+.instrument-heading h2 { margin: 0; color: var(--lit); }
+.instrument-heading p { margin: 0; color: var(--dim); }
+.panel-help { color: var(--dim); margin: 8px 0 16px; }
+.keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.keys span { white-space: normal; margin: 0; }
+.keys label { display: inline-flex; align-items: center; gap: 8px; }
+input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--lit); }
+input:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+button, select { min-height: 44px; }
+select { font-size: 16px; background: var(--body); }
+section { border-top-color: var(--rule); }
+section h2 { color: var(--rhythm); }
+section h2::before { color: var(--orange); }
+section h2:not([data-id])::before { content: none; }
+footer { border-top-color: var(--rule); }
+footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; }
+footer nav a { display: inline-flex; align-items: center; min-height: 44px; margin: 0; }
+@media (max-width: 500px) {
+  main { padding: 12px 12px 24px; }
+  .masthead { align-items: center; }
+  .catalog { font-size: 10px; }
+  .tagline { max-width: 24ch; }
+  .hero-actions .cta { flex: 1 1 auto; text-align: center; }
+  .intro-card button, .lab button { width: 100%; margin: 6px 0; text-align: left; }
+  label { display: inline-block; max-width: 100%; }
+  select { display: block; width: 100%; margin: 4px 0 8px; }
+  .keys select { width: auto; max-width: 100%; }
+  footer { overflow-wrap: anywhere; }
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#device">Skip to instrument</a>
 <main>
 <header class="hero">
 <div class="masthead">  <h1 class="wordmark"><img src="branding/bgirl-fm1-wordmark.png" width="788" height="509" alt="BGIRL FM1 graffiti wordmark"></h1><p class="catalog"><span>Felucca electro edition</span><span>Rhythm · Voice · Motion</span></p></div>
@@ -140,6 +186,31 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   </div>
   <div class="feature-chips" aria-label="Project highlights"><span>24-band vocoder</span><span>Arp dance</span><span>Editable groove</span><span>GPL code</span></div>
 </header>
+
+<div class="instrument-heading"><h2 id="instrument-title">STUDIO / live instrument</h2><p>Six tracks · eight shared voices</p></div>
+<p class="panel-help" id="panel-help">Drag knobs or use their arrow keys. Tab to panel buttons and notes; Enter or Space holds them until released. Shift-click latches a panel button.</p>
+<div class="device" id="device" role="region" aria-labelledby="instrument-title" aria-describedby="panel-help" tabindex="-1">
+  <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>
+  <canvas id="screen" width="240" height="240" role="img" aria-label="BGIRL instrument display (visual; not a spoken parameter readout)"></canvas>
+  <div class="start" id="start"><button id="go" type="button">Switch on</button><p id="status" role="status" hidden></p></div>
+</div>
+
+<p class="keys">
+  <span><kbd>Z</kbd>–<kbd>'</kbd> <kbd>Q</kbd>–<kbd>O</kbd> keys</span>
+  <span><kbd>1</kbd>–<kbd>=</kbd> FX … REC</span>
+  <span><kbd>[</kbd> <kbd>]</kbd> OCT</span>
+  <span><kbd>↑</kbd> <kbd>↓</kbd> SELECT</span>
+  <span><kbd>←</kbd> <kbd>→</kbd> ALGORITHM</span>
+  <span><kbd>Shift</kbd>-click holds a button</span>
+  <span id="midiknobs" hidden><label><input type="checkbox" id="knobson"> MIDI CC 20–27 turn the panel's knobs</label>
+  <select id="knobmode" aria-label="How the controller sends CC 20–26" hidden>
+    <option value="abs">absolute</option>
+    <option value="bin">relative 64±n</option>
+    <option value="twos">relative 2's complement</option>
+    <option value="sign">relative sign bit</option>
+  </select></span>
+</p>
+
 
 <section class="intro-card" aria-label="SH-ISH collection">
   <h2>SH-ISH</h2>
@@ -173,27 +244,6 @@ footer { border-top: 2px solid var(--fg); padding-top: 18px; }
   <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
   <p>Fresh starts use this electro demo. Reloading restores your saved session; to hear the updated default here, choose Load electro demo and confirm replacement.</p>
 </section>
-<div class="device" id="device">
-  <svg id="panel" viewBox="0 0 1000 624" aria-hidden="true"></svg>
-  <canvas id="screen" width="240" height="240" role="img" aria-label="The screen"></canvas>
-  <div class="start" id="start"><button id="go" type="button">Switch on</button><p id="status" hidden></p></div>
-</div>
-
-<p class="keys">
-  <span><kbd>Z</kbd>–<kbd>'</kbd> <kbd>Q</kbd>–<kbd>O</kbd> keys</span>
-  <span><kbd>1</kbd>–<kbd>=</kbd> FX … REC</span>
-  <span><kbd>[</kbd> <kbd>]</kbd> OCT</span>
-  <span><kbd>↑</kbd> <kbd>↓</kbd> SELECT</span>
-  <span><kbd>←</kbd> <kbd>→</kbd> ALGORITHM</span>
-  <span><kbd>Shift</kbd>-click holds a button</span>
-  <span id="midiknobs" hidden><label><input type="checkbox" id="knobson"> MIDI CC 20–27 turn the panel's knobs</label>
-  <select id="knobmode" aria-label="How the controller sends CC 20–26" hidden>
-    <option value="abs">absolute</option>
-    <option value="bin">relative 64±n</option>
-    <option value="twos">relative 2's complement</option>
-    <option value="sign">relative sign bit</option>
-  </select></span>
-</p>
 
 <section class="lab" aria-label="Vocal one-shot audition">
 <h2 data-id="01">Vocal bank · whole phrases &amp; chops</h2>
@@ -251,7 +301,7 @@ FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not
 </section>
 <footer>
   <small class="version">@VERSION@@PREVIEW@</small><br>
-  Felucca by Leo Kuroshita, Hügelton Instruments · <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> · browser build after charlesvestal's <a href="https://github.com/charlesvestal/fm1-x0x">X0X</a> · DotGothic16 font, <a href="fonts/OFL.txt">SIL OFL 1.1</a><br>
+  Felucca by Leo Kuroshita, Hügelton Instruments · <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> · browser build after charlesvestal's <a href="https://github.com/charlesvestal/fm1-x0x">X0X</a> · Fonts: <a href="fonts/OFL.txt">DotGothic16</a>, <a href="fonts/OFL-InterTight.txt">Inter Tight</a>, <a href="fonts/OFL-ChakraPetch.txt">Chakra Petch</a> (SIL OFL 1.1)<br>
   <nav><a href="https://github.com/track-forge/bgirl-fm1">BGIRL source</a> · <a href="https://github.com/track-forge/bgirl-fm1/tree/main/assets/branding">wordmark provenance</a> · <a href="https://github.com/hugelton/Felucca/tree/v1.8.1">Felucca v1.8.1 source</a></nav>
   <small>M-VAVE and FM-1 are trademarks of their respective owners. Felucca is not affiliated with or endorsed by them.</small>
 </footer>
@@ -298,7 +348,7 @@ function el(tag, attrs, parent = svg) {
   parent.appendChild(e);
   return e;
 }
-const SANS = "-apple-system, 'Helvetica Neue', Arial, sans-serif", DOT = "'DotGothic16', " + SANS;
+const SANS = "'Inter Tight', -apple-system, 'Helvetica Neue', Arial, sans-serif", DOT = "'DotGothic16', " + SANS;
 function label(parent, x, y, s, size, font = SANS, ink = "var(--label)") {
   const t = el("text", { x, y, "text-anchor": "middle", "font-family": font,
                          "font-size": size, "font-weight": 600, fill: ink, "letter-spacing": ".04em" }, parent);
@@ -329,6 +379,9 @@ const send = (m) => { if (node) node.port.postMessage(m); };
 });
 
 function build(name) {
+  const focusedName = device.contains(document.activeElement) ? document.activeElement.getAttribute("aria-label") : null;
+  // Removed targets must not leave a held pointer/key behind on orientation/font changes.
+  btnBy.clear(); keyBy.clear(); syncButtons(); syncKeys();
   const L = LAYOUTS[name];
   layout = name;
   svg.innerHTML = "";
@@ -339,7 +392,7 @@ function build(name) {
   el("rect", { x: 4, y: 4, width: L.w - 8, height: L.h - 8, rx: 2, fill: "var(--body)" });
   for (const [x, y, w, h] of L.trays) el("rect", { x, y, width: w, height: h, rx: 0, fill: "var(--tray)" });
   const [sx, sy, ss] = L.screen;
-  el("rect", { x: sx, y: sy, width: ss, height: ss, rx: 0, fill: "#091310" });
+  el("rect", { x: sx, y: sy, width: ss, height: ss, rx: 0, fill: "#181420" });
   const inset = ss / 32;                                         // the 240 x 240 panel inside its bezel
   Object.assign(canvas.style, { left: `${(sx + inset) / L.w * 100}%`, top: `${(sy + inset) / L.h * 100}%`,
                                 width: `${(ss - 2 * inset) / L.w * 100}%`, height: `${(ss - 2 * inset) / L.h * 100}%` });
@@ -389,7 +442,9 @@ function build(name) {
     d.setAttribute("role", role);
     d.setAttribute("aria-label", c.name);
     d.title = c.name;
-    d.tabIndex = 0;
+    d.tabIndex = node ? 0 : -1;
+    d.setAttribute("aria-disabled", !node);
+    d.setAttribute("aria-describedby", "panel-help");
     d.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
     d.addEventListener("contextmenu", (e) => e.preventDefault());
     device.insertBefore(d, document.getElementById("start"));
@@ -401,6 +456,7 @@ function build(name) {
   syncButtons(true);
   syncKeys(true);
   drawLights(lastLeds);
+  if (focusedName) [...device.querySelectorAll(".hit")].find(d => d.getAttribute("aria-label") === focusedName)?.focus({ preventScroll: true });
 }
 
 // ------------------------------------------------------------------ input
@@ -421,7 +477,11 @@ function syncKeys(redraw) {
   for (const k of keyBy.values()) m |= 1 << k;
   if (m !== keyMask) { keyMask = m; send({ type: "keys", mask: m }); }
   else if (!redraw) return;
-  keys.forEach((k, i) => k.g.classList.toggle("held", !!(m & (1 << i))));
+  keys.forEach((k, i) => {
+    const on = !!(m & (1 << i));
+    k.g.classList.toggle("held", on);
+    k.hit.setAttribute("aria-pressed", on);
+  });
 }
 function bindButton(b) {
   b.hit.addEventListener("pointerdown", (e) => {
@@ -433,11 +493,23 @@ function bindButton(b) {
     syncButtons();
   });
   b.hit.addEventListener("keydown", (e) => {
-    if ((e.key === "Enter" || e.key === " ") && !e.repeat) { btnBy.set("f" + b.bit, b.bit); syncButtons(); e.preventDefault(); e.stopPropagation(); }
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault(); e.stopPropagation();
+    if (!e.repeat && node) { btnBy.set("f" + b.bit, b.bit); syncButtons(); }
   });
-  b.hit.addEventListener("keyup", () => { if (btnBy.delete("f" + b.bit)) syncButtons(); });
+  const releaseFocused = () => { if (btnBy.delete("f" + b.bit)) syncButtons(); };
+  b.hit.addEventListener("keyup", (e) => { if (e.key === "Enter" || e.key === " ") releaseFocused(); });
+  b.hit.addEventListener("blur", releaseFocused);
 }
 function bindKey(k, i) {
+  k.hit.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault(); e.stopPropagation();
+    if (!e.repeat && node) { keyBy.set("f" + i, i); syncKeys(); }
+  });
+  const releaseFocused = () => { if (keyBy.delete("f" + i)) syncKeys(); };
+  k.hit.addEventListener("keyup", (e) => { if (e.key === "Enter" || e.key === " ") releaseFocused(); });
+  k.hit.addEventListener("blur", releaseFocused);
   k.hit.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     k.hit.setPointerCapture(e.pointerId);
@@ -452,7 +524,16 @@ function release(e) {
 }
 for (const t of ["pointerup", "pointercancel", "lostpointercapture"]) device.addEventListener(t, release);
 
-function drawKnob(k) { if (k.ind) k.ind.setAttribute("transform", `rotate(${angle[k.name]} ${k.x} ${k.y})`); }
+function drawKnob(k) {
+  if (k.ind) k.ind.setAttribute("transform", `rotate(${angle[k.name]} ${k.x} ${k.y})`);
+  // Relative encoders do not expose the firmware parameter. Describe the action,
+  // not a fabricated sound value; the numeric value is the virtual shaft angle.
+  const master = k.role === "master", position = master ? masterValue : (angle[k.name] + 360) % 360;
+  k.hit.setAttribute("aria-valuemin", "0");
+  k.hit.setAttribute("aria-valuemax", master ? "1023" : "359");
+  k.hit.setAttribute("aria-valuenow", String(position));
+  k.hit.setAttribute("aria-valuetext", master ? `Volume ${Math.round(masterValue / 1023 * 100)} percent` : "Relative encoder; arrow keys turn one detent. Read the instrument display for the parameter value.");
+}
 function setMaster(v) {
   masterValue = Math.max(0, Math.min(1023, v));
   angle.MASTER = -135 + 270 * masterValue / 1023;
@@ -486,6 +567,7 @@ function bindKnob(k) {
   const end = () => { drag = null; };
   k.hit.addEventListener("pointerup", end);
   k.hit.addEventListener("pointercancel", end);
+  k.hit.addEventListener("lostpointercapture", end);
   k.hit.addEventListener("wheel", (e) => {
     e.preventDefault();
     const dy = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;
@@ -515,7 +597,7 @@ const KEYMAP = {};
 Object.assign(KEYMAP, { BracketLeft: { btn: B["OCT-"] }, BracketRight: { btn: B["OCT+"] } });
 const ARROWS = { ArrowUp: [EN.SELECT, 1], ArrowDown: [EN.SELECT, -1], ArrowRight: [EN.ALGORITHM, 1], ArrowLeft: [EN.ALGORITHM, -1] };
 addEventListener("keydown", (e) => {
-  if (!node || e.metaKey || e.ctrlKey || e.altKey || e.target.closest?.(".hit.knob")) return;
+  if (!node || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.target.closest?.(".hit.knob, input, select, textarea, button, a, summary, [contenteditable]:not([contenteditable=false])")) return;
   if (ARROWS[e.code]) { const [r, n] = ARROWS[e.code]; turn(knobs.find((k) => k.role === r), n); e.preventDefault(); return; }
   const m = KEYMAP[e.code];
   if (!m) return;
@@ -553,7 +635,7 @@ function drawScreen(fb) {
 // the power-on sweep (bsp/boards/fm1/fm1_led_anim.h): a level per LED, lit frames /64 (| 128: the glow under them), drawn as the
 // LED's share of lit between its dark (or glowing) colour and the lit one, mixed in linear light
 const lin = (h) => [1, 3, 5].map((i) => (parseInt(h.slice(i, i + 2), 16) / 255) ** 2.2);
-const ANIM = { btn: [lin("#30473c"), lin("#30473c"), lin("#75f5be")], slit: [lin("#30473c"), lin("#78998a"), lin("#d7f9e7")] };
+const ANIM = { btn: [lin("#40344e"), lin("#40344e"), lin("#a8f0cf")], slit: [lin("#40344e"), lin("#9a8bd2"), lin("#e9e3d6")] };
 function animFill(kind, q) {
   const [dark, glow, lit] = ANIM[kind], s = Math.min(q & 127, 64) / 64, base = q & 128 ? glow : dark;
   const c = base.map((v, i) => Math.round(255 * (v + (lit[i] - v) * s) ** (1 / 2.2)));
@@ -690,6 +772,8 @@ async function switchOn() {
     send({type:"vocal-info"});
     document.getElementById("start").hidden = true;
     go.textContent = "On";
+    for (const hit of device.querySelectorAll(".hit")) { hit.tabIndex = 0; hit.setAttribute("aria-disabled", "false"); }
+    buttons.find(b => b.bit === B.HOME)?.hit.focus({ preventScroll: true });
     for (const id of ["sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);

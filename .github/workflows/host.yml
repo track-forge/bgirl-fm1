@@ -47,6 +47,7 @@ jobs:
           export PLAYWRIGHT_MODULE="$RUNNER_TEMP/bgirl-browser/node_modules/playwright"
           node tests/splash-browser.cjs
           node tests/browser-smoke.cjs
+          node tests/browser-shell.cjs
           node tests/vocoder-browser.cjs
           node tests/mega-browser.cjs
           node tests/demo-browser.cjs
