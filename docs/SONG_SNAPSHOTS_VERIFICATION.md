@@ -4,7 +4,47 @@
 [same draft PR #38](https://github.com/track-forge/bgirl-fm1/pull/38).
 Browser/host evidence only; human listening and hardware validation not performed.
 
-## Exact source and artifact
+## Graphics rebase · 2026-11-19
+
+Rebased the same PR/branch onto main `6768f96` (merged STUDIO graphics and
+browser-shell overhaul). The original acceptance below is historical evidence;
+the following results are fresh checks of the integrated runtime.
+
+- Portable songs is an `intro-card` immediately below the panel/keyboard help,
+  inheriting STUDIO colors, fonts, focus outlines and responsive button sizes.
+- Retained upstream accessible panel startup focus/key release behavior and all
+  upstream build/font copying and test gates.
+- Updated CUT SONG's newly introduced visible renderer to use portable source
+  metadata, not destination slot names/lengths/density. A native regression draws
+  CUT SONG after populating different destination slots and checks the resolver.
+- No schema/capability, engine/BSP pin, factory song, shared service or tailnet
+  routing change. Existing v1 exports remain compatible.
+
+### Rebased acceptance
+
+- Frozen runtime: `19e722ba33cec2650c7799edfd26fba468bbed24`.
+- PASS browser build (`sh web/emu/build.sh` after the root asset-generation build).
+  WASM **1,081,017 bytes**, SHA256
+  `7f9964d3a2109754c87cd0525acb3b513330217d6b13794ae00598ca4bf77314`.
+- PASS complete root `./tests/run_tests.sh`, including all new main graphics
+  matrices and snapshot regression; **111 audio goldens unchanged**.
+- PASS **13/13** Chromium suites: splash-browser, browser-smoke, browser-shell,
+  vocoder-browser, mega-browser, demo-browser, vocal-browser, dance-browser,
+  crew-browser, six-browser, sh-style-browser, system-browser, song-browser.
+  Same environment and loopback8813 recipe below; no hosted CI claim.
+- PASS shared descriptor/schema checks, 29 JSON negatives, atomic native/WASM
+  import, actual download/upload, fresh-profile import, edited-state refresh,
+  preserved slots, dense FULL and two-source64-step audio audition.
+- Browser shell keyboard/focus/release/contrast/reduced-motion checks pass.
+  Mobile and CUT SONG screenshots visually inspected; zero page errors.
+- Local logs `/tmp/bgirl-rebase-final-build.log`, `/tmp/bgirl-rebase-host.log`,
+  `/tmp/bgirl-rebase-<suite>.log`. [Browser receipt](song-snapshots-rebase-results.json).
+  [CUT SONG](img/song-snapshots-rebase-song.png) ·
+  [Mobile shell](img/song-snapshots-rebase-mobile.png).
+- Shared tailnet preview remains on its existing immutable artifact; this rebase
+  does not deploy. The same PR remains open and retains its existing ready state.
+
+## Original pre-rebase source and artifact
 
 - Planning head: `0bfa0f30eeff740c6e7e44347ccd8b8af1cdac99`.
 - Unchanged main/base: `c7116c5451bcfca9325ce71a71f7356ab1bd1b2c`.
