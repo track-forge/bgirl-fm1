@@ -140,7 +140,8 @@ unchanged. Physical LCD/RAM/flash/audio-deadline acceptance remains separate.
 
 WOFF subsets are derived from the existing repository fonts, not downloaded.
 Source files and original OFL notices remain under `felucca/assets/fonts/`;
-matching notices ship beside the WOFFs and are linked in the footer.
+matching notices ship beside the WOFFs and are linked in the footer (trailing
+whitespace normalized; licence text unchanged).
 The new browser fonts total **55,384 bytes** (Inter Tight 43,520; Chakra Petch
 11,864). Existing DotGothic16 remains 4,324 bytes. No firmware font changes.
 

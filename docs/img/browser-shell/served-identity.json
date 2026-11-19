@@ -35,14 +35,14 @@
     },
     {
       "file": "fonts/OFL-InterTight.txt",
-      "bytes": 4383,
-      "sha256": "50240ab035cf1b6b3307940235481d515c4b6de3ab1fa843dbe59e7892cb9d58",
+      "bytes": 4382,
+      "sha256": "73aeb48eba2c48bb73c2b5a1718df9e0968b7f1f1f7bfd8e02cbd748766dd921",
       "servedMatchesBuild": true
     },
     {
       "file": "fonts/OFL-ChakraPetch.txt",
-      "bytes": 4396,
-      "sha256": "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56",
+      "bytes": 4395,
+      "sha256": "4a1d840eb0b2df8553804d844960a15773ca5af5d5c9803745307db8c617540b",
       "servedMatchesBuild": true
     },
     {
@@ -51,5 +51,6 @@
       "sha256": "0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a",
       "servedMatchesBuild": true
     }
-  ]
+  ],
+  "noticeFormatting": "Copied OFL notices have trailing whitespace removed; licence text unchanged."
 }
