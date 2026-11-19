@@ -92,3 +92,6 @@ python3 tests/test_studio_icons.py
 
 # STAGE: complete performance layouts, track banks and clock/cache contracts.
 ./tests/run_stage_full_tests.sh
+
+# SYSTEM pages, menu rows, naming, confirmation and hold-map presentation.
+./tests/run_system_tests.sh

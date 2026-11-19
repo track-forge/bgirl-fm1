@@ -927,21 +927,16 @@ static uint16_t lc_fill(uint32_t st, uint16_t *ink)
 }
 /* a cell at x, y, h px high: big (h > 30) the icon over the name; a name: compact, the icon at the right (none: no
  * icon); else a black key's: two icons at the right. tri: a HOLD cell in a SET layer */
-/* a cell's box: its fill on the panel. LINE: a RAISE (idle) cell is not filled, and 1 px rules divide the
- * cells: one in the gap left of a cell (not the first column) and one in the gap above it (not the first row), each
- * across the gap's corner, so they meet in a grid. Cells are 4 px apart from x 6, y 4. Returns the fill */
-static uint16_t lc_box(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t fill)
+/* Square map cells on the open canvas. LINE outlines idle cells; alternate FX
+ * columns retain their distinct fill. Held/wait/mute semantic fills are shared. */
+static uint16_t lc_box(int32_t x,int32_t y,int32_t w,int32_t h,uint16_t fill)
 {
-    if (ux.style) {
-        if (fill == T_RAISE)
-            fill = T_SURF;
-        if (x > 7)                                       /* (not the first column: x 6) */
-            cv_rule(x - 2, y > 4 ? y - 4 : y, 1, h + (y > 4 ? 4 : 0));
-        if (y > 4)
-            cv_rule(x > 7 ? x - 4 : x, y - 2, w + (x > 7 ? 4 : 0), 1);
+    if(fill==T_RAISE){
+        if(!ux.style)cv_rect(x,y,w,h,fill);
+        else cv_frame(x,y,w,h,T_LINE);
+        return ux.style?T_BG:fill;
     }
-    cv_rrect(x, y, w, h, 4, fill, T_SURF);
-    return fill;
+    cv_rect(x,y,w,h,fill);return fill;
 }
 static void lcell(int32_t x, int32_t y, int32_t h, const char *note, uint32_t icon, uint32_t icon2, const char *name,
                   uint32_t st, int tri)
@@ -1200,7 +1195,8 @@ static void layer_cards(uint32_t l)
             uint32_t track=mix_track(c);
             if(track>=NTRK){draw_column(c,"--","","",T_DIM,-1,ICON_NONE);continue;}
             param_format(&TP[P_LEVEL],trk[track].p[P_LEVEL],val,&unit);
-            draw_column(c,mix_base()?"T5-6":"T1-4",val,unit,glo_sounding(track)?VAL(c):T_DIM,RATIO(&TP[P_LEVEL],trk[track].p[P_LEVEL]),trk_icon(track,1));
+            char track_label[3]={'T',(char)('1'+track),0};
+            draw_column(c,track_label,val,unit,glo_sounding(track)?VAL(c):T_DIM,RATIO(&TP[P_LEVEL],trk[track].p[P_LEVEL]),trk_icon(track,1));
         }
     } else if (l == LAYER_EDIT) {
         engine_columns();
@@ -1267,8 +1263,8 @@ static void draw_layer(void)
     if (ui.force || sig != ui.layer_sig) {
         ui.layer_sig = sig;
         cv_begin(240, H_GRAPH, T_BG);
-        cv_rrect(3, 0, 234, H_GRAPH, 5, T_SURF, T_BG);
-        cv_bg = T_SURF;
+        cv_rect(3, 0, 234, H_GRAPH, T_BG);
+        cv_bg = T_BG;
         if (l == LAYER_FX)
             layer_fx();
         else if (l == LAYER_GLO)

@@ -8362,7 +8362,7 @@ static int test_large(void)
 
     /* per page type: lists and rolls keep the layout, the layers too; MIXER's tracks in the strip */
     go_page(GR_BROWSE); frame();
-    ok = large_kind() == LK_LABEL && card_h() == CARD_H && graph_y() == Y_GRAPH && graph_h() == H_GRAPH;
+    ok = large_kind() == LK_LABEL && card_h() == CARD_H && graph_y() == 28 && readout_y()==154 && graph_h() == H_GRAPH;
     go_page(GR_ROLL); frame();
     ok &= large_kind() == LK_LABEL;
     go_page(GR_TRK); frame();
@@ -8372,7 +8372,7 @@ static int test_large(void)
     ok &= ui.layer && large_kind() == LK_LABEL && card_h() == CARD_H;
     btn_up(B_GLO); frame(); frame();
     ok &= !ui.layer && large_kind() == LK_TALL && readout_y()==134 && lg_px(30, readout_y()-1) == T_BG;
-    bad += check("#15 LARGE: PRESETS and the roll keep the layout (labels in M), the layers too; MIXER graph above tall readouts", ok);
+    bad += check("#15 LARGE: PRESETS graph above compact readouts; roll/layers keep their geometry; MIXER graph above tall readouts", ok);
 
     {   /* saved with the settings; settings from before it: OFF (and so again: idempotent) */
         persist_t p, q;
@@ -9373,7 +9373,7 @@ static int test_fx_map_columns(void)
                 for (c = 0; c < 4u; c++)
                     px[c] = tr_px(LC_X(c) + 27, Y_GRAPH + 4 + (LF_H + 4) * (int32_t)r + 1);
                 ok &= px[0] == px[2] && px[1] == px[3] && (pal ? px[0] == px[1] : px[0] != px[1]);
-                ok &= !st || pal || px[0] == T_SURF;
+                ok &= !st || pal || px[0] == T_BG;
             }
             ui.layer = 0;
         }

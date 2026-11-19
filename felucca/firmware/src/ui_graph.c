@@ -1346,6 +1346,10 @@ static uint32_t graph_signature(void)
 #endif
         if(pg->graph==GR_SLCR)h^=(uint32_t)song.playing*104729u;
     }
+    if(design_context()==DC_SYSTEM && pg->graph==GR_TOOLS){
+        h^=ui.act*7919u+ui.tl_clean*65537u+ui.song_row*131u+chain_config.count*977u+(uint32_t)chain_busy()*40503u;
+        h^=steps_hash(t)+motion_count(t)*104729u;
+    }
     if(design_context()==DC_STAGE_MORE){
         if(pg->scope==SC_GLOBAL)h=fnv(h,song.g,sizeof song.g);
         h^=(ui.hot_t?ui.hot_col+1u:0u)*65537u;
@@ -2286,6 +2290,7 @@ static void graph_song(void)
 #include "ui_cut_seq.c"
 #include "ui_cut_samples.c"
 #include "ui_stage.c"
+#include "ui_system.c"
 
 static void draw_graph(void)
 {
@@ -2312,7 +2317,9 @@ static void draw_graph(void)
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
-    if(design_context()==DC_STAGE_MORE) {
+    if(design_context()==DC_SYSTEM) {
+        graph_system(pg);
+    } else if(design_context()==DC_STAGE_MORE) {
         graph_stage(pg,t);
     } else if(design_context()==DC_CUT_MORE) {
         graph_cut_samples(pg,t);

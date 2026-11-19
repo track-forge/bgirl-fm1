@@ -71,6 +71,8 @@ static const menu_credit_t MENU_CREDITS[] = {
     {"Emilie Gillet / MIT", MC_TEXT},
     {"https://github.com/pichenettes/eurorack", MC_URL},
     {"", MC_TEXT},
+    {"CHAKRA PETCH + MICHROMA", MC_TITLE},
+    {"SIL Open Font License 1.1; bundled notices in assets/fonts", MC_TEXT},
     {"INTER TIGHT", MC_TITLE},
     {"The Inter Project Authors", MC_TEXT},
     {"SIL Open Font License 1.1", MC_TEXT},
@@ -122,8 +124,8 @@ static int32_t menu_document(int32_t y, int draw)
 {
     uint32_t i;
     if (draw) {
-        cv_text(6, y + 2, &AF_L, "FELUCCA", T_THEME);
-        cv_text(6, y + 38, &AF_S, "Multi-engine synthesizer", T_TEXT);
+        cv_text(6, y + 2, &AF_H, "BGIRL FM-1", T_TEXT);
+        cv_text(6, y + 38, &AF_S, "Felucca electro edition", T_SUPPORT);
         cv_text(6, y + 58, &AF_M, FELUCCA_VERSION, T_THEME);
         cv_text_r(232, y + 61, &AF_S, __DATE__, T_MID, T_BG);
         cv_text(6, y + 82, &AF_S, "(C) 2026 Leo Kuroshita", T_TEXT);
@@ -134,7 +136,10 @@ static int32_t menu_document(int32_t y, int draw)
         cv_text(6, y + 180, &AF_S, "hugelton.com", T_MID);
         draw_about_qr(158, y + 122);
     }
-    y = menu_text("CREDITS", y + 216, T_THEME, draw) + 8;
+    y = menu_text("Independent Felucca derivative", y + 216, T_TEXT, draw);
+    y = menu_text("github.com/track-forge/bgirl-fm1", y, T_MID, draw);
+    y = menu_text("QR: original Felucca project", y, T_MID, draw);
+    y = menu_text("CREDITS", y + 12, T_THEME, draw) + 8;
     for (i = 0; i < NELEM(MENU_CREDITS); i++) {
         const menu_credit_t *c = &MENU_CREDITS[i];
         const char *text = c->text;
@@ -269,7 +274,7 @@ static void menu_tabs(void)                            /* (in screen rows: cv_oy
     for (k = 0; k < MTAB_COUNT; k++) {
         int on = k == (uint32_t)((mt.pos + MT_ONE / 2) / MT_ONE);   /* (half way, the shown look moves over) */
         uint16_t bg = on ? T_ACCENT : T_SURF;
-        cv_rrect(x[k], MT_Y, w[k], MT_H, -8, bg, T_BG);
+        cv_rect(x[k], MT_Y, w[k], MT_H, bg);
         GFX_HOOK_ALIGN(x[k], MT_Y, x[k] + MT_IW, MT_Y + MT_H, AL_HV, "menu tab icon centred in its cushion");
         cv_icon_in(x[k], MT_Y, MT_IW, MT_H, 16, MTAB_ICON[k], on ? T_INK : T_MID, bg);
         if (a[k] == MT_ONE) {                          /* (settled: its name) */
@@ -294,71 +299,43 @@ static void menu_dots(void)
 static void menu_switch(int32_t xr, int32_t y, int32_t h, int on, int sel)
 {
     int32_t x = xr - 26, ty = y + HALF_UP(h - 14);
-    uint16_t under = sel ? T_THEME : T_SURF;
+    uint16_t under = T_BG;
     uint16_t track = sel ? (on ? T_INK : ux_mix(T_THEME, T_INK, 35)) : on ? T_THEME : T_DIM;
     uint16_t knob = sel ? (on ? T_THEME : T_INK) : on ? T_INK : T_TEXT;
     cv_rrect(x, ty, 26, 14, -7, track, under);
     cv_rrect(on ? x + 14 : x + 2, ty + 2, 10, 10, -5, knob, track);
 }
 /* the tab's row k (menu_items.c row `row`) */
-static void menu_row(uint32_t k, uint32_t row)
+static void menu_row(uint32_t k,uint32_t row)
 {
-    int32_t y = mr_y(k), h = mr_h(), vy = y + CAP_IN(M, h);   /* the label and its value: M (a list's rows) */
-    int sel = row == ui.menu_sel;
-    uint16_t bg = sel ? T_THEME : T_SURF, fg = sel ? T_INK : T_TEXT, val = sel ? T_INK : T_THEME;
-    const char *v;
-    if (!sel && MI_TCH(row) && song.g[G_ROUTE] != ROUTE_TRACK)
-        val = T_MID;                                   /* (1.5.5: T1..T4 CHANNEL, unused but with MIDI IN TRACK) */
-    v = menu_valued(row) ? menu_vname(row, menu_get(row)) : "";
-    if (sel)
-        cv_rrect(MR_X, y, MR_W, h, 6, T_THEME, T_SURF);
-    else if (k && row - 1u != ui.menu_sel)             /* a rule from the row above (none beside the selected one) */
-        cv_rect(MR_X + 6, y - 1, MR_W - 12, 1, ux.style ? T_RULE : T_LINE);
-    GFX_HOOK_ALIGN(0, y, 0, y + h, AL_V, "menu row name centred up/down");
-    cv_text_on(MR_LX, vy, &AF_M, MI_NAME[row], fg, bg);
-    if (row == MI_LCLEAR) {                            /* LEARN CLEAR (1.5): how many CCs are learned, "NONE" */
-        char b[8] = "NONE";
-        if (ml_count()) {
-            fmt_int(b, (int32_t)ml_count());
-            str_cpy(b + str_len(b), " CC", 4);
-        }
-        GFX_HOOK_ALIGN(0, y, 0, y + h, AL_V, "menu row value centred up/down");
-        cv_text_r(MR_VR, vy, &AF_M, b, val, bg);
-        return;
+    int32_t y=mr_y(k),h=mr_h();int sel=row==ui.menu_sel;
+    const aafont_t *font=menu_large()&&h>=24?&AF_M:&AF_C;
+    int32_t vy=y+(font==&AF_M?CAP_IN(M,h):CAP_IN(C,h));
+    uint16_t bg=T_BG,fg=sel?T_TEXT:T_SUPPORT,val=T_TEXT;
+    const char *v=menu_valued(row)?menu_vname(row,menu_get(row)):"";
+    char b[12];int32_t left=MR_VR-text_w(font,v);
+    if(sel)cv_frame(MR_X,y,MR_W,h,T_ACCENT);
+    if(row==MI_LCLEAR){
+        str_cpy(b,"NONE",sizeof b);
+        if(ml_count()){fmt_int(b,ml_count());str_cpy(b+str_len(b)," CC",4);}v=b;left=MR_VR-text_w(font,v);
+    }else if(row>=MI_VALUES){left=MR_VR-16;}
+    else if(row==MI_HOLD||row==MI_TUNE){
+        if(row==MI_HOLD){str_cpy(b,"0.4 s",sizeof b);b[2]='0'+HOLD_MS[settings_hold%4u]/100u;}
+        else{str_cpy(b,v,sizeof b);str_cpy(b+str_len(b)," ct",sizeof b-str_len(b));}
+        v=b;left=MR_VR-text_w(font,v);
+    }else if(row==MI_COLOR){left=MR_VR-74-6-text_w(font,v);}
+    else if(menu_n(row)==2u&&(str_eq(v,"ON")||str_eq(v,"OFF"))&&!MI_TEXT(row)){left=MR_VR-30;}
+    if(MI_TCH(row)&&song.g[G_ROUTE]!=ROUTE_TRACK)val=T_DIM;
+    cv_free_text(MR_LX,vy,font,MI_NAME[row],fg,bg,left-MR_LX-8);
+    if(row>=MI_VALUES && row!=MI_LCLEAR){cv_icon_in(MR_VR-12,y,0,h,12,ICON_X_RIGHT,T_SUPPORT,bg);return;}
+    if(row!=MI_LCLEAR&&row!=MI_HOLD&&row!=MI_TUNE&&menu_n(row)==2u&&(str_eq(v,"ON")||str_eq(v,"OFF"))&&!MI_TEXT(row)){
+        menu_switch(MR_VR,y,h,str_eq(v,"ON"),0);return;
     }
-    if (row >= MI_VALUES) {                            /* CLEAR ALL, CALIBRATION, ABOUT: OCT+ opens them */
-        GFX_HOOK_ALIGN(0, y, 0, y + h, AL_V, "menu row chevron centred up/down");
-        cv_icon_in(MR_VR - 12, y, 0, h, 12, ICON_X_RIGHT, sel ? T_INK : T_MID, bg);
-        return;
-    }
-    if (row == MI_HOLD || row == MI_TUNE) {            /* "0.4" s, "+12" ct: the value and its unit */
-        char b[8] = "0.4";
-        b[2] = (char)('0' + HOLD_MS[settings_hold % 4u] / 100u);
-        GFX_HOOK_ALIGN(0, y, 0, y + h, AL_V, "menu row value centred up/down");
-        GFX_HOOK_ALIGN(0, 0, 0, vy + AF_M.asc, AL_B, "menu row unit on its value's baseline");
-        cv_text_r(cv_text_r(MR_VR, vy + AF_M.asc - AF_S.asc, &AF_S, row == MI_TUNE ? "ct" : "s", sel ? T_INK : T_MID, bg) - 3,
-                  vy, &AF_M, row == MI_TUNE ? v : b, val, bg);
-        return;
-    }
-    if (menu_n(row) == 2u && (str_eq(v, "ON") || str_eq(v, "OFF")) && !MI_TEXT(row)) {
-        menu_switch(MR_VR, y, h, str_eq(v, "ON"), sel);
-        return;
-    }
-    GFX_HOOK_ALIGN(0, y, 0, y + h, AL_V, "menu row value centred up/down");
-    if (row != MI_COLOR) {
-        cv_text_r(MR_VR, vy, &AF_M, v, val, bg);
-        return;
-    }
-    {   /* COLOR: the palette's name and its five colours (BG SURF TEXT THEME ACCENT), live */
-        uint32_t c;
-        const uint16_t *tok = &T_BG;
-        int32_t x0 = MR_VR - 74, sy = y + HALF_UP(h - 12);
-        cv_text_r(x0 - 6, vy, &AF_M, v, val, bg);
-        for (c = 0; c < 5u; c++) {
-            cv_rrect(x0 + (int32_t)c * 15, sy, 12, 12, -3, T_RAISE, bg);       /* a rim for the dark ones */
-            cv_rrect(x0 + 1 + (int32_t)c * 15, sy + 1, 10, 10, -2, tok[c], T_RAISE);
-        }
-    }
+    if(row==MI_COLOR){
+        int32_t x0=MR_VR-74,sy=y+HALF_UP(h-12);const uint16_t *tok=&T_BG;
+        cv_text_r(x0-6,vy,font,v,val,bg);
+        for(uint32_t c=0;c<5;c++){cv_frame(x0+15*c,sy,12,12,T_LINE);cv_rect(x0+1+15*c,sy+1,10,10,tok[c]);}
+    }else cv_text_r(MR_VR,vy,font,v,val,bg);
 }
 /* MENU > SYSTEM > INFO (1.2, ui.menu 3): what the old GLO > SYSTEM page showed, read only: the firmware, the USB link (the
  * SYSTEM page's MIDI card: OFF no USB, WAIT no bus yet, BUS frames seen, ENUM being set up, MIDI in use) and the CPU load
@@ -486,7 +463,7 @@ static void draw_menu(void)
         cv_oy = -top_y;                               /* drawn in screen rows */
         if (!pass)
             menu_tabs();
-        if (!ux.style)                                /* FLAT: the rows' panel */
+        if (0)                                        /* SYSTEM rows stay on the open canvas */
             cv_rrect(4, MP_Y, 232, mr_y(n) - mr_gap() + MP_PAD - MP_Y, 8, T_SURF, T_BG);
         for (k = 0; k < n; k++)
             if (mr_y(k) + mr_h() > top_y && mr_y(k) - 1 < top_y + (int32_t)cv_h)
