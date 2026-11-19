@@ -718,7 +718,7 @@ static void draw_column(uint32_t c, const char *label, const char *val, const ch
     key[n + 1] = (char)('A' + ((vc >> 4) & 15u));
     key[n + 2] = (char)('A' + ((vc >> 8) & 15u));
     key[n + 3] = (char)('A' + (vc >> 12));
-    key[n + 4] = (char)(' ' + (ratio < 0 ? 0 : 1 + ratio * (COL_W - 10) / 1000));   /* the gauge's own pixel (as
+    key[n + 4] = (char)(' ' + (ratio < 0 ? 0 : 1 + ratio * (design_context()?56:COL_W - 10) / 1000));   /* the gauge's own pixel (as
                                                         * drawn: gw; ratio / 20 missed a pixel inside a step, #63 soak) */
     key[n + 5] = (char)(icon == ICON_NONE ? '~' : '!' + icon % 90u);
     key[n + 6] = (char)('0' + hot + 2 * mot + 4 * (int)kind);
@@ -1036,7 +1036,7 @@ static void draw_columns(void)
             card_mot_of(vp);
             card_span_of(d);
             if (home_levels())                         /* 1.5: T1..T4 LEVEL, the track's cushion, muted: DIM */
-                draw_column(c, mix_base()?"T5-6":"T1-4", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
+                draw_column(c, mix_track(c)==0?"T1":mix_track(c)==1?"T2":mix_track(c)==2?"T3":mix_track(c)==3?"T4":mix_track(c)==4?"T5":"T6", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
             else
                 draw_column(c, d->label, val, unit, VAL(c), RATIO(d, enum_rank(d, *vp)), param_icon(d, *vp));
         }

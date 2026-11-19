@@ -2084,7 +2084,8 @@ static int test_mono_screens(void)
  * value strip, its last frame is the static render; unchanged digits stay; the direction follows the sign; a
  * change mid-roll retargets; a fast turn, another shape, a page / track / palette change and ui.force snap. */
 static uint16_t roll_shot[240 * 240];
-static const page_t ROLL_PG = {"CLOCK", FAM_TRK, SC_GLOBAL, GR_NONE, {G_BPM, G_SWING, G_CLOCK, G_TUNE}};
+/* Synthetic legacy-card page: migrated STAGE readouts intentionally snap. */
+static const page_t ROLL_PG = {"CLOCK", FAM_HOME, SC_GLOBAL, GR_NONE, {G_BPM, G_SWING, G_CLOCK, G_TUNE}};
 static void roll_settle(void)                     /* CLOCK + TUNE, nothing rolling, no knob hot */
 {
     uint32_t k;
@@ -2141,10 +2142,11 @@ static int test_roll(void)
     n = 0;
     for (e = 0; e < NENGINES; e++)
         for (id = 0; id < NPAGES && eng_ok(e); id++) {
-            uint32_t c;
+            uint32_t c;page_t legacy;
             ui_power_on(); set_engine_of(TSEL, e);
             ui.home = 0; ui.page = (uint8_t)id; page_entered();
             if (!page_visible(id) || PAGES[id].graph == GR_MOD) continue;
+            legacy=PAGES[id];legacy.fam=FAM_HOME;page_over=&legacy;
             ui.force = 1; ui_draw();
             for (c = 0; c < 4u; c++) {
                 int16_t *vp;
@@ -2164,9 +2166,10 @@ static int test_roll(void)
                 }
                 *vp = (int16_t)v0;
             }
+            page_over=0;
         }
     ok &= n > 500u;
-    bad += check("roll: every page and engine: a name (enum, even ALG 1..8, note, ON/OFF) snaps, numbers roll", ok);
+    bad += check("roll: legacy card formats across every page/engine: enums snap, numbers roll", ok);
 
     /* TUNE 0 -> 1 (card 4): a roll of ROLL_FRAMES frames, the last one the static render */
     ui_power_on(); roll_settle();
@@ -4873,16 +4876,13 @@ static int test_bughunt_ui2(void)
     {   /* 3. MIXER: the knob just turned is the one drawn in the accent (K1 LEVEL, K2 PAN, K3 REV, K4 the MUTE badge) */
         uint32_t k, a[4][4], ok = 1;
         for (k = 0; k < 4u; k++) {
-            int32_t X = CARD_X(0), Y = Y_GRAPH;
-            ui_power_on();
-            settings.palette = 1; palette_set(1);
-            go_page(GR_TRK); frame(); frame();
-            turn(EN_K1 + k, 1);                                       /* (K4 right: MUTE on, its badge shown) */
-            ui.force = 1; frame();
-            a[k][0] = accent_in(X + 4, Y + 37, X + 38, Y + 71);       /* LEVEL */
-            a[k][1] = accent_in(X + 3, Y + 84, X + 28, Y + 115);      /* PAN */
-            a[k][2] = accent_in(X + 30, Y + 84, X + 55, Y + 115);     /* REV */
-            a[k][3] = accent_in(X + 22, Y + 4, X + 56, Y + 20);       /* the MUTE badge */
+            int32_t X = 8, Y;
+            ui_power_on();settings.palette = 1;palette_set(1);go_page(GR_TRK);frame();frame();
+            turn(EN_K1+k,1);ui.force=1;frame();Y=graph_y()+26;
+            a[k][0]=accent_in(X+2,Y+37,X+49,Y+47);
+            a[k][1]=accent_in(X+2,Y+graph_h()-50,X+49,Y+graph_h()-40);
+            a[k][2]=accent_in(X+2,Y+graph_h()-38,X+49,Y+graph_h()-28);
+            a[k][3]=accent_in(X+39,Y+1,X+49,Y+13);
         }
         for (k = 0; k < 4u; k++) {
             uint32_t j;
@@ -8317,7 +8317,7 @@ static int test_large(void)
     ui_power_on();
     song.playing = 0;
     frame();
-    ok = !(ui_prefs & PREF_LARGE) && large_kind() == LK_OFF && card_h() == CARD_H && graph_y() == Y_GRAPH;
+    ok = !(ui_prefs & PREF_LARGE) && large_kind() == LK_OFF && card_h() == CARD_H && graph_y() == 28;
     ok &= MI_LARGE == MI_STYLE + 1u && str_eq(MI_NAME[MI_LARGE], "LARGE") && menu_flag(MI_LARGE) &&
           str_eq(menu_flag(MI_LARGE)->name[0], "OFF") && str_eq(menu_flag(MI_LARGE)->name[1], "ON");
     ui.force = 1; frame();
@@ -8333,24 +8333,18 @@ static int test_large(void)
     press(B_HOME);
     bad += check("#15 MENU > LARGE: OFF by default, under STYLE; KNOB 1 right / OCT+ ON, left / OCT- OFF", ok && !ui.menu);
 
-    /* HOME: tall cards (rows 28..132) and the strip (136..198); the footer as it was */
+    /* STAGE keeps a real graph above the LARGE readouts. */
     frame();
-    ok = ui.home && large_kind() == LK_TALL && card_h() == LG_CARD_H && graph_y() == LG_Y_GRAPH && strip_kind() == SK_SCOPE;
-    ok &= lg_px(30, Y_SEP_END + 1) == T_SURF && off[(Y_SEP_END + 1) * 240 + 30] == swap16(T_BG);     /* a card where the gap was */
-    ok &= lg_px(30, LG_Y_GRAPH - 2) == T_BG && off[(LG_Y_GRAPH - 2) * 240 + 30] == swap16(T_SURF);   /* a gap in the panel */
-    ok &= lg_px(30, LG_Y_GRAPH + 1) == T_SURF;
-    for (c = 0; c < 4u; c++)                                      /* each column's K pill, over its knob */
-        ok &= lg_px(CARD_X(c) + 8, Y_LABEL + LG_MY + LG_MH / 2) == T_KEY;
-    ok &= !memcmp(off + Y_FOOT * 240, host_screen + Y_FOOT * 240, 240u * H_FOOT * sizeof *off);
-    bad += check("#15 LARGE ON: HOME's cards tall (a K1..K4 pill over each column), the scope a strip, the footer kept", ok);
-
-    /* the value in L: CLOCK's BPM 124 stands about twice as tall as in M */
-    go_title("CLOCK"); frame();
-    ok = large_kind() == LK_TALL && strip_kind() == SK_TITLE && cur_page()->id[0] == G_BPM && lg_value_rows(0) >= AF_L_CAP_H - 3;
-    ui_prefs = 0; ui.force = 1; frame();
-    ok &= lg_value_rows(0) <= AF_M_CAP_H + 2;
-    ui_prefs = PREF_LARGE; ui.force = 1; frame();
-    bad += check("#15 LARGE: a card value in L (CLOCK's BPM 120: about 21 rows of figures, M's 11)", ok);
+    ok=ui.home && large_kind()==LK_TALL && card_h()==64 && graph_y()==28 && graph_h()==102 && readout_y()==134;
+    for(c=0;c<4;c++)ok &= accent_in(CARD_X(c)+2,readout_y(),CARD_X(c)+COL_W-2,readout_y()+2)==0;
+    ok &= !memcmp(off+Y_FOOT*240,host_screen+Y_FOOT*240,240u*H_FOOT*sizeof *off);
+    bad += check("#15 LARGE STAGE HOME: full 102px graph above 64px readouts; footer retained",ok);
+    go_title("CLOCK");frame();ok=large_kind()==LK_TALL && strip_kind()==SK_NONE && cur_page()->id[0]==G_BPM && graph_h()==102 && card_h()==64;
+    int rows=0;for(int y=readout_y()+15;y<readout_y()+45;y++)for(int x=CARD_X(0)+3;x<CARD_X(0)+54;x++)if(lg_px(x,y)==T_TEXT){rows++;break;}
+    ok &= rows>=AF_L_CAP_H-3;
+    ui_prefs=0;ui.force=1;frame();rows=0;for(int y=readout_y()+14;y<readout_y()+29;y++)for(int x=CARD_X(0)+3;x<CARD_X(0)+54;x++)if(lg_px(x,y)==T_TEXT){rows++;break;}
+    ok &= rows<=AF_V_CAP_H+2;ui_prefs=PREF_LARGE;ui.force=1;frame();
+    bad += check("#15 LARGE CLOCK: native large numeric face, actual phase graph and four readouts",ok);
 
     /* a knob turned: its own card redrawn, the other three not */
     go_title("ENV"); frame(); frames(600);
@@ -8372,13 +8366,13 @@ static int test_large(void)
     go_page(GR_ROLL); frame();
     ok &= large_kind() == LK_LABEL;
     go_page(GR_TRK); frame();
-    ok &= large_kind() == LK_TALL && strip_kind() == SK_TRK && lg_px(CARD_X(0) + 8, LG_Y_GRAPH + 56) == T_SURF;
+    ok &= large_kind() == LK_TALL && strip_kind() == SK_NONE && graph_h()==102 && readout_y()==134;
     go_title("ENV"); frame();
     btn_down(B_GLO); frames(800);
     ok &= ui.layer && large_kind() == LK_LABEL && card_h() == CARD_H;
     btn_up(B_GLO); frame(); frame();
     ok &= !ui.layer && large_kind() == LK_TALL && readout_y()==134 && lg_px(30, readout_y()-1) == T_BG;
-    bad += check("#15 LARGE: PRESETS and the roll keep the layout (labels in M), the layers too; MIXER tall, its tracks in the strip", ok);
+    bad += check("#15 LARGE: PRESETS and the roll keep the layout (labels in M), the layers too; MIXER graph above tall readouts", ok);
 
     {   /* saved with the settings; settings from before it: OFF (and so again: idempotent) */
         persist_t p, q;

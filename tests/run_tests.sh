@@ -89,3 +89,6 @@ python3 tests/test_studio_icons.py
 
 # Remaining CUT: sample/slice/lane presentation and state-preserving render matrix.
 ./tests/run_cut_samples_tests.sh
+
+# STAGE: complete performance layouts, track banks and clock/cache contracts.
+./tests/run_stage_full_tests.sh

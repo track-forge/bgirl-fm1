@@ -1260,8 +1260,15 @@ static void dance_mask(uint32_t pose, uint16_t color)
 static void graph_dance(const track_t *t, uint16_t c)
 {
     cv_oy=0;
-    cv_text_on(10, 1, &AF_S, "FLOORWORK", T_MID, T_SURF);
-    cv_text_on(143, 1, &AF_S, !t->p[P_AMODE] ? "ARP OFF" : !t->nheld ? "NO NOTES" : "ARP ON", T_DIM, T_SURF);
+    if(design_context()==DC_STAGE_MORE){
+        section_heading(ICON_BG_STAGE,"STAGE",T_STAGE);cv_text_r(228,5,&AF_C,"ARP DANCE",T_SUPPORT,T_BG);
+        cv_text(10,30,&AF_C,"FLOOR",T_TEXT);cv_text(10,41,&AF_C,"WORK",T_TEXT);
+        cv_text(10,63,&AF_C,!t->p[P_AMODE]?"ARP OFF":!t->nheld?"NO NOTES":"ARP ON",!t->p[P_AMODE]||!t->nheld?T_DIM:T_PLAY);
+        cv_text(10,85,&AF_C,dance_style?"GHOST":"CRISP",T_SUPPORT);
+    }else{
+        cv_text_on(10, 1, &AF_S, "FLOORWORK", T_MID, T_SURF);
+        cv_text_on(143, 1, &AF_S, !t->p[P_AMODE] ? "ARP OFF" : !t->nheld ? "NO NOTES" : "ARP ON", T_DIM, T_SURF);
+    }
     if (dance_style && (dance_snapshot & 256u)) dance_mask((dance_snapshot>>4)&15u, T_DIM);
     dance_mask(dance_snapshot&15u, c); /* current wins intersections */
 }
@@ -1279,7 +1286,7 @@ static uint32_t graph_signature(void)
     if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
     /* LAB/CUT parameter and region diagrams are static until their actual inputs change.
      * Do not inherit the old live-scope timer on these pages. */
-    if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE && design_context()!=DC_CUT_MORE) || pg->graph == GR_ARP) h ^= ui.frame / 2u;
+    if ((pg->graph == GR_NONE && design_context()!=DC_LAB_MORE && design_context()!=DC_CUT_MORE && design_context()!=DC_STAGE_MORE) || (pg->graph == GR_ARP && design_context()!=DC_STAGE_MORE)) h ^= ui.frame / 2u;
     if(design_context()==DC_LAB_MORE) {
         if(pg->scope==SC_GLOBAL)h=fnv(h,song.g,sizeof song.g);
         for(i=0;i<NTRK;i++)h=(h ^ (uint32_t)trk[i].eng_req ^ ((uint32_t)trk[i].p[P_VCARR]<<8))*16777619u;
@@ -1338,6 +1345,12 @@ static uint32_t graph_signature(void)
             h^=smp_user_gen*7919u+fnv(2166136261u,bg_vocal_expected[trk_index(t)],8)+last_note*31u;
 #endif
         if(pg->graph==GR_SLCR)h^=(uint32_t)song.playing*104729u;
+    }
+    if(design_context()==DC_STAGE_MORE){
+        if(pg->scope==SC_GLOBAL)h=fnv(h,song.g,sizeof song.g);
+        h^=(ui.hot_t?ui.hot_col+1u:0u)*65537u;
+        if(pg->fam==FAM_ARP)h^=t->nheld*7919u;
+        if(str_eq(pg->title,"CLOCK"))h^=song.playing?(clk_step&15u)+104729u:0u;
     }
     if (pg->graph == GR_ROLL) {
         uint32_t ph = song.playing ? t->seq_idx : 0xFFFFu;
@@ -1956,7 +1969,8 @@ static void graph_scope(uint16_t c)
 {
     static int16_t snap[SCOPE_N] __attribute__((section(".pool")));
     uint32_t w = scope_w, i, trig = 0;
-    int32_t cy = (int32_t)cv_h / 2, py = cy, x, peak = 1500, a = cv_h == H_GRAPH ? 46 : cy - 6;   /* (LARGE: the strip) */
+    int32_t stage=ui.home && design_context()==DC_STAGE_MORE, h=stage?(int32_t)graph_h()-44:(int32_t)cv_h;
+    int32_t cy = (stage?26:0)+h/2, py = cy, x, peak = 1500, a = stage?h/2-6:cv_h == H_GRAPH ? 46 : cy - 6;   /* (LARGE: the strip) */
     for (i = 0; i < SCOPE_N; i++) {
         snap[i] = scope_buf[(w + i) & (SCOPE_N - 1u)];
         if (snap[i] > peak)
@@ -2271,6 +2285,7 @@ static void graph_song(void)
 #include "ui_lab.c"
 #include "ui_cut_seq.c"
 #include "ui_cut_samples.c"
+#include "ui_stage.c"
 
 static void draw_graph(void)
 {
@@ -2279,12 +2294,12 @@ static void draw_graph(void)
     uint16_t c = ACC;
     uint32_t sig;
     if (!ui.home && pg->graph == GR_TRK) {
-        draw_tracks();
+        if(design_context()==DC_STAGE_MORE)stage_mixer();else draw_tracks();
         return;
     }
     if (ui.home && home_crew()) { draw_crew(); return; }
     if (ui.home && home_tracks()) {                  /* MENU > HOME TRACKS (1.3) */
-        draw_home_tracks();
+        if(design_context()==DC_STAGE_MORE)stage_tracks();else draw_home_tracks();
         return;
     }
     if (!ui.home && pg->scope == SC_ENGINE && ENGINES[t->eng_req % NENGINES] == &ENG_SAMPLE) sample_wave_tick(t);
@@ -2297,7 +2312,9 @@ static void draw_graph(void)
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
-    if(design_context()==DC_CUT_MORE) {
+    if(design_context()==DC_STAGE_MORE) {
+        graph_stage(pg,t);
+    } else if(design_context()==DC_CUT_MORE) {
         graph_cut_samples(pg,t);
     } else if(design_context()==DC_LAB_MORE) {
         graph_lab_more(pg,t);

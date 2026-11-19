@@ -389,12 +389,13 @@ static const page_t *cur_page(void) { return page_over ? page_over : &PAGES[ui.p
  *            is, the card labels in M;
  *   LK_OFF   LARGE off; the menu (its own LARGE: ui_menu.c), the dialogs and NAME keep their own layout in every case. */
 /* Presentation only: no navigation IDs, input bindings or persisted state. */
-enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE, DC_CUT_SEQ, DC_CUT_MORE };
+enum { DC_NONE, DC_STAGE, DC_LAB, DC_CUT, DC_ENV, DC_LAB_MORE, DC_CUT_SEQ, DC_CUT_MORE, DC_STAGE_MORE };
 static uint32_t design_context(void)
 {
     const page_t *pg=cur_page();
     if (ui.layer || ui.menu || ui.confirm) return DC_NONE;
-    if (ui.home) return home_crew() ? DC_STAGE : DC_NONE;
+    if (ui.home) return home_crew() ? DC_STAGE : DC_STAGE_MORE;
+    if(pg->fam==FAM_ARP || pg->fam==FAM_SCL || pg->fam==FAM_TRK) return DC_STAGE_MORE;
     if (pg->graph==GR_FMOP || pg->graph==GR_FMOP2 || (pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_FM6)) return DC_LAB;
     if (pg->graph==GR_ADSR) return DC_ENV;
     if (pg->graph==GR_ROLL && drum_track(TSEL) && str_eq(pg->title,"STEP")) return DC_CUT;
@@ -410,7 +411,7 @@ static uint32_t design_context(void)
         !(pg->scope==SC_ENGINE && TSEL->eng_req%NENGINES==ENGI_SAMPLE)) return DC_LAB_MORE;
     return DC_NONE;
 }
-static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV || c==DC_LAB_MORE || (c==DC_CUT_MORE && cur_page()->graph!=GR_SLICES)); }
+static int design_tall(void) { uint32_t c=design_context(); return (ui_prefs&PREF_LARGE) && (c==DC_LAB || c==DC_ENV || c==DC_LAB_MORE || (c==DC_STAGE_MORE && !(ui.home && home_tracks()) && cur_page()->graph!=GR_DANCE) || (c==DC_CUT_MORE && cur_page()->graph!=GR_SLICES)); }
 static uint32_t readout_y(void) { return design_context() ? (design_tall()?134u:154u) : Y_LABEL; }
 enum { LK_OFF, LK_LABEL, LK_TALL };
 static uint32_t large_kind(void)

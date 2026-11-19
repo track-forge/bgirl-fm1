@@ -16,8 +16,8 @@ static void composition(void) {
             uint32_t s=dance_read(0),p=s&15u,prev=(s>>4)&15u;
             for(uint32_t y=0;y<96;y++)for(uint32_t x=0;x<96;x++) {
                 uint32_t bit=128u>>(x&7u),off=y*12+x/8;
-                uint16_t expected=bg_dance_masks[p][off]&bit ? ACC : ghost && (bg_dance_masks[prev][off]&bit) ? T_DIM : T_SURF;
-                assert(web_fb[(Y_GRAPH+22+y)*240+72+x]==swap16(expected));
+                uint16_t expected=bg_dance_masks[p][off]&bit ? ACC : ghost && (bg_dance_masks[prev][off]&bit) ? T_DIM : design_context()==DC_STAGE_MORE ? T_BG : T_SURF;
+                assert(web_fb[(graph_y()+22+y)*240+72+x]==swap16(expected));
             }
             uint32_t draws=web_draws;ui.frame+=70;draw_graph();assert(web_draws==draws);
         }
@@ -31,7 +31,7 @@ static void composition(void) {
     assert(web_draws==draws); /* hidden dance causes no extra graph drawing */
     ui.page=page_graph(GR_DANCE);draw_graph();assert(dance_snapshot==dance_read(0));
     song.sel=1;draw_graph();assert(dance_snapshot==dance_read(1));
-    puts("dance pixels: 528 compositions (11 palettes x FLAT/LINE x 12 poses x 2 styles) incl. wrap, CRISP erasure, GHOST intersection/previous, style redraw, LARGE, no hidden/idle drawing PASS");
+    puts("dance pixels: 576 compositions (12 palettes x FLAT/LINE x 12 poses x 2 styles) incl. wrap, CRISP erasure, GHOST intersection/previous, style redraw, LARGE, no hidden/idle drawing PASS");
 }
 int main(int argc,char **argv) {
     web_nor_erase();web_boot();advance(1200);
