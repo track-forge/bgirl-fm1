@@ -389,10 +389,14 @@ function build(name) {
   device.style.aspectRatio = `${L.w} / ${L.h}`;
   for (const d of device.querySelectorAll(".hit")) d.remove();
   knobs.length = buttons.length = keys.length = 0;
-  el("rect", { x: 4, y: 4, width: L.w - 8, height: L.h - 8, rx: 2, fill: "var(--body)" });
-  for (const [x, y, w, h] of L.trays) el("rect", { x, y, width: w, height: h, rx: 0, fill: "var(--tray)" });
+  // FM-1 reference: soft enclosure/wells, rounded buttons and capsule piano keys.
+  // Round the housing independently of the square 240x240 LCD and input targets.
+  const corner = Math.min(L.w, L.h) * .09;
+  el("rect", { x: 4, y: 4, width: L.w - 8, height: L.h - 8, rx: corner, fill: "var(--body)" });
+  document.getElementById("start").style.borderRadius = `${corner / L.w * 100}% / ${corner / L.h * 100}%`;
+  for (const [x, y, w, h] of L.trays) el("rect", { x, y, width: w, height: h, rx: Math.min(w, h) * .14, fill: "var(--tray)" });
   const [sx, sy, ss] = L.screen;
-  el("rect", { x: sx, y: sy, width: ss, height: ss, rx: 0, fill: "#181420" });
+  el("rect", { x: sx - 8, y: sy - 8, width: ss + 16, height: ss + 16, rx: ss * .14, fill: "#181420" });
   const inset = ss / 32;                                         // the 240 x 240 panel inside its bezel
   Object.assign(canvas.style, { left: `${(sx + inset) / L.w * 100}%`, top: `${(sy + inset) / L.h * 100}%`,
                                 width: `${(ss - 2 * inset) / L.w * 100}%`, height: `${(ss - 2 * inset) / L.h * 100}%` });
@@ -407,7 +411,7 @@ function build(name) {
   });
   const button = ([x, y, w, h], n, sub) => {
     const g = el("g", {});
-    el("rect", { x, y, width: w, height: h, rx: 1, fill: "var(--part)", stroke: "var(--edge)", "stroke-width": 1.5, class: "face btn" }, g);
+    el("rect", { x, y, width: w, height: h, rx: Math.min(w, h) * .22, fill: "var(--part)", stroke: "var(--edge)", "stroke-width": 1.5, class: "face btn" }, g);
     const ink = n === "REC" ? "var(--orange)" : undefined;
     if (sub) { label(g, x + w / 2, y + h / 2 - 2, n, 10.8, SANS, ink); label(g, x + w / 2, y + h / 2 + 11, sub, 9.9); }
     else label(g, x + w / 2, y + h / 2 + 4.5, n, 12.6, SANS, ink);
@@ -421,13 +425,13 @@ function build(name) {
     button([gx + i * dx, gy + dy, gw, gh], ROW2[i], ROW2[i] === "PLAY" ? "STOP" : "");
   }
   const [x0, y0, w, h] = L.keybed;
-  el("rect", { x: x0, y: y0, width: w, height: h, rx: 0, fill: "var(--tray)" });
+  el("rect", { x: x0, y: y0, width: w, height: h, rx: h * .15, fill: "var(--tray)" });
   // the keys: two rows of the same black keys, each with a slit down its middle that lights
   const pitch = (w - 24) / 16, kw = pitch * 0.78, kh = h * 0.425, sw = Math.max(3, kw * 0.14);
   const key = (cx, cy, k) => {
     const g = el("g", {}), y = cy - kh / 2;
-    el("rect", { x: cx - kw / 2, y, width: kw, height: kh, rx: 1, class: "face key" }, g);
-    el("rect", { x: cx - sw / 2, y: y + kw * 0.4, width: sw, height: kh - kw * 0.8, rx: 0, class: "slit" }, g);
+    el("rect", { x: cx - kw / 2, y, width: kw, height: kh, rx: kw / 2, class: "face key" }, g);
+    el("rect", { x: cx - sw / 2, y: y + kw * 0.4, width: sw, height: kh - kw * 0.8, rx: sw / 2, class: "slit" }, g);
     el("rect", { x: cx - pitch / 2, y: cy - h * 0.24, width: pitch, height: h * 0.48, fill: "transparent" }, g);   // its target
     keys[k] = { g, name: keyName(k) };
   };
