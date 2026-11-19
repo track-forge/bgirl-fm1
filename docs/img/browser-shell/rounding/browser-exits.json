@@ -1,0 +1,8 @@
+{
+  "runtimeSource": "cedb7c66aec42fad895d84fa85d3b09fd016c83b",
+  "suites": {
+    "browser-shell": 0,
+    "browser-smoke": 0
+  },
+  "scope": "latest focused and smoke reruns; initial 19-suite browser result remains historical"
+}

@@ -5,9 +5,47 @@ Stacks on [PR #43](https://github.com/track-forge/bgirl-fm1/pull/43),
 `c0ecb3a42a7926cae986e77e86d23e9240966d1e`.
 Doug authorized another stacked PR for browser styling, responsive behavior and
 keyboard accessibility. Runtime implementation: `b7373d54c36b5063d11673764f3bec91685dde14`;
-subsequent commits add review tooling, documentation and receipts only. No merge, shared preview deployment or hardware work.
+later commits include review tooling, documentation, receipts and the explicitly
+identified hardware-rounding revision below. No merge, shared preview deployment or hardware work.
 
-## Review
+## Hardware rounding revision
+
+Doug liked the STUDIO colorway but requested corner profiles closer to his
+M-VAVE FM-1 reference. Runtime `cedb7c66aec42fad895d84fa85d3b09fd016c83b`
+changes only SVG housing geometry: broad enclosure corners, softly rounded button
+wells and buttons, rounded LCD bezel, pill-shaped piano keys and their LED slits.
+The startup overlay follows the same enclosure radius. The bezel grows outward
+8 SVG units, leaving the actual square display exactly where it was.
+
+![Hardware rounding before/after](../img/browser-shell/rounding/review-strip.png)
+
+[Desktop](../img/browser-shell/rounding/desktop-panel-after.png) /
+[mobile](../img/browser-shell/rounding/mobile-panel-after.png) actual Chromium
+captures. The supplied hardware photo was a design reference, not copied into
+our assets or published in this PR.
+
+[Before/after geometry receipt](../img/browser-shell/rounding/geometry-identity.json)
+compares desktop, portrait phone, 320px phone and landscape: **all 49 hit targets,
+all STUDIO color variables and the 240×240 canvas dimensions/CSS position are
+identical**. The CSS block and all input/audio/storage/MIDI source code are also
+byte-identical ([identity receipt](../img/browser-shell/rounding/identity.json)).
+No control relocation, firmware rounding, palette, asset, timing
+or audio change is included. This deliberately rounds the browser hardware, not
+the graph/readout UI drawn inside the LCD.
+
+Latest [focused five-viewport browser checks](../img/browser-shell/rounding/focused-results.json)
+and [audio/persistence smoke](../img/browser-shell/rounding/smoke-results.json)
+both pass. The [latest full root host/UI/audio run](../img/browser-shell/rounding/host-exit.json)
+exits **0**: all 111 goldens unchanged, native/WASM parity and every included
+render suite pass; [SYSTEM retains 6,900 clean cases](../img/browser-shell/rounding/system-native.txt).
+The [served build identity](../img/browser-shell/rounding/served-identity.json)
+also matches the repaired source. The original nineteen-suite browser receipt below belongs to the
+initial square-shell revision; it is not relabelled as a nineteen-suite rerun.
+Latest browser exits/logs are [recorded separately](../img/browser-shell/rounding/browser-exits.json).
+The rounded comparison freezes pre-repair source `1dcbbb6` at local port 8815
+against the updated local 8814 build, using the same WASM, fonts and worklet.
+
+## Initial square-shell review (historical)
 
 ![Desktop and mobile panel comparisons](../img/browser-shell/review-strip.png)
 
@@ -57,7 +95,7 @@ The 240×240 firmware canvas, native panel layouts and all 49 targets are retain
 
 ## Verification
 
-**19/19 actual Chromium suites pass** on the final shell:
+**19/19 actual Chromium suites passed** on the initial square-shell revision:
 [exit receipt](../img/browser-shell/browser-results.json) /
 [per-suite logs](../img/browser-shell/browser-suites.log). Shell, smoke, splash,
 vocoder, Mega, demo, vocals, dance, CREW, six-track, SH-ISH, SYSTEM, Signature,

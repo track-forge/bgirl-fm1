@@ -1,0 +1,73 @@
+{
+  "viewports": [
+    [
+      "desktop",
+      1300,
+      1000
+    ],
+    [
+      "mobile",
+      390,
+      844
+    ],
+    [
+      "narrow",
+      320,
+      740
+    ],
+    [
+      "landscape",
+      844,
+      390
+    ],
+    [
+      "zoom-equivalent",
+      650,
+      500
+    ]
+  ],
+  "keyboardNotes": "Enter/Space, key-up, focus-loss, repeat",
+  "buttonFocusRelease": true,
+  "selectIsolation": true,
+  "relativeAndGlobalInput": true,
+  "captureLossRelease": true,
+  "contrast": [
+    {
+      "name": "body",
+      "ratio": 14.161040337428263,
+      "min": 4.5
+    },
+    {
+      "name": "support",
+      "ratio": 7.3572633171078685,
+      "min": 4.5
+    },
+    {
+      "name": "panel labels",
+      "ratio": 9.027767791634107,
+      "min": 4.5
+    },
+    {
+      "name": "action ink",
+      "ratio": 13.821857899514233,
+      "min": 4.5
+    },
+    {
+      "name": "focus",
+      "ratio": 6.219359726926171,
+      "min": 3
+    },
+    {
+      "name": "control edges",
+      "ratio": 3.846557795010396,
+      "min": 3
+    }
+  ],
+  "focusAfterStartupAndResize": true,
+  "panelTargets": 49,
+  "unpoweredTargetsSkipped": true,
+  "reducedMotion": true,
+  "noExternalRequests": true,
+  "errors": [],
+  "scope": "Browser wrapper only; no spoken firmware readout or hardware claim"
+}
