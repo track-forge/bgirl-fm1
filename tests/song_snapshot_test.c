@@ -36,6 +36,10 @@ int main(void) {
  assert(project_info(0,name,lengths,0,0));assert(!strcmp(name,"LOCAL A"));assert(lengths[0]==len48_of(8,2));
  ui.frame++;ui.force=1;assert(graph_song_used(0));assert(!strcmp(graph_project_name(0),"SOURCE A"));assert(graph_plen[0][0]==len48_of(64,2));
  assert(graph_project_used(0));assert(!strcmp(graph_project_name(0),"LOCAL A"));assert(graph_plen[0][0]==len48_of(8,2));
+ /* CUT SONG now owns the visible renderer; it must not switch the shared
+    metadata cache back to destination slots while drawing portable sources. */
+ ui.song_row=0;ui.song_trk=0;graph_cut_song();
+ assert(!strcmp(graph_project_name(0),"SOURCE A"));assert(graph_plen[0][0]==len48_of(64,2));
  assert(!chain_prepare());
  assert(chain.source[0].step[0][63].note[0]==44);assert(chain.source[1].step[0][63].note[0]==67);
  transport_req=0;seq_stop();web_render(128);
