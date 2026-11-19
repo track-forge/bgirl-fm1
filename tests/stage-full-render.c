@@ -21,18 +21,65 @@ static void stage_setup(uint32_t s){
 /* MIXER already consumes/resets peak telemetry. Exclude only that ephemeral
  * meter field; parameters, voices, steps, automation and musical state must not change. */
 static uint32_t stage_state(void){track_t copy[NTRK];memcpy(copy,trk,sizeof copy);for(int i=0;i<NTRK;i++)copy[i].peak=0;uint32_t h=fnv(2166136261u,copy,sizeof copy);h=fnv(h,&motion,sizeof motion);h=fnv(h,&chain_config,sizeof chain_config);return fnv(h,chord_last,sizeof chord_last);}
-int main(int argc,char **argv){const char *out=argc>1?argv[1]:"local/stage-rollout/after/native";char path[512],name[96];snprintf(path,sizeof path,"%s/report.txt",out);rep=fopen(path,"w");assert(rep);uint32_t cases=0;
+#ifndef BGIRL_STAGE_BASELINE
+/* Locate actual vertical frame edges in the RGB565 framebuffer,
+ * then check recorded glyph ink, not a copied baseline formula or layout total. */
+static void frame_ink_clear(int x,int w,uint16_t color){
+ int top=-1,bottom=-1,texts=0;
+ for(int y=graph_y();y<(int)(graph_y()+graph_h());y++){
+  int line=swap16(host_screen[y*240+x])==color && swap16(host_screen[y*240+x+w-1])==color;
+  if(line){if(top<0)top=y;bottom=y;}
+ }
+ assert(top>=0 && bottom>top);
+ for(uint32_t i=0;i<nscr;i++){
+  const rbox_t *b=&scr[i];if(b->flags&4u)continue;
+  if(b->x0>=x+w || b->x1<=x || b->y0>=bottom+1 || b->y1<=top)continue;
+  if(!(b->x0>x && b->x1<=x+w-1 && b->y0>top && b->y1<=bottom)){
+   fprintf(stderr,"frame/text collision '%s': ink=(%d,%d)-(%d,%d), frame=(%d,%d)-(%d,%d)\n",b->s,b->x0,b->y0,b->x1,b->y1,x,top,x+w-1,bottom);assert(0);
+  }texts++;
+ }
+ assert(texts>0);
+}
+#endif
+int main(int argc,char **argv){const char *out=argc>1?argv[1]:"local/stage-rollout/after/native";char path[512],name[96];snprintf(path,sizeof path,"%s/report.txt",out);rep=fopen(path,"w");assert(rep);uint32_t cases=0,glyphs=0;
  for(uint32_t p=0;p<NPALETTES;p++)for(int large=0;large<2;large++)for(int style=0;style<2;style++)for(uint32_t s=0;s<NELEM(stage_names);s++){
   stage_setup(s);pal(p);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;snprintf(name,sizeof name,"%s-%s-%s",stage_names[s],large?"large":"normal",style?"line":"flat");cur_name=name;
   uint32_t h=stage_state();draw(S_ENV);assert(h==stage_state());lint();mono_check();cases++;if(p==UI_STUDIO_INDEX)write_ppm(out,"STUDIO",name);
  }
+#ifndef BGIRL_STAGE_BASELINE
+ for(int large=0;large<2;large++)for(int style=0;style<2;style++){
+  for(int view=0;view<2;view++)for(int selected=0;selected<NTRK;selected++){
+   stage_setup(view?9:5);pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;song.sel=selected;
+   cur_name="frame-track-clearance";draw(S_ENV);lint();frame_ink_clear(8,224,T_ACCENT);cases++;
+  }
+  stage_setup(11);pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
+  cur_name="frame-mixer-clearance";draw(S_ENV);lint();frame_ink_clear(8,52,T_ACCENT);cases++;
+  stage_setup(20);pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
+  cur_name="frame-arp-clearance";draw(S_ENV);lint();for(int oct=0;oct<4;oct++)frame_ink_clear(16+52*oct,40,T_STAGE);cases++;
+  setup(S_MOD);pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
+  cur_name="frame-lab-mod-clearance";draw(S_ENV);lint();frame_ink_clear(8,224,T_ACCENT);cases++;
+  setup(S_AUTO_LIST);pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
+  cur_name="frame-cut-events-clearance";draw(S_ENV);lint();frame_ink_clear(8,224,T_ACCENT);cases++;
+  setup(S_ENV);eng(13);set_engine_of(&trk[2],ENGI_FM6);TSEL->p[P_VCARR]=3;TSEL->p[P_VBANDS]=2;TSEL->p[P_VWET]=127;go_title("VOCODER");
+  pal(UI_STUDIO_INDEX);ui_style=style;style_apply();ui_prefs=large?PREF_LARGE:0;
+  cur_name="frame-lab-vocoder-clearance";draw(S_ENV);lint();frame_ink_clear(12,50,T_THEME);frame_ink_clear(88,64,T_RHYTHM);frame_ink_clear(176,50,T_THEME);cases++;
+ }
+ /* Printable name glyphs, including punctuation/descenders, with four advance prefixes. */
+ stage_setup(5);pal(UI_STUDIO_INDEX);
+ const char *prefix[]={"","I","A","M"};
+ for(int c=33;c<=126;c++)for(int phase=0;phase<4;phase++){
+  nscr=npend=nrules=0;memset(host_screen,0,sizeof host_screen);char text[4];snprintf(text,sizeof text,"%s%c",prefix[phase],c);
+  cv_begin(224,16,T_BG);cv_bg=T_BG;cv_oy=0;cv_frame(0,0,224,16,T_ACCENT);cv_text(19,0,&AF_C,text,T_TEXT);cv_blit(8,graph_y()+26);
+  frame_ink_clear(8,224,T_ACCENT);glyphs++;
+ }
+#endif
  /* Sweep all selected tracks, 64-step banks, and playheads independently of screenshots. */
  for(int large=0;large<2;large++)for(int sel=0;sel<NTRK;sel++)for(int bank=0;bank<4;bank++)for(int pos=0;pos<16;pos++){
   stage_setup(5);pal(UI_STUDIO_INDEX);ui_prefs=large?PREF_LARGE:0;song.sel=sel;song.playing=1;
   for(int k=0;k<NTRK;k++){trk[k].p[P_SLEN]=64;trk[k].seq_idx=bank*16+pos;}
   cur_name="tracks-bank-playhead";uint32_t h=stage_state();draw(S_ENV);assert(h==stage_state());lint();cases++;
 #ifndef BGIRL_STAGE_BASELINE
-  for(int k=0;k<NTRK;k++)assert(swap16(host_screen[(graph_y()+29+k*15)*240+123+pos*6])==T_PLAY);
+  for(int k=0;k<NTRK;k++)assert(swap16(host_screen[(graph_y()+27+k*16)*240+123+pos*6])==T_PLAY);
 #endif
  }
 #ifndef BGIRL_STAGE_BASELINE
@@ -50,5 +97,5 @@ int main(int argc,char **argv){const char *out=argc>1?argv[1]:"local/stage-rollo
    assert(swap16(host_screen[(graph_y()+45)*240+14+13*pos])==T_PLAY);}
  }
 #endif
- fprintf(rep,"STAGE full cases=%u findings=%u ink=%u neutral=%u align=%u lost=%u canvas=%zu\n",cases,nfind,nink,mono_bad,al_fail,al_lost,sizeof cv_px);fclose(rep);return nfind+nink+mono_bad+al_fail+al_lost?1:0;
+ fprintf(rep,"STAGE full cases=%u findings=%u ink=%u neutral=%u align=%u lost=%u canvas=%zu frameGlyphs=%u\n",cases,nfind,nink,mono_bad,al_fail,al_lost,sizeof cv_px,glyphs);fclose(rep);return nfind+nink+mono_bad+al_fail+al_lost?1:0;
 }
