@@ -1,0 +1,188 @@
+LINT self-test              spills out of its cell           'SPILL' (8,62)-(37,72) / 'cell' (6,59)-(26,72)
+LINT self-test              overlaps                         'AAAA' (4,31)-(34,40) / 'BBBB' (14,35)-(43,44)
+LINT self-test              ellipsised (not free text)       'WWW…' (4,47)-(58,59)
+LINT self-test              cut by its canvas                'CUT' (44,61)-(74,74)
+LINT self-test              touches a divider                'RULE' (10,115)-(38,125) / 'divider' (0,120)-(240,121)
+(self-test: 8 findings above are expected)
+
+LINT GREY/project           ellipsised (not free text)       '…' (185,58)-(194,60)
+free   GREY/mixer             ellipsised 'PULSE…'
+free   GREY/mixer             ellipsised 'DRUM…'
+LINT GREY/project_named     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT GREY/project_erase     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT GREEN/project          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT GREEN/project_named    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT GREEN/project_erase    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT AMBER/project          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT AMBER/project_named    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT AMBER/project_erase    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ICE/project            ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ICE/project_named      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ICE/project_erase      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT VIOLET/project         ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT VIOLET/project_named   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT VIOLET/project_erase   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ROSE/project           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ROSE/project_named     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT ROSE/project_erase     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT PAPER/project          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT PAPER/project_named    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT PAPER/project_erase    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT HI-CON/project         ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT HI-CON/project_named   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT HI-CON/project_erase   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT NIGHT/project          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT NIGHT/project_named    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT NIGHT/project_erase    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT MONO/project           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT MONO/project_named     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT MONO/project_erase     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT CIRCUIT/project        ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT CIRCUIT/project_named  ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT CIRCUIT/project_erase  ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT STUDIO/project         ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT STUDIO/project_named   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT STUDIO/project_erase   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREY/project      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREY/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREY/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREEN/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREEN/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_GREEN/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_AMBER/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_AMBER/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_AMBER/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ICE/project       ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ICE/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ICE/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_VIOLET/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_VIOLET/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ROSE/project      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ROSE/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_ROSE/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_PAPER/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_PAPER/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_PAPER/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_HI-CON/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_HI-CON/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_NIGHT/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_NIGHT/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_NIGHT/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_MONO/project      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_MONO/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_MONO/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_CIRCUIT/project   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_STUDIO/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LINE_STUDIO/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+STYLE LINE (every palette): 36 lint findings
+LINT LARGE_GREY/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_GREY/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_GREY/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_GREEN/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_GREEN/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_AMBER/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_AMBER/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ICE/project      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ICE/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ICE/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_VIOLET/project   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ROSE/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ROSE/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_ROSE/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_PAPER/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_PAPER/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_HI-CON/project   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_NIGHT/project    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_NIGHT/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_MONO/project     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_MONO/project_named ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_MONO/project_erase ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_CIRCUIT/project  ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE_STUDIO/project   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_GREY/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_GREEN/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_AMBER/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_ICE/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_VIOLET/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_ROSE/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_PAPER/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_HI-CON/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_NIGHT/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_MONO/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_CIRCUIT/project ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE-LINE_STUDIO/project ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE ANALOG/VOC INPUT ellipsised 'SAW LE…'
+free   LARGE ANALOG/VOC COLOR ellipsised 'SAW L…'
+LINT LARGE ANALOG/PROJECT   ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE PHASE/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE LOFI/PROJECT     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE SAMPLE/PROJECT   ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE VOICE/VOC COLOR  ellipsised 'CHOIR A…'
+LINT LARGE VOICE/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE VOICE/MIXER      ellipsised 'CHOIR…'
+LINT LARGE TRIO/PROJECT     ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE TRIO/MIXER       ellipsised 'FAT BA…'
+free   LARGE WHEEL/VOCODER    ellipsised 'FULL ORG…'
+free   LARGE WHEEL/VOC INPUT  ellipsised 'FULL OR…'
+free   LARGE WHEEL/VOC COLOR  ellipsised 'FULL O…'
+LINT LARGE WHEEL/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE GRAIN/VOC INPUT  ellipsised 'CLOUD P…'
+LINT LARGE GRAIN/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE GRAIN/MIXER      ellipsised 'CLOUD…'
+LINT LARGE PHYS/PROJECT     ellipsised (not free text)       '…' (185,58)-(194,60)
+free   LARGE PHYS/MIXER       ellipsised 'BELL T…'
+LINT LARGE DRUM/PROJECT     ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE NOISE/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE FM6/PROJECT      ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LARGE SLICE/PROJECT    ellipsised (not free text)       '…' (185,58)-(194,60)
+MENU > LARGE (FLAT and LINE, every palette, the page / value sweep): 189 lint findings; 1992 screens with tall cards
+  tall card values: 333329 in L, 368 in M (a glyph not in L: "&Z"), 186512 in M (L too wide), 5319 in S
+  too wide for L, e.g.: '355' '1.0' '8.8' 'USR2' '160' '-6.0' '-31' '-4.0' '0' 'OFF' '+100' '54' '+76' '1.18' 'SIN' 'MODW'
+  in S, e.g.: 'LEGACY' 'LOG' 'BREAK' 'USR1' 'USR2' 'USR3' 'PIANO' 'SPEECH' 'VOCALS'
+  #251: 1699 knobs swept tall, 0 whose values change size; 934 wholly in L, 750 in M, 15 in S
+LINT ANALOG/PROJECT         ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT PHASE/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT LOFI/PROJECT           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT SAMPLE/PROJECT         ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT VOICE/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT TRIO/PROJECT           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT WHEEL/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT GRAIN/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT PHYS/PROJECT           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT DRUM/PROJECT           ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT NOISE/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT FM6/PROJECT            ellipsised (not free text)       '…' (185,58)-(194,60)
+LINT SLICE/PROJECT          ellipsised (not free text)       '…' (185,58)-(194,60)
+
+draw cost on the host (cc -O1; only the ratios mean anything on the device):
+  screen            full redraw us   texts+icons   glyph px read
+  home                       176.2            32            8635
+  presets                    191.8            38           13245
+  step                       161.4            27            6918
+  roll_chords                160.9            27            6288
+  drum                       164.3            36            9129
+  mixer                      163.5            51           10926
+  menu                       201.1            33           13030
+  about_credits              318.9            48           40623
+  confirm_project            165.3            12            6615
+  HOME, a frame without force (lazy strips): 51.2 us, 2 texts
+  roll_chords: the panel redrawn 74.9 us; an unchanged frame (signature only) 1.10 us
+  roll_playing: the panel redrawn 76.7 us; an unchanged frame (signature only) 1.10 us
+  drum: the panel redrawn 74.7 us; an unchanged frame (signature only) 0.37 us
+  roll frame (header BPM 129->130 and card TUNE 19->20, strips only): 13.17 us, 1254 glyph px, 2682 px blitted; header + 4 cards redrawn whole: 56.56 us, 3783 glyph px, 15792 px blitted
+  MENU > LARGE:
+  home                       201.8            32            9568
+  edit_analog                188.6            31            8360
+  env                        160.3            28            7374
+  lfo                        163.3            26            7105
+  mixer                      175.3            51           12580
+  fx                         167.1            32            8641
+  clock                      164.0            26            9050
+  LARGE HOME, a frame without force (lazy strips): 40.3 us, 2 texts
+  LARGE ENV, a frame without force (lazy strips): 1.5 us, 0 texts
+
+alignment: 466800 measurements of 70 places, 0 off by 1 px or more (OUTDIR/align.txt)
+
+card values set in S (M too wide for the card with its unit; FLAT and LINE, the sweep too): 7171 draws, 54 distinct: 'ANALOG' '1284 /3840' 'CHANCE' 'CONGA' 'MODAL' 'SPRING' '-11.0 dB' '0.624 S' '0.513 S' '0.000 S' 'ENV ATK' 'NUDGE' 'HIDDEN' '1000 HZ' 'LEGACY' 'WHOLE' 'DIMHW' 'DIMWH' '10.2 kHz' '10.7 kHz' '11.3 kHz' '11.8 kHz' '12.4 kHz' '13.1 kHz' '13.7 kHz' '14.4 kHz' '15.2 kHz' '16.0 kHz' '1280 /3840' 'REPEAT' 'THUMB' 'CHORD' '1277 /3840' 'CONST' '1278 /3840' 'SAMPLE' 'VOWL2' '1281 /3840' '1282 /3840' 'HOLLW' 'SMOOT' '2SLOW' '3SLOW' '1279 /3840' 'MODEL' '1283 /3840' 'CH FRE' 'OH FRE' 'PUNCH' 'ROUND' '1276 /3840' 'SPEECH' 'VOCALS' '1275 /3840'
+
+378 lint findings, 0 inks on their own colour, 596 ellipsised free texts, 0 GREY / MONO pixels off gray / neutral; 258042 column values swept; 956 FM6 charts linted; 1474 cards linted with MOTION's icon

@@ -177,7 +177,7 @@
       "P_SLDEPTH"
     ],
     "phase": "CUT",
-    "status": "this CUT completion pass"
+    "status": "approved #41"
   },
   {
     "index": 12,
@@ -267,7 +267,7 @@
       "P_TRANS"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 18,
@@ -282,7 +282,7 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 19,
@@ -297,7 +297,7 @@
       "P_E3"
     ],
     "phase": "LAB/CUT",
-    "status": "approved #39; SAMPLE/SLICE this CUT pass"
+    "status": "approved #39/#41 (engine-specific)"
   },
   {
     "index": 20,
@@ -312,7 +312,7 @@
       "P_E7"
     ],
     "phase": "LAB/CUT",
-    "status": "approved #39; SAMPLE/SLICE this CUT pass"
+    "status": "approved #39/#41 (engine-specific)"
   },
   {
     "index": 21,
@@ -342,7 +342,7 @@
       "P_LN3"
     ],
     "phase": "CUT",
-    "status": "this CUT completion pass"
+    "status": "approved #41"
   },
   {
     "index": 23,
@@ -357,7 +357,7 @@
       "P_LN7"
     ],
     "phase": "CUT",
-    "status": "this CUT completion pass"
+    "status": "approved #41"
   },
   {
     "index": 24,
@@ -372,7 +372,7 @@
       "0xFF"
     ],
     "phase": "CUT",
-    "status": "this CUT completion pass"
+    "status": "approved #41"
   },
   {
     "index": 25,
@@ -642,7 +642,7 @@
       "P_AGATE"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 43,
@@ -657,7 +657,7 @@
       "P_AORDER"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 44,
@@ -672,7 +672,7 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 45,
@@ -732,7 +732,7 @@
       "3"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   },
   {
     "index": 49,
@@ -747,6 +747,6 @@
       "0xFF"
     ],
     "phase": "STAGE",
-    "status": "pending"
+    "status": "this STAGE pass"
   }
 ]

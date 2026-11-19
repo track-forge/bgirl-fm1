@@ -1,0 +1,25 @@
+face S: InterTight[wght].ttf@400 12px h15 base12  105 glyphs x 4  data 10410 B + table 3360 B + kern 2757 B (919 pairs) = 16537 B   digit adv 7.00px
+face M: InterTight[wght].ttf@500 15px h19 base15  105 glyphs x 4  data 13083 B + table 3360 B + kern 2976 B (992 pairs) = 19429 B   digit adv 9.00px
+face L: InterTight[wght].ttf@600 28px h35 base28  41 glyphs x 2  data 5761 B + table 656 B + kern 369 B (123 pairs) = 6826 B   digit adv 18.00px
+face C: ChakraPetch-Medium.ttf 12px h16 base12  105 glyphs x 4  data 9523 B + table 3360 B + kern 3417 B (1139 pairs) = 16310 B   digit adv 7.00px
+face V: InterTight[wght].ttf@600 15px h19 base15  105 glyphs x 4  data 13781 B + table 3360 B + kern 2982 B (994 pairs) = 20133 B   digit adv 9.00px
+face H: Michroma-Regular.ttf 18px h26 base21  42 glyphs x 2  data 4311 B + table 672 B + kern 24 B (8 pairs) = 5048 B   digit adv 18.00px
+fonts total 84283 B  -> /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/gen/ui_fonts.h
+2 extra bytes in post.stringData array
+2 extra bytes in post.stringData array
+icons: x_oct_up: symbol_pitch_up not in the font yet, using control_arrow_up
+icons: x_oct_dn: symbol_pitch_down not in the font yet, using control_arrow_down
+icons 12px: 109 cells, 4488 B
+icons 16px: 43 cells, 2929 B
+icons 24px: 10 cells, 1278 B
+icons code: 58 B
+icons total 8753 B -> /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/gen/ui_icons.h   (87 legacy names + 36 new)
+keycaps: 29 pills, data 4948 B + table 232 B; knob arcs 584 B = 5764 B -> /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/gen/ui_keycaps.h
+fm6 patches: 8 -> /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/gen/felucca_fm6.h
+generated waves into /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/genwav
+samples: 5 sets, 11 zones, 126244 B ADPCM, SLICE BREAK 44100 samples, SLICE PIANO (shared) 16537 samples (cached)
+adpcm: 6 waves, 8 presets, 324 B -> /home/dev/.openclaw/workspace/codebase/bgirl-ui-stage/felucca/build/gen/felucca_adpcm.h
+speech: 54357 bytes; 4.930340136054422 seconds; sha256 855a08f7bf1cf5001bb7d112e8f423f12fcb1ff5a85577e3b9b2957ad1dc5b1f
+vocals: 1 whole + 6 chops; 42294 encoded bytes; id a0fce7527ad0f979f83be2f5cfc86fc29277db570bc0f870de20744dea9a3757
+splash logo: 224x145, 16288 B indexed RGB565 + alpha; source 0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a
+emu: build/emu (1064992 B wasm, v1.8.1)

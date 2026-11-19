@@ -107,7 +107,7 @@ JIANT's face configuration is adapted locally; LARGE retains appropriate enlarge
 
 [STUDIO iteration 2: warmer color semantics, crown/LAB/CUT icons and native comparisons](docs/STUDIO_ITERATION_2_VERIFICATION.md).
 [Native before/after images, interaction clips, tests and local review recipe](docs/STAGE_LAB_CUT_VERIFICATION.md).
-**Doug approved the foundation, LAB and CUT sequencing.** The stacked [CUT completion](docs/ui/CUT_COMPLETION_VERIFICATION.md) finishes SAMPLE/SLICE engine views, SLICES, SLICER and drum LANES; native normal/LARGE comparisons await review. STAGE as a complete set is next; shared system surfaces and browser-shell work remain tracked in the [rollout ledger](docs/ui/ROLLOUT.md).
+**Doug approved the foundation, LAB and complete CUT.** The stacked [STAGE pass](docs/ui/STAGE_VERIFICATION.md) completes HOME SCOPE/TRACKS/LEVELS, MIXER/CLOCK, ARP/ARP2/SCL/CHORD and ARP DANCE framing; native normal/LARGE comparisons await review. Shared system surfaces and browser-shell work remain tracked in the [rollout ledger](docs/ui/ROLLOUT.md).
 [Design and first-screen implementation plan](docs/STAGE_LAB_CUT_IMPLEMENTATION_PLAN.md) ·
 [Implementation handoff](docs/STAGE_LAB_CUT_HANDOFF.md) ·
 [Tracking issue #35](https://github.com/track-forge/bgirl-fm1/issues/35).

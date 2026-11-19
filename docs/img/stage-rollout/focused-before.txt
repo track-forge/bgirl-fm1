@@ -1,0 +1,4 @@
+free   mixer-normal-flat      ellipsised 'PULSE…'
+free   mixer-bank2-normal-flat ellipsised 'TIGHT…'
+free   mixer-midi-normal-flat ellipsised 'DRUM…'
+STAGE full cases=2544 findings=0 ink=0 neutral=0 align=0 lost=0 canvas=59520
