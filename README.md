@@ -60,10 +60,12 @@ python3 -m pip install Pillow==12.1.1 fonttools==4.68.0
 source /path/to/emsdk/emsdk_env.sh
 ./build.sh --web
 ./tests/run_tests.sh
-python3 -m http.server 8767 --bind 127.0.0.1 --directory felucca/build/emu
+pages_dir="$(mktemp -d)/site"
+tools/stage-hortator-preview.sh "$PWD/felucca/build/emu" "$pages_dir"
+python3 -m http.server 8767 --bind 127.0.0.1 --directory "$pages_dir"
 ```
 
-Open <http://127.0.0.1:8767/> for the playable flyer, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
+Open <http://127.0.0.1:8767/> for the playable homepage, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
 The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieLi
 SDK, device package, installer, paid service or network-fetched sound is needed.
 Build-time fonts and sample sources are bundled upstream with their notices.

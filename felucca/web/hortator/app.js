@@ -4,14 +4,11 @@
 // turns pointer and keyboard input into messages for the worklet (worklet.js runs the firmware), paints the
 // frames it sends back, and keeps the flash it writes in IndexedDB (store.js).
 import { BTN, ENC, KEYS, HeldSet, keyEvent, keyHint, contextMenuLatches } from './controls.js';
-import { FlashStore, openFlashDb } from './store.js';
+import { panelInput, panelLights } from './bgirl-panel.js';
 import { needsResume, playbackSession } from './audio.js';
-import { parseReel } from './reel.js';
-import { initFeatures } from './features.js';
 import { initManual } from './manual.js';
-import { buildMini } from './mini.js';
-import { installCount, loadPageCounter } from './counter.js';
-import { ditherBackground, initGlitch } from './dither.js';
+import { initGlitch } from './dither.js';
+import { dissolveOnEntry } from './dissolve.js';
 import { LAYOUTS, DECO_CLASS, blend, heroPose, outline } from './layout.js';
 
 // ---- the panel's elements (built once, placed per layout)
@@ -39,10 +36,10 @@ function build() {
   for (const st of outline(LAYOUTS.landscape.W, LAYOUTS.landscape.H, 44, 6)) {
     const w = document.createElement('div'), dx = st.x1 - st.x0, dy = st.y1 - st.y0, ang = Math.atan2(dy, dx);
     const up = -Math.cos(ang);                     // the outward normal's upward part: 1 top edge .. -1 bottom edge
-    const c = Math.round(66 + 14 * up);
+    const light = Math.round(50 + 35 * up);
     w.style.cssText = `width:${Math.hypot(dx, dy) + 0.8}px;height:${DEPTH}px;`
       + `transform:translate(${st.x0}px,${st.y0}px) rotateZ(${ang}rad) rotateX(-90deg);`
-      + `background:linear-gradient(rgb(${c},${c + 4},${c + 9}),rgb(${c - 30},${c - 28},${c - 25}))`;
+      + `background:linear-gradient(color-mix(in srgb,var(--body) ${light}%,var(--body-edge)),var(--shell-under))`;
     walls.append(w);
   }
   device.append(walls);
@@ -144,8 +141,7 @@ function geometry(morph, force) {                  // place every part for this 
 // ---- input -> worklet
 let node = null;
 const held = new HeldSet();
-const pending = [];
-function send(m) { if (node) node.port.postMessage(m); else pending.push(m); }
+let send = () => {};
 function ctlMsg(ctl, down) {
   const [kind, id] = ctl.split(':');
   return { t: kind, id: Number(id), down };
@@ -272,7 +268,7 @@ const img = lcdCtx.createImageData(240, 240);
 const px = new Uint32Array(img.data.buffer);
 function rgb565(fb, out) {                         // the LCD's RGB565 -> canvas RGBA
   for (let i = 0; i < fb.length; i++) {
-    const c = fb[i];
+    const c = ((fb[i] >> 8) | (fb[i] << 8)) & 0xffff;
     const r = (((c >> 11) & 31) * 527 + 23) >> 6, g = (((c >> 5) & 63) * 259 + 33) >> 6, b = ((c & 31) * 527 + 23) >> 6;
     out[i] = 0xff000000 | (b << 16) | (g << 8) | r;
   }
@@ -282,16 +278,17 @@ function paint(now) {
   if (frame) {
     const { fb, leds, keyLeds } = frame;
     frame = null;
-    rgb565(fb, px);
-    lcdCtx.putImageData(img, 0, 0);
+    if (fb) {
+      rgb565(fb, px);
+      lcdCtx.putImageData(img, 0, 0);
+    }
     for (let b = 0; b < 14; b++) els.ctl[`btn:${b}`].classList.toggle('lit', ((leds >>> b) & 1) === 1);
     for (let n = 0; n < 27; n++) els.ctl[`key:${n}`].classList.toggle('lit', ((keyLeds >>> n) & 1) === 1);
   }
   requestAnimationFrame(paint);
 }
 
-// ---- flash in IndexedDB (store.js), the audio clock (audio.js)
-const store = new FlashStore(openFlashDb, msg => { note.textContent = msg; });
+// ---- browser audio clock; homepage flash is disposable
 let ctx = null, poweredOff = false;
 function wake() {                                 // a tap or a key brings a stopped context back (not one switched off)
   if (!ctx || poweredOff || !needsResume(ctx.state)) return;
@@ -299,10 +296,11 @@ function wake() {                                 // a tap or a key brings a sto
 }
 
 // ---- power on
-const wasmBytes = fetch('fm1sim.wasm').then(r => {
-  if (!r.ok) throw new Error(`fm1sim.wasm: HTTP ${r.status}`);
+const wasmBytes = fetch('play/felucca.wasm').then(r => {
+  if (!r.ok) throw new Error(`play/felucca.wasm: HTTP ${r.status}`);
   return r.arrayBuffer();
 });
+wasmBytes.catch(() => {});
 function setSwitch(on) {
   els.power.setAttribute('aria-checked', String(on));
   els.power.classList.toggle('on', on);
@@ -326,20 +324,30 @@ async function powerOn() {
     playbackSession(navigator);
     ctx = new AudioContext({ sampleRate: 44100, latencyHint: 'interactive' });
     const resumed = ctx.resume();                         // inside the tap: browsers allow sound from here on
-    await ctx.audioWorklet.addModule('worklet.js');
-    const [wasm, sectors] = await Promise.all([wasmBytes, store.load()]);
-    node = new AudioWorkletNode(ctx, 'fm1', { numberOfInputs: 0, outputChannelCount: [2], processorOptions: { wasm, sectors } });
-    node.port.onmessage = e => {
-      const m = e.data;
-      if (m.t === 'frame') frame = m;
-      else if (m.t === 'flash') store.put(m.sectors);
-      else if (m.t === 'error') note.textContent = `The firmware failed to start: ${m.message}`;
-    };
-    node.connect(ctx.destination);
     await resumed;
-    send({ t: 'master', value: masterValue });
-    for (const m of pending.splice(0)) node.port.postMessage(m);
-    if (ctx.sampleRate !== 44100) note.textContent = `Audio runs at ${ctx.sampleRate} Hz here, not 44100 Hz: pitch and tempo are off.`;
+    await ctx.audioWorklet.addModule('play/worklet.js');
+    const wasm = (await wasmBytes).slice(0);
+    const candidate = new AudioWorkletNode(ctx, 'felucca', { numberOfInputs:0, outputChannelCount:[2] });
+    let lights = {leds:0,keyLeds:0};
+    await new Promise((resolve,reject) => {
+      const timeout = setTimeout(() => reject(new Error('BGIRL startup timed out')), 5000);
+      candidate.port.onmessage = ({data:m}) => {
+        if (m.type === 'ready' || m.type === 'error') {
+          clearTimeout(timeout);
+          if (m.type === 'ready') resolve();
+          else reject(new Error(m.message));
+        }
+        if (m.type === 'frame') {
+          if (m.leds) lights = panelLights(m.leds);
+          frame = {...lights, fb:m.fb ?? frame?.fb};
+        }
+      };
+      candidate.connect(ctx.destination);
+      candidate.port.postMessage({type:'load',wasm,sectors:{},master:masterValue,disposable:true},[wasm]);
+    });
+    node = candidate;
+    send = panelInput(node.port);
+    releaseAll();
     ctx.addEventListener('statechange', () => {
       if (needsResume(ctx.state) && !document.hidden && !poweredOff) note.textContent = 'Sound stopped. Tap the panel to start it again.';
       else if (ctx.state === 'running' && note.textContent.startsWith('Sound stopped')) note.textContent = '';
@@ -347,6 +355,8 @@ async function powerOn() {
     pnote.hidden = true;
     btn.disabled = false;
   } catch (err) {
+    await ctx?.close().catch(() => {});
+    ctx = null;
     btn.disabled = false;
     setSwitch(false);
     pnote.textContent = err.message || String(err);
@@ -382,39 +392,29 @@ function bindPage() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') confirm.hidden = true; });
   for (const b of document.querySelectorAll('.bar-btn, #power-on'))   // a mouse click leaves no focus behind,
     b.addEventListener('mousedown', e => e.preventDefault());         // so the next Space plays, not this button
-  document.getElementById('reset-yes').addEventListener('click', async () => {
-    await store.clear();
-    location.reload();
-  });
+  document.getElementById('reset-yes').addEventListener('click', () => location.reload());
   els.power.addEventListener('click', powerSwitch);
   els.power.disabled = false;
   els.power.classList.add('ready');                 // nudges toward on until the first flip
   document.getElementById('power-note').textContent = 'Turn on the power switch above the FM-1 to start the sound.';
 }
 
-// ---- the reel: recorded pages (tests/sim_record.c) on the screen, LEDs and knobs until the firmware is switched on
-let reel = null, reelPos = -1, reelT0 = 0;
-const reelFb = new Uint16Array(240 * 240);
+// ---- silent capture of the BGIRL CREW HOME LCD, from the same WASM build
+let reel, reelT0, reelPos = -1;
+const lcdPixels = 240 * 240;
 if (window.DecompressionStream)
-  fetch('reel.bin.gz')
+  fetch('crew-lcd.gz')
     .then(r => r.ok ? new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer() : Promise.reject())
-    .then(b => { reel = parseReel(b); reelT0 = performance.now(); })
-    .catch(() => { /* no reel: the screen stays dark until Switch on */ });
+    .then(bytes => { reel = new Uint16Array(bytes); reelT0 = performance.now(); })
+    .catch(() => { /* live display remains available */ });
 function reelTick(now) {
   if (!reel || node) return;
-  const target = Math.floor((now - reelT0) / 1000 * reel.fps) % reel.frames;
-  if (target === reelPos) return;
-  if (target < reelPos) reelPos = -1;               // looped: frame 0 is a whole screen
-  let f;
-  while (reelPos < target) {
-    f = reel.apply(++reelPos, reelFb);
-    for (let k = 0; k < 7; k++) if (f.enc[k]) spin(String(k), f.enc[k]);
-  }
-  frame = { fb: reelFb, leds: f.leds, keyLeds: f.keyLeds };
+  const position = still.matches ? 0 : Math.floor((now - reelT0) / 93) % (reel.length / lcdPixels);
+  if (position === reelPos) return;
+  reelPos = position;
+  frame = {fb:reel.subarray(position * lcdPixels, (position+1) * lcdPixels),leds:0,keyLeds:0};
 }
 
-// ---- the hero: the scroll through #hero moves p 0 .. 1 (layout.js heroPose: far back, tilted and blurred ..
-// the simulator)
 const hero = document.getElementById('hero'), stage = document.getElementById('stage');
 const tilt = document.getElementById('tilt'), scene = document.getElementById('scene');
 const still = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -462,42 +462,8 @@ function placePower() {
 }
 function queueHero() { if (!heroQueued) { heroQueued = true; requestAnimationFrame(heroFrame); } }
 
-// ---- install: the firmware this site ships and what is new in it (version.json, written by the build)
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
-  'November', 'December'];
-function plainNote(n) {                            // the changelog's line for players: no upstream credits or baselines
-  let t = n.text.replace(/\s*\((?:upstream|adapted)[^()]*(?:\([^()]*\)[^()]*)*\)/gi, '')
-    .replace(/\s*Frozen baseline[^.]*\./gi, '');
-  if (t.startsWith(n.title)) t = t.slice(n.title.length).replace(/^[\s:,]+/, '');
-  return t.charAt(0).toUpperCase() + t.slice(1);
-}
-loadPageCounter();                                  // visits (count.js), on the published site only
-// the hero's install count (counter.js: GoatCounter's public count; off, slow or failed: nothing shows)
-installCount().then(n => {
-  const el = document.getElementById('install-count');
-  if (n == null || !el) return;
-  const b = document.createElement('b');
-  b.textContent = n.toLocaleString('en');
-  el.replaceChildren('Installed ', b, n === 1 ? ' time' : ' times');
-  el.hidden = false;
-});
-fetch('version.json').then(r => r.ok ? r.json() : Promise.reject()).then(v => {
-  const [y, m, d] = v.date.split('-').map(Number);
-  const newer = v.since.length ? ` and ${v.since.length} newer change${v.since.length > 1 ? 's' : ''}` : '';
-  document.getElementById('fw-version').textContent =
-    `Version ${v.version}${newer}, built ${d} ${MONTHS[m - 1]} ${y} from commit ${v.commit}`;
-  const ul = document.getElementById('whats-new');
-  for (const n of [...v.since, ...v.release.notes]) {
-    const li = document.createElement('li'), span = document.createElement('span'), b = document.createElement('b');
-    b.textContent = n.title;
-    span.append(b, ' ', plainNote(n));                // clamped to three lines inside the item's padding
-    li.append(span);
-    ul.append(li);
-  }
-}).catch(() => { document.querySelector('.whats-new')?.remove(); });
 build();
 relayout();
-buildMini(document.getElementById('install-mini'));
 initManual();
 device.classList.add('waiting');
 heroFrame();
@@ -510,11 +476,7 @@ bindPage();
 window.addEventListener('resize', relayout);
 document.fonts?.ready.then(relayout);
 requestAnimationFrame(paint);
-initFeatures();
-// the look (dither.js): a dithered glow behind the device, a dithered fade into the footer, headings that glitch
-ditherBackground(document.getElementById('stage'), (x, y) => {
-  const dx = (x - 0.5) / 0.55, dy = (y - 0.42) / 0.5;
-  return Math.max(0, 1 - Math.hypot(dx, dy)) * 1.15;
-}, '#000000', '#282828');
-ditherBackground(document.getElementById('foot-band'), (x, y) => 1 - Math.abs(2 * y - 1), '#000000', '#505050');
 initGlitch();
+
+dissolveOnEntry(document.querySelector('.hero-copy h1'));
+dissolveOnEntry(document.querySelector('.manual-head h2'));
