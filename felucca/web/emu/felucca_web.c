@@ -756,6 +756,13 @@ EXPORT uint32_t web_bgirl_pages_setup(void)
     return web_bgirl_clarity(0,2,40,0,127);
 }
 
+/* Start the carrier and voice together, after the existing engine fade. */
+EXPORT uint32_t web_bgirl_pages_ready(void)
+{
+    return !trk[2].xf_on && trk[2].engine==trk[2].eng_req &&
+           !trk[3].xf_on && trk[3].engine==trk[3].eng_req;
+}
+
 EXPORT void web_bgirl_pages_note(uint32_t note)
 {
     trk_all_off(&trk[2]);

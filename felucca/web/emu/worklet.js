@@ -120,8 +120,14 @@ if (typeof registerProcessor === "function") {
         } catch(err) { result.error=String(err.message||err); }
         this.port.postMessage(result);
       }
-      else if (this.pages && m.type === "pages-note") ex.web_bgirl_pages_note(m.note);
-      else if (this.pages && m.type === "pages-patch") ex.web_bgirl_pages_patch(m.trio);
+      else if (this.pages && m.type === "pages-note") {
+        this.pagesNote = m.note;
+        if (!m.note) ex.web_bgirl_pages_note(0);
+      }
+      else if (this.pages && m.type === "pages-patch") {
+        this.pagesNote = 0;
+        ex.web_bgirl_pages_patch(m.trio);
+      }
       else if (m.type === "crew-info") {
         this.port.postMessage({type:"crew-info",values:Array.from({length:13},(_,i)=>ex.web_bgirl_crew_info(i))});
       }
@@ -234,6 +240,10 @@ if (typeof registerProcessor === "function") {
       const ex = this.ex;
       if (!ex) return true;
       if (this.queue.length) this.input();
+      if (this.pagesNote && ex.web_bgirl_pages_ready()) {
+        ex.web_bgirl_pages_note(this.pagesNote);
+        this.pagesNote = 0;
+      }
       const out = outputs[0], n = out[0].length;
       const t0 = clock();
       ex.web_render(n);
