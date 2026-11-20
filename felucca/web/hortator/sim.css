@@ -227,26 +227,32 @@ html { scroll-behavior: smooth; }
 
 /* ---- the manual: the panel map (a small FM-1 beside the list of its controls, manual.js lights both), then ten
    guides, numbered as the install steps are */
-.manual { width: 100%; color: var(--c5); padding: 96px max(16px, 5vw) 0; background: var(--k); }
+.manual {
+  --guide-ink: #e9e3d6;
+  --guide-violet: #d1b7ff;
+  --guide-mint: #a8f0cf;
+  --guide-rule: #76688d;
+  --guide-panel: #282030;
+  width: 100%; color: var(--c5); padding: 96px max(16px, 5vw) 0; background: var(--k); }
 .manual-head, .panel-map, .guides { max-width: 1180px; margin-left: auto; margin-right: auto; }
 .manual-head { margin-bottom: 48px; }
 .manual-head h2 { font: 48px/1.2 var(--display); margin: 0; max-width: 24ch; color: var(--w); text-transform: uppercase; }
 .manual-head p { color: var(--c4); max-width: 60ch; margin: 16px 0 0; }
-.manual a { color: var(--w); }
+.manual a { color: var(--guide-violet); }
 .panel-map { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: start; }
 .map-stage { position: sticky; top: 10vh; }
 .map-device { position: relative; aspect-ratio: 1000 / 620; }
 .map-device .hit { cursor: pointer; }
-.mini .m-btn.on, .mini .m-key.on { background: var(--w); }
-.mini .m-enc.on { background: var(--c5); box-shadow: 0 0 0 6px var(--w); }
-.map-caption { min-height: 72px; margin: 24px 0 0; padding: 12px 16px; border: 2px solid var(--c2); color: var(--c4); }
-.map-list h3 { font: 16px/24px var(--panel); margin: 24px 0 8px; color: var(--c3); text-transform: uppercase; }
+.mini .m-btn.on, .mini .m-key.on { background: var(--guide-mint); }
+.mini .m-enc.on { background: var(--guide-mint); box-shadow: 0 0 0 6px var(--guide-mint); }
+.map-caption { min-height: 72px; margin: 24px 0 0; padding: 12px 16px; border: 1px solid var(--guide-rule); background: #181420; color: var(--guide-ink); }
+.map-list h3 { font: 16px/24px var(--panel); margin: 24px 0 8px; color: var(--guide-violet); text-transform: uppercase; }
 .map-list h3:first-child { margin-top: 0; }
 .map-list ul { list-style: none; margin: 0; padding: 0; }
-.map-list li { padding: 8px 8px; border-top: 2px solid var(--c1); color: var(--c4); cursor: default; }
-.map-list li.on { background: var(--c1); color: var(--c5); }
-.map-list li:focus-visible { outline: 2px dashed var(--focus); outline-offset: -2px; }
-.map-list li.on b, .map-stage .map-caption b { background: var(--w); border-color: var(--w); color: var(--k); }
+.map-list li { padding: 8px 8px; border-top: 1px solid #40344e; color: var(--guide-ink); cursor: default; }
+.map-list li.on { background: var(--guide-panel); box-shadow: inset 3px 0 var(--guide-mint); }
+.map-list li:focus-visible { outline: 2px dashed var(--guide-violet); outline-offset: -2px; }
+.map-list li.on b, .map-stage .map-caption b { background: var(--guide-mint); border-color: var(--guide-mint); color: #181420; }
 .guides { list-style: none; counter-reset: guide; padding: 0; margin-top: 96px; margin-bottom: 0; display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 56px; }
 .guide { counter-increment: guide; padding-top: 16px; border-top: 2px solid var(--c1); }
@@ -458,16 +464,16 @@ html { scroll-behavior: smooth; }
   .plate .family .chips { flex-wrap: nowrap; }
 }
 .mini { position: absolute; left: 0; top: 0; width: 1000px; height: 620px; transform-origin: 0 0; border-radius: 44px;
-  background: var(--k); border: 6px solid var(--c3); }
+  background: #181420; border: 6px solid #9a8bd2; }
 .mini > div { position: absolute; }
-.mini .m-bezel { background: var(--k); border: 4px solid var(--c2); border-radius: 22px; }
-.mini .m-lcd { background: var(--c1); }
-.mini .m-oct, .mini .m-buttons, .mini .m-keys { background: var(--k); border: 4px solid var(--c1); border-radius: 18px; }
-.mini .m-btn { background: var(--c2); border-radius: 9px; }
-.mini .m-key { background: var(--c2); border-radius: 999px; }
-.mini .m-enc { background: var(--k); border-radius: 50%; box-shadow: 0 0 0 6px var(--c3); }
+.mini .m-bezel { background: #181420; border: 4px solid #68527d; border-radius: 22px; }
+.mini .m-lcd { background: #40344e; }
+.mini .m-oct, .mini .m-buttons, .mini .m-keys { background: #181420; border: 4px solid #40344e; border-radius: 18px; }
+.mini .m-btn { background: #68527d; border-radius: 9px; }
+.mini .m-key { background: #68527d; border-radius: 999px; }
+.mini .m-enc { background: #181420; border-radius: 50%; box-shadow: 0 0 0 6px #9a8bd2; }
 .where b, .map-list b, .map-caption b { font: 12px/1 var(--panel); letter-spacing: 0.04em; padding: 3px 6px 2px;
-  border: 2px solid var(--c3); color: var(--c5); vertical-align: 1px; }
+  border: 1px solid var(--guide-rule); color: var(--guide-violet); vertical-align: 1px; }
 
 .risk { max-width: 640px; margin: 0 0 20px; padding: 10px 14px; color: var(--c4); border: 2px dashed var(--c3); }
 
