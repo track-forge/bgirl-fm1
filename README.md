@@ -60,7 +60,7 @@ source /path/to/emsdk/emsdk_env.sh
 python3 -m http.server 8767 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-Open <http://127.0.0.1:8767> and click **Switch on**. Audio needs this user gesture.
+Open <http://127.0.0.1:8767/> for the playable flyer, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
 The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieLi
 SDK, device package, installer, paid service or network-fetched sound is needed.
 Build-time fonts and sample sources are bundled upstream with their notices.
@@ -184,7 +184,7 @@ python3 tools/clarity_audition.py  # after web build; optional NumPy required
 python3 -m http.server 8794 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-Open <http://127.0.0.1:8794/> → **Switch on** → **Clarity whole phrase** → PLAY,
+Open <http://127.0.0.1:8794/play/> → **Switch on** → **Clarity whole phrase** → PLAY,
 or <http://127.0.0.1:8794/listening/clarity/> for the offline comparison players.
 Generated audio stays ignored/local; public builds need no private inputs.
 [Exact audition recipe, compatibility, measurements and verification](docs/VOCODER_CLARITY_VERIFICATION.md).
