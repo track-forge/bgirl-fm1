@@ -682,9 +682,9 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
   .hero-stage { position: relative; height: auto; min-height: 100vh; }
 }
 
-.dissolving { position: relative; color: transparent !important; text-shadow: none !important; }
+.dissolving { position: relative; }
 .particle-dissolve { position: absolute; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
-  .dissolving { color: var(--w) !important; }
+  .dissolving > span { opacity: 1 !important; }
   .particle-dissolve { display: none; }
 }

@@ -37,6 +37,10 @@ function dissolve(element, motion) {
     }
   }
   if (!particles.length) return;
+  // Let the intact title register before exchanging it for the particle layer.
+  const text = document.createElement('span');
+  text.textContent = element.textContent;
+  element.replaceChildren(text);
   canvas.className = 'particle-dissolve';
   canvas.setAttribute('aria-hidden','true');
   canvas.style.inset = `-${padding}px auto auto -${padding}px`;
@@ -44,17 +48,22 @@ function dissolve(element, motion) {
   element.append(canvas);
   const start = performance.now();
   function paint(now) {
-    const progress = Math.min(1,(now-start)/780);
+    const progress = Math.min(1,(now-start)/2100);
     if (progress === 1 || motion.matches || element.offsetWidth !== width) {
       canvas.remove();
       element.classList.remove('dissolving');
+      element.replaceChildren(...text.childNodes);
       return;
     }
-    const scatter = Math.sin(Math.PI * progress);
+    const phase = Math.max(0, Math.min(1, (progress - .22) / .70));
+    const scatter = Math.sin(Math.PI * phase) ** 1.4;
+    const mix = Math.min(1, scatter * 4);
+    text.style.opacity = 1 - mix;
+    canvas.style.opacity = mix;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = style.color;
     for (const {x,y,dx,dy} of particles) {
-      ctx.fillRect(x+dx*scatter,y+dy*scatter,2-scatter,2-scatter);
+      ctx.fillRect(x+dx*scatter,y+dy*scatter,2.4-scatter*.5,2.4-scatter*.5);
     }
     requestAnimationFrame(paint);
   }
