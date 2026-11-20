@@ -1,12 +1,15 @@
-# BGIRL FM-1 — Felucca electro edition
+# BGIRL-FM1
 
-<p align="center">
-  <img src="assets/branding/bgirl-fm1-wordmark.png" width="680" alt="BGIRL FM1 pink-chrome shutter-shades wordmark">
-</p>
+> BGIRL-FM1: The machine to convert all humans into cybernetic b-boys and b-girls.
 
-**Felucca electro defaults + sample-fed vocoder + arp-triggered floorwork.**
-Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
-Browser development milestone only: **do not install on hardware**.
+An electro groovebox with a sample-fed vocoder. Give the machine a voice.
+
+**[Try the vocoder](https://track-forge.github.io/bgirl-fm1/)** ·
+**[Open full studio](https://track-forge.github.io/bgirl-fm1/play/)**
+
+**Browser development preview only: do not install on hardware.**
+[Roots & credits](#roots--credits) · independent GPL-3.0-only Felucca derivative,
+not an official Hügelton build.
 
 ## Portable browser songs
 
@@ -34,7 +37,7 @@ PRESETS → ANALOG / LIST SH-STYLE. Existing sounds, projects and demos stay int
 
 ## Play in your browser
 
-**[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/)**
+**[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/play/)**
 
 Click **Switch on**, then **PLAY** to hear the electro groove with vocoded speech.
 No installation needed. The preview updates automatically after successful main
@@ -60,7 +63,7 @@ source /path/to/emsdk/emsdk_env.sh
 python3 -m http.server 8767 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-Open <http://127.0.0.1:8767> and click **Switch on**. Audio needs this user gesture.
+Open <http://127.0.0.1:8767/> for the playable flyer, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
 The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieLi
 SDK, device package, installer, paid service or network-fetched sound is needed.
 Build-time fonts and sample sources are bundled upstream with their notices.
@@ -205,7 +208,7 @@ python3 tools/clarity_audition.py  # after web build; optional NumPy required
 python3 -m http.server 8794 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-Open <http://127.0.0.1:8794/> → **Switch on** → **Clarity whole phrase** → PLAY,
+Open <http://127.0.0.1:8794/play/> → **Switch on** → **Clarity whole phrase** → PLAY,
 or <http://127.0.0.1:8794/listening/clarity/> for the offline comparison players.
 Generated audio stays ignored/local; public builds need no private inputs.
 [Exact audition recipe, compatibility, measurements and verification](docs/VOCODER_CLARITY_VERIFICATION.md).
@@ -341,7 +344,7 @@ palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
 Portrait uses upstream's tall responsive panel. Desktop/mobile screenshots and
 verification details: [build status](docs/BUILD_STATUS.md).
 
-## Architecture, history and licensing
+## Roots & credits
 
 - Active instrument: `felucca/`, ancestry-preserving import of **v1.8.1**. Upstream
   v1.8.2 removed browser support; it is intentionally not this baseline.

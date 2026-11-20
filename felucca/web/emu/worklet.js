@@ -118,6 +118,9 @@ if (typeof registerProcessor === "function") {
         } catch(err) { result.error=String(err.message||err); }
         this.port.postMessage(result);
       }
+      else if (m.type === "flyer") {
+        this.port.postMessage({type:"flyer-result",id:m.id,action:m.action,ok:ex.web_bgirl_flyer(m.action)===0});
+      }
       else if (m.type === "crew-info") {
         this.port.postMessage({type:"crew-info",values:Array.from({length:13},(_,i)=>ex.web_bgirl_crew_info(i))});
       }
