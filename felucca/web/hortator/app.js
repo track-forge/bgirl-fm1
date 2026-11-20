@@ -481,3 +481,4 @@ ditherBackground(document.getElementById('foot-band'), (x, y) => 1 - Math.abs(2 
 initGlitch();
 
 dissolveOnEntry(document.querySelector('.hero-copy h1'));
+dissolveOnEntry(document.querySelector('.manual-head h2'));
