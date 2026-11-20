@@ -750,6 +750,28 @@ EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,
     undo_depth--;song.sel=3;song.playing=0;transport_req=0;ui.home=1;ui.force=1;bg_vreset++;
     fm1_irq_on();return 0;
 }
+/* Disposable flyer uses normal tracks, transport and sample-fed vocoder.
+ * Its page never restores or persists flash. No studio startup hook. */
+EXPORT uint32_t web_bgirl_flyer(uint32_t action)
+{
+    if(action==0) {
+        if(web_bgirl_clarity(2,2,80,0,127))return 1;
+        memset(trk[3].step,0,sizeof trk[3].step);
+        motion_set_enabled(&trk[3],0);
+        transport_req=1;
+    } else if(action==1) {
+        if(!song.playing)return 1;
+        uint32_t group=1;
+        for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
+            if(!strcmp(BG_VOCAL_VIEWS[i],"G6"))group=i;
+        trk_note_on(&trk[3],60+group-1,100);
+    } else if(action==2) {
+        seq_stop();transport_req=0;
+        for(uint32_t t=0;t<NTRK;t++)trk_all_off(&trk[t]);
+    } else return 1;
+    return 0;
+}
+
 EXPORT uint32_t web_bgirl_clarity_info(uint32_t field) {
     switch(field) {
     case 0:return trk[3].p[P_VBANDS];case 1:return trk[3].p[P_VRANGE];

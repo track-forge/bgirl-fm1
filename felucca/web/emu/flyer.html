@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BGIRL-FM1 · Give the machine a voice</title>
+<style>
+@font-face{font-family:Inter;src:url(fonts/InterTight-latin.woff)}*{box-sizing:border-box}body{margin:0;background:#10120e;color:#f2f3e9;font-family:Inter,system-ui,sans-serif}main{max-width:1000px;padding:clamp(24px,5vw,64px);margin:auto}.wordmark{font-size:clamp(40px,12vw,110px);font-weight:950;font-style:italic;letter-spacing:-.06em;color:#c5ff38;line-height:1;margin:12px 0 32px}h1{font-size:clamp(26px,4vw,42px);line-height:1.12;max-width:850px}p{font-size:20px;line-height:1.5;max-width:720px}.controls{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}button,.studio{font:inherit;font-size:18px;padding:16px 22px;border:2px solid #c5ff38;border-radius:4px;background:#c5ff38;color:#10120e;min-height:56px;cursor:pointer}.studio{background:transparent;color:#c5ff38;text-decoration:none}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #fff;outline-offset:5px}img{max-width:100%;width:560px;height:auto}footer{margin-top:32px;font-size:14px}a{color:#c5ff38}#status{min-height:60px}small{font-size:15px}
+</style>
+<main>
+<div class="wordmark" aria-hidden="true">BGIRL-FM1</div>
+<h1>BGIRL-FM1: The machine to convert all humans into cybernetic b-boys and b-girls.</h1>
+<p>An electro groovebox with a sample-fed vocoder. Give the machine a voice.</p>
+<div class="controls" aria-label="Play the flyer">
+<button id="start">Start beat</button><button id="answer" disabled>Answer</button><button id="stop" disabled>Stop</button>
+<a class="studio" href="play/">Open full studio</a>
+</div>
+<p id="status" role="status" aria-live="polite">Start the beat. Drop an answer into the gap. Try a different beat next time.</p>
+<small>Tap the controls, or Tab to a button and press Enter or Space. Headphones welcome.</small>
+<figure><img src="instrument-still.png" alt="BGIRL studio instrument: screen, track selector, sound controls and playable keys"><figcaption>One machine. Your timing. Open the studio to edit, play and save.</figcaption></figure>
+<footer>Browser preview · <a href="https://github.com/track-forge/bgirl-fm1">Source, GPL-3.0-only & credits</a> · Independent Felucca derivative. No hardware release.</footer>
+</main><script type="module" src="flyer.js"></script></html>

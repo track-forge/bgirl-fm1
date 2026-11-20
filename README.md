@@ -34,7 +34,7 @@ PRESETS → ANALOG / LIST SH-STYLE. Existing sounds, projects and demos stay int
 
 ## Play in your browser
 
-**[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/)**
+**[Launch the live BGIRL synth demo](https://track-forge.github.io/bgirl-fm1/play/)**
 
 Click **Switch on**, then **PLAY** to hear the electro groove with vocoded speech.
 No installation needed. The preview updates automatically after successful main
