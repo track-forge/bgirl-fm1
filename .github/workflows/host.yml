@@ -47,6 +47,7 @@ jobs:
           curl --fail --silent --retry 10 --retry-connrefused --retry-delay 1 "$BGIRL_URL" > /dev/null
           export PLAYWRIGHT_MODULE="$RUNNER_TEMP/bgirl-browser/node_modules/playwright"
           BGIRL_FLYER_URL=http://127.0.0.1:8772/bgirl-fm1/ node tests/flyer-browser.cjs
+          BGIRL_FLYER_URL=http://127.0.0.1:8772/bgirl-fm1/ node tests/editorial-browser.cjs
           node tests/splash-browser.cjs
           node tests/browser-smoke.cjs
           node tests/browser-shell.cjs

@@ -35,3 +35,7 @@ cp -R build/emu/fonts build/emu/branding build/emu/listening build/emu/play/
 cp web/emu/flyer.html build/emu/index.html
 cp web/emu/flyer.js build/emu/
 cp web/emu/instrument-still.png build/emu/
+
+# Root-only editorial audio/stills, generated from the same production host DSP.
+python3 ../tools/editorial_assets.py
+cp web/emu/editorial.js build/emu/

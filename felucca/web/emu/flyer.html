@@ -3,17 +3,40 @@
 <title>BGIRL-FM1 · Give the machine a voice</title>
 <style>
 @font-face{font-family:Inter;src:url(fonts/InterTight-latin.woff)}*{box-sizing:border-box}body{margin:0;background:#10120e;color:#f2f3e9;font-family:Inter,system-ui,sans-serif}main{max-width:1000px;padding:clamp(24px,5vw,64px);margin:auto}.wordmark{font-size:clamp(40px,12vw,110px);font-weight:950;font-style:italic;letter-spacing:-.06em;color:#c5ff38;line-height:1;margin:12px 0 32px}h1{font-size:clamp(26px,4vw,42px);line-height:1.12;max-width:850px}p{font-size:20px;line-height:1.5;max-width:720px}.controls{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}button,.studio{font:inherit;font-size:18px;padding:16px 22px;border:2px solid #c5ff38;border-radius:4px;background:#c5ff38;color:#10120e;min-height:56px;cursor:pointer}.studio{background:transparent;color:#c5ff38;text-decoration:none}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #fff;outline-offset:5px}img{max-width:100%;width:560px;height:auto}footer{margin-top:32px;font-size:14px}a{color:#c5ff38}#status{min-height:60px}small{font-size:15px}
+section{padding:48px 0;border-top:1px solid #48503c}h2{font-size:clamp(28px,5vw,48px)}.eyebrow{color:#c5ff38;letter-spacing:.08em;font-size:15px}.auditions,.details{display:flex;flex-wrap:wrap;gap:16px}.auditions button{background:transparent;color:#c5ff38}.details figure{margin:16px 0;flex:1;min-width:220px}article img{width:360px;image-rendering:pixelated}figure{margin:28px 0}figcaption{max-width:640px;line-height:1.6;font-size:16px;margin-top:12px}.listening{position:sticky;top:0;z-index:10;background:#10120ef5;border-top:1px solid #c5ff38;padding:12px;display:flex;align-items:center;gap:16px}.listening p{font-size:15px;margin:0}.listening button{font-size:16px;padding:10px}button{max-width:100%}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 <main>
 <div class="wordmark" aria-hidden="true">BGIRL-FM1</div>
 <h1>BGIRL-FM1: The machine to convert all humans into cybernetic b-boys and b-girls.</h1>
 <p>An electro groovebox with a sample-fed vocoder. Give the machine a voice.</p>
-<div class="controls" aria-label="Play the flyer">
+<div id="vocoder" class="controls" aria-label="Play the flyer">
 <button id="start">Start beat</button><button id="answer" disabled>Answer</button><button id="stop" disabled>Stop</button>
 <a class="studio" href="play/">Open full studio</a>
 </div>
 <p id="status" role="status" aria-live="polite">Start the beat. Drop an answer into the gap. Try a different beat next time.</p>
 <small>Tap the controls, or Tab to a button and press Enter or Space. Headphones welcome.</small>
 <figure><img src="instrument-still.png" alt="BGIRL studio instrument: screen, track selector, sound controls and playable keys"><figcaption>One machine. Your timing. Open the studio to edit, play and save.</figcaption></figure>
+
+<div class="listening"><button id="stop-excerpt" disabled>Stop excerpt</button><p id="excerpt-status" role="status" aria-live="polite">Short real-instrument captures. Choose an audition; nothing plays automatically.</p></div>
+<article aria-label="Four musical moves">
+<section id="voice"><p class="eyebrow">01 / VOCODER · STAGE</p><h2>Make the machine talk.</h2>
+<p>First the dry syllable. Then the same speech shapes a pitched carrier: the robot answer comes from the vocoder, not a talking oscillator.</p>
+<div class="auditions"><button data-clip="dry">Dry syllable</button><button data-clip="saw">Pitched answer · BG CARR SAW</button></div>
+<figure><img src="editorial/floorwork.png" alt="Real ARP DANCE display, dancer held in a floorwork pose"><figcaption>STAGE storyboard / wide: imagine a b-girl hitting a freeze on the answer. This real instrument floorwork still is our shot reference, not a new generated character or a vocoder-driven animation.</figcaption></figure></section>
+<section id="patches"><p class="eyebrow">02 / PATCHES · LAB / CUT</p><h2>Same figure. Different weight.</h2>
+<p>BG SUB CLEAN and BG SUB DRIVE: two named factory bass patches playing identical MIDI 34 / 39 notes, rhythm and velocity. Playback is RMS-matched so loudness does not choose for you.</p>
+<div class="auditions"><button data-clip="sub-clean">BG SUB CLEAN</button><button data-clip="sub-drive">BG SUB DRIVE</button></div>
+<div class="details"><figure><img src="editorial/sub-clean.png" alt="Real BG SUB CLEAN instrument EDIT 1 screen"><figcaption>LAB / real factory patch detail. Same notes, another color.</figcaption></figure><figure><img src="editorial/sub-drive.png" alt="Real BG SUB DRIVE instrument EDIT 1 screen"><figcaption>CUT / the contrasting factory patch, not a mock panel.</figcaption></figure></div>
+<p>Match cut: return to that same syllable with another carrier color. No scroll starts sound.</p><div class="auditions"><button data-clip="saw">Phrase · BG CARR SAW</button><button data-clip="trio">Phrase · TRIO / FAT BASS</button></div></section>
+<section id="sampler"><p class="eyebrow">03 / SAMPLER · CUT</p><h2>Put a voice in the pocket.</h2>
+<p>Hear the first G6 voice hit alone, then at the same placement with the drums restored. Here the instrument plays a recording at its original speed. Vocoding instead uses that speech to shape a synthesized carrier.</p>
+<div class="auditions"><button data-clip="hit">Voice hit alone</button><button data-clip="pocket">Voice hit + drums</button></div>
+<figure><img src="editorial/hit.png" alt="Actual T4 voice track EDIT 1 crop showing VOCALS source, G6 view and selected chop"><figcaption>LAB / actual voice-track screen, cropped to the readable controls around the selected G6 hit.</figcaption></figure></section>
+<section id="arp"><p class="eyebrow">04 / ARP · THE ORIGIN</p><h2>The feet answer the phrase.</h2>
+<figure><img src="editorial/floorwork.png" alt="Captured ARP DANCE FLOORWORK screen with musical mode and rate controls"><figcaption>Real arp-triggered FLOORWORK capture. Each accepted arp trigger advances a pose; no notes holds it still. This is where today's CREW home-screen dancer began. Source and permission: <a href="https://github.com/track-forge/bgirl-fm1/blob/main/assets/dance/README.md">FLOORWORK credits</a>.</figcaption></figure>
+<p>Try it in the studio: select T2, tap ARP slowly through ARP → ARP 2 → ARP DANCE, turn MODE on and hold a key. The arp drives the feet; scrolling does not.</p><a class="studio" href="play/">Explore arp in the full studio</a></section>
+</article>
+
+<p><small>Four-second native instrument captures, fixed RMS-matched gain within each comparison; no limiter. Musical / voice intelligibility approval remains a listening decision. <a href="editorial/manifest.json">Render levels</a> · <a href="https://github.com/track-forge/bgirl-fm1/blob/main/assets/vocals/g6/README.md">Voice provenance</a></small></p>
 <footer>Browser preview · <a href="https://github.com/track-forge/bgirl-fm1">Source, GPL-3.0-only & credits</a> · Independent Felucca derivative. No hardware release.</footer>
-</main><script type="module" src="flyer.js"></script></html>
+</main><script type="module" src="flyer.js"></script><script type="module" src="editorial.js"></script></html>

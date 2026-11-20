@@ -1,12 +1,15 @@
-# BGIRL FM-1 — Felucca electro edition
+# BGIRL-FM1
 
-<p align="center">
-  <img src="assets/branding/bgirl-fm1-wordmark.png" width="680" alt="BGIRL FM1 pink-chrome shutter-shades wordmark">
-</p>
+> BGIRL-FM1: The machine to convert all humans into cybernetic b-boys and b-girls.
 
-**Felucca electro defaults + sample-fed vocoder + arp-triggered floorwork.**
-Independent GPL-3.0-only derivative of Felucca, not an official Hügelton build.
-Browser development milestone only: **do not install on hardware**.
+An electro groovebox with a sample-fed vocoder. Give the machine a voice.
+
+**[Try the vocoder](https://track-forge.github.io/bgirl-fm1/)** ·
+**[Open full studio](https://track-forge.github.io/bgirl-fm1/play/)**
+
+**Browser development preview only: do not install on hardware.**
+[Roots & credits](#roots--credits) · independent GPL-3.0-only Felucca derivative,
+not an official Hügelton build.
 
 ## Portable browser songs
 
@@ -320,7 +323,7 @@ palette with no steps or vocoder routing. Normal Felucca MENU > SYSTEM
 Portrait uses upstream's tall responsive panel. Desktop/mobile screenshots and
 verification details: [build status](docs/BUILD_STATUS.md).
 
-## Architecture, history and licensing
+## Roots & credits
 
 - Active instrument: `felucca/`, ancestry-preserving import of **v1.8.1**. Upstream
   v1.8.2 removed browser support; it is intentionally not this baseline.

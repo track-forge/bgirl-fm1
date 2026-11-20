@@ -46,7 +46,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  await touch.goto(url);await touch.locator('#start').tap();await touch.waitForFunction(()=>!document.querySelector('#answer').disabled);await touch.locator('#answer').tap();await touch.locator('#stop').tap();await touch.waitForFunction(()=>document.querySelector('#answer').disabled);await touch.close();
  const failed=await browser.newPage();await failed.route('**/felucca.wasm',r=>r.abort());await failed.goto(url);
  await failed.locator('#start').click();await failed.getByRole('status').filter({hasText:'Audio could not start'}).waitFor();
- assert(await failed.locator('figure img').isVisible());assert(await failed.getByRole('link',{name:'Open full studio'}).isVisible());
+ assert(await failed.locator('figure img').first().isVisible());assert(await failed.getByRole('link',{name:'Open full studio'}).isVisible());
  assert.deepEqual(errors,[]);
  console.log({beatPeak,answerTimingsMs:[210,770,1450],stopRestart:true,storageUnchanged:true,routes:true,failureFallback:true,errors});
  }finally{await browser.close();}
