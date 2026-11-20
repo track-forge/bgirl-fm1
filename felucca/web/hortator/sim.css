@@ -13,14 +13,17 @@
   --c5: #e2e2e2;                                   /* values, text */
   --w: #ffffff;                                    /* accent only: what is touched, where we are */
   --mono: "Hortator Terminus", ui-monospace, monospace;
-  /* the device, a physical thing: its own greys */
-  --body: #505050;
-  --body-edge: #3c3c3c;
-  --bed: #1e1e1e;
-  --cap: #303030;
-  --cap-top: #3e3e3e;
-  --silk: #e2e2e2;
-  --led: #ffffff;
+  /* Dusty pink shell sampled from the hardware reference; controls and LEDs
+     borrow the BGIRL Studio palette. The LCD retains the firmware colors. */
+  --body-highlight: #e5a9df;
+  --body: #cd8ac8;
+  --body-edge: #a963a4;
+  --shell-under: #694066;
+  --bed: #69477f;
+  --cap: #40344e;
+  --cap-top: #68527d;
+  --silk: #e9e3d6;
+  --led: #a8f0cf;
   --focus: #ffffff;
   /* 2 px dither cells as tiles (dither.js draws the larger fields) */
   --d25: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23fff'/%3E%3C/svg%3E");
@@ -532,7 +535,7 @@ html { scroll-behavior: smooth; }
 .fit { position: relative; }
 .device {
   position: absolute; left: 0; top: 0; transform-origin: 0 0; transform: scale(var(--scale, 1));
-  background: linear-gradient(170deg, #5c5c5c, var(--body) 40%, var(--body-edge));
+  background: linear-gradient(170deg, var(--body-highlight), var(--body) 40%, var(--body-edge));
   border-radius: 44px;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 -2px 0 rgba(0, 0, 0, 0.25) inset, 0 18px 40px rgba(0, 0, 0, 0.5);
   touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
@@ -544,22 +547,22 @@ html { scroll-behavior: smooth; }
 .device > * { position: absolute; }
 .tray { background: var(--bed); border-radius: 18px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset; }
 .tray.keybed { border-radius: 26px; }
-.bezel { background: #101010; border-radius: 22px; box-shadow: 0 0 0 3px #3a3a3a, 0 2px 4px rgba(0, 0, 0, 0.5) inset; }
+.bezel { background: #181420; border-radius: 22px; box-shadow: 0 0 0 3px #9a8bd2, 0 2px 4px rgba(0, 0, 0, 0.5) inset; }
 canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-radius: 4px; background: #000; }
 
 .lbl {
-  font-family: "Silkscreen", ui-monospace, monospace; font-size: 13px; color: var(--silk);
+  font-family: "Silkscreen", ui-monospace, monospace; font-size: 13px; color: #282030;
   text-align: center; pointer-events: none; white-space: nowrap; line-height: 1;
 }
 .enc { border-radius: 50%; cursor: ns-resize; }
 .enc .skirt {
   position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #4b4b4b, #1f1f1f 70%);
+  background: radial-gradient(circle at 40% 35%, var(--cap-top), #282030 70%);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 .enc .cap {
   position: absolute; inset: 7px; border-radius: 50%;
-  background: repeating-conic-gradient(#2c2c2c 0 4deg, #353535 4deg 8deg);
+  background: repeating-conic-gradient(var(--cap) 0 4deg, #514061 4deg 8deg);
   transform: rotate(var(--turn, 0deg));
 }
 .enc .cap::after {
@@ -573,7 +576,7 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
   background: linear-gradient(180deg, var(--cap-top), var(--cap));
   box-shadow: 0 2px 0 #1c1c1c, 0 3px 5px rgba(0, 0, 0, 0.45);
   display: flex; align-items: center; justify-content: center;
-  font-family: "Silkscreen", ui-monospace, monospace; font-size: 12px; color: #9c9c9c;
+  font-family: "Silkscreen", ui-monospace, monospace; font-size: 12px; color: var(--silk);
   transition: color 60ms;
 }
 .btn.down { transform: translateY(2px); box-shadow: 0 0 0 #1c1c1c, 0 1px 2px rgba(0, 0, 0, 0.5); }
@@ -584,15 +587,15 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
 
 .key {
   border-radius: 999px; cursor: pointer;
-  background: linear-gradient(180deg, #464646, #363636);
+  background: linear-gradient(180deg, var(--cap-top), var(--cap));
   box-shadow: 0 2px 0 #191919, 0 3px 5px rgba(0, 0, 0, 0.5);
 }
 .key .stripe {
   position: absolute; left: 50%; top: 18%; bottom: 18%; width: 5px; margin-left: -2.5px; border-radius: 3px;
-  background: #707070; transition: background 50ms, box-shadow 50ms;
+  background: #282030; transition: background 50ms, box-shadow 50ms;
 }
 .key.down { transform: translateY(2px); box-shadow: 0 0 0 #191919, 0 1px 2px rgba(0, 0, 0, 0.5); }
-.key.lit .stripe { background: var(--led); box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.8); }
+.key.lit .stripe { background: var(--led); box-shadow: 0 0 8px 2px rgb(168 240 207 / .65); }
 .hint {
   position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;
   font: 16px/1 var(--mono); color: var(--c4); pointer-events: none;
@@ -607,7 +610,7 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
    the FM-1 has its switch. Until the first flip its knob nudges toward on. */
 .device.powered-off canvas.lcd { opacity: .12; transition: opacity .3s; }
 .device.powered-off .lit { color: inherit; text-shadow: none; }
-.device.powered-off .key.lit .stripe { background: #707070; box-shadow: none; }
+.device.powered-off .key.lit .stripe { background: #282030; box-shadow: none; }
 .power-ui { position: absolute; left: 0; top: 0; z-index: 7; opacity: var(--arrived, 0); pointer-events: var(--arrived-events, none);
   transition: opacity .45s steps(4); }
 .power-toggle, .power-label { position: absolute; left: 0; top: 0; }

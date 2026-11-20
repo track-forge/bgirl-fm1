@@ -35,10 +35,10 @@ function build() {
   for (const st of outline(LAYOUTS.landscape.W, LAYOUTS.landscape.H, 44, 6)) {
     const w = document.createElement('div'), dx = st.x1 - st.x0, dy = st.y1 - st.y0, ang = Math.atan2(dy, dx);
     const up = -Math.cos(ang);                     // the outward normal's upward part: 1 top edge .. -1 bottom edge
-    const c = Math.round(66 + 14 * up);
+    const light = Math.round(50 + 35 * up);
     w.style.cssText = `width:${Math.hypot(dx, dy) + 0.8}px;height:${DEPTH}px;`
       + `transform:translate(${st.x0}px,${st.y0}px) rotateZ(${ang}rad) rotateX(-90deg);`
-      + `background:linear-gradient(rgb(${c},${c + 4},${c + 9}),rgb(${c - 30},${c - 28},${c - 25}))`;
+      + `background:linear-gradient(color-mix(in srgb,var(--body) ${light}%,var(--body-edge)),var(--shell-under))`;
     walls.append(w);
   }
   device.append(walls);
