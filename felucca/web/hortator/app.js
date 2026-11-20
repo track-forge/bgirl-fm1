@@ -7,10 +7,7 @@ import { BTN, ENC, KEYS, HeldSet, keyEvent, keyHint, contextMenuLatches } from '
 import { FlashStore, openFlashDb } from './store.js';
 import { needsResume, playbackSession } from './audio.js';
 import { parseReel } from './reel.js';
-import { initFeatures } from './features.js';
 import { initManual } from './manual.js';
-import { buildMini } from './mini.js';
-import { installCount, loadPageCounter } from './counter.js';
 import { ditherBackground, initGlitch } from './dither.js';
 import { LAYOUTS, DECO_CLASS, blend, heroPose, outline } from './layout.js';
 
@@ -462,42 +459,8 @@ function placePower() {
 }
 function queueHero() { if (!heroQueued) { heroQueued = true; requestAnimationFrame(heroFrame); } }
 
-// ---- install: the firmware this site ships and what is new in it (version.json, written by the build)
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
-  'November', 'December'];
-function plainNote(n) {                            // the changelog's line for players: no upstream credits or baselines
-  let t = n.text.replace(/\s*\((?:upstream|adapted)[^()]*(?:\([^()]*\)[^()]*)*\)/gi, '')
-    .replace(/\s*Frozen baseline[^.]*\./gi, '');
-  if (t.startsWith(n.title)) t = t.slice(n.title.length).replace(/^[\s:,]+/, '');
-  return t.charAt(0).toUpperCase() + t.slice(1);
-}
-loadPageCounter();                                  // visits (count.js), on the published site only
-// the hero's install count (counter.js: GoatCounter's public count; off, slow or failed: nothing shows)
-installCount().then(n => {
-  const el = document.getElementById('install-count');
-  if (n == null || !el) return;
-  const b = document.createElement('b');
-  b.textContent = n.toLocaleString('en');
-  el.replaceChildren('Installed ', b, n === 1 ? ' time' : ' times');
-  el.hidden = false;
-});
-fetch('version.json').then(r => r.ok ? r.json() : Promise.reject()).then(v => {
-  const [y, m, d] = v.date.split('-').map(Number);
-  const newer = v.since.length ? ` and ${v.since.length} newer change${v.since.length > 1 ? 's' : ''}` : '';
-  document.getElementById('fw-version').textContent =
-    `Version ${v.version}${newer}, built ${d} ${MONTHS[m - 1]} ${y} from commit ${v.commit}`;
-  const ul = document.getElementById('whats-new');
-  for (const n of [...v.since, ...v.release.notes]) {
-    const li = document.createElement('li'), span = document.createElement('span'), b = document.createElement('b');
-    b.textContent = n.title;
-    span.append(b, ' ', plainNote(n));                // clamped to three lines inside the item's padding
-    li.append(span);
-    ul.append(li);
-  }
-}).catch(() => { document.querySelector('.whats-new')?.remove(); });
 build();
 relayout();
-buildMini(document.getElementById('install-mini'));
 initManual();
 device.classList.add('waiting');
 heroFrame();
@@ -510,7 +473,6 @@ bindPage();
 window.addEventListener('resize', relayout);
 document.fonts?.ready.then(relayout);
 requestAnimationFrame(paint);
-initFeatures();
 // the look (dither.js): a dithered glow behind the device, a dithered fade into the footer, headings that glitch
 ditherBackground(document.getElementById('stage'), (x, y) => {
   const dx = (x - 0.5) / 0.55, dy = (y - 0.42) / 0.5;

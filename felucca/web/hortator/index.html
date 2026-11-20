@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hortator: drum-machine firmware for the M-VAVE FM-1</title>
-<meta name="description" content="Hortator turns the M-VAVE FM-1 into an eight-track drum machine with 45 drum engines, 21 of them measured from the Machinedrum. Play it in your browser, then install it over USB.">
+<meta name="description" content="Hortator turns the M-VAVE FM-1 into an eight-track drum machine with 45 drum engines, 21 of them measured from the Machinedrum. Play it in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -18,7 +18,7 @@
   <div class="hero-stage" id="stage">
     <nav class="hero-nav">
       <span class="silk">HORTATOR</span>
-      <span class="nav-links"><a href="manual/">Guide</a><a href="webapp/editor/">Editor</a><a href="webapp/installer/">Install</a></span>
+      <span class="nav-links"><a href="#manual">Guide</a><a href="play/">BGIRL studio</a></span>
     </nav>
 
     <div class="desk-shadow" id="desk-shadow"></div>
@@ -45,7 +45,6 @@
         8 EFM), <b>10</b> modern, <b>14</b> classic. <b>151</b> factory presets, <b>96</b> user slots.</p>
       <p class="hero-actions">
         <a class="cta" href="#play">Play it</a>
-        <span class="cta-slot"><a class="cta ghost" href="webapp/installer/">Install on your FM-1</a><span class="install-count" id="install-count" hidden></span></span>
       </p>
     </div>
     <p class="scroll-cue" id="scroll-cue" aria-hidden="true">Scroll</p>
@@ -98,7 +97,7 @@
     <h2 id="manual-title">How to play it.</h2>
     <p>Every control, then ten things to do with them. Each works in the simulator above as on the FM&#8209;1. The whole
       manual is in the <a href="https://github.com/DeadActive/hortator#readme" target="_blank" rel="noopener">README</a>,
-      and the <a href="manual/">full searchable manual</a> has every page and parameter.</p>
+      and the <a href="https://deadactive.github.io/hortator/manual/">full searchable manual</a> has every page and parameter.</p>
   </header>
 
   <div class="panel-map">
@@ -255,169 +254,6 @@
   </ol>
 </section>
 
-<section id="features" class="features" aria-labelledby="features-title">
-  <header class="features-head">
-    <h2 id="features-title">Hear what it does.</h2>
-    <p>Every picture is drawn by the firmware's own sound code. Turn the knobs; press Play.</p>
-  </header>
-  <article class="chapter" id="f-voices" aria-labelledby="f-voices-title">
-    <div class="ch-text">
-      <h3 id="f-voices-title">45 engines in three banks</h3>
-      <p>MD has 21, measured from the Machinedrum: 13 TRX and 8 EFM. MODERN has 10, among them
-        ACID, a 303-style bass. CLASSIC has 14, the 808 and 909 family. 151 factory presets and 96 user slots.</p>
-      <p class="where"><b>EDIT</b>, then <b>KNOB1</b> picks the model; on the HOME screen (<b>HOME</b>) four knobs shape it.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="voices"></div>
-  </article>
-  <article class="chapter" id="f-reson" aria-labelledby="f-reson-title">
-    <div class="ch-text">
-      <h3 id="f-reson-title">Resonators</h3>
-      <p>Any track can ring through a string, pipe, chord or modal bar, tuned in semitones. Grey is the dry
-        hit, bright the ring.</p>
-      <p class="where"><b>FX</b>, then <b>SELECT</b> to RESON.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="reson"></div>
-  </article>
-  <article class="chapter" id="f-comp" aria-labelledby="f-comp-title">
-    <div class="ch-text">
-      <h3 id="f-comp-title">A compressor that pumps</h3>
-      <p>The Streams compressor, keyed by the kick (here BDTRX), ducks the rest: ACID's bass line and the
-        hats pump. Amber is the gain reduction. GHOST keeps the pump with the kick muted.</p>
-      <p class="where"><b>HOME</b> to the HOME screen, <b>SELECT</b> to COMP; a white key ducks a track.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="comp"></div>
-  </article>
-  <article class="chapter" id="f-lfo" aria-labelledby="f-lfo-title">
-    <div class="ch-text">
-      <h3 id="f-lfo-title">Two LFOs on every track</h3>
-      <p>Ten waves with a morph, synced to the tempo, each on its own destination. Here they move a
-        hi-hat's MTAL and decay.</p>
-      <p class="where"><b>LFO</b>: LFO 1 on <b>KNOB1</b>-<b>KNOB2</b>, LFO 2 on <b>KNOB3</b>-<b>KNOB4</b>; DEST is the last page.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="lfo"></div>
-  </article>
-  <article class="chapter" id="f-seq" aria-labelledby="f-seq-title">
-    <div class="ch-text">
-      <h3 id="f-seq-title">Steps that roll dice</h3>
-      <p>A step can play by chance, ratchet, or wait for a fill bar. Mutes can wait for the next bar, and
-        knob moves record into the pattern. Parameter locks give one step its own value for a knob, on any sound
-        page: the next step plays the knob again. Each slot has 8 variations; queue the next slot or variation and it
-        comes in at the pattern's end. Steps set to FILL play only while you hold a fill. COPY and PASTE a whole slot.</p>
-      <p class="where"><b>SEQ</b>: hold a step, <b>KNOB1</b> chance, <b>KNOB2</b> ratchet. Hold <b>GLO</b> for mutes; <b>REC</b> records knob moves.
-        <b>ENV</b>: the keys are the steps on every page; hold one and turn a knob to lock it, <b>OCT-</b> clears.
-        The black keys queue a variation on HOME and SEQ; hold <b>SAVE</b>: white keys 1–4 queue a slot. Hold <b>REC</b> off SEQ: FILL. SAVE's third page:
-        COPY / PASTE.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="seq"></div>
-  </article>
-  <article class="chapter" id="f-grids" aria-labelledby="f-grids-title">
-    <div class="ch-text">
-      <h3 id="f-grids-title">Grids</h3>
-      <p>Mutable Instruments' map of drum patterns: move through it and the kick, snare and hat lanes
-        rewrite. Three densities; any track can follow a lane.</p>
-      <p class="where"><b>ARP</b>; <b>SELECT</b> to the fills.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="grids"></div>
-  </article>
-  <article class="chapter" id="f-fx" aria-labelledby="f-fx-title">
-    <div class="ch-text">
-      <h3 id="f-fx-title">Effects, per track and live</h3>
-      <p>Each track has a filter, resonator, distortion and slicer, then delay, reverb and chorus. Hold FX
-        and the black keys repeat, reverse, filter, stop or freeze the mix.</p>
-      <p class="where"><b>FX</b> for the pages; hold <b>FX</b> and play the black keys.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The FM-1’s own screen.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="fx"></div>
-  </article>
-  <article class="chapter" id="f-ble" aria-labelledby="f-ble-title">
-    <div class="ch-text">
-      <h3 id="f-ble-title">Bluetooth MIDI</h3>
-      <p>The Bluetooth version connects to Bluetooth MIDI controllers itself. An M-VAVE SMC-Mixer becomes
-        its mixer (levels, the selected track's knobs, MUTE, SOLO); other controllers play the tracks. It is also a
-        Bluetooth MIDI device for a computer or a tablet, and FM-Link plays two FM-1s in time without a cable.</p>
-      <p class="where">Hold <b>HOME</b> for the menu, <b>SELECT</b> to BLUETOOTH, <b>OCT+</b>. Off at power-on unless AUTOSTART is ON.</p>
-      <figure class="device-screen">
-        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
-        <figcaption>The simulator runs the plain version: no Bluetooth page.</figcaption>
-      </figure>
-    </div>
-    <div class="plate" data-piece="ble"></div>
-  </article>
-</section>
-
-<section id="install" class="install" aria-labelledby="install-title">
-  <header class="install-head">
-    <h2 id="install-title">Put it on your FM-1.</h2>
-    <p>From a web page, over the FM-1's own USB cable, in a few minutes.</p>
-  </header>
-
-  <div class="cable-diagram" id="cable" aria-hidden="true">
-    <div class="laptop">
-      <div class="lid"><span class="bar"></span><span class="ghost-btn">Install</span><span class="ghost-line"></span></div>
-      <div class="deck"></div>
-    </div>
-    <div class="usb"><span class="wire"></span><span class="pulse"></span><span class="pulse late"></span></div>
-    <div class="fm1-shot" id="install-mini"></div>
-  </div>
-  <ol class="install-steps">
-    <li><h3>Open the installer in Chrome or Edge</h3><p>On a computer: only they allow USB MIDI.</p></li>
-    <li><h3>Plug in the FM-1</h3><p>A USB data cable, straight into the computer.</p></li>
-    <li><h3>Press Install and wait</h3><p>Keep the cable in until Done. The FM-1 restarts with Hortator.</p></li>
-  </ol>
-
-  <div class="install-grid">
-    <div class="whats-new">
-      <p class="fw-version" id="fw-version">Hortator</p>
-      <h3>What's new</h3>
-      <ul id="whats-new"></ul>
-    </div>
-    <div class="install-go">
-      <a class="cta big" href="webapp/installer/">Open the installer</a>
-      <p class="risk">Installed at your own risk: the author accepts no responsibility if your FM-1 is
-        damaged or misbehaves.</p>
-      <details>
-        <summary>Back to the official firmware</summary>
-        <p>M-VAVE's updater, M-UPGRADE, puts it back: from
-          <a href="https://www.m-vave.com/download" target="_blank" rel="noopener">m-vave.com/download</a>, Downloads →
-          PC Software → M-UPGRADE, with PC Firmware → FM-1 V15.</p>
-      </details>
-      <details>
-        <summary>If an install fails</summary>
-        <p>Replug and press Install again: the FM-1 stays in update mode until a write has finished. If it no longer
-          starts, recovery needs a
-          <a href="https://github.com/kurogedelic/FM-1-transporter" target="_blank" rel="noopener">Transporter</a>.</p>
-      </details>
-    </div>
-  </div>
-</section>
-
 <div class="foot-band" id="foot-band" aria-hidden="true"></div>
 <footer class="foot">
   <div class="foot-brand">
@@ -427,9 +263,6 @@
   <nav class="foot-nav" aria-label="On this page">
     <a href="#play">Play it in the browser</a>
     <a href="#manual">How to play it</a>
-    <a href="webapp/installer/">Install on your FM-1</a>
-    <a href="webapp/editor/">Edit it from the browser</a>
-    <a href="#install">What's new</a>
     <a href="source.tar.gz">Source code (GPL-3.0)</a>
   </nav>
   <div class="foot-credits">
