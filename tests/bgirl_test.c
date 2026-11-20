@@ -4,8 +4,8 @@
 #include <assert.h>
 static void advance(uint32_t ms) { uint32_t n; for(n=0;n<ms*441u/10u;n+=128u) web_render(128); }
 static void tap(uint32_t bit) {web_buttons(1u<<bit); advance(60);web_buttons(0);advance(60);}
-static void defaults(int demo) {
-    assert(trk[0].eng_req==ENGI_DRUM && trk[0].preset==2);
+static void defaults(int demo, unsigned drum_preset) {
+    assert(trk[0].eng_req==ENGI_DRUM && trk[0].preset==drum_preset);
     assert(trk[1].eng_req==0 && trk[1].preset==13 && trk[1].p[P_VOICE]==V_MONO);
 #if BGIRL_VOCODER
     if(demo) {
@@ -35,7 +35,7 @@ int main(void) {
     uint64_t speechEnergy=0;
     uint32_t vocalWraps=0,previousStep=0;
 #endif
-    web_nor_erase(); web_boot(); advance(1200); defaults(1);
+    web_nor_erase(); web_boot(); advance(1200); defaults(1, DRUM_PRESET_BG_BREAK);
 #if BGIRL_VOCODER
     assert(trk[0].step[4].hit==22 && trk[0].step[0].hit==8);
 #else
@@ -74,14 +74,14 @@ int main(void) {
     trk[3].p[P_VWET]=81;
     trk[1].p[P_E4]=42; trk[1].step[1].note[0]=41;
     assert(!project_save_as(0,"MY ELECTRO"));
-    assert(!web_bgirl_project(0)); advance(100); defaults(0);
+    assert(!web_bgirl_project(0)); advance(100); defaults(0, DRUM_PRESET_BG_BREAK);
     for(t=0;t<NTRK;t++)for(i=0;i<NSTEP;i++)assert(!trk[t].step[i].n && !trk[t].step[i].hit);
     project_load(0); advance(100);
     assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && trk[3].p[P_VWET]==81);
     advance(70000); /* autosave then boot initialization, as a fresh instance */
     felucca_init(); autosave_boot(1); advance(100);
     assert(trk[1].p[P_E4]==42 && trk[1].step[1].note[0]==41 && trk[3].p[P_VWET]==81);
-    assert(!web_bgirl_project(1)); advance(100); defaults(1);
+    assert(!web_bgirl_project(1)); advance(100); defaults(1, BGIRL_VOCODER ? 2 : DRUM_PRESET_BG_BREAK);
 #if BGIRL_VOCODER
     assert(trk[1].step[1].note[0]==33 && trk[0].step[4].hit==22);
 #else
