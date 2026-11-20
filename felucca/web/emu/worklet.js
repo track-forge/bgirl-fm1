@@ -79,7 +79,9 @@ if (typeof registerProcessor === "function") {
           restoreSectors(new Uint8Array(ex.memory.buffer, ex.web_nor(), ex.web_nor_size()), m.sectors);
           ex.web_master(m.master ?? 700);
           ex.web_boot();
+          if (m.pages && ex.web_bgirl_pages_setup()) throw new Error("Vocoder setup failed");
           this.ex = ex;
+          this.pages = !!m.pages;
           this.sentWrites = ex.web_flash_writes_count();
           this.port.postMessage({ type: "ready", rate: ex.web_sample_rate(), restoreSong:!!ex.web_snapshot_restore_allowed() });
         } catch (err) {
@@ -118,9 +120,8 @@ if (typeof registerProcessor === "function") {
         } catch(err) { result.error=String(err.message||err); }
         this.port.postMessage(result);
       }
-      else if (m.type === "flyer") {
-        this.port.postMessage({type:"flyer-result",id:m.id,action:m.action,ok:ex.web_bgirl_flyer(m.action)===0});
-      }
+      else if (this.pages && m.type === "pages-note") ex.web_bgirl_pages_note(m.note);
+      else if (this.pages && m.type === "pages-patch") ex.web_bgirl_pages_patch(m.trio);
       else if (m.type === "crew-info") {
         this.port.postMessage({type:"crew-info",values:Array.from({length:13},(_,i)=>ex.web_bgirl_crew_info(i))});
       }
@@ -206,7 +207,7 @@ if (typeof registerProcessor === "function") {
         transfer.push(msg.fb.buffer);
       }
       const writes = ex.web_flash_writes_count();
-      if (writes !== this.sentWrites) {               // a save is done within one main-loop pass: whole here
+      if (!this.pages && writes !== this.sentWrites) {               // a save is done within one main-loop pass: whole here
         this.sentWrites = writes;
         msg.sectors = storeSectors(new Uint8Array(mem, ex.web_nor(), ex.web_nor_size()));
       }

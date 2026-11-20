@@ -32,10 +32,19 @@ echo "emu: build/emu ($(wc -c < build/emu/felucca.wasm | tr -d ' ') B wasm, $VER
 mkdir -p build/emu/play
 cp build/emu/index.html build/emu/worklet.js build/emu/felucca.wasm build/emu/*.mjs build/emu/play/
 cp -R build/emu/fonts build/emu/branding build/emu/listening build/emu/play/
-cp web/emu/flyer.html build/emu/index.html
-cp web/emu/flyer.js build/emu/
-cp web/emu/instrument-still.png build/emu/
-
-# Root-only editorial audio/stills, generated from the same production host DSP.
-python3 ../tools/editorial_assets.py
-cp web/emu/editorial.js build/emu/
+cp web/emu/pages.html build/emu/index.html
+cp web/emu/pages.css web/emu/pages.js ../LICENSE build/emu/
+node ../tools/capture_pages_lcd.mjs build/emu/felucca.wasm > build/pages-lcd.rgb
+python3 - <<'PYTHON'
+from pathlib import Path
+from PIL import Image
+data = Path("build/pages-lcd.rgb").read_bytes()
+size = 240 * 240 * 3
+assert len(data) == 24 * size
+frames = [Image.frombytes("RGB", (240, 240), data[i:i+size]) for i in range(0,len(data),size)]
+assert len({frame.tobytes() for frame in frames}) > 1, "CREW capture must move"
+frames[0].save("build/emu/crew-home.png")
+frames[0].save("build/emu/crew-home.webp", save_all=True, append_images=frames[1:],
+               duration=93, loop=0, lossless=True)
+PYTHON
+printf '{"commit":"%s","license":"GPL-3.0-only"}\n' "$(git rev-parse HEAD)" > build/emu/build.json

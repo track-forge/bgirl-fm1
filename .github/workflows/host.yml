@@ -30,7 +30,6 @@ jobs:
       - run: python -m pip install Pillow==12.1.1 fonttools==4.68.0
       - run: ./build.sh --web
       - run: ./tests/run_tests.sh
-      - run: node tests/flyer-wasm.mjs
       - name: Install browser acceptance tools
         run: |
           npm install --prefix "$RUNNER_TEMP/bgirl-browser" --no-save playwright@1.59.1
@@ -46,8 +45,7 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           curl --fail --silent --retry 10 --retry-connrefused --retry-delay 1 "$BGIRL_URL" > /dev/null
           export PLAYWRIGHT_MODULE="$RUNNER_TEMP/bgirl-browser/node_modules/playwright"
-          BGIRL_FLYER_URL=http://127.0.0.1:8772/bgirl-fm1/ node tests/flyer-browser.cjs
-          BGIRL_FLYER_URL=http://127.0.0.1:8772/bgirl-fm1/ node tests/editorial-browser.cjs
+          BGIRL_PAGES_URL=http://127.0.0.1:8772/bgirl-fm1/ node tests/pages-browser.cjs
           node tests/splash-browser.cjs
           node tests/browser-smoke.cjs
           node tests/browser-shell.cjs
