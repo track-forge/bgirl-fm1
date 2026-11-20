@@ -1,0 +1,453 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only
+     Drum machine fork: 2026 DEADACTIVE -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hortator: drum-machine firmware for the M-VAVE FM-1</title>
+<meta name="description" content="Hortator turns the M-VAVE FM-1 into an eight-track drum machine with 45 drum engines, 21 of them measured from the Machinedrum. Play it in your browser, then install it over USB.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="preload" href="terminus.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<section id="hero" class="hero" aria-label="Hortator">
+  <div class="hero-stage" id="stage">
+    <nav class="hero-nav">
+      <span class="silk">HORTATOR</span>
+      <span class="nav-links"><a href="manual/">Guide</a><a href="webapp/editor/">Editor</a><a href="webapp/installer/">Install</a></span>
+    </nav>
+
+    <div class="desk-shadow" id="desk-shadow"></div>
+    <div class="scene" id="scene">
+      <div class="tilt" id="tilt">
+        <div id="fit" class="fit">
+          <div id="device" class="device" aria-label="FM-1 panel"></div>
+        </div>
+      </div>
+    </div>
+    <div class="scene-dim" aria-hidden="true"></div>
+    <div class="power-ui" id="power-ui">                <!-- placed by app.js: a line from the FM-1's own switch -->
+      <span class="power-lead" id="power-lead" aria-hidden="true"></span>
+      <button type="button" class="power-toggle" id="power-on" role="switch" aria-checked="false" aria-label="Power"
+        disabled><span class="knob"></span></button>
+      <span class="power-label" id="power-label">Power</span>
+    </div>
+
+    <div class="hero-copy" id="hero-copy">
+      <h1>Eight tracks of drums, inside the M&#8209;VAVE&nbsp;FM&#8209;1.</h1>
+      <p>Custom firmware by DEADACTIVE, named after the drummer who kept a Roman galley's rowers in time. Scroll on
+        to play the real firmware in your browser.</p>
+      <p class="hero-count"><b>45</b> drum engines in three banks: <b>21</b> measured from the Machinedrum (13 TRX,
+        8 EFM), <b>10</b> modern, <b>14</b> classic. <b>151</b> factory presets, <b>96</b> user slots.</p>
+      <p class="hero-actions">
+        <a class="cta" href="#play">Play it</a>
+        <span class="cta-slot"><a class="cta ghost" href="webapp/installer/">Install on your FM-1</a><span class="install-count" id="install-count" hidden></span></span>
+      </p>
+    </div>
+    <p class="scroll-cue" id="scroll-cue" aria-hidden="true">Scroll</p>
+
+    <div class="play-bar" id="play-bar">
+      <p id="note" class="note" role="status"></p>
+      <span class="power-note" id="power-note">Loading…</span>
+      <button type="button" class="bar-btn" id="help-toggle" aria-expanded="false" aria-controls="help">Controls</button>
+      <button type="button" class="bar-btn" id="reset" aria-haspopup="dialog">Reset to demos</button>
+      <div id="reset-confirm" class="confirm" role="dialog" aria-label="Reset to demos" hidden>
+        <p>Erase your saves in this browser and restore the four demos?</p>
+        <button type="button" id="reset-yes">Erase and restart</button>
+        <button type="button" id="reset-no">Keep my saves</button>
+      </div>
+    </div>
+    <a class="more-cue" id="more-cue" href="#manual">More below<span aria-hidden="true">↓</span></a>
+    <div id="help" class="help" hidden>
+      <div>
+        <h2>Mouse and touch</h2>
+        <ul>
+          <li>Keys and buttons play while held, several at once.</li>
+          <li>Knobs: drag up or down, the mouse wheel, or hover and press ↑ ↓.</li>
+          <li>To hold a button (GLO, FX, SEQ + a key), right-click or long-press it; tap again to let go.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Getting around</h2>
+        <ul>
+          <li>SELECT turns the pages (on TRACKS: the tempo). ALGORITHM picks the track.</li>
+          <li>HOME switches TRACKS and HOME; hold it for the menu.</li>
+          <li>REC arms the selected track, on any page.</li>
+          <li>Hold GLO: the white keys mute the tracks.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Computer keyboard</h2>
+        <ul>
+          <li>Lower keys: Z X C V B N M , . / and S D F H J L ; '</li>
+          <li>Upper keys: Q W E R T Y and 3 4 6.</li>
+          <li>Space PLAY, Enter REC, Esc HOME, ← OCT−, → OCT+.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="hero-end" id="play" aria-hidden="true"></span>
+</section>
+
+<section id="manual" class="manual" aria-labelledby="manual-title">
+  <header class="manual-head">
+    <h2 id="manual-title">How to play it.</h2>
+    <p>Every control, then ten things to do with them. Each works in the simulator above as on the FM&#8209;1. The whole
+      manual is in the <a href="https://github.com/DeadActive/hortator#readme" target="_blank" rel="noopener">README</a>,
+      and the <a href="manual/">full searchable manual</a> has every page and parameter.</p>
+  </header>
+
+  <div class="panel-map">
+    <div class="map-stage">
+      <div class="map-device" id="manual-mini" aria-hidden="true"></div>
+      <p class="map-caption" id="map-caption">Point at a control, or at a line of the list.</p>
+    </div>
+    <div class="map-list" id="map-list">
+      <h3>Knobs</h3>
+      <ul>
+        <li data-ctl="MASTER"><b>MASTER</b> The volume: the speaker, the headphones and USB audio.</li>
+        <li data-ctl="SELECT"><b>SELECT</b> Turns a section's pages and moves the menu's cursor. On TRACKS: the tempo.</li>
+        <li data-ctl="ALGORITHM"><b>ALGORITHM</b> Picks the track, on any page.</li>
+        <li data-ctl="PRESETS"><b>PRESETS</b> Loads the next or the previous preset onto the track.</li>
+        <li data-ctl="KNOB1 KNOB2 KNOB3 KNOB4"><b>KNOB1</b> to <b>KNOB4</b> Edit the four values on the screen.</li>
+      </ul>
+      <h3>Buttons</h3>
+      <ul>
+        <li data-ctl="HOME"><b>HOME</b> TRACKS (levels, lengths, pans) and HOME (the scope, the track's first four knobs);
+          a tap switches. Hold it: the menu.</li>
+        <li data-ctl="EDIT"><b>EDIT</b> The track's sound: its model and knobs. Hold it: the PRESETS list.</li>
+        <li data-ctl="SEQ"><b>SEQ</b> The steps on the white keys, then PATTERN, MOTION and SONG. Hold it: the step
+          tools, copy and paste.</li>
+        <li data-ctl="FX"><b>FX</b> FILTER, FX, INSERT (and SRR), SLICER, RESON. Hold it: PERFORM.</li>
+        <li data-ctl="ARP"><b>ARP</b> Grids, a map of drum patterns.</li>
+        <li data-ctl="LFO"><b>LFO</b> The track's two LFOs, then DEST: what they move.</li>
+        <li data-ctl="ENV"><b>ENV</b> STEPS: the white keys are the track's steps on every page, for locks.</li>
+        <li data-ctl="SEL"><b>SEL</b> KEYS: the keys play the selected track, a keyboard.</li>
+        <li data-ctl="GLO"><b>GLO</b> A tap: GLOBAL (tempo, swing, clock, MIDI channel, sync, routing, thru, metronome), then the delay, the reverb and the chorus. Hold it: the MUTE
+          screen.</li>
+        <li data-ctl="SAVE"><b>SAVE</b> PROJECT (save, load and name slots A to D), then TOOLS.</li>
+        <li data-ctl="PLAY"><b>PLAY</b> Play and stop; on SONG, the song.</li>
+        <li data-ctl="REC"><b>REC</b> Arms tracks to record: on TRACKS the selected one, on any other page all of them.</li>
+        <li data-ctl="OCT- OCT+"><b>OCT-</b> <b>OCT+</b> The next and previous 16 steps; the octave in KEYS; NO and YES,
+          BACK and OK.</li>
+      </ul>
+      <h3>Keys</h3>
+      <ul>
+        <li data-ctl="white">The 16 white keys: the steps, 1 to 16. On HOME, F3 to F4 play tracks 1 to 8; with GLO held
+          they mute them.</li>
+        <li data-ctl="black">The 11 black keys: with FX held, live effects on the whole mix. In KEYS, the sharps.</li>
+      </ul>
+    </div>
+  </div>
+
+  <ol class="guides">
+    <li class="guide" id="m-around">
+      <h3>Find your way</h3>
+      <p>Each section has its button: press it again, or turn SELECT, for its next page. ALGORITHM picks the track
+        (T1 to T8 in the top bar), and the four knobs edit the four columns under it. HOME takes you back: TRACKS is
+        the mixer, HOME the scope and the track's main knobs.</p>
+      <p class="where"><b>SELECT</b> pages, <b>ALGORITHM</b> the track, <b>HOME</b> back; hold <b>HOME</b> for the menu.</p>
+    </li>
+    <li class="guide" id="m-beat">
+      <h3>Make a beat</h3>
+      <p>SEQ puts the track's steps on the white keys: tap one to turn it on or off, then PLAY. Hold a step and turn a
+        knob for its chance, ratchet, accent or timing (NUDGE: early or late, up to half a step). OCT+ and OCT- go to the next 16 steps, up to 64. PATTERN, the next
+        page, sets the track's length, division and swing, or has it follow a Grids lane (SRC).</p>
+      <p class="where"><b>SEQ</b>, tap the white keys, <b>PLAY</b>. Hold a step: <b>KNOB1</b> PROB, <b>KNOB2</b> RATCH,
+        <b>KNOB3</b> ACCENT, <b>KNOB4</b> NUDGE.</p>
+    </li>
+    <li class="guide" id="m-copy">
+      <h3>Copy and paste steps</h3>
+      <p>Hold SEQ: the TOOLS screen, for the selected track. The white keys are the 16 steps shown, OCT- and OCT+ the
+        others; the black keys copy and paste. Hold F#3 and tap a step to copy it, hold G#3 and tap steps to paste it;
+        A#3 copies the 16 steps, C#4 pastes them over others, D#4 adds their hits, F#4 fills the whole pattern. G#4
+        picks a stretch with KNOB1 and KNOB2 (G#4 again copies it) and A#4 then a step pastes it there. C#5 doubles
+        every track's pattern. Steps keep their accent, chance, ratchet, note and locks.</p>
+      <p class="where">Hold <b>SEQ</b>: the black keys; <b>OCT-</b> <b>OCT+</b> the steps; <b>KNOB1</b> <b>KNOB2</b> a
+        stretch.</p>
+    </li>
+    <li class="guide" id="m-sound">
+      <h3>Shape a sound</h3>
+      <p>EDIT opens the track's sound. KNOB1 picks the model, one of 45; TUNE, DECAY, TONE and a knob of the model's own
+        follow, then its other knobs, the level, pan, note, choke group and PRIO on the next pages. PRESETS tries the
+        factory presets on the track (the sound only); hold EDIT for the list, to load one or save yours to the USER bank
+        (yours keep the track's FX too, all but the SLICER).</p>
+      <p class="where"><b>EDIT</b>, <b>KNOB1</b> the model; <b>PRESETS</b> the next preset; hold <b>EDIT</b> for the list.</p>
+    </li>
+    <li class="guide" id="m-live">
+      <h3>Play and record live</h3>
+      <p>SEL turns the keys into a keyboard for the track (KEYS), OCT- and OCT+ its octave. REC arms the track on
+        TRACKS; on any other page it is REC ALL, each white track key playing and recording its own track, to
+        finger-drum a kit. REC never starts the transport: PLAY does. An armed track records knob turns too, as
+        MOTION. On the STEP page, stopped and in KEYS, REC starts step record, a note at a time.</p>
+      <p class="where"><b>SEL</b> KEYS, <b>REC</b> to arm, <b>PLAY</b> to go.</p>
+    </li>
+    <li class="guide" id="m-mute">
+      <h3>Mute tracks</h3>
+      <p>Hold GLO: the MUTE screen. The white keys F3 to F4 mute and unmute tracks 1 to 8 (a filled box is heard, an
+        outline muted). The top C# makes a mute land at once, the top D# on the next bar: made while playing, it blinks
+        until the downbeat. The black keys F#3 to A#4 solo tracks 1 to 8; the top F# switches solo between toggle and
+        momentary (held). Let go of GLO to go back.</p>
+      <p class="where">Hold <b>GLO</b>, press the white keys (mute) or the black keys (solo).</p>
+    </li>
+    <li class="guide" id="m-perform">
+      <h3>Perform</h3>
+      <p>Hold FX: the black keys play effects on the whole mix while held: repeat 1/8, 1/16 and 1/32, reverse, tape
+        stop, filter sweeps, freeze, an octave up or down. The white keys F3 to F4 are REPEAT STEP for tracks 1 to 8:
+        while held, the track plays the step it was on again and again on the beat grid, its own steps paused, and
+        carries on in time when let go (stopped: at once, at the tempo). D5, E5, F5 and G5 pick its rate: 1/4, 1/8,
+        1/16 (at first) or 1/32. The knobs become FILTER, CRUSH, THROW and DEPTH, which stay on when you let go, an FX
+        in the top bar, until turned back to 0.</p>
+      <p class="where">Hold <b>FX</b>: the black keys, the white keys (D5 to G5 the rate), <b>KNOB1</b> to
+        <b>KNOB4</b>.</p>
+    </li>
+    <li class="guide" id="m-locks">
+      <h3>Lock a step</h3>
+      <p>Tap ENV (lit, a padlock in the top bar): the white keys are the track's steps on every page. Hold a step and
+        turn a knob, on HOME, EDIT, FX or LFO: that step plays its own value, and the next one the knob's again. Hold the
+        step and tap OCT- to clear its locks on that page; hold OCT- for 0.6 s to clear all of them.</p>
+      <p class="where"><b>ENV</b>, hold a step, turn a knob; <b>OCT-</b> clears.</p>
+    </li>
+    <li class="guide" id="m-save">
+      <h3>Save and chain</h3>
+      <p>SAVE opens PROJECT: four slots, A to D, in the FM&#8209;1's flash, each with a name. The last project saved loads at
+        power-on; with SEQ held at power-on nothing loads. SONG, SEQ's last page, chains up to 16 rows of projects, each
+        with its repeats. TOOLS clears a track's steps or its sound, or starts everything over.</p>
+      <p class="where"><b>SAVE</b>; <b>SELECT</b> to TOOLS. <b>SEQ</b>, <b>SELECT</b> to SONG.</p>
+    </li>
+    <li class="guide" id="m-midi">
+      <h3>MIDI, USB audio and LEARN</h3>
+      <p>MIDI comes in over USB and the TRS jack: notes on the drum channel (CH, 10 at first) play the tracks whose
+        NOTE matches (ROUT NOTE; SEL plays the selected track and TRACK channels 1 to 8 the eight tracks, pitched), and
+        CLK follows a clock from either. SYNC sends a MIDI clock out over USB for a DAW or AUM to follow, and THRU passes
+        the TRS jack's notes on to USB. MIDI LEARN ties up to 32 controls of a controller to knobs,
+        PLAY, REC or PERFORM: hold GLO and press G4, turn a knob (or press PLAY), then move the controller's knob.</p>
+      <p>Over USB the FM&#8209;1 is also an audio interface, Hortator, that records into a computer. USB AUDIO in the
+        menu sends 2 CH, the stereo master; 10 CH MIX, the eight tracks each on its own and the master; or 10 CH FX, the
+        eight tracks dry and the send effects, to mix in your DAW. 10 CH needs the standard version, not Bluetooth;
+        macOS and iPadOS take it, Windows may not.</p>
+      <p class="where">Tap <b>GLO</b> for CH and CLK. Hold <b>GLO</b> + G4 to learn, <b>OCT+</b> when done. Hold
+        <b>HOME</b> for USB AUDIO.</p>
+    </li>
+    <li class="guide" id="m-ble">
+      <h3>Bluetooth</h3>
+      <p>The Bluetooth version adds a BLUETOOTH page to the menu. ROLE HOST: the FM&#8209;1 connects a BLE&#8209;MIDI
+        controller, the M&#8209;VAVE SMC&#8209;Mixer or another FM&#8209;1 itself; set BLUETOOTH ON, + ADD A DEVICE, pick
+        it. ROLE DEVICE: the FM&#8209;1 is <b>Felucca FM&#8209;1</b>, a Bluetooth MIDI port for a Mac (Audio MIDI Setup,
+        Bluetooth, Connect), an iPad app or another FM&#8209;1. Notes, MIDI LEARN, CLK BLE and SYNC BLE work as over
+        USB. FM&#8209;Link keeps two FM&#8209;1s in time: the leader on CLK INT (or following a DAW's clock), the
+        follower on CLK LINK; PLAY on the leader starts both.</p>
+      <p>It leaves out USB AUDIO 10 CH (USB audio is 2 CH there). Known issue: a saved device that is not connected can
+        make the sound stutter now and then; FORGET the ones you don't use (KNOB 1 left on its line, OCT+).</p>
+      <p class="where">Hold <b>HOME</b>, <b>SELECT</b> to BLUETOOTH, <b>OCT+</b>. Step by step: the <a href="https://github.com/DeadActive/hortator#connecting-step-by-step" target="_blank" rel="noopener">README</a>.</p>
+    </li>
+    <li class="guide" id="m-settings">
+      <h3>Make it yours</h3>
+      <p>Hold HOME for the menu. COLOR picks one of six screen themes, ACCEL speeds a knob up as it turns faster,
+        BACKLIGHT lets the unlit keys glow to find them in the dark, SPEAKER EQ adds bass to the small speaker. METRO,
+        on GLOBAL's last page, clicks every quarter note. The Bluetooth version adds BLUETOOTH to the menu.</p>
+      <p class="where">Hold <b>HOME</b>, <b>SELECT</b> to a row, <b>OCT+</b> OK, <b>OCT-</b> back.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="features" class="features" aria-labelledby="features-title">
+  <header class="features-head">
+    <h2 id="features-title">Hear what it does.</h2>
+    <p>Every picture is drawn by the firmware's own sound code. Turn the knobs; press Play.</p>
+  </header>
+  <article class="chapter" id="f-voices" aria-labelledby="f-voices-title">
+    <div class="ch-text">
+      <h3 id="f-voices-title">45 engines in three banks</h3>
+      <p>MD has 21, measured from the Machinedrum: 13 TRX and 8 EFM. MODERN has 10, among them
+        ACID, a 303-style bass. CLASSIC has 14, the 808 and 909 family. 151 factory presets and 96 user slots.</p>
+      <p class="where"><b>EDIT</b>, then <b>KNOB1</b> picks the model; on the HOME screen (<b>HOME</b>) four knobs shape it.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="voices"></div>
+  </article>
+  <article class="chapter" id="f-reson" aria-labelledby="f-reson-title">
+    <div class="ch-text">
+      <h3 id="f-reson-title">Resonators</h3>
+      <p>Any track can ring through a string, pipe, chord or modal bar, tuned in semitones. Grey is the dry
+        hit, bright the ring.</p>
+      <p class="where"><b>FX</b>, then <b>SELECT</b> to RESON.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="reson"></div>
+  </article>
+  <article class="chapter" id="f-comp" aria-labelledby="f-comp-title">
+    <div class="ch-text">
+      <h3 id="f-comp-title">A compressor that pumps</h3>
+      <p>The Streams compressor, keyed by the kick (here BDTRX), ducks the rest: ACID's bass line and the
+        hats pump. Amber is the gain reduction. GHOST keeps the pump with the kick muted.</p>
+      <p class="where"><b>HOME</b> to the HOME screen, <b>SELECT</b> to COMP; a white key ducks a track.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="comp"></div>
+  </article>
+  <article class="chapter" id="f-lfo" aria-labelledby="f-lfo-title">
+    <div class="ch-text">
+      <h3 id="f-lfo-title">Two LFOs on every track</h3>
+      <p>Ten waves with a morph, synced to the tempo, each on its own destination. Here they move a
+        hi-hat's MTAL and decay.</p>
+      <p class="where"><b>LFO</b>: LFO 1 on <b>KNOB1</b>-<b>KNOB2</b>, LFO 2 on <b>KNOB3</b>-<b>KNOB4</b>; DEST is the last page.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="lfo"></div>
+  </article>
+  <article class="chapter" id="f-seq" aria-labelledby="f-seq-title">
+    <div class="ch-text">
+      <h3 id="f-seq-title">Steps that roll dice</h3>
+      <p>A step can play by chance, ratchet, or wait for a fill bar. Mutes can wait for the next bar, and
+        knob moves record into the pattern. Parameter locks give one step its own value for a knob, on any sound
+        page: the next step plays the knob again. Each slot has 8 variations; queue the next slot or variation and it
+        comes in at the pattern's end. Steps set to FILL play only while you hold a fill. COPY and PASTE a whole slot.</p>
+      <p class="where"><b>SEQ</b>: hold a step, <b>KNOB1</b> chance, <b>KNOB2</b> ratchet. Hold <b>GLO</b> for mutes; <b>REC</b> records knob moves.
+        <b>ENV</b>: the keys are the steps on every page; hold one and turn a knob to lock it, <b>OCT-</b> clears.
+        The black keys queue a variation on HOME and SEQ; hold <b>SAVE</b>: white keys 1–4 queue a slot. Hold <b>REC</b> off SEQ: FILL. SAVE's third page:
+        COPY / PASTE.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="seq"></div>
+  </article>
+  <article class="chapter" id="f-grids" aria-labelledby="f-grids-title">
+    <div class="ch-text">
+      <h3 id="f-grids-title">Grids</h3>
+      <p>Mutable Instruments' map of drum patterns: move through it and the kick, snare and hat lanes
+        rewrite. Three densities; any track can follow a lane.</p>
+      <p class="where"><b>ARP</b>; <b>SELECT</b> to the fills.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="grids"></div>
+  </article>
+  <article class="chapter" id="f-fx" aria-labelledby="f-fx-title">
+    <div class="ch-text">
+      <h3 id="f-fx-title">Effects, per track and live</h3>
+      <p>Each track has a filter, resonator, distortion and slicer, then delay, reverb and chorus. Hold FX
+        and the black keys repeat, reverse, filter, stop or freeze the mix.</p>
+      <p class="where"><b>FX</b> for the pages; hold <b>FX</b> and play the black keys.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The FM-1’s own screen.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="fx"></div>
+  </article>
+  <article class="chapter" id="f-ble" aria-labelledby="f-ble-title">
+    <div class="ch-text">
+      <h3 id="f-ble-title">Bluetooth MIDI</h3>
+      <p>The Bluetooth version connects to Bluetooth MIDI controllers itself. An M-VAVE SMC-Mixer becomes
+        its mixer (levels, the selected track's knobs, MUTE, SOLO); other controllers play the tracks. It is also a
+        Bluetooth MIDI device for a computer or a tablet, and FM-Link plays two FM-1s in time without a cable.</p>
+      <p class="where">Hold <b>HOME</b> for the menu, <b>SELECT</b> to BLUETOOTH, <b>OCT+</b>. Off at power-on unless AUTOSTART is ON.</p>
+      <figure class="device-screen">
+        <canvas width="240" height="240" role="img" aria-label="The FM-1's screen"></canvas>
+        <figcaption>The simulator runs the plain version: no Bluetooth page.</figcaption>
+      </figure>
+    </div>
+    <div class="plate" data-piece="ble"></div>
+  </article>
+</section>
+
+<section id="install" class="install" aria-labelledby="install-title">
+  <header class="install-head">
+    <h2 id="install-title">Put it on your FM-1.</h2>
+    <p>From a web page, over the FM-1's own USB cable, in a few minutes.</p>
+  </header>
+
+  <div class="cable-diagram" id="cable" aria-hidden="true">
+    <div class="laptop">
+      <div class="lid"><span class="bar"></span><span class="ghost-btn">Install</span><span class="ghost-line"></span></div>
+      <div class="deck"></div>
+    </div>
+    <div class="usb"><span class="wire"></span><span class="pulse"></span><span class="pulse late"></span></div>
+    <div class="fm1-shot" id="install-mini"></div>
+  </div>
+  <ol class="install-steps">
+    <li><h3>Open the installer in Chrome or Edge</h3><p>On a computer: only they allow USB MIDI.</p></li>
+    <li><h3>Plug in the FM-1</h3><p>A USB data cable, straight into the computer.</p></li>
+    <li><h3>Press Install and wait</h3><p>Keep the cable in until Done. The FM-1 restarts with Hortator.</p></li>
+  </ol>
+
+  <div class="install-grid">
+    <div class="whats-new">
+      <p class="fw-version" id="fw-version">Hortator</p>
+      <h3>What's new</h3>
+      <ul id="whats-new"></ul>
+    </div>
+    <div class="install-go">
+      <a class="cta big" href="webapp/installer/">Open the installer</a>
+      <p class="risk">Installed at your own risk: the author accepts no responsibility if your FM-1 is
+        damaged or misbehaves.</p>
+      <details>
+        <summary>Back to the official firmware</summary>
+        <p>M-VAVE's updater, M-UPGRADE, puts it back: from
+          <a href="https://www.m-vave.com/download" target="_blank" rel="noopener">m-vave.com/download</a>, Downloads →
+          PC Software → M-UPGRADE, with PC Firmware → FM-1 V15.</p>
+      </details>
+      <details>
+        <summary>If an install fails</summary>
+        <p>Replug and press Install again: the FM-1 stays in update mode until a write has finished. If it no longer
+          starts, recovery needs a
+          <a href="https://github.com/kurogedelic/FM-1-transporter" target="_blank" rel="noopener">Transporter</a>.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="foot-band" id="foot-band" aria-hidden="true"></div>
+<footer class="foot">
+  <div class="foot-brand">
+    <p class="silk foot-mark">HORTATOR</p>
+    <p>The hortator kept a galley's rowers in time. This one keeps eight tracks.</p>
+  </div>
+  <nav class="foot-nav" aria-label="On this page">
+    <a href="#play">Play it in the browser</a>
+    <a href="#manual">How to play it</a>
+    <a href="webapp/installer/">Install on your FM-1</a>
+    <a href="webapp/editor/">Edit it from the browser</a>
+    <a href="#install">What's new</a>
+    <a href="source.tar.gz">Source code (GPL-3.0)</a>
+  </nav>
+  <div class="foot-credits">
+    <p>By DEADACTIVE, built on Felucca by Leo Kuroshita (@kurogedelic),
+      <a href="https://hugelton.com" target="_blank" rel="noopener">Hügelton Instruments</a>. GPL-3.0, no warranty.
+      Saves stay in this browser.</p>
+    <p>Drum algorithms (Plaits, stmlib), GRIDS and the compressor (Streams): Emilie Gillet,
+      <a href="https://github.com/pichenettes/eurorack" target="_blank" rel="noopener">Mutable Instruments</a>. SKIN
+      and RESON: <a href="https://github.com/electro-smith/DaisySP" target="_blank" rel="noopener">DaisySP</a>
+      (Electrosmith, Emilie Gillet). Samples: Versilian Studios VSCO-2 CE and VCSL (CC0 1.0). Font: Terminus (Dimitar
+      Toshkov Zhekov, <a href="terminus-license.txt">SIL OFL 1.1</a>). Recovery: jl-uboot-tool (Andrey Grigoryev).
+      Icons: Fukiai (Hügelton Instruments). Pixel font: DEADACTIVE.</p>
+    <p>MD voices measured from Joe Landers' Machinedrum emulator, a fork of
+      <a href="https://github.com/dsp56300/gearmulator" target="_blank" rel="noopener">Gearmulator</a> by The Usual
+      Suspects; measurements only, no code or data. Machinedrum is a trademark of Elektron; Hortator is not
+      affiliated. M-VAVE and FM-1 are trademarks of their owners; not affiliated with M-VAVE.</p>
+  </div>
+</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
