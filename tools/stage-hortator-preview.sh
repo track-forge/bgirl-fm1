@@ -11,15 +11,12 @@ studio=$2
 output=$3
 pin=44c9ad4aa57bebf63f412bd552e57143c30b4065
 test "$(git -C "$hortator" rev-parse HEAD)" = "$pin"
-assets="$hortator/build/sim"
-test -s "$assets/terminus.woff"
 test -s "$studio/play/felucca.wasm"
 cd "$(dirname "$0")/.."
 mkdir "$output"
 cp felucca/web/hortator/*.js felucca/web/hortator/*.css felucca/web/hortator/index.html "$output/"
-for file in terminus.woff terminus-license.txt; do
-    cp "$assets/$file" "$output/"
-done
+mkdir "$output/fonts"
+cp felucca/assets/fonts/Michroma-Regular.ttf felucca/assets/fonts/OFL-Michroma.txt "$output/fonts/"
 cp "$hortator/LICENSE" "$hortator/LICENSING.md" "$output/"
 cp -R "$hortator/LICENSES" "$studio/play" "$output/"
 node tools/capture-crew-lcd.mjs "$studio/play/felucca.wasm" > "$output/crew-lcd"
