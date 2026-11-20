@@ -27,3 +27,15 @@ cp web/emu/song-snapshot.mjs web/emu/snapshot-layout.mjs build/emu/
 cp web/emu/fonts/*.woff web/emu/fonts/OFL*.txt build/emu/fonts/
 cp ../assets/branding/bgirl-fm1-wordmark.png build/emu/branding/
 echo "emu: build/emu ($(wc -c < build/emu/felucca.wasm | tr -d ' ') B wasm, $VERSION)"
+
+# Keep studio-relative imports and reference links intact at its direct route.
+mkdir -p build/emu/play
+cp build/emu/index.html build/emu/worklet.js build/emu/felucca.wasm build/emu/*.mjs build/emu/play/
+cp -R build/emu/fonts build/emu/branding build/emu/listening build/emu/play/
+cp web/emu/flyer.html build/emu/index.html
+cp web/emu/flyer.js build/emu/
+cp web/emu/instrument-still.png build/emu/
+
+# Root-only editorial audio/stills, generated from the same production host DSP.
+python3 ../tools/editorial_assets.py
+cp web/emu/editorial.js build/emu/
