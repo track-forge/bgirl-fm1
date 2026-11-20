@@ -7,7 +7,7 @@ import { BTN, ENC, KEYS, HeldSet, keyEvent, keyHint, contextMenuLatches } from '
 import { panelInput, panelLights } from './bgirl-panel.js';
 import { needsResume, playbackSession } from './audio.js';
 import { initManual } from './manual.js';
-import { ditherBackground, initGlitch } from './dither.js';
+import { initGlitch } from './dither.js';
 import { dissolveOnEntry } from './dissolve.js';
 import { LAYOUTS, DECO_CLASS, blend, heroPose, outline } from './layout.js';
 
@@ -476,8 +476,6 @@ bindPage();
 window.addEventListener('resize', relayout);
 document.fonts?.ready.then(relayout);
 requestAnimationFrame(paint);
-// Keep the original dither at the footer only.
-ditherBackground(document.getElementById('foot-band'), (x, y) => 1 - Math.abs(2 * y - 1), '#000000', '#505050');
 initGlitch();
 
 dissolveOnEntry(document.querySelector('.hero-copy h1'));
