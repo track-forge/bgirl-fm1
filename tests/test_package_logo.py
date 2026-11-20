@@ -18,17 +18,16 @@ class LogoTest(unittest.TestCase):
             packed, colors = logo.package(a, preview)
             logo.package(b)
             self.assertEqual(a.read_bytes(), b.read_bytes())
-            self.assertEqual(len(packed), 224*145//2)
+            self.assertEqual(len(packed), 224*104//2)
             self.assertEqual(len(colors), 16)
             self.assertLessEqual(max(colors), 65535)
             self.assertIn(logo.SOURCE_SHA, a.read_text())
             with Image.open(preview) as image:
                 self.assertEqual(image.mode, 'RGBA')
-                self.assertEqual(image.size, (224, 145))
+                self.assertEqual(image.size, (224, 104))
                 alpha = image.getchannel('A').tobytes()
-                self.assertEqual(min(alpha), 0)
-                self.assertGreaterEqual(max(alpha), 250)
-                self.assertTrue(any(0 < value < 250 for value in alpha))
+                self.assertEqual(set(alpha), {255})
+
 
     def test_unreviewed_source_change_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:

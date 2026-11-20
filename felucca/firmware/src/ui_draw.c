@@ -1409,7 +1409,7 @@ static void draw_columns(void)
 }
 
 
-/* BGIRL boot logo, derived from the selected PR19 artwork. Separate artwork terms:
+/* BGIRL boot logo, derived from the selected chrome artwork. Separate artwork terms:
  * assets/branding/README.md. Decoded in 32-row strips into the existing canvas;
  * no allocation or extra framebuffer. Boot timing and audio code are unchanged. */
 #include "bgirl_logo.h"

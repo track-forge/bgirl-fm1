@@ -1,7 +1,7 @@
 # BGIRL FM-1 — Felucca electro edition
 
 <p align="center">
-  <img src="assets/branding/bgirl-fm1-wordmark.png" width="680" alt="BGIRL FM1 acid-lime graffiti wordmark">
+  <img src="assets/branding/bgirl-fm1-wordmark.png" width="680" alt="BGIRL FM1 pink-chrome shutter-shades wordmark">
 </p>
 
 **Felucca electro defaults + sample-fed vocoder + arp-triggered floorwork.**
@@ -336,7 +336,7 @@ verification details: [build status](docs/BUILD_STATUS.md).
   [component texts](felucca/LICENSES). Engines retain MIT; BSP retains MPL-2.0;
   fonts and CC0/other assets retain their notices. `LICENSE.upstream` is the old
   prototype's MPL notice, **not** the license of this combined application.
-- The graffiti wordmark has separate [provenance and use terms](assets/branding/README.md).
+- The chrome wordmark has separate [provenance and use terms](assets/branding/README.md).
   It is not covered by the repository GPL license; commercial brand use requires
   separate review/licensing under the originating Qwen Image 2.1 workflow terms.
 - Vocoder sound approval/target validation, [silhouette dance page #2](https://github.com/track-forge/bgirl-fm1/issues/2),

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
-"""Pack the existing PR19 wordmark as a bounded, 4-bit RGB565 splash image.
+"""Pack the selected chrome wordmark as a bounded, 4-bit RGB565 splash image.
 Artwork has separate use terms: assets/branding/README.md (not GPL artwork).
 """
 import argparse
@@ -9,8 +9,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'assets/branding/bgirl-fm1-wordmark.png'
-SOURCE_SHA = '0d1b4f0b96c54cce8d5dc4693e93e1eb1c8202dce3209f653c83332fdf0c2d0a'
+SOURCE = ROOT / 'assets/branding/chrome-source.jpg'
+SOURCE_SHA = 'db3d2a32353e25522d8e5117b3caeb2f75115eb0cd6ce163efe424492c7b36cb'
 WIDTH = 224
 
 
@@ -19,10 +19,19 @@ def package(out=None, preview=None):
     if hashlib.sha256(data).hexdigest() != SOURCE_SHA:
         raise ValueError('wordmark changed: review artwork/provenance before repackaging')
     with Image.open(SOURCE) as source:
-        height = round(source.height * WIDTH / source.width)
-        logo = source.convert('RGBA').resize((WIDTH, height), Image.Resampling.LANCZOS)
-    # Quantize RGBA together: transparency and antialiased edges survive without
-    # baking any particular screen color into the artwork.
+        assert source.size == (1952, 544), 'review crop coordinates for changed master'
+        # Separate FM1 stays separate, enlarged below the name for LCD readability.
+        # Coordinates are in the unchanged 1952x544 master, not a stock reference.
+        name = source.convert('RGBA')
+        name.paste((17, 10, 28, 255), (1648, 30, 1790, 145))
+        name = name.resize((WIDTH, 62), Image.Resampling.LANCZOS)
+        fm1 = source.crop((1650, 40, 1788, 138)).convert('RGBA')
+        fm1.thumbnail((42, 30), Image.Resampling.LANCZOS)
+        height = 104
+        logo = Image.new('RGBA', (WIDTH, height), (17, 10, 28, 255))
+        logo.paste(name, (0, 0))
+        logo.paste(fm1, ((WIDTH - fm1.width)//2, 72))
+    # Retain the existing indexed RGBA interface; this selected master is opaque.
     indexed = logo.quantize(colors=16, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE)
     palette = indexed.getpalette('RGBA')[:64]
     colors = [((palette[k] >> 3) << 11) | ((palette[k+1] >> 2) << 5) | (palette[k+2] >> 3)
@@ -31,7 +40,7 @@ def package(out=None, preview=None):
     indices = indexed.tobytes()
     assert len(indices) % 2 == 0 and max(indices) < 16
     packed = bytes((indices[k] << 4) | indices[k+1] for k in range(0, len(indices), 2))
-    lines = ['/* Generated from the PR19 wordmark by tools/package_logo.py.',
+    lines = ['/* Generated from the selected chrome wordmark by tools/package_logo.py.',
              ' * Artwork is NOT GPL: see assets/branding/README.md for provenance/use terms.',
              f' * Source SHA-256: {SOURCE_SHA} */', '#pragma once',
              f'#define BG_LOGO_W {WIDTH}u', f'#define BG_LOGO_H {height}u',
