@@ -688,3 +688,7 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
   .dissolving > span { opacity: 1 !important; }
   .particle-dissolve { display: none; }
 }
+
+@media (max-width: 480px) {
+  .manual-head h2 { font-size: clamp(18px, 7vw, 30px); }
+}
