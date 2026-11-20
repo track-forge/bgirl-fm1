@@ -140,6 +140,27 @@ session, hold HOME → COLOR → CIRCUIT; HOME exits. No musical behavior change
 
 [Before/after screenshots, verification and local demo](docs/BATTLE_CIRCUIT_VERIFICATION.md).
 
+## Live-track vocoder
+
+Select the **modulator** (DRUM, synth, or SLICE), then tap FX slowly until
+**VOCODER**. Turn **CARR** to a different track and play the two together.
+For a quick audition, loop a drum pattern, hold a sustained chord on another
+track, and compare **WET 0** with **127**. Set **MON OFF** to hear only the
+processed result; muting the carrier instead removes its feed.
+
+There is one vocoder. On another track the FX pages identify its owner and tell
+you which track to select. Set the owner's **CARR** to **OFF** before enabling a
+new owner. To clear a dormant route from an imported conflict, select that track
+and turn CARR down while the owner is still active.
+
+The modulator tap is mono, after DIST and before INSERT/SLICER; the carrier tap
+is mono, after DIST/INSERT/SLICER and before LEVEL/PAN/sends. SPREAD is disabled
+on participating tracks. Only one pair is processed, so no chaining or feedback
+is possible. Older conflicting routes keep SLICE priority, then lowest track
+number within each class. Dormant requests stay saved and can become active
+when a higher-priority request is cleared. Sound presets never import routing;
+loading a sound resets CARR as before.
+
 ## Sample-fed vocoder / early listening demo
 
 Switch on, then **Load dry speech**, **Load8-band vocoder** or **Load12-band

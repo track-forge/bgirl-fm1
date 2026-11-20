@@ -33,6 +33,39 @@ static void lab_mod(const track_t *t)
         cv_text_r(224,y+2,&AF_C,b,on?T_TEXT:T_DIM,T_BG);
     }
 }
+/* Same ownership decision as audio; two lines also fit the LARGE strip. */
+static void graph_voc_route(const track_t *t)
+{
+    int owner = voc_owner();
+    char status[] = "VOCODER IN USE: T1";
+    char guidance[] = "SELECT T1 TO EDIT";
+    cv_oy = 0;
+    if (owner < 0) {
+        cv_text(12, 3, &AF_C, "VOCODER OFF", T_DIM);
+        cv_text(12, 17, &AF_C, "SET CARR ON VOCODER PAGE", T_SUPPORT);
+        return;
+    }
+    const track_t *mod = &trk[owner];
+    int carrier = voc_carrier(mod, mod->p[P_VCARR]);
+    if (t != mod) {
+        status[sizeof status - 2] = (char)('1' + owner);
+        guidance[8] = (char)('1' + owner);
+        cv_text(12, 3, &AF_C, status, T_TEXT);
+        cv_text(12, 17, &AF_C, guidance, T_SUPPORT);
+        if (carrier >= 0 && t == &trk[carrier])
+            cv_text_r(228, 17, &AF_C, "CARRIER", T_ACCENT, cv_bg);
+        return;
+    }
+    char route[] = "T1 MODULATOR   T1 CARRIER";
+    route[1] = (char)('1' + owner);
+    route[16] = (char)('1' + carrier);
+    if (carrier < 0 || voc_missing_modulator(mod))
+        cv_text(12, 3, &AF_C, "VOCODER: NO SOURCE", T_ACCENT);
+    else {
+        cv_text(12, 3, &AF_C, t->p[P_VHOLD] ? "VOCODER: HOLD" : "VOCODER ACTIVE", T_TEXT);
+        cv_text(12, 17, &AF_C, route, T_SUPPORT);
+    }
+}
 static void lab_vocoder(const track_t *t)
 {
     char carrier[16],bands[8];const char *unit;
@@ -74,7 +107,7 @@ static void graph_lab_more(const page_t *pg,const track_t *t)
     else if(pg->graph==GR_MOD)lab_mod(t);
     else if(pg->graph==GR_FMENV && fop_ok())graph_fm6env(t,T_THEME);
     else if(pg->scope==SC_ENGINE && ENGINES[t->eng_req%NENGINES]==&ENG_WHEEL)lab_wheel(t);
-    else if(str_eq(pg->title,"VOCODER") || str_eq(pg->title,"VOC INPUT"))lab_vocoder(t);
+    else if (voc_page(pg)) lab_vocoder(t);
     else lab_params(pg);
     graph_ht=100;cv_oy=0;
     section_heading(ICON_BG_LAB,"LAB",T_THEME);

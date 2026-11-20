@@ -886,24 +886,32 @@ static struct {
 } bg_bus = {.owner=-1, .carrier=-1};
 static void bg_capture_begin(uint32_t n)
 {
-    int owner=-1,carrier=-1; uint32_t k, signature;
-    for(k=0;k<NPART;k++)
-        if(trk[k].engine==13 && trk[k].p[P_VCARR]) { owner=(int)k; break; }
-    if(owner>=0 && slc_src_of(trk[owner].p)==SLC_SRC_VOCALS && !slc_vocal_match(&trk[owner])) owner=-1;
-    if(owner>=0) {
-        carrier=trk[owner].p[P_VCARR]-1;
-        if(carrier<0 || carrier>=NPART || carrier==owner || !eng_ok(trk[carrier].engine)) carrier=-1;
+    int owner = voc_owner(), carrier = -1;
+    uint32_t signature = 0;
+    if (owner >= 0) {
+        track_t *t = &trk[owner];
+        if (t->engine != t->eng_req || voc_missing_modulator(t)) owner = -1;
+        else {
+            carrier = voc_carrier(t, t->p[P_VCARR]);
+            if (carrier >= 0 && trk[carrier].engine != trk[carrier].eng_req) carrier = -1;
+            /* Pack route, engines and SLICE resource without aliasing synth knobs. */
+            signature = (uint32_t)(owner + 1) | (uint32_t)(carrier + 1) << 3 |
+                        (uint32_t)t->engine << 6 | (uint32_t)t->p[P_VBANDS] << 10;
+            if (carrier >= 0) signature |= (uint32_t)trk[carrier].engine << 12;
+            if (t->engine == 13) {
+                signature |= (uint32_t)t->p[P_E0] << 16;
+                if (slc_src_of(t->p) == SLC_SRC_VOCALS) signature |= (uint32_t)t->p[P_E1] << 24;
+            }
+        }
     }
-    signature=(uint32_t)(owner+1)*19u+(uint32_t)(carrier+1)*257u;
-    if(owner>=0) signature+=trk[owner].p[P_VBANDS]*65536u+trk[owner].p[P_E0]*1048576u+(slc_src_of(trk[owner].p)==SLC_SRC_VOCALS ? (uint32_t)trk[owner].p[P_E1]*16777216u : 0);
-    if(carrier>=0) signature+=trk[carrier].engine*8192u+trk[carrier].eng_req*512u;
     if(bg_bus.signature!=signature || bg_bus.reset!=bg_vreset) {
         bg_vocoder_reset();
-        if(owner>=0) trk[owner].p[P_VHOLD]=0;
+        if (bg_bus.owner >= 0) trk[bg_bus.owner].p[P_VHOLD] = 0;
+        if (owner >= 0) trk[owner].p[P_VHOLD] = 0;
     }
     bg_bus.owner=owner; bg_bus.carrier=carrier; bg_bus.signature=signature; bg_bus.reset=bg_vreset;
     bg_bus.mod_valid=bg_bus.car_valid=0;
-    for(k=0;k<n;k++) bg_bus.mod[k]=bg_bus.car[k]=0;
+    for (uint32_t k = 0; k < n; k++) bg_bus.mod[k] = bg_bus.car[k] = 0;
 }
 #endif
 

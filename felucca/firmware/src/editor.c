@@ -505,7 +505,8 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
                 set_engine((uint32_t)clamp(ed_rv(a + 2), 0, NENGINES - 1));
                 ed_load_after(&b);
             } else if (d->max > d->min) {
-                *vp = (int16_t)enum_orig(d, clamp(ed_rv(a + 2), d->min, d->max));
+                int value = enum_orig(d, clamp(ed_rv(a + 2), d->min, d->max));
+                if (a[0] || voc_can_set(TSEL, a[1], value)) *vp = (int16_t)value;
                 if (a[0] == 0) {
                     if(a[1]==P_VRANGE)sync_reload=1;
                     (void)motion_capture(TSEL, a[1], *vp);
@@ -849,8 +850,9 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
         t = &trk[a[0]];
         d = ed_tdesc(t, a[1]);
         if (na >= 4u && !(chain_busy() && chain_owns(a[1]))) {
-            if (d->max > d->min)                           /* as SET: clamped; a fixed value stays */
-                t->p[a[1]] = (int16_t)enum_orig(d, clamp(ed_rv(a + 2), d->min, d->max));
+            int value = enum_orig(d, clamp(ed_rv(a + 2), d->min, d->max));
+            if (d->max > d->min && voc_can_set(t, a[1], value))
+                t->p[a[1]] = (int16_t)value;
             (void)motion_capture(t, a[1], t->p[a[1]]);
             ed_known(a[0], a[1]);
             ui.force = 1;

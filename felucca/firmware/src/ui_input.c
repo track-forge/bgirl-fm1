@@ -1075,6 +1075,20 @@ static void edit_param(uint32_t slot, int32_t steps)
     if (!d || !vp || d->max == d->min)
         return;
     v = param_turn(d, *vp, accel(EN_K1 + slot, steps, d->fmt == F_ENUM ? 0 : d->max - d->min));
+    if (vp == &TSEL->p[P_VCARR] && BGIRL_VOCODER) {
+        int owner = voc_owner();
+        if (owner >= 0 && owner != song.sel) {
+            if (steps > 0) return;
+            v = 0; /* clear a dormant request; never let it steal the instance */
+        } else {
+            while (v && voc_carrier(TSEL, v) < 0) {
+                int next = param_turn(d, v, steps > 0 ? 1 : -1);
+                if (next == v) return;
+                v = next;
+            }
+        }
+    }
+    if (pg->scope != SC_GLOBAL && !voc_can_set(TSEL, (uint32_t)(vp - TSEL->p), v)) return;
     if (vp == &TSEL->p[P_ATSNS] && !*vp && v)             /* AFTERTOUCH on (1.8): the engine's routing, if none */
         at_turn_on(TSEL);
     *vp = (int16_t)v;
