@@ -1291,6 +1291,8 @@ static uint32_t graph_signature(void)
             h ^= (uint32_t)mod->p[P_VCARR] * 1299709u;
             h ^= (uint32_t)(track_desc(mod, P_VCARR) == &VC_MISSING) * 7919u;
         }
+        for (i = 0; i < NTRK; i++)
+            h = (h ^ (uint32_t)trk[i].eng_req) * 16777619u;
         h ^= (uint32_t)t->p[P_VHOLD] * 257u;
         return h;
     }
