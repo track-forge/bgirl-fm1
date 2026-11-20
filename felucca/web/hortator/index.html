@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hortator: drum-machine firmware for the M-VAVE FM-1</title>
+<title>BGIRL-FM1 · Browser preview</title>
 <meta name="description" content="Hortator turns the M-VAVE FM-1 into an eight-track drum machine with 45 drum engines, 21 of them measured from the Machinedrum. Play it in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
 <section id="hero" class="hero" aria-label="Hortator">
   <div class="hero-stage" id="stage">
     <nav class="hero-nav">
-      <span class="silk">HORTATOR</span>
+      <span class="silk">BGIRL-FM1</span>
       <span class="nav-links"><a href="#manual">Guide</a><a href="play/">BGIRL studio</a></span>
     </nav>
 
@@ -38,11 +38,8 @@
     </div>
 
     <div class="hero-copy" id="hero-copy">
-      <h1>Eight tracks of drums, inside the M&#8209;VAVE&nbsp;FM&#8209;1.</h1>
-      <p>Custom firmware by DEADACTIVE, named after the drummer who kept a Roman galley's rowers in time. Scroll on
-        to play the real firmware in your browser.</p>
-      <p class="hero-count"><b>45</b> drum engines in three banks: <b>21</b> measured from the Machinedrum (13 TRX,
-        8 EFM), <b>10</b> modern, <b>14</b> classic. <b>151</b> factory presets, <b>96</b> user slots.</p>
+      <h1>BGIRL-FM1</h1>
+      <p>Play BGIRL’s firmware in Hortator’s browser panel. The manual below is still the original Hortator guide.</p>
       <p class="hero-actions">
         <a class="cta" href="#play">Play it</a>
       </p>
@@ -53,11 +50,11 @@
       <p id="note" class="note" role="status"></p>
       <span class="power-note" id="power-note">Loading…</span>
       <button type="button" class="bar-btn" id="help-toggle" aria-expanded="false" aria-controls="help">Controls</button>
-      <button type="button" class="bar-btn" id="reset" aria-haspopup="dialog">Reset to demos</button>
-      <div id="reset-confirm" class="confirm" role="dialog" aria-label="Reset to demos" hidden>
-        <p>Erase your saves in this browser and restore the four demos?</p>
-        <button type="button" id="reset-yes">Erase and restart</button>
-        <button type="button" id="reset-no">Keep my saves</button>
+      <button type="button" class="bar-btn" id="reset" aria-haspopup="dialog">Reset preview</button>
+      <div id="reset-confirm" class="confirm" role="dialog" aria-label="Reset preview" hidden>
+        <p>Reset this temporary BGIRL session? Studio saves are not affected.</p>
+        <button type="button" id="reset-yes">Reset and restart</button>
+        <button type="button" id="reset-no">Cancel</button>
       </div>
     </div>
     <a class="more-cue" id="more-cue" href="#manual">More below<span aria-hidden="true">↓</span></a>
@@ -263,12 +260,12 @@
   <nav class="foot-nav" aria-label="On this page">
     <a href="#play">Play it in the browser</a>
     <a href="#manual">How to play it</a>
-    <a href="source.tar.gz">Source code (GPL-3.0)</a>
+    <a href="https://github.com/track-forge/bgirl-fm1/tree/feat/pages-v2">Source code (GPL-3.0)</a>
   </nav>
   <div class="foot-credits">
     <p>By DEADACTIVE, built on Felucca by Leo Kuroshita (@kurogedelic),
       <a href="https://hugelton.com" target="_blank" rel="noopener">Hügelton Instruments</a>. GPL-3.0, no warranty.
-      Saves stay in this browser.</p>
+      The BGIRL homepage session does not save.</p>
     <p>Drum algorithms (Plaits, stmlib), GRIDS and the compressor (Streams): Emilie Gillet,
       <a href="https://github.com/pichenettes/eurorack" target="_blank" rel="noopener">Mutable Instruments</a>. SKIN
       and RESON: <a href="https://github.com/electro-smith/DaisySP" target="_blank" rel="noopener">DaisySP</a>

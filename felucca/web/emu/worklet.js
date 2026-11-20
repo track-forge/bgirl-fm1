@@ -80,6 +80,7 @@ if (typeof registerProcessor === "function") {
           ex.web_master(m.master ?? 700);
           ex.web_boot();
           this.ex = ex;
+          this.disposable = m.disposable === true;
           this.sentWrites = ex.web_flash_writes_count();
           this.port.postMessage({ type: "ready", rate: ex.web_sample_rate(), restoreSong:!!ex.web_snapshot_restore_allowed() });
         } catch (err) {
@@ -206,7 +207,7 @@ if (typeof registerProcessor === "function") {
         transfer.push(msg.fb.buffer);
       }
       const writes = ex.web_flash_writes_count();
-      if (writes !== this.sentWrites) {               // a save is done within one main-loop pass: whole here
+      if (!this.disposable && writes !== this.sentWrites) {               // a save is done within one main-loop pass: whole here
         this.sentWrites = writes;
         msg.sectors = storeSectors(new Uint8Array(mem, ex.web_nor(), ex.web_nor_size()));
       }
