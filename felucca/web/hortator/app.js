@@ -475,10 +475,6 @@ bindPage();
 window.addEventListener('resize', relayout);
 document.fonts?.ready.then(relayout);
 requestAnimationFrame(paint);
-// the look (dither.js): a dithered glow behind the device, a dithered fade into the footer, headings that glitch
-ditherBackground(document.getElementById('stage'), (x, y) => {
-  const dx = (x - 0.5) / 0.55, dy = (y - 0.42) / 0.5;
-  return Math.max(0, 1 - Math.hypot(dx, dy)) * 1.15;
-}, '#000000', '#282828');
+// Keep the original dither at the footer only.
 ditherBackground(document.getElementById('foot-band'), (x, y) => 1 - Math.abs(2 * y - 1), '#000000', '#505050');
 initGlitch();

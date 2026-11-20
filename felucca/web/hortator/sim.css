@@ -78,6 +78,17 @@ html { scroll-snap-type: y proximity; }
   color: var(--c5); background-color: var(--k); image-rendering: pixelated;
   --hero-ink: var(--c5);
 }
+.hero-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-radial-gradient(circle at 50% 46%,
+    transparent 0 5px, #9a8bd233 6px, #362842 7px 8px, transparent 9px 13px);
+  mask-image: radial-gradient(ellipse at 50% 46%, transparent 9%, black 32%, transparent 74%),
+    conic-gradient(from 18deg at 50% 46%, black, #0004 22%, black 33%, transparent 55%, black 78%, black);
+  mask-composite: intersect;
+}
 .hero-nav {
   position: absolute; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between;
   align-items: center; padding: 16px max(16px, 4vw); color: var(--hero-ink);
