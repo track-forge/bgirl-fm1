@@ -117,8 +117,8 @@ html { scroll-snap-type: y proximity; }
   font: 64px/1.15 var(--display); margin: 0; max-width: 14ch; color: var(--w); text-transform: uppercase;
   text-shadow: 4px 4px 0 var(--k);
 }
-.hero-copy p { margin: 16px 0 0; max-width: 46ch; color: var(--c4); background: var(--k); }
-.hero-copy .hero-count { color: var(--c5); }
+.hero-copy p { margin: 16px 0 0; max-width: 56ch; color: var(--c4); background: var(--k); }
+.hero-copy .hero-tagline { color: var(--c5); font-size: 1.12rem; }
 .hero-copy .hero-count b { padding: 0 4px; color: var(--k); background: var(--w); font-weight: normal; }   /* the screen's inverted bars */
 .hero-copy .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 24px; background: none; }
 .scroll-cue {
@@ -672,7 +672,7 @@ canvas.lcd { image-rendering: pixelated; image-rendering: crisp-edges; border-ra
 }
 @media (max-height: 520px) {                          /* phones held sideways: smaller copy */
   .hero-copy h1 { font-size: 32px; line-height: 32px; }
-  .hero-copy p:not(.hero-actions) { display: none; }
+  .hero-copy { max-height: calc(100% - 72px); overflow-y: auto; }
   .hero-copy { bottom: 16px; }
 }
 @media (min-width: 1500px) { .hero-copy h1 { font-size: 80px; line-height: 80px; } }
