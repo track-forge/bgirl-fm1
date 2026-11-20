@@ -117,7 +117,9 @@ html { scroll-snap-type: y proximity; }
   font: 64px/1.15 var(--display); margin: 0; max-width: 14ch; color: var(--w); text-transform: uppercase;
   text-shadow: 4px 4px 0 var(--k);
 }
-.hero-copy p { margin: 16px 0 0; max-width: 56ch; color: var(--c4); background: var(--k); }
+.hero-description { margin-top: 16px; max-width: min(56ch, calc(100vw - 32px)); padding: 12px 16px; border-radius: 12px; background: var(--k); color: var(--c4); }
+.hero-description p { margin: 0; }
+.hero-description p + p { margin-top: 12px; }
 .hero-copy .hero-tagline { color: var(--c5); font-size: 1.12rem; }
 .hero-copy .hero-count b { padding: 0 4px; color: var(--k); background: var(--w); font-weight: normal; }   /* the screen's inverted bars */
 .hero-copy .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 24px; background: none; }
