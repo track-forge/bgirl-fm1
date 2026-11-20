@@ -8,7 +8,9 @@ int main(void) {
     web_nor_erase();web_boot();tick(60032);
     project_capture(&fresh);
     assert(!web_bgirl_project(1));tick(4096);project_capture(&explicit);
-    assert(!memcmp(&fresh,&explicit,sizeof fresh));
+    assert(fresh.t[0].p[P_E0]==DK_BG_BREAK);
+    assert(trk[0].p[P_E0]==DK_TIGHT);
+    fresh=explicit; /* The named demo, not its fresh-start revoicing. */
     assert(song.g[G_BPM]==128 && !song.playing && NVOICE==8);
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
     assert(trk[1].step[0].note[0]==33 && trk[1].step[25].note[0]==41 && trk[1].step[28].vel==112);

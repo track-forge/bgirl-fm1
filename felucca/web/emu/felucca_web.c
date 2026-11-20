@@ -517,7 +517,7 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
         for (i = 1; i < 3u; i++)
             load_pat16(&trk[i], PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].note,
                        PATTERNS[BGIRL_TRK_DEF[i][2] - 1u].flags);
-        bgirl_demo_steps();
+        bgirl_demo_steps(2); /* Named Mega Jam: original TIGHT kit. */
     }
     ui.home = 1;
     ui.force = 1;

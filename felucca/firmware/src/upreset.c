@@ -119,7 +119,7 @@ static int up_valid(const up_rec_t *r)
     if(r->ver>=UP_VER_CLARITY && (r->np!=P_COUNT || r->packed[P_VRANGE]!=65u))return 0;
     if(r->ver==UP_VER_VOCAL && (r->engine!=13 || r->np>UP_VOCAL_AT || r->packed[r->np-8u] != 6u+64u)) return 0;
     if((r->ver==UP_VER_SIGNATURE || r->ver==UP_VER_SIGNATURE_GRID) &&
-       (r->engine!=ENGI_DRUM || r->np<8u || r->packed[r->np-8u]<12u+64u || r->packed[r->np-8u]>18u+64u)) return 0;
+       (r->engine!=ENGI_DRUM || r->np<8u || r->packed[r->np-8u]<12u+64u || r->packed[r->np-8u]>21u+64u)) return 0;
     if (r->ver >= 4u) for (uint32_t i = 0; i < r->np; i++) if (r->packed[i] > 191u) return 0;
     return 1;
 }

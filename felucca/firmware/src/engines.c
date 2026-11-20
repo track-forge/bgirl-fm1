@@ -210,7 +210,7 @@ static uint32_t trk_def_engine(uint32_t i) { return TRK_DEF[i % NPART][0]; }
 /* BGIRL roles are separate from TRK_DEF: legacy project migration and upstream
  * CLEAR ALL keep their original semantics. No engine/preset IDs are renumbered. */
 static const uint8_t BGIRL_TRK_DEF[NPART][3] = {
-    {ENGI_DRUM, 2, 0}, /* TIGHT KIT */
+    {ENGI_DRUM, DRUM_PRESET_BG_BREAK, 0}, /* BG BREAK */
     {0, 13, 2},       /* SH-ISH Crunchy Bass, OFFBEAT */
     {ENGI_FM6, 1, 7}, /* BELL, sparse metallic reply */
     {5, 1, 0},        /* VOX LEAD: robot synth PLACEHOLDER (no speech/vocoder) */

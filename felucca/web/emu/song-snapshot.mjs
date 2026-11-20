@@ -97,11 +97,13 @@ function resourcesFor(song,deps){
  }
  return {factory:CAPABILITY,vocalBanks:[...vocals].sort(),unresolved:[...unresolved].sort()};
 }
+// The previous layout has identical wire fields; only DRUM's range/preset list grew.
+export const PRE_KITS_CAPABILITY='bgirl-six-clarity-127-v1-bb83fb2d0515bc0b';
 export function toWire(doc){
  object(doc,'document');
  if(Object.keys(doc).some(k=>!['format','version','capability','title','metadata','resources','song','dependencies'].includes(k)))fail('document','unknown required/top-level field; optional extensions belong in metadata');
  for(const k of ['format','version','capability','title','resources','song','dependencies'])if(!(k in doc))fail(k,'required');
- if(doc.format!==FORMAT||doc.version!==VERSION||doc.capability!==CAPABILITY)fail('document','unsupported format/version/capability');
+ if(doc.format!==FORMAT||doc.version!==VERSION||![CAPABILITY,PRE_KITS_CAPABILITY].includes(doc.capability))fail('document','unsupported format/version/capability');
  if(doc.metadata!==undefined)object(doc.metadata,'metadata');
  if(typeof doc.title!=='string'||doc.title.length>120)fail('title','expected string <=120 characters');
  if(!Array.isArray(doc.dependencies)||doc.dependencies.length>4)fail('dependencies','at most four sources');
@@ -111,7 +113,7 @@ export function toWire(doc){
  for(const d of deps)words.push(...projectIO(d.song,false,`dependencies.${d.id}`));
  for(const r of doc.song.arrangement.rows.slice(0,doc.song.arrangement.count))for(const id of r.sources)if(id!==null&&!deps.some(d=>d.id===id))fail('arrangement','missing dependency '+id);
  const expected=resourcesFor(doc.song,deps);
- if(!doc.resources || Object.keys(doc.resources).length!==3 || doc.resources.factory!==expected.factory || JSON.stringify(doc.resources.vocalBanks)!==JSON.stringify(expected.vocalBanks) || JSON.stringify(doc.resources.unresolved)!==JSON.stringify(expected.unresolved))fail('resources','manifest must match musical references');
+ if(!doc.resources || Object.keys(doc.resources).length!==3 || doc.resources.factory!==doc.capability || JSON.stringify(doc.resources.vocalBanks)!==JSON.stringify(expected.vocalBanks) || JSON.stringify(doc.resources.unresolved)!==JSON.stringify(expected.unresolved))fail('resources','manifest must match musical references');
  if(words.length>65536)fail('document','logical capacity exceeded');
  return Int32Array.from(words);
 }

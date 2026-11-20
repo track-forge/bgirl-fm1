@@ -5,7 +5,7 @@ static void bgirl_mega_note(uint32_t track, uint32_t at, uint32_t note, uint32_t
 {
     trk[track].step[at]=(step_t){.n=1,.note={(uint8_t)note},.vel=(uint8_t)vel,.time=ST_NOTE};
 }
-static void bgirl_mega_demo(void)
+static void bgirl_mega_demo(uint32_t drum_preset)
 {
     static const uint8_t riff[][3]={
         {0,45,40},{1,45,87},{6,55,84},{7,55,61},{8,57,45},{9,57,73},
@@ -20,7 +20,7 @@ static void bgirl_mega_demo(void)
     uint32_t i,k,group=0;
     for(i=0;i<NTRK;i++)motion_reset(&trk[i]);
     undo_depth++;
-    set_engine_of(&trk[0],ENGI_DRUM);apply_preset_to(&trk[0],2);
+    set_engine_of(&trk[0],ENGI_DRUM);apply_preset_to(&trk[0],drum_preset);
     set_engine_of(&trk[1],0);apply_preset_to(&trk[1],13); /* SH-ISH Crunchy Bass (1-1) */
     set_engine_of(&trk[2],0);apply_preset_to(&trk[2],NELEM(ANALOG_PRESETS));
     set_engine_of(&trk[3],13);apply_preset_to(&trk[3],0);

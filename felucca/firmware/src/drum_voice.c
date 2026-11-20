@@ -72,11 +72,11 @@
 enum { DV_KICK, DV_SNARE, DV_CLAP, DV_HATC, DV_HATO, DV_TOM, DV_RIM, DV_BELL, DV_NLANE };
 enum {
     DVT_PUNCH, DVT_ROUND, DVT_SNARE, DVT_CLAP, DVT_HATC, DVT_HATO, DVT_TOM, DVT_CONGA, DVT_RIM, DVT_CLAVE,
-    DVT_BELL, DVT_CYM, DVT_COUNT
+    DVT_BELL, DVT_CYM, DVT_FM, DVT_COUNT
 };
 /* a lane of a model kit as a type: the kit (1..DV_NKIT) in the high 4 bits, the lane in the low 3 (Felucca's own
  * types: 0 above). Its run (the DVT_* it plays through) is the kit's (DV_KIT) */
-#define DV_NKIT 8                                        /* (1.5.6, #216: DEEP TIGHT PERC after 77) */
+#define DV_NKIT 11
 #define DV_KITOF(t) ((uint32_t)(t) >> 4)
 #define DV_KTYPE(kit, lane) ((uint8_t)(((kit) << 4) | (lane)))
 
@@ -142,7 +142,7 @@ static const struct {
 #define DV_P16(hz_p16) pitch_inc(clamp((hz_p16), 0, 2047))
 /* the metal source's ratios (Q12). Hats: the six-square cluster of the classic analog hats (205.3, 304.4,
  * 369.6, 522.7, 540, 800 Hz over 205.3); the cymbal: inharmonic, picked by ear */
-static const uint16_t DV_METAL_R[7][6] = {
+static const uint16_t DV_METAL_R[][6] = {
     {4096, 6073, 7374, 10428, 10774, 15961},
     {4096, 5800, 6560, 7530, 8810, 10650},
     /* the model kits' (a ratio 0: that square stands still, a constant the band-passes take away) */
@@ -150,7 +150,8 @@ static const uint16_t DV_METAL_R[7][6] = {
     {4096, 4203, 4368, 4836, 6059, 7486},                /* 55 hats: a high cluster, 8.0 .. 14.7 kHz */
     {4096, 12254, 17607, 21692, 25765, 43372},           /* 55 bell: 720 Hz .. 7.6 kHz, wide apart */
     {4096, 4695, 5646, 10855, 13031, 15117},             /* 77: two triads of pulses, 3.7 .. 13.5 kHz */
-    {0, 0, 0, 0, 0, 0},                                  /* 66: none (its metal is noise through a narrow band) */
+    {0, 0, 0, 0, 0, 0},                                  /* 66: noise */
+    {4096, 7318, 6079, 10354, 15961, 10766},             /* RAW: x0x/8W8 metal ratios, see kit notes */
 };
 
 /* The model kits (KIT 80 10 66 55 77 in eng_drum.c): every lane a kit's own voice, built on the runs above
@@ -187,7 +188,7 @@ typedef struct {
     int16_t v[13];
 } dv_kit_t;
 /* the accent per kit: + (x / 16384) per accent step (75: +4 dB at full, as Felucca's own) */
-static const uint8_t DV_KIT_ACC[DV_NKIT] = {120, 45, 100, 40, 40, 80, 60, 70};
+static const uint8_t DV_KIT_ACC[DV_NKIT] = {120, 45, 100, 40, 40, 80, 60, 70, 70, 88, 65};
 static const dv_kit_t DV_KIT[DV_NKIT][DV_NLANE] = {
     {   /* 80 */
         /* deep sine, a small drop, long decay */
@@ -329,6 +330,36 @@ static const dv_kit_t DV_KIT[DV_NKIT][DV_NLANE] = {
         {DVT_CLAVE, 32, 1568, 149, 2131, {84, 28000, 10000, 6348, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
         /* 66's bell: sines 830 / 613 Hz */
         {DVT_RIM, 40, 1280, 60, 3629, {-84, 30000, 7500, 4096, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    },
+    {   /* BG BREAK: short kick, dry shells, snare/clap with complementary bands */
+        {DVT_PUNCH, 48, 521, 78, 3450, {160, 105, 180, 6100, 2800, 1460, 6300, 6200}},
+        {DVT_SNARE, 40, 872, 70, 6700, {153, 27, 110, 54, 15500, 13500, 1750, 5400, 32, 11000, 23500, 3900, 1828}},
+        {DVT_CLAP, 38, 1460, 120, 9500, {0, 5500, 1700, 6000, 2200, 26000, 25, 230, 3}},
+        {DVT_HATC, 39, 970, 42, 8000, {1880, 5300, 1970, 2042, 1650, 25000, 7800, 3, 0}},
+        {DVT_HATO, 50, 970, 160, 10800, {1850, 5500, 1890, 2042, 750, 27000, 7200, 3, 0}},
+        {DVT_TOM, 43, 808, 112, 3400, {29, 55, 1450, 7300}},
+        {DVT_RIM, 30, 1184, 29, 4400, {161, 23600, 11000, 6200}},
+        {DVT_BELL, 38, 1255, 100, 3100, {97, 145, 4000, 21000, 38, 5600}},
+    },
+    {   /* 808 RAW: rounded low tail; reference clap and six-oscillator metal tuning */
+        {DVT_PUNCH, 64, 544, 430, 3200, {43, 100, 46, 950, 280, 1410, 900, 4300, 12}},
+        {DVT_SNARE, 41, 870, 154, 5300, {230, 9, 100, 58, 27800, 13200, 1650, 6300, 40, 5800, 24800, 4200, 1828}},
+        {DVT_CLAP, 45, 1294, 140, 11900, {0, 3173, 1700, 1700, 4300, 28100, 45, 441, 3}},
+        {DVT_HATC, 45, 893, 78, 8700, {1840, 5100, 1980, 2042, 3800, 31000, 0, 3, 7}},
+        {DVT_HATO, 62, 893, 385, 12900, {1874, 5100, 1910, 2042, 1200, 32700, 0, 3, 7}},
+        {DVT_CONGA, 49, 820, 248, 4250, {21, 95, 1400, 1500, 6200, 5100}},
+        {DVT_RIM, 30, 1326, 23, 4700, {268, 14000, 24500, 10400}},
+        {DVT_BELL, 49, 1151, 256, 3050, {109, 154, 3650, 23300, 60, 11000}},
+    },
+    {   /* COLD WIRE: inharmonic shell, FM pitched reply and velocity-bright zap */
+        {DVT_PUNCH, 37, 585, 59, 3380, {150, 80, 240, 4500, 7700, 1500, 8000, 6800}},
+        {DVT_SNARE, 40, 1132, 117, 5600, {417, 33, 180, 72, 26700, 19200, 1820, 3800, 38, 9500, 18800, 6600, 1920}},
+        {DVT_CLAP, 25, 1505, 56, 10800, {0, 7400, 1760, 8500, 1300, 29000, 23, 155, 2}},
+        {DVT_HATC, 31, 956, 30, 7600, {1950, 6500, 2010, 2042, 2200, 15500, 12800, 3, 4}},
+        {DVT_HATO, 45, 1115, 220, 11100, {1850, 4800, 1830, 2042, 1200, 32700, 1000, 3, 4}},
+        {DVT_FM, 43, 768, 239, 3300, {192, 190, 10600}},
+        {DVT_RIM, 28, 1410, 49, 4400, {129, 24300, 16000, 5000}},
+        {DVT_FM, 31, 1359, 94, 3250, {333, 98, 18500}},
     },
 };
 
@@ -629,6 +660,12 @@ static void dv_setup_kit(dv_coef_t *c, const dv_param_t *p)
         c->g[1] = dv_at(v[2], tn);
         dv_drive(&c->g[2], &c->g[3], v[3] * ((int32_t)x + 64) / 128 * (512 + acc) / 512);
         break;
+    case DVT_FM:
+        c->inc[1] = DV_P16(p16 + v[0]);
+        c->k[0] = dv_k((uint32_t)v[1] * 100u);
+        c->kb[0] = dv_kb(tau);
+        c->g[0] = clamp(dv_at(v[2], x) + ((int32_t)tn - 64) * 120 + acc * 95, 0, 32767);
+        break;
     default:                                             /* DVT_BELL */
         c->inc[1] = DV_P16(p16 + v[0]);
         tsvf_coef_k(&c->f[0], dv_cut(p16 + v[1] + ((int32_t)tn - 64) * 2), v[2]);
@@ -826,6 +863,28 @@ static __attribute__((noinline)) void dv_tom_run(const dv_coef_t *c, dv_voice_t 
     v->live = v->q[0] > DV_QUIET;
 }
 
+/* Two operators: a short index envelope over a longer pitched body.
+ * Q15 modulator x Q15 index, scaled to Q32 phase (up to one cycle). */
+static void dv_fm_run(const dv_coef_t *c, dv_voice_t *v, int32_t *y, uint32_t n)
+{
+    uint32_t carrier = v->ph[0], mod = v->ph[1], env = v->e[0];
+    int32_t a, d;
+    dv_slow(&v->q[0], c->kb[0], &a, &d);
+    for (uint32_t i = 0; i < n; i++) {
+        carrier += c->inc[0];
+        mod += c->inc[1];
+        int32_t index = ((int32_t)(env >> 1) * c->g[0]) >> 15;
+        uint32_t offset = (uint32_t)(sine_i(mod) * index) * 4u;
+        a += d;
+        y[i] = (sine_i(carrier + offset) * (a >> 5)) >> 15;
+        env = (env * c->k[0]) >> 15;
+    }
+    v->ph[0] = carrier;
+    v->ph[1] = mod;
+    v->e[0] = env;
+    v->live = v->q[0] > DV_QUIET;
+}
+
 static __attribute__((noinline)) void dv_rim_run(const dv_coef_t *c, dv_voice_t *v, int32_t *y, uint32_t n)
 {
     uint32_t i, p0 = v->ph[0], p1 = v->ph[1], e = v->e[0];
@@ -983,6 +1042,9 @@ static void dv_run(const dv_coef_t *c, dv_voice_t *v, const int32_t *metal, int3
         break;
     case DVT_BELL:
         dv_bell_run(c, v, y, n);
+        break;
+    case DVT_FM:
+        dv_fm_run(c, v, y, n);
         break;
     default:
         dv_cym_run(c, v, metal, y, n);
