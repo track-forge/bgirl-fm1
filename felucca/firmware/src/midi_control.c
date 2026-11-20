@@ -239,7 +239,7 @@ static void midi_cc_set(track_t *t, uint32_t id, uint32_t value)
 #endif
     if(id==P_VREL)d=track_desc(t,id);
     int32_t v = d->min + ((int32_t)value * (d->max - d->min) + 63) / 127;
-    if (d->max <= d->min || t->p[id] == v)
+    if (d->max <= d->min || t->p[id] == v || !voc_can_set(t, id, v))
         return;
     t->p[id] = (int16_t)v;
     (void)motion_capture(t, id, (int16_t)v);

@@ -252,15 +252,57 @@ static const param_desc_t GP[G_COUNT] = {
     [G_DRREV] = PD("-", F_INT, 0, 0, 0),
 };
 
+/* Preserve a configured SLICE route in older projects that also have
+ * dormant instrumental CARR values. Within each class, lowest track wins. */
+static int voc_owner(void)
+{
+#if BGIRL_VOCODER
+    int instrumental = -1;
+    for (uint32_t k = 0; k < NPART; k++) {
+        if (!trk[k].p[P_VCARR] || !eng_ok(trk[k].eng_req)) continue;
+        if (trk[k].eng_req == 13) return (int)k;
+        if (instrumental < 0) instrumental = (int)k;
+    }
+    return instrumental;
+#else
+    return -1;
+#endif
+}
+
+static int voc_carrier(const track_t *t, int route)
+{
+    int c = route - 1;
+    return c >= 0 && c < NPART && &trk[c] != t && eng_ok(trk[c].eng_req) ? c : -1;
+}
+
+static int voc_missing_modulator(const track_t *t)
+{
+#if BGIRL_VOCODER
+    return t->eng_req == 13 && slc_src_of(t->p) == SLC_SRC_VOCALS && !slc_vocal_match(t);
+#else
+    (void)t;
+    return 0;
+#endif
+}
+
+static int voc_can_set(const track_t *t, uint32_t id, int value)
+{
+    if (!BGIRL_VOCODER || id < P_VCARR || id > P_VRANGE) return 1;
+    if (id == P_VCARR && !value) return 1; /* may clear a dormant imported route */
+    int owner = voc_owner();
+    return (owner < 0 || t == &trk[owner]) &&
+           (id != P_VCARR || voc_carrier(t, value) >= 0);
+}
+
 static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t *track_desc(const track_t *t, uint32_t id)
 {
     if(id==P_VREL && !t->p[P_VRANGE]) return &VC_LEGACY_REL;
     if(id==P_VCARR && t->p[P_VCARR]) {
-        int c=t->p[P_VCARR]-1;
-        if(t->eng_req!=13 || c<0 || c>=NPART || &trk[c]==t || !eng_ok(trk[c].eng_req)) return &VC_MISSING;
-        for(uint32_t k=0;k<(uint32_t)(t-trk);k++) if(trk[k].eng_req==13 && trk[k].p[P_VCARR]) return &VC_BUSY;
+        int owner = voc_owner();
+        if (owner >= 0 && t != &trk[owner]) return &VC_BUSY;
+        if (owner < 0 || voc_carrier(t, t->p[P_VCARR]) < 0 || voc_missing_modulator(t)) return &VC_MISSING;
     }
     if (id >= P_E0 && id <= P_E7) {                   /* the engine asked for (t->engine follows after a fade) */
         const engine_t *e = ENGINES[eng_idx(t->eng_req)];
@@ -546,6 +588,11 @@ static const page_t PAGES[] = {
 #define NPAGES (sizeof(PAGES) / sizeof(PAGES[0]))
 static uint8_t mod_ui_slot;      /* the MOD page: the matrix slot (0..3) KNOB 2..4 edit */
 
+static int voc_page(const page_t *pg)
+{
+    return BGIRL_VOCODER && pg->scope == SC_TRACK && pg->id[0] >= P_VCARR && pg->id[0] <= P_VRANGE;
+}
+
 static const param_desc_t *page_desc(const page_t *pg, uint32_t slot, int16_t **valp)
 {
     uint32_t id = pg->id[slot];
@@ -563,6 +610,13 @@ static const param_desc_t *page_desc(const page_t *pg, uint32_t slot, int16_t **
     }
     if (pg->graph == GR_MOD)                          /* SRC DST AMT of the slot shown */
         id += 3u * mod_ui_slot;
+    if (voc_page(pg)) {
+        int owner = voc_owner();
+        if (owner >= 0 && owner != song.sel && !(id == P_VCARR && TSEL->p[id])) {
+            *valp = 0;
+            return 0;
+        }
+    }
     *valp = &TSEL->p[id];
     return track_desc(TSEL, id);
 }

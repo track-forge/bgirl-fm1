@@ -5,10 +5,56 @@ static void tick(uint32_t frames) { for(uint32_t i=0;i<frames;i+=CTL) web_render
 static float block_peak(void) { float p=0;for(uint32_t i=0;i<CTL;i++){float a=fabsf(out_l[i])+fabsf(out_r[i]);if(a>p)p=a;assert(isfinite(a)&&a<=2);}return p; }
 static void setup(uint32_t mode) { web_keys(0); web_buttons(0); assert(!bgirl_vocoder_setup(mode,0));tick(4410); }
 static void trigger(uint32_t phrase) { trk_note_on(&trk[1],48,110);trk_note_on(&trk[3],60+phrase,110); }
+static void live_routes(void)
+{
+    setup(2);
+    track_t *mod = &trk[0], *carrier = &trk[1];
+    mod->p[P_VCARR] = 2; /* legacy conflict: the speech route must retain priority */
+    assert(voc_owner() == 3 && track_desc(mod, P_VCARR) == &VC_BUSY);
+    assert(!voc_can_set(mod, P_VCARR, 3) && voc_can_set(mod, P_VCARR, 0));
+    trk[3].p[P_VCARR] = 0;
+
+    set_engine_of(mod, ENGI_DRUM);
+    for (uint32_t k = 0; k < NTRK; k++) memset(trk[k].step, 0, sizeof trk[k].step);
+    mod->p[P_VCARR] = 2;
+    mod->step[0] = (step_t){.time = ST_NOTE, .hit = 1u << DV_SNARE};
+    mod->p[P_VWET] = 127;
+    mod->p[P_VMON] = 0;
+    mod->p[P_LEVEL] = 104;
+    tick(4410);
+    assert(voc_owner() == 0 && !voc_can_set(mod, P_VCARR, 1));
+    song.sel = 1;
+    assert(voc_owner() == 0 && !voc_can_set(carrier, P_VCARR, 3));
+    trk_note_on(carrier, 48, 110);
+    seq_start();
+    float peak = 0;
+    for (uint32_t i = 0; i < 4096; i += CTL) {
+        tick(CTL);
+        float p = block_peak();
+        if (p > peak) peak = p;
+    }
+    assert(bg_bus.owner == 0 && bg_bus.carrier == 1 && peak > .00001f);
+    seq_stop();
+
+    set_engine_of(mod, 0);
+    mod->p[P_VCARR] = 2;
+    mod->p[P_VMON] = 0;
+    tick(4410);
+    trk_note_on(mod, 58, 110);
+    tick(2048);
+    assert(bg_bus.owner == 0 && bg_bus.car_valid && block_peak() > .00001f);
+    mod->p[P_VCARR] = 0;
+    carrier->p[P_VCARR] = 1;
+    tick(2048);
+    assert(bg_bus.owner == 1 && bg_bus.carrier == 0);
+    puts("live vocoder: sequenced drums, synth pair, legacy priority and explicit reassignment PASS");
+}
+
 int main(int argc,char **argv)
 {
     web_nor_erase();web_boot();tick(44100);
     assert(P_COUNT==127 && P_E0==119);
+    live_routes();
     setup(0);trk_note_on(&trk[3],60,110);trk_note_off(&trk[3],60);tick(3200);assert(trk[3].v[0].active && trk[3].v[0].ph[0]>1000);
     setup(2);trk[3].p[P_E0]=0;trk[3].p[P_E4]=SLC_ONE;trk_note_on(&trk[3],60,110);tick(1024);seq_stop();tick(1024);assert(!trk[3].v[0].active);
     setup(0);trk[3].p[P_VOICE]=V_UNISON;trk_note_on(&trk[3],60,110);tick(3200);uint32_t a=trk[3].v[0].ph[0];

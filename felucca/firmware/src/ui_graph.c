@@ -1283,6 +1283,17 @@ static uint32_t graph_signature(void)
     if (ui.home)
         return h ^ (ui.frame / 2u);                  /* scope: redraw every other frame */
     h ^= (uint32_t)pg->graph * 131u + TSEL->eng_req + song.sel * 7777u + ui.page * 1291u;
+    if (voc_page(pg)) {
+        int owner = voc_owner();
+        h ^= (uint32_t)(owner + 1) * 104729u;
+        if (owner >= 0) {
+            const track_t *mod = &trk[owner];
+            h ^= (uint32_t)mod->p[P_VCARR] * 1299709u;
+            h ^= (uint32_t)(track_desc(mod, P_VCARR) == &VC_MISSING) * 7919u;
+        }
+        h ^= (uint32_t)t->p[P_VHOLD] * 257u;
+        return h;
+    }
     if (strip_kind() == SK_TITLE)                    /* MENU > LARGE: the page's title (its engine, its number) */
         return h ^ 0x5A17u;
     if (pg->graph == GR_DANCE) h ^= dance_snapshot * 104729u + dance_style * 1299709u + (uint32_t)t->nheld * 7919u;
@@ -2319,7 +2330,9 @@ static void draw_graph(void)
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
-    if(design_context()==DC_SYSTEM) {
+    if (!ui.home && voc_page(pg)) {
+        graph_voc_route(t);
+    } else if(design_context()==DC_SYSTEM) {
         graph_system(pg);
     } else if(design_context()==DC_STAGE_MORE) {
         graph_stage(pg,t);
