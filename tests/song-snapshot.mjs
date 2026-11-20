@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import fs from 'node:fs';import assert from 'node:assert/strict';
-import{fromWire,toWire,parse,semantic,diff,summary,CAPABILITY,MAX_BYTES}from '../felucca/web/emu/song-snapshot.mjs';
+import{fromWire,toWire,parse,semantic,diff,summary,CAPABILITY,PRE_KITS_CAPABILITY,MAX_BYTES}from '../felucca/web/emu/song-snapshot.mjs';
 const {instance:{exports:e}}=await WebAssembly.instantiate(fs.readFileSync('felucca/build/emu/felucca.wasm'),{});
 e._initialize();e.web_nor_erase();e.web_boot();for(let i=0;i<600;i++)e.web_render(128);
 const capture=()=>{const n=e.web_snapshot_capture();assert(n);return fromWire(new Int32Array(e.memory.buffer,e.web_snapshot_buffer(),n).slice());};
 const original=capture(),w=toWire(original);
 assert.equal(e.web_snapshot_validate(w.length),0);
 assert.deepEqual(semantic(fromWire(w)),semantic(original));
+const preKits=structuredClone(original);
+preKits.capability=preKits.resources.factory=PRE_KITS_CAPABILITY;
+preKits.song.tracks[0].parameters.P_E0=10;
+preKits.song.tracks[0].preset=2;
+assert.deepEqual(fromWire(toWire(preKits)).song,preKits.song);
+assert.throws(()=>toWire({...preKits,resources:original.resources}));
 const rejects=[
  d=>d.version=2,d=>d.capability='future',d=>d.format='bad',d=>d.song.selectedTrack=6,
  d=>d.song.tracks.pop(),d=>d.song.tracks[5].steps.pop(),d=>d.song.tracks[0].parameters.P_PAN=1.5,

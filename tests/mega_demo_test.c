@@ -8,7 +8,12 @@ int main(void) {
     web_nor_erase();web_boot();tick(60032);
     project_capture(&fresh);
     assert(!web_bgirl_project(1));tick(4096);project_capture(&explicit);
-    assert(!memcmp(&fresh,&explicit,sizeof fresh));
+    assert(fresh.t[0].p[P_E0]==DK_BG_BREAK);
+    assert(trk[0].p[P_E0]==DK_TIGHT);
+    for (uint32_t t=0;t<NTRK;t++)
+        assert(!memcmp(fresh.t[t].step,explicit.t[t].step,sizeof fresh.t[t].step));
+    assert(fresh.t[5].p[P_E0]==DK_SIG_KICK);
+    fresh=explicit; /* The named demo, not its fresh-start revoicing. */
     assert(song.g[G_BPM]==128 && !song.playing && NVOICE==8);
     for(uint32_t t=0;t<6;t++)assert(trk[t].p[P_SLEN]==64 && trk[t].p[P_SDIV]==2);
     assert(trk[1].step[0].note[0]==33 && trk[1].step[25].note[0]==41 && trk[1].step[28].vel==112);
@@ -122,5 +127,5 @@ int main(void) {
     tick(FS*70);felucca_init();assert(autosave_boot(1));tick(4096);
     assert(trk[4].step[33].note[0]==53 && trk[3].p[P_VWET]==111 && !song.playing);
     assert(trk[3].p[P_SLCR]==SL_GATE && trk[3].p[P_SLPAT]==5 && trk[3].p[P_DLY]==30);
-    puts("Mega: fresh/explicit equality, MIDI mapping, four loops/bounds/no steals, STOP/restart/overload, exact codec, edited save/autosave priority, blank PASS");
+    puts("Mega: fresh BREAK and original named split, MIDI mapping, four loops/bounds/no steals, STOP/restart/overload, exact codec, edited save/autosave priority, blank PASS");
 }

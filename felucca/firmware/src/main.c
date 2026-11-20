@@ -120,12 +120,13 @@ static void bgirl_legacy_demo_steps(void)
 #if BGIRL_VOCODER
 #include "bgirl_mega_demo.h"
 #endif
-static void bgirl_demo_steps(void)
+static void bgirl_demo_steps(uint32_t drum_preset)
 {
 #if BGIRL_VOCODER
-    bgirl_mega_demo();
+    bgirl_mega_demo(drum_preset);
     for(uint32_t i=0;i<NTRK;i++)pat_sig[i]=steps_sig(&trk[i]);
 #else
+    (void)drum_preset;
     bgirl_legacy_demo_steps();
 #endif
 }
@@ -154,7 +155,7 @@ static void felucca_init(void)
         pat_sig[i] = steps_sig(t);            /* a default pattern, not the user's */
         pat_last[i] = BGIRL_TRK_DEF[i][2];
     }
-    bgirl_demo_steps();
+    bgirl_demo_steps(BGIRL_TRK_DEF[0][1]);
     undo_depth--;
     song.sel = 0;
     song.master_q12 = 2048;                   /* (the pot's level replaces it before the audio starts: master_boot) */
