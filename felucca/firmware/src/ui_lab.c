@@ -66,6 +66,24 @@ static void graph_voc_route(const track_t *t)
         cv_text(12, 17, &AF_C, route, T_SUPPORT);
     }
 }
+static void lab_vocoder(const track_t *t)
+{
+    char carrier[16],bands[8];const char *unit;
+    const param_desc_t *cd=track_desc(t,P_VCARR);
+    int valid=t->p[P_VCARR] && cd!=&VC_MISSING && cd!=&VC_BUSY;
+    param_format(cd,t->p[P_VCARR],carrier,&unit);
+    fmt_int(bands,t->p[P_VBANDS]==2?24:t->p[P_VBANDS]==1?12:8);
+    cv_text(12,1,&AF_C,valid?"CARRIER":cd==&VC_BUSY?"BUSY":"NO SOURCE",valid?T_SUPPORT:T_DIM);
+    cv_text_r(226,1,&AF_C,t->p[P_VHOLD]?"HOLD":"FOLLOW",t->p[P_VHOLD]?T_ACCENT:T_SUPPORT,T_BG);
+    int32_t y=22,h=graph_ht-44;if(h<18)h=18;
+    cv_frame(12,y,50,h,valid?T_THEME:T_DIM);cv_text_in(12,y+(h-12)/2,50,&AF_C,carrier,T_TEXT,T_BG);
+    cv_line(62,y+h/2,88,y+h/2,valid?T_THEME:T_DIM);
+    cv_frame(88,y,64,h,T_RHYTHM);cv_text_in(88,y+(h-12)/2,64,&AF_C,bands,T_TEXT,T_BG);
+    cv_line(152,y+h/2,176,y+h/2,T_THEME);
+    cv_frame(176,y,50,h,t->p[P_VWET]?T_THEME:T_DIM);cv_text_in(176,y+(h-12)/2,50,&AF_C,"WET",t->p[P_VWET]?T_TEXT:T_DIM,T_BG);
+    cv_text(12,graph_ht-14,&AF_C,"ROUTING / BANDS",T_SUPPORT);
+    cv_text_r(226,graph_ht-14,&AF_C,t->p[P_VMON]?"DRY ON":"DRY OFF",T_SUPPORT,T_BG);
+}
 /* WHEEL keeps all nine real drawbar levels, including percussion cancellation. */
 static void lab_wheel(const track_t *t)
 {
@@ -89,6 +107,7 @@ static void graph_lab_more(const page_t *pg,const track_t *t)
     else if(pg->graph==GR_MOD)lab_mod(t);
     else if(pg->graph==GR_FMENV && fop_ok())graph_fm6env(t,T_THEME);
     else if(pg->scope==SC_ENGINE && ENGINES[t->eng_req%NENGINES]==&ENG_WHEEL)lab_wheel(t);
+    else if (voc_page(pg)) lab_vocoder(t);
     else lab_params(pg);
     graph_ht=100;cv_oy=0;
     section_heading(ICON_BG_LAB,"LAB",T_THEME);

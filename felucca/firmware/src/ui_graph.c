@@ -1293,7 +1293,8 @@ static uint32_t graph_signature(void)
         }
         for (i = 0; i < NTRK; i++)
             h = (h ^ (uint32_t)trk[i].eng_req) * 16777619u;
-        h ^= (uint32_t)t->p[P_VHOLD] * 257u;
+        for (i = P_VCARR; i <= P_VRANGE; i++)
+            h = (h ^ (uint32_t)t->p[i]) * 16777619u;
         return h;
     }
     if (strip_kind() == SK_TITLE)                    /* MENU > LARGE: the page's title (its engine, its number) */
@@ -2333,7 +2334,11 @@ static void draw_graph(void)
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
     if (!ui.home && voc_page(pg)) {
-        graph_voc_route(t);
+        if (design_context() == DC_LAB_MORE && voc_owner() == song.sel &&
+            track_desc(t, P_VCARR) != &VC_MISSING)
+            graph_lab_more(pg, t);
+        else
+            graph_voc_route(t);
     } else if(design_context()==DC_SYSTEM) {
         graph_system(pg);
     } else if(design_context()==DC_STAGE_MORE) {
