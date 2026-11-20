@@ -52,7 +52,7 @@ export function initGlitch(root = document) {
     void el.offsetWidth;                              // restart the animation
     el.classList.add('glitching');
   };
-  const heads = [...root.querySelectorAll('.hero-copy h1, .manual-head h2, .features-head h2, .ch-text h3, .install-head h2, .foot-mark')];
+  const heads = [...root.querySelectorAll('.manual-head h2, .features-head h2, .ch-text h3, .install-head h2, .foot-mark')];
   for (const el of heads) {
     el.dataset.text = el.textContent;
     el.classList.add('glitch');
@@ -62,12 +62,4 @@ export function initGlitch(root = document) {
     for (const e of entries) if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
   }, { threshold: 0.6 });
   heads.forEach(el => io.observe(el));
-  const title = root.querySelector('.hero-copy h1');
-  if (title) {
-    const again = () => setTimeout(() => {
-      if (!document.hidden && title.getBoundingClientRect().bottom > 0) run(title);
-      again();
-    }, 5000 + Math.random() * 5000);
-    again();
-  }
 }
