@@ -6,11 +6,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BGIRL-FM1 · Browser preview</title>
-<meta name="description" content="Hortator turns the M-VAVE FM-1 into an eight-track drum machine with 45 drum engines, 21 of them measured from the Machinedrum. Play it in your browser.">
+<meta name="description" content="Jam on BGIRL-FM1, a six-track electro groovebox with a vocoder, right in your browser.">
 <link rel="stylesheet" href="sim.css">
 </head>
 <body>
-<section id="hero" class="hero" aria-label="Hortator">
+<section id="hero" class="hero" aria-label="BGIRL-FM1">
   <div class="hero-stage" id="stage">
     <nav class="hero-nav">
       <span class="silk">BGIRL-FM1</span>
@@ -35,7 +35,7 @@
 
     <div class="hero-copy" id="hero-copy">
       <h1>BGIRL-FM1</h1>
-      <p>Play BGIRL’s firmware in Hortator’s browser panel. The manual below is still the original Hortator guide.</p>
+      <p>Play BGIRL’s firmware in Hortator’s browser panel. The jam guide below gets you from first beat to arrangement.</p>
       <p class="hero-actions">
         <a class="cta" href="#play">Play it</a>
       </p>
@@ -87,10 +87,11 @@
 
 <section id="manual" class="manual" aria-labelledby="manual-title">
   <header class="manual-head">
-    <h2 id="manual-title">How to play it.</h2>
-    <p>Every control, then ten things to do with them. Each works in the simulator above as on the FM&#8209;1. The whole
-      manual is in the <a href="https://github.com/DeadActive/hortator#readme" target="_blank" rel="noopener">README</a>,
-      and the <a href="https://deadactive.github.io/hortator/manual/">full searchable manual</a> has every page and parameter.</p>
+    <h2 id="manual-title">How to jam on it</h2>
+    <p>Six tracks, three ways in. On <strong>STAGE</strong>, play the groove and work the mix.
+      In the <strong>LAB</strong>, dial in patches, slice a voice and give it a new carrier.
+      In <strong>CUT</strong>, sequence the hits and stitch patterns into a song.
+      Try the moves on the panel above; use <a href="play/">BGIRL Studio</a> when you want to keep a session.</p>
   </header>
 
   <div class="panel-map">
@@ -101,148 +102,62 @@
     <div class="map-list" id="map-list">
       <h3>Knobs</h3>
       <ul>
-        <li data-ctl="MASTER"><b>MASTER</b> The volume: the speaker, the headphones and USB audio.</li>
-        <li data-ctl="SELECT"><b>SELECT</b> Turns a section's pages and moves the menu's cursor. On TRACKS: the tempo.</li>
+        <li data-ctl="MASTER"><b>MASTER</b> Set the output volume.</li>
+        <li data-ctl="SELECT"><b>SELECT</b> Browse the current section’s pages or move the menu cursor.</li>
         <li data-ctl="ALGORITHM"><b>ALGORITHM</b> Picks the track, on any page.</li>
         <li data-ctl="PRESETS"><b>PRESETS</b> Loads the next or the previous preset onto the track.</li>
         <li data-ctl="KNOB1 KNOB2 KNOB3 KNOB4"><b>KNOB1</b> to <b>KNOB4</b> Edit the four values on the screen.</li>
       </ul>
       <h3>Buttons</h3>
       <ul>
-        <li data-ctl="HOME"><b>HOME</b> TRACKS (levels, lengths, pans) and HOME (the scope, the track's first four knobs);
-          a tap switches. Hold it: the menu.</li>
-        <li data-ctl="EDIT"><b>EDIT</b> The track's sound: its model and knobs. Hold it: the PRESETS list.</li>
-        <li data-ctl="SEQ"><b>SEQ</b> The steps on the white keys, then PATTERN, MOTION and SONG. Hold it: the step
-          tools, copy and paste.</li>
-        <li data-ctl="FX"><b>FX</b> FILTER, FX, INSERT (and SRR), SLICER, RESON. Hold it: PERFORM.</li>
-        <li data-ctl="ARP"><b>ARP</b> Grids, a map of drum patterns.</li>
-        <li data-ctl="LFO"><b>LFO</b> The track's two LFOs, then DEST: what they move.</li>
-        <li data-ctl="ENV"><b>ENV</b> STEPS: the white keys are the track's steps on every page, for locks.</li>
-        <li data-ctl="SEL"><b>SEL</b> KEYS: the keys play the selected track, a keyboard.</li>
-        <li data-ctl="GLO"><b>GLO</b> A tap: GLOBAL (tempo, swing, clock, MIDI channel, sync, routing, thru, metronome), then the delay, the reverb and the chorus. Hold it: the MUTE
-          screen.</li>
-        <li data-ctl="SAVE"><b>SAVE</b> PROJECT (save, load and name slots A to D), then TOOLS.</li>
-        <li data-ctl="PLAY"><b>PLAY</b> Play and stop; on SONG, the song.</li>
-        <li data-ctl="REC"><b>REC</b> Arms tracks to record: on TRACKS the selected one, on any other page all of them.</li>
-        <li data-ctl="OCT- OCT+"><b>OCT-</b> <b>OCT+</b> The next and previous 16 steps; the octave in KEYS; NO and YES,
-          BACK and OK.</li>
+        <li data-ctl="HOME"><b>HOME</b> Return to the performance views, including CREW, TRACKS and LEVELS. Hold for the menu.</li>
+        <li data-ctl="EDIT"><b>EDIT</b> Open the selected track’s sound pages.</li>
+        <li data-ctl="SEQ"><b>SEQ</b> Open STEP, then use SELECT to browse the sequencing pages, including PATTERN and SONG.</li>
+        <li data-ctl="FX"><b>FX</b> Open the effects pages. Turn SELECT to reach <b>VOCODER</b>, <b>VOC INPUT</b> and <b>VOC COLOR</b> on the vocoder track. Hold FX for PERFORM.</li>
+        <li data-ctl="ARP"><b>ARP</b> Browse arpeggiator, scale and chord settings for the selected track.</li>
+        <li data-ctl="LFO"><b>LFO</b> Edit the track’s LFOs and their destinations.</li>
+        <li data-ctl="ENV"><b>ENV</b> Open the envelope pages.</li>
+        <li data-ctl="SEL"><b>SEL</b> Use the keys to play the selected track.</li>
+        <li data-ctl="GLO"><b>GLO</b> Open global settings. Hold for the six-track mute layer.</li>
+        <li data-ctl="SAVE"><b>SAVE</b> Open the save screens. The homepage session is temporary; use BGIRL Studio to keep your work.</li>
+        <li data-ctl="PLAY"><b>PLAY</b> Start or stop the sequencer.</li>
+        <li data-ctl="REC"><b>REC</b> Toggle record arming. Hold for recording options.</li>
+        <li data-ctl="OCT- OCT+"><b>OCT-</b> <b>OCT+</b> Move between octaves in KEYS or 16-step banks in STEP. Follow the LCD prompts in menus.</li>
       </ul>
       <h3>Keys</h3>
       <ul>
-        <li data-ctl="white">The 16 white keys: the steps, 1 to 16. On HOME, F3 to F4 play tracks 1 to 8; with GLO held
-          they mute them.</li>
-        <li data-ctl="black">The 11 black keys: with FX held, live effects on the whole mix. In KEYS, the sharps.</li>
+        <li data-ctl="white">The white keys select steps in STEP and play notes in KEYS.</li>
+        <li data-ctl="black">The black keys play sharps in KEYS. Hold FX for the PERFORM layer.</li>
       </ul>
     </div>
   </div>
 
   <ol class="guides">
     <li class="guide" id="m-around">
-      <h3>Find your way</h3>
-      <p>Each section has its button: press it again, or turn SELECT, for its next page. ALGORITHM picks the track
-        (T1 to T8 in the top bar), and the four knobs edit the four columns under it. HOME takes you back: TRACKS is
-        the mixer, HOME the scope and the track's main knobs.</p>
-      <p class="where"><b>SELECT</b> pages, <b>ALGORITHM</b> the track, <b>HOME</b> back; hold <b>HOME</b> for the menu.</p>
+      <h3>STAGE · Play the crew</h3>
+      <p>Power on, turn down MASTER, then hit PLAY to hear the Mega Jam. Turn ALGORITHM to cycle through T1–T6 and watch the selected track on CREW HOME. Stop the loop, tap SEL, and play that track from the keys.</p>
+      <p class="where"><b>PLAY</b> transport · <b>ALGORITHM</b> track · <b>SEL</b> play notes</p>
+    </li>
+    <li class="guide" id="m-patches">
+      <h3>LAB · Change the sound</h3>
+      <p>Try T2, the bass track. Play a note, turn PRESETS a detent and play it again. Then tap EDIT and move one of the four knobs while watching its label on the LCD. Try this on T2 first so the demo’s vocoder routing stays intact.</p>
+      <p class="where"><b>PRESETS</b> browse sounds · <b>EDIT</b> open sound pages</p>
+    </li>
+    <li class="guide" id="m-vocoder">
+      <h3>LAB · Give the beat a voice</h3>
+      <p>Start with a fresh homepage session and hit PLAY. Select T4 (the voice track), tap FX, then turn SELECT until the LCD says VOCODER. In the Mega Jam, T3 supplies the pitched carrier and T4 supplies the voice. Keep both tracks unmuted.</p>
+      <p>Turn the knob under WET toward 0, then back up to 127. Listen for the change from the dry source to the voice shaped by T3. MON controls whether you also hear the dry carrier.</p>
+      <p class="where"><b>ALGORITHM</b> T4 · <b>FX</b> → <b>SELECT</b> → VOCODER · compare <b>WET</b></p>
     </li>
     <li class="guide" id="m-beat">
-      <h3>Make a beat</h3>
-      <p>SEQ puts the track's steps on the white keys: tap one to turn it on or off, then PLAY. Hold a step and turn a
-        knob for its chance, ratchet, accent or timing (NUDGE: early or late, up to half a step). OCT+ and OCT- go to the next 16 steps, up to 64. PATTERN, the next
-        page, sets the track's length, division and swing, or has it follow a Grids lane (SRC).</p>
-      <p class="where"><b>SEQ</b>, tap the white keys, <b>PLAY</b>. Hold a step: <b>KNOB1</b> PROB, <b>KNOB2</b> RATCH,
-        <b>KNOB3</b> ACCENT, <b>KNOB4</b> NUDGE.</p>
+      <h3>CUT · Change the pocket</h3>
+      <p>Pick T1, open SEQ, and find STEP. Use the white keys to edit the visible steps, and OCT− / OCT+ to move between 16-step banks. Hit PLAY and hear how moving one hit changes the groove.</p>
+      <p class="where"><b>SEQ</b> → STEP · <b>OCT−</b> / <b>OCT+</b> step banks</p>
     </li>
-    <li class="guide" id="m-copy">
-      <h3>Copy and paste steps</h3>
-      <p>Hold SEQ: the TOOLS screen, for the selected track. The white keys are the 16 steps shown, OCT- and OCT+ the
-        others; the black keys copy and paste. Hold F#3 and tap a step to copy it, hold G#3 and tap steps to paste it;
-        A#3 copies the 16 steps, C#4 pastes them over others, D#4 adds their hits, F#4 fills the whole pattern. G#4
-        picks a stretch with KNOB1 and KNOB2 (G#4 again copies it) and A#4 then a step pastes it there. C#5 doubles
-        every track's pattern. Steps keep their accent, chance, ratchet, note and locks.</p>
-      <p class="where">Hold <b>SEQ</b>: the black keys; <b>OCT-</b> <b>OCT+</b> the steps; <b>KNOB1</b> <b>KNOB2</b> a
-        stretch.</p>
-    </li>
-    <li class="guide" id="m-sound">
-      <h3>Shape a sound</h3>
-      <p>EDIT opens the track's sound. KNOB1 picks the model, one of 45; TUNE, DECAY, TONE and a knob of the model's own
-        follow, then its other knobs, the level, pan, note, choke group and PRIO on the next pages. PRESETS tries the
-        factory presets on the track (the sound only); hold EDIT for the list, to load one or save yours to the USER bank
-        (yours keep the track's FX too, all but the SLICER).</p>
-      <p class="where"><b>EDIT</b>, <b>KNOB1</b> the model; <b>PRESETS</b> the next preset; hold <b>EDIT</b> for the list.</p>
-    </li>
-    <li class="guide" id="m-live">
-      <h3>Play and record live</h3>
-      <p>SEL turns the keys into a keyboard for the track (KEYS), OCT- and OCT+ its octave. REC arms the track on
-        TRACKS; on any other page it is REC ALL, each white track key playing and recording its own track, to
-        finger-drum a kit. REC never starts the transport: PLAY does. An armed track records knob turns too, as
-        MOTION. On the STEP page, stopped and in KEYS, REC starts step record, a note at a time.</p>
-      <p class="where"><b>SEL</b> KEYS, <b>REC</b> to arm, <b>PLAY</b> to go.</p>
-    </li>
-    <li class="guide" id="m-mute">
-      <h3>Mute tracks</h3>
-      <p>Hold GLO: the MUTE screen. The white keys F3 to F4 mute and unmute tracks 1 to 8 (a filled box is heard, an
-        outline muted). The top C# makes a mute land at once, the top D# on the next bar: made while playing, it blinks
-        until the downbeat. The black keys F#3 to A#4 solo tracks 1 to 8; the top F# switches solo between toggle and
-        momentary (held). Let go of GLO to go back.</p>
-      <p class="where">Hold <b>GLO</b>, press the white keys (mute) or the black keys (solo).</p>
-    </li>
-    <li class="guide" id="m-perform">
-      <h3>Perform</h3>
-      <p>Hold FX: the black keys play effects on the whole mix while held: repeat 1/8, 1/16 and 1/32, reverse, tape
-        stop, filter sweeps, freeze, an octave up or down. The white keys F3 to F4 are REPEAT STEP for tracks 1 to 8:
-        while held, the track plays the step it was on again and again on the beat grid, its own steps paused, and
-        carries on in time when let go (stopped: at once, at the tempo). D5, E5, F5 and G5 pick its rate: 1/4, 1/8,
-        1/16 (at first) or 1/32. The knobs become FILTER, CRUSH, THROW and DEPTH, which stay on when you let go, an FX
-        in the top bar, until turned back to 0.</p>
-      <p class="where">Hold <b>FX</b>: the black keys, the white keys (D5 to G5 the rate), <b>KNOB1</b> to
-        <b>KNOB4</b>.</p>
-    </li>
-    <li class="guide" id="m-locks">
-      <h3>Lock a step</h3>
-      <p>Tap ENV (lit, a padlock in the top bar): the white keys are the track's steps on every page. Hold a step and
-        turn a knob, on HOME, EDIT, FX or LFO: that step plays its own value, and the next one the knob's again. Hold the
-        step and tap OCT- to clear its locks on that page; hold OCT- for 0.6 s to clear all of them.</p>
-      <p class="where"><b>ENV</b>, hold a step, turn a knob; <b>OCT-</b> clears.</p>
-    </li>
-    <li class="guide" id="m-save">
-      <h3>Save and chain</h3>
-      <p>SAVE opens PROJECT: four slots, A to D, in the FM&#8209;1's flash, each with a name. The last project saved loads at
-        power-on; with SEQ held at power-on nothing loads. SONG, SEQ's last page, chains up to 16 rows of projects, each
-        with its repeats. TOOLS clears a track's steps or its sound, or starts everything over.</p>
-      <p class="where"><b>SAVE</b>; <b>SELECT</b> to TOOLS. <b>SEQ</b>, <b>SELECT</b> to SONG.</p>
-    </li>
-    <li class="guide" id="m-midi">
-      <h3>MIDI, USB audio and LEARN</h3>
-      <p>MIDI comes in over USB and the TRS jack: notes on the drum channel (CH, 10 at first) play the tracks whose
-        NOTE matches (ROUT NOTE; SEL plays the selected track and TRACK channels 1 to 8 the eight tracks, pitched), and
-        CLK follows a clock from either. SYNC sends a MIDI clock out over USB for a DAW or AUM to follow, and THRU passes
-        the TRS jack's notes on to USB. MIDI LEARN ties up to 32 controls of a controller to knobs,
-        PLAY, REC or PERFORM: hold GLO and press G4, turn a knob (or press PLAY), then move the controller's knob.</p>
-      <p>Over USB the FM&#8209;1 is also an audio interface, Hortator, that records into a computer. USB AUDIO in the
-        menu sends 2 CH, the stereo master; 10 CH MIX, the eight tracks each on its own and the master; or 10 CH FX, the
-        eight tracks dry and the send effects, to mix in your DAW. 10 CH needs the standard version, not Bluetooth;
-        macOS and iPadOS take it, Windows may not.</p>
-      <p class="where">Tap <b>GLO</b> for CH and CLK. Hold <b>GLO</b> + G4 to learn, <b>OCT+</b> when done. Hold
-        <b>HOME</b> for USB AUDIO.</p>
-    </li>
-    <li class="guide" id="m-ble">
-      <h3>Bluetooth</h3>
-      <p>The Bluetooth version adds a BLUETOOTH page to the menu. ROLE HOST: the FM&#8209;1 connects a BLE&#8209;MIDI
-        controller, the M&#8209;VAVE SMC&#8209;Mixer or another FM&#8209;1 itself; set BLUETOOTH ON, + ADD A DEVICE, pick
-        it. ROLE DEVICE: the FM&#8209;1 is <b>Felucca FM&#8209;1</b>, a Bluetooth MIDI port for a Mac (Audio MIDI Setup,
-        Bluetooth, Connect), an iPad app or another FM&#8209;1. Notes, MIDI LEARN, CLK BLE and SYNC BLE work as over
-        USB. FM&#8209;Link keeps two FM&#8209;1s in time: the leader on CLK INT (or following a DAW's clock), the
-        follower on CLK LINK; PLAY on the leader starts both.</p>
-      <p>It leaves out USB AUDIO 10 CH (USB audio is 2 CH there). Known issue: a saved device that is not connected can
-        make the sound stutter now and then; FORGET the ones you don't use (KNOB 1 left on its line, OCT+).</p>
-      <p class="where">Hold <b>HOME</b>, <b>SELECT</b> to BLUETOOTH, <b>OCT+</b>. Step by step: the <a href="https://github.com/DeadActive/hortator#connecting-step-by-step" target="_blank" rel="noopener">README</a>.</p>
-    </li>
-    <li class="guide" id="m-settings">
-      <h3>Make it yours</h3>
-      <p>Hold HOME for the menu. COLOR picks one of six screen themes, ACCEL speeds a knob up as it turns faster,
-        BACKLIGHT lets the unlit keys glow to find them in the dark, SPEAKER EQ adds bass to the small speaker. METRO,
-        on GLOBAL's last page, clicks every quarter note. The Bluetooth version adds BLUETOOTH to the menu.</p>
-      <p class="where">Hold <b>HOME</b>, <b>SELECT</b> to a row, <b>OCT+</b> OK, <b>OCT-</b> back.</p>
+    <li class="guide" id="m-song">
+      <h3>CUT · Put the pieces together</h3>
+      <p>When you’re ready to arrange, open BGIRL Studio. Use SAVE → PROJECT to keep your work, and SEQ → SONG to arrange patterns. Studio also lets you export and import song snapshots.</p>
+      <p class="where"><a href="play/">Open BGIRL Studio</a></p>
     </li>
   </ol>
 </section>
@@ -255,7 +170,7 @@
   </div>
   <nav class="foot-nav" aria-label="On this page">
     <a href="#play">Play it in the browser</a>
-    <a href="#manual">How to play it</a>
+    <a href="#manual">How to jam on it</a>
     <a href="https://github.com/track-forge/bgirl-fm1/tree/feat/pages-v2">Source code (GPL-3.0)</a>
   </nav>
   <div class="foot-credits">
