@@ -63,7 +63,7 @@ source /path/to/emsdk/emsdk_env.sh
 python3 -m http.server 8767 --bind 127.0.0.1 --directory felucca/build/emu
 ```
 
-Open <http://127.0.0.1:8767/> for the playable vocoder, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
+Open <http://127.0.0.1:8767/> for the playable flyer, or <http://127.0.0.1:8767/play/> and click **Switch on** for the full studio. Audio needs this user gesture.
 The wrapper calls Felucca's own asset generators and `web/emu/build.sh`; no JieLi
 SDK, device package, installer, paid service or network-fetched sound is needed.
 Build-time fonts and sample sources are bundled upstream with their notices.
@@ -345,7 +345,6 @@ Portrait uses upstream's tall responsive panel. Desktop/mobile screenshots and
 verification details: [build status](docs/BUILD_STATUS.md).
 
 ## Roots & credits
-- Pages shell adapted from [Hortator by DEADACTIVE](https://github.com/deadactive/hortator/tree/44c9ad4aa57bebf63f412bd552e57143c30b4065/web/sim): `index.html`, `sim.css`, and the reveal and manual structure from `layout.js` / `manual.js`. BGIRL supplies the LCD, patches, controls, and audio.
 
 - Active instrument: `felucca/`, ancestry-preserving import of **v1.8.1**. Upstream
   v1.8.2 removed browser support; it is intentionally not this baseline.

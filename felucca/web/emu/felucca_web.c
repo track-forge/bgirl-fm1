@@ -750,38 +750,26 @@ EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,
     undo_depth--;song.sel=3;song.playing=0;transport_req=0;ui.home=1;ui.force=1;bg_vreset++;
     fm1_irq_on();return 0;
 }
-/* Pages starts an isolated, stopped two-track patch, not a sequenced demo. */
-EXPORT uint32_t web_bgirl_pages_setup(void)
+/* Disposable flyer uses normal tracks, transport and sample-fed vocoder.
+ * Its page never restores or persists flash. No studio startup hook. */
+EXPORT uint32_t web_bgirl_flyer(uint32_t action)
 {
-    return web_bgirl_clarity(0,2,40,0,127);
-}
-
-/* Start the carrier and voice together, after the existing engine fade. */
-EXPORT uint32_t web_bgirl_pages_ready(void)
-{
-    return !trk[2].xf_on && trk[2].engine==trk[2].eng_req &&
-           !trk[3].xf_on && trk[3].engine==trk[3].eng_req;
-}
-
-EXPORT void web_bgirl_pages_note(uint32_t note)
-{
-    trk_all_off(&trk[2]);
-    trk_all_off(&trk[3]);
-    bg_vreset++;
-    if(note<48 || note>72) return;
-    uint32_t group=1;
-    for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
-        if(!strcmp(BG_VOCAL_VIEWS[i],"G6")) group=i;
-    trk_note_on(&trk[2],note,100);
-    trk_note_on(&trk[3],60+group-1,100);
-}
-
-EXPORT void web_bgirl_pages_patch(uint32_t trio)
-{
-    web_bgirl_pages_note(0);
-    set_engine_of(&trk[2],trio ? 6 : 0);
-    apply_preset_to(&trk[2],trio ? 0 : NELEM(ANALOG_PRESETS));
-    trk[2].p[P_LEVEL]=90;
+    if(action==0) {
+        if(web_bgirl_clarity(2,2,80,0,127))return 1;
+        memset(trk[3].step,0,sizeof trk[3].step);
+        motion_set_enabled(&trk[3],0);
+        transport_req=1;
+    } else if(action==1) {
+        if(!song.playing)return 1;
+        uint32_t group=1;
+        for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
+            if(!strcmp(BG_VOCAL_VIEWS[i],"G6"))group=i;
+        trk_note_on(&trk[3],60+group-1,100);
+    } else if(action==2) {
+        seq_stop();transport_req=0;
+        for(uint32_t t=0;t<NTRK;t++)trk_all_off(&trk[t]);
+    } else return 1;
+    return 0;
 }
 
 EXPORT uint32_t web_bgirl_clarity_info(uint32_t field) {
