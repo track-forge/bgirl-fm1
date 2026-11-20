@@ -32,21 +32,29 @@ notices remain intact. No package/release or hardware approval is implied.
 
 ## Native boot derivative
 
-`python3 tools/package_logo.py --preview .powderline/boot.png` verifies the master
-hash and reproducibly generates `felucca/build/gen/bgirl_logo.h`. The main name
-is Lanczos-resized proportionally to 224×62 (rounded from 62.43). FM1 is removed
-from its tiny original location and placed separately below at up to42×30,
-retaining its aspect ratio. Exact source rectangles are recorded in the tool.
-The name, record and crown are neither stretched nor cropped. The original
-near-black purple background is retained rather than claiming transparency.
+`bgirl-lcd-transparent.png` is the unchanged dedicated 1679×448 RGBA LCD
+master supplied for Doug's PR48 boot repair (README/browser still use chrome).
+SHA-256: `ecc8904703b2b8ee16ca059f57b8e75827b88515fcfa64992e276a611d875ea1`.
+Coordinator Qwen Image 2.1 edit job `c4abae5d-3640-46c8-ad35-9b2815605504`;
+receipt records background removal: `magick original.jpg -alpha on -fuzz 12%
+-transparent white -trim +repage transparent.png`. Original/prompt/receipt are
+retained by the coordinator; no generation was performed in this repair.
+The simplified B intentionally has no lower counter; no additional art edits.
+The separate artwork-rights limitations above apply to this derivative too.
 
-The224×104 derivative uses16 colors, RGB565 plus alpha, two4-bit indices/byte:
-11,648 pixel bytes +32 palette bytes +16 alpha bytes = **11,696 bytes**, down
-4,592 bytes from the previous16,288. Firmware uses the unchanged32-row existing
-canvas path and64 bytes of local color cache; no extra framebuffer, allocation,
-boot timer/delay or audio/control changes. This is source/static cost evidence,
-not a device linker-map, RAM high-water, timing or physical readability result.
-GREY/MONO still use the existing grayscale conversion.
+`python3 tools/package_logo.py --preview .powderline/boot.png` verifies this
+master hash, crops to alpha bounds, proportionally downsamples to216px wide,
+thresholds alpha at128, and trims the resulting visible bounds. It reserves a
+clear index and quantizes only visible colors to15 RGB565 colors using octree,
+retaining the small mint FM1 and record center. No background RGB is baked in.
+The216×58 packed asset is6,264 pixel bytes +32 palette bytes +16 alpha bytes =
+**6,312 bytes**, down5,384 from the rejected chrome boot (11,696), and9,976
+from the old16,288-byte asset. No browser/README logo pixels are changed.
+
+The existing native renderer already blends indexed alpha against `T_BG`;
+clear pixels now use that path. Its centered32-row strips,64-byte local cache,
+existing canvas, boot timer and audio/control behavior are unchanged. GREY/MONO
+retain existing conversion. This is static resource evidence, not target fit.
 
 [Native-size and browser review evidence](../../docs/CHROME_BRANDING_VERIFICATION.md).
-Human visual approval, actual hardware build/flash and licensing remain pending.
+Human visual approval, hardware verification and licensing remain pending.

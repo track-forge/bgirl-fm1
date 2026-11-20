@@ -8,7 +8,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const palette=parse('BG_LOGO_PALETTE'),alpha=parse('BG_LOGO_ALPHA'),packed=parse('BG_LOGO_PIXELS');
  const width=+header.match(/#define BG_LOGO_W (\d+)u/)[1],height=+header.match(/#define BG_LOGO_H (\d+)u/)[1];
  const x0=Math.floor((240-width)/2),y0=Math.floor((240-height)/2);
- assert.equal(x0,8);assert.equal(y0,68); // center the chrome 224x104 derivative
+ assert.equal(x0,12);assert.equal(y0,91); // tight visible bounds centered on LCD
  const browser=await chromium.launch({headless:true,args:['--no-sandbox'],...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
  try {
   const page=await browser.newPage({viewport:{width:1300,height:1000}}),errors=[];
@@ -38,7 +38,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    assert.equal(unswap(first[(y0+y)*240+x0+x]),blend(palette[idx],alpha[idx]),`initial logo pixel ${x},${y}`);
    if(alpha[idx]===0)transparentPixels++;
   }
-  assert.equal(transparentPixels,0,'chrome master has an opaque purple background');
+  assert(transparentPixels>width*height/4,'clear background and letter holes retained');
   for(let y=0;y<240;y++)for(let x=0;x<240;x++){
    if(x<x0||x>=x0+width||y<y0||y>=y0+height){
     assert.equal(unswap(first[y*240+x]),bg,`only background outside logo at ${x},${y}`);outsidePixels++;
@@ -62,7 +62,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    await page.screenshot({path:`${out}/${name}.png`,fullPage:true});
   }
-  assert.deepEqual(errors,[]);const result={logoPixels:width*height,transparentPixels,outsidePixels,placement:{x:x0,y:y0,width,height},text:'none',background:'opaque source purple inside logo, current palette outside',bootTransition:'original timing, splash replaced by instrument',panelTargets:49,inscription:'absent in desktop/mobile',errors,hardware:'not tested'};
+  assert.deepEqual(errors,[]);const result={logoPixels:width*height,transparentPixels,outsidePixels,placement:{x:x0,y:y0,width,height},text:'none',background:'clear pixels match current palette background',bootTransition:'original timing, splash replaced by instrument',panelTargets:49,inscription:'absent in desktop/mobile',errors,hardware:'not tested'};
   fs.writeFileSync(`${out}/results.json`,JSON.stringify(result,null,2)+'\n');console.log(result);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

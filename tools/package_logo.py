@@ -9,9 +9,9 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'assets/branding/chrome-source.jpg'
-SOURCE_SHA = 'db3d2a32353e25522d8e5117b3caeb2f75115eb0cd6ce163efe424492c7b36cb'
-WIDTH = 224
+SOURCE = ROOT / 'assets/branding/bgirl-lcd-transparent.png'
+SOURCE_SHA = 'ecc8904703b2b8ee16ca059f57b8e75827b88515fcfa64992e276a611d875ea1'
+WIDTH = 216
 
 
 def package(out=None, preview=None):
@@ -19,31 +19,37 @@ def package(out=None, preview=None):
     if hashlib.sha256(data).hexdigest() != SOURCE_SHA:
         raise ValueError('wordmark changed: review artwork/provenance before repackaging')
     with Image.open(SOURCE) as source:
-        assert source.size == (1952, 544), 'review crop coordinates for changed master'
-        # Separate FM1 stays separate, enlarged below the name for LCD readability.
-        # Coordinates are in the unchanged 1952x544 master, not a stock reference.
-        name = source.convert('RGBA')
-        name.paste((17, 10, 28, 255), (1648, 30, 1790, 145))
-        name = name.resize((WIDTH, 62), Image.Resampling.LANCZOS)
-        fm1 = source.crop((1650, 40, 1788, 138)).convert('RGBA')
-        fm1.thumbnail((42, 30), Image.Resampling.LANCZOS)
-        height = 104
-        logo = Image.new('RGBA', (WIDTH, height), (17, 10, 28, 255))
-        logo.paste(name, (0, 0))
-        logo.paste(fm1, ((WIDTH - fm1.width)//2, 72))
-    # Retain the existing indexed RGBA interface; this selected master is opaque.
-    indexed = logo.quantize(colors=16, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE)
-    palette = indexed.getpalette('RGBA')[:64]
+        assert source.size == (1679, 448), 'review changed LCD master'
+        # Trim by actual alpha, never by RGB or a baked background color.
+        logo = source.convert('RGBA')
+        logo = logo.crop(logo.getchannel('A').getbbox())
+        logo.thumbnail((WIDTH, 216), Image.Resampling.LANCZOS)
+    # Reserve index 0 for clear pixels; quantize only visible RGB. Quantizing
+    # RGBA directly can merge clear/opaque colors and lose background holes.
+    mask = logo.getchannel('A').point(lambda a: 255 if a >= 128 else 0)
+    bounds = mask.getbbox()
+    logo, mask = logo.crop(bounds), mask.crop(bounds)
+    width, height = logo.size
+    visible = [rgb for rgb, a in zip(logo.convert('RGB').getdata(), mask.getdata()) if a]
+    samples = Image.new('RGB', (len(visible), 1))
+    samples.putdata(visible)
+    quant = samples.quantize(colors=15, method=Image.Quantize.FASTOCTREE)
+    rgb = quant.getpalette()[:45]
+    palette = [0, 0, 0, 0]
+    for k in range(0, 45, 3):
+        palette.extend(rgb[k:k+3] + [255])
+    cursor = iter(quant.tobytes())
+    indices = bytes(next(cursor)+1 if a else 0 for a in mask.getdata())
     colors = [((palette[k] >> 3) << 11) | ((palette[k+1] >> 2) << 5) | (palette[k+2] >> 3)
               for k in range(0, 64, 4)]
     alpha = palette[3:64:4]
-    indices = indexed.tobytes()
-    assert len(indices) % 2 == 0 and max(indices) < 16
+    assert max(indices) < 16
+    indices += b'\0' if len(indices) % 2 else b''
     packed = bytes((indices[k] << 4) | indices[k+1] for k in range(0, len(indices), 2))
     lines = ['/* Generated from the selected chrome wordmark by tools/package_logo.py.',
              ' * Artwork is NOT GPL: see assets/branding/README.md for provenance/use terms.',
              f' * Source SHA-256: {SOURCE_SHA} */', '#pragma once',
-             f'#define BG_LOGO_W {WIDTH}u', f'#define BG_LOGO_H {height}u',
+             f'#define BG_LOGO_W {width}u', f'#define BG_LOGO_H {height}u',
              'static const uint16_t BG_LOGO_PALETTE[16] = {',
              '    '+', '.join(f'0x{c:04x}' for c in colors)+'};',
              'static const uint8_t BG_LOGO_ALPHA[16] = {',
@@ -57,11 +63,11 @@ def package(out=None, preview=None):
     dest.write_text('\n'.join(lines))
     if preview:
         # Preview the exact RGB565 values, not the pre-quantization source.
-        result = Image.new('RGBA', indexed.size)
+        result = Image.new('RGBA', (width, height))
         result.putdata([((colors[i] >> 11)*255//31, ((colors[i] >> 5)&63)*255//63,
-                         (colors[i]&31)*255//31, alpha[i]) for i in indices])
+                         (colors[i]&31)*255//31, alpha[i]) for i in indices[:width*height]])
         result.save(preview)
-    print(f'splash logo: {WIDTH}x{height}, {len(packed)+48} B indexed RGB565 + alpha; source {SOURCE_SHA}')
+    print(f'splash logo: {width}x{height}, {len(packed)+48} B indexed RGB565 + alpha; source {SOURCE_SHA}')
     return packed, colors
 
 

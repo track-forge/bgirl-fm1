@@ -44,6 +44,7 @@ felucca/build/host/battle_ui_test
 python3 felucca/tools/gen_ui_palettes.py --report
 
 python3 tests/test_package_logo.py
+./tests/run_boot_tests.sh
 
 # Signature bank behavioral contracts and serial/threaded hat dispatch.
 python3 tools/signature_bank.py --check
