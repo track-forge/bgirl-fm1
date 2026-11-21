@@ -1,0 +1,31 @@
+{
+  "engine": 0,
+  "name": "Dark Sweep",
+  "preset": 15,
+  "values": {
+    "P_ATK": 104,
+    "P_CHOR": 0,
+    "P_DEC": 113,
+    "P_DIST": 0,
+    "P_DLY": 0,
+    "P_E0": 4,
+    "P_E1": 0,
+    "P_E2": 0,
+    "P_E3": 27,
+    "P_E4": 70,
+    "P_E5": 11,
+    "P_E6": 0,
+    "P_E7": 56,
+    "P_ED_FLT": 49,
+    "P_GLIDE": 0,
+    "P_LD_FLT": 0,
+    "P_LD_PIT": 0,
+    "P_LRATE": 42,
+    "P_LWAVE": 1,
+    "P_REL": 98,
+    "P_REV": 0,
+    "P_SUS": 33,
+    "P_VOICE": 1
+  },
+  "version": 1
+}

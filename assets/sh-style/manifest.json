@@ -21,6 +21,33 @@
       "report": "wire1.report.json",
       "snapshot_sha256": "9c0dee5a41dd5a5acd4fb775ba1bb71257b1cb4c8fe1d77f117616777f275a6c",
       "raw_sha256": "9d605255a68f924343c2efbf330b199054923aa5f4f773e7b2c1b2fdba2f447f"
+    },
+    {
+      "id": "noisy-dark-sweep",
+      "name": "Dark Sweep",
+      "identity": "Noisy Dark Sweep, operator-confirmed T1-6",
+      "recipe": "noisy-dark-sweep.recipe.json",
+      "report": "noisy-dark-sweep.report.json",
+      "snapshot_sha256": "1064f5845b1cd9cd4193e23e8d2e7ffc483f547f61e069df76ef8a6c2c3b015f",
+      "raw_sha256": "4269f10e41d2aecd565f2610d158817130bb390813790550374c4fa821140aaf"
+    },
+    {
+      "id": "slayer-bass",
+      "name": "Slayer Bass",
+      "identity": "Slayer Bass, operator-confirmed T1-7",
+      "recipe": "slayer-bass.recipe.json",
+      "report": "slayer-bass.report.json",
+      "snapshot_sha256": "48f2c5632ba5df27d34c645df77dd0fd77fd20949ef23b3172c74eb174166942",
+      "raw_sha256": "d6a3b6902513c0fed1a540141763d84b44c7ae04cb772d26c20b51661ff94ed3"
+    },
+    {
+      "id": "electro-droplet",
+      "name": "Elec Droplet",
+      "identity": "Electro Droplet, operator-confirmed T2-8",
+      "recipe": "electro-droplet.recipe.json",
+      "report": "electro-droplet.report.json",
+      "snapshot_sha256": "abd8f57ee2e576595855b42df4a4af35167d9077a56854f1f0db54a6ad8880fc",
+      "raw_sha256": "9cf87005e5ab694c9eb5a37a99a2b2dd2ac37cbe78154c9c307aa552ff9cdcf1"
     }
   ]
 }

@@ -1,0 +1,31 @@
+{
+  "engine": 0,
+  "name": "Elec Droplet",
+  "preset": 17,
+  "values": {
+    "P_ATK": 0,
+    "P_CHOR": 0,
+    "P_DEC": 58,
+    "P_DIST": 0,
+    "P_DLY": 0,
+    "P_E0": 0,
+    "P_E1": 0,
+    "P_E2": 0,
+    "P_E3": 0,
+    "P_E4": 69,
+    "P_E5": 113,
+    "P_E6": 0,
+    "P_E7": 49,
+    "P_ED_FLT": 15,
+    "P_GLIDE": 0,
+    "P_LD_FLT": 16,
+    "P_LD_PIT": 0,
+    "P_LRATE": 32,
+    "P_LWAVE": 1,
+    "P_REL": 0,
+    "P_REV": 0,
+    "P_SUS": 0,
+    "P_VOICE": 1
+  },
+  "version": 1
+}

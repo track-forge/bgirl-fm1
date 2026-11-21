@@ -1576,7 +1576,7 @@ static void track_defaults(track_t *t)
 /* Collection label only: underlying ANALOG IDs, DSP and browsing order stay stable. */
 static const char *sound_group_name(const track_t *t)
 {
-    if (t->eng_req == 0 && t->preset >= 13 && t->preset <= 14 && user_of(t) >= UP_SLOTS)
+    if (t->eng_req == 0 && t->preset >= 13 && t->preset < BG_ANALOG.npresets && user_of(t) >= UP_SLOTS)
         return "SH-ISH";
     return ENGINES[t->eng_req % NENGINES]->name;
 }

@@ -91,7 +91,7 @@ class Translation(unittest.TestCase):
         for name in ['', 'ThirteenChars', 'bad"name', 'bad\\name', 'Møøse']:
             with self.assertRaises(ValueError):translate(canonical(fixture()),b'test',name,13)
     def test_bank_wrapper_and_old_recipes(self):
-        generate(True);bank=read_bank();self.assertEqual([r['preset'] for r in bank],[13,14])
+        generate(True);bank=read_bank();self.assertEqual([r['preset'] for r in bank],[13,14,15,16,17])
         source=(ROOT/'felucca/firmware/engines/src/eng_analog.c').read_text()
         old=source.split('static const preset_t ANALOG_PRESETS[] = {')[1].split('\n};')[0]
         wrapper=(ROOT/'felucca/firmware/src/bgirl_carrier.h').read_text()

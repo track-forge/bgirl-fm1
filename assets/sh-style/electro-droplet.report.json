@@ -1,0 +1,900 @@
+{
+  "capture_confidence": {
+    "expected": 36,
+    "observed": 36,
+    "state": "partial"
+  },
+  "common_descriptors_sha256": "ef784029997667d3bf99d70a0bc0dd506dc02e2db503bcb383f98d2e13bc04dd",
+  "engine_source_sha256": "cf7ea5a4a8fe813a5c7c77c0fe537567f916bd29ec9c821a9306af2ee448d188",
+  "inputs": {
+    "chord.voice2.enabled": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "chord.voice2.key_shift": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "chord.voice3.enabled": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "chord.voice3.key_shift": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "chord.voice4.enabled": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "chord.voice4.key_shift": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "envelope.attack": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "envelope.decay": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "envelope.mode": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "envelope.release": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "envelope.sustain": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "lfo.mode": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "lfo.rate": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "lfo.waveform": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "mixer.noise_level": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "mixer.pulse_level": {
+      "disposition": "approximated",
+      "reason": "dominant single-track waveform; dropped components in losses"
+    },
+    "mixer.saw_level": {
+      "disposition": "approximated",
+      "reason": "dominant single-track waveform; dropped components in losses"
+    },
+    "mixer.sub_level": {
+      "disposition": "approximated",
+      "reason": "dominant single-track waveform; dropped components in losses"
+    },
+    "noise.mode": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "portamento.mode": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "portamento.time": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vca.envelope_switch": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vcf.bend_depth": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vcf.cutoff": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "vcf.envelope_depth": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..63; clamp; heuristic not physical equivalence"
+    },
+    "vcf.key_follow": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "vcf.mod_depth": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..63; clamp; heuristic not physical equivalence"
+    },
+    "vcf.resonance": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..127; clamp; heuristic not physical equivalence"
+    },
+    "vco.bend_depth": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vco.mod_depth": {
+      "disposition": "approximated",
+      "reason": "normalized half-up 0..63; clamp; heuristic not physical equivalence"
+    },
+    "vco.mod_sensitivity": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vco.pulse_width": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vco.pwm_source": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vco.range": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "vco.sub_type": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    },
+    "voice.assign_mode": {
+      "disposition": "unsupported",
+      "reason": "No verified selector bins/routing or target equivalent; see policy limitations"
+    }
+  },
+  "losses": [
+    "ANALOG trapezoidal SVF is not the SH filter; normalized cutoff/resonance/key-follow and envelope time laws are not calibrated.",
+    "A single shared amplitude ADSR also drives filter modulation; source envelope mode and gate behavior are not reproduced.",
+    "Unknown range selector: no octave/transposition inference. Existing track scale/transposition is retained.",
+    "Unknown voice/chord selectors: mono retrigger fallback; stored source chord/unison/poly/priority not reproduced. Existing host chord keys are retained by normal sound loading.",
+    "Unknown PWM source/width response: centered pulse, no PWM routing; SUB shape/type fixed at target octave-down square.",
+    "LFO waveform/mode unknown: target triangle default; rate/depth normalized only; no SH timing/sync claim.",
+    "Glide/portamento mode and bend/mod sensitivity omitted; target glide disabled, normal host performance controls remain.",
+    "Source noise color unverified; existing target noise only. Source oscillator absolute gains not preserved.",
+    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed.",
+    "No pitched source mixer gain: target SAW remains present; noise-only/silent source cannot be isolated by this policy."
+  ],
+  "metadata_disposition": {
+    "baseline": "validated-private-not-published",
+    "baseline_id": "validated-private-not-published",
+    "capture_id": "validated-private-not-published",
+    "changes": "validated-private-not-published",
+    "confidence": "sanitized-confidence-counts",
+    "definition_version": "validated-private-not-published",
+    "device_model": "validated-private-not-published",
+    "export_id": "validated-private-not-published",
+    "exported_at": "validated-private-not-published",
+    "filtered_messages": "validated-private-not-published",
+    "limitations": "validated-private-not-published",
+    "message_counts": "validated-private-not-published",
+    "modified_since_load": "validated-private-not-published",
+    "parameters": "field-dispositions-only",
+    "patch_identity": "validated-private-not-published",
+    "provenance": "validated-private-not-published",
+    "raw_log": "hash-reference-only",
+    "schema_version": "validated-private-not-published",
+    "sequence": "validated-private-not-published",
+    "session_id": "validated-private-not-published",
+    "source": "validated-private-not-published",
+    "tracker_version": "validated-private-not-published",
+    "unknown_count": "validated-private-not-published",
+    "unknown_messages": "validated-private-not-published",
+    "updated_at": "validated-private-not-published",
+    "wire_program_observations": "validated-private-not-published"
+  },
+  "missing": [],
+  "outputs": {
+    "P_AGATE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_AHOLD": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ALLOC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_AMODE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_AOCT": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_AORDER": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_APROB": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ARATE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ASWING": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ATAMT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ATDST": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ATK": {
+      "disposition": "approximated",
+      "sources": [
+        "envelope.attack"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 0
+    },
+    "P_ATSNS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_CHOR": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_CHRD": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_DEC": {
+      "disposition": "approximated",
+      "sources": [
+        "envelope.decay"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 58
+    },
+    "P_DETUNE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_DIST": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_DLY": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_E0": {
+      "disposition": "approximated",
+      "sources": [
+        "mixer.saw_level",
+        "mixer.pulse_level",
+        "mixer.sub_level"
+      ],
+      "transform": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated). round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
+      "value": 0
+    },
+    "P_E1": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_E2": {
+      "disposition": "approximated",
+      "sources": [
+        "mixer.saw_level",
+        "mixer.pulse_level",
+        "mixer.sub_level"
+      ],
+      "transform": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated). round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
+      "value": 0
+    },
+    "P_E3": {
+      "disposition": "approximated",
+      "sources": [
+        "mixer.noise_level"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 0
+    },
+    "P_E4": {
+      "disposition": "approximated",
+      "sources": [
+        "vcf.cutoff"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 69
+    },
+    "P_E5": {
+      "disposition": "approximated",
+      "sources": [
+        "vcf.resonance"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 113
+    },
+    "P_E6": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_E7": {
+      "disposition": "approximated",
+      "sources": [
+        "vcf.key_follow"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 49
+    },
+    "P_ED_FLT": {
+      "disposition": "approximated",
+      "sources": [
+        "vcf.envelope_depth"
+      ],
+      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
+      "value": 15
+    },
+    "P_ED_FX": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ED_PIT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ED_SHP": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ESYNC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM1_ATK": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM1_DEC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM1_LEVEL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM1_REL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM1_SUS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM2_ATK": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM2_DEC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM2_LEVEL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM2_REL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM2_SUS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM3_ATK": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM3_DEC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM3_LEVEL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM3_REL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM3_SUS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM4_ATK": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM4_DEC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM4_LEVEL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM4_REL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FM4_SUS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_FTYPE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_GLIDE": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_GLMODE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_IA": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_IB": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_IC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_IMIX": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_ITYPE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LD_AMP": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LD_FLT": {
+      "disposition": "approximated",
+      "sources": [
+        "vcf.mod_depth"
+      ],
+      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
+      "value": 16
+    },
+    "P_LD_PIT": {
+      "disposition": "approximated",
+      "sources": [
+        "vco.mod_depth"
+      ],
+      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
+      "value": 0
+    },
+    "P_LD_SHP": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LEVEL": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LFADE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN0": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN1": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN2": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN3": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN4": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN5": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN6": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LN7": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LPHASE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LPOL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LRATE": {
+      "disposition": "approximated",
+      "sources": [
+        "lfo.rate"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 32
+    },
+    "P_LSYNC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LTRIG": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_LWAVE": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 1
+    },
+    "P_M1AMT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M1DST": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M1SRC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M2AMT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M2DST": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M2SRC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M3AMT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M3DST": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M3SRC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M4AMT": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M4DST": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_M4SRC": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_MUTE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_PAN": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_PRIO": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_QUANT": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_REL": {
+      "disposition": "approximated",
+      "sources": [
+        "envelope.release"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 0
+    },
+    "P_REV": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 0
+    },
+    "P_ROOT": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SCALE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SDIV": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SGATE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SLCR": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SLDEPTH": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SLEN": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SLPAT": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SLRATE": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SPRD": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SQNT": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SSWING": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_SUS": {
+      "disposition": "approximated",
+      "sources": [
+        "envelope.sustain"
+      ],
+      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
+      "value": 0
+    },
+    "P_TRANS": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VBANDS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VCARR": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VCONS": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VCTRIM": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VHIGH": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VHOLD": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VLOW": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VMID": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VMON": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VMTRIM": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VOIC": {
+      "disposition": "retained-track-state",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VOICE": {
+      "disposition": "approximated",
+      "sources": [],
+      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
+      "value": 1
+    },
+    "P_VRANGE": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VREL": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    },
+    "P_VWET": {
+      "disposition": "target-descriptor-default",
+      "sources": [],
+      "transform": "normal apply_preset_to / TP default; no source inference"
+    }
+  },
+  "overrides": {},
+  "policy_sha256": "a1bd94ba115dd3fd4ee9a07b083904dc788d8232a25984c7b4fb0bc91fbe9b14",
+  "recipe_sha256": "aa803337505c22cd6c073d5349a6e28dd186625d071020f82cab40f9562f3e37",
+  "source_definition_version": "roland-chart-1.00/raw-v1",
+  "source_raw_sha256": "9cf87005e5ab694c9eb5a37a99a2b2dd2ac37cbe78154c9c307aa552ff9cdcf1",
+  "source_schema_version": 1,
+  "source_snapshot_sha256": "abd8f57ee2e576595855b42df4a4af35167d9077a56854f1f0db54a6ad8880fc",
+  "translation_fidelity": "heuristic; uncalibrated; not acoustic proof",
+  "translator_sha256": "418555bdf378d658e62a184dbd3d7d90f45ae795e4a276d449705966ffa61c1c",
+  "translator_version": 1,
+  "unknown_message_count": 0,
+  "version": 1
+}
