@@ -39,8 +39,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    await turn('KNOB 1');const edited=(await info())[0][4];assert.notEqual(edited,before,'normal attack knob edits preset');
    await page.evaluate(()=>{window.analyser=testAC.createAnalyser();analyser.fftSize=4096;testNode.connect(analyser);});
    const peak=()=>page.evaluate(()=>{const a=new Float32Array(4096);analyser.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});
-   await page.evaluate(()=>testNode.port.postMessage({type:'midi',data:[0x90,60,100]}));await page.waitForTimeout(200);
-   const p=await peak();assert(p>.000001&&p<=1);peaks.push(p);
+   await page.evaluate(()=>testNode.port.postMessage({type:'midi',data:[0x90,60,100]}));
+   // Include the onset of short one-shot sounds rather than sampling only the tail.
+   let p=0;
+   for(let i=0;i<10;i++){await page.waitForTimeout(20);p=Math.max(p,await peak());}
+   assert(p>.000001&&p<=1);peaks.push(p);
    await page.evaluate(()=>testNode.port.postMessage({type:'midi',data:[0x80,60,0]}));await page.waitForTimeout(2500);assert((await peak())<.00001);
    await tap('PLAY / STOP');await tap('PLAY / STOP');await page.waitForTimeout(1500);assert((await peak())<.00001);
    await tap('SAVE');await tap('OCT+');await tap('OCT+');

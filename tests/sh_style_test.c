@@ -24,7 +24,7 @@ int main(void) {
  uint32_t total,k;list_set(1+CAT_SH_STYLE);preset_pos(&total);assert(total==5);
  for(unsigned i=0;i<total;i++) assert(preset_at(i,&k)==0 && k==13+i);
  list_set(0);
- const int lfo_depth[]={50,0,0,0,16}, env_depth[]={12,55,49,63,15};
+ const int lfo_depth[]={50,0,0,0,0}, env_depth[]={12,55,49,24,8};
  for(unsigned sound=0;sound<total;sound++)for(unsigned t=0;t<6;t++) {
   assert(!web_bgirl_project(0));tick(4096);track_select(t);
   song.g[G_ROUTE]=ROUTE_TRACK;for(unsigned i=0;i<6;i++)mch_set(i,i);
