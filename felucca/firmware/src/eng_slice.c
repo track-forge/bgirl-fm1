@@ -116,6 +116,7 @@ static int slc_vocal_material(const slc_src_t *s) { return s == &SLC_SPEECH || s
  * never adopt a different installed bank behind a saved project's back. */
 static void slc_vocal_select(track_t *t)
 {
+    if(BG_VOCAL_PACK_V1 && (uint32_t)t->p[P_E1]>=NELEM(BG_VOCAL_GROUPS)) t->p[P_E1]=0;
     memcpy(bg_vocal_expected[t-trk],BG_VOCAL_ID,8);
 }
 static int slc_vocal_playing(const track_t *t)
