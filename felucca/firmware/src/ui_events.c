@@ -55,7 +55,7 @@ static int ev_skd(uint32_t k) { return k == EVK_CHANCE || k == EVK_RATCH || k ==
 static int ev_id_ok(const track_t *t, uint32_t id)
 {
     const param_desc_t *d;
-    if (ev_sid(id))
+    if (ev_sid(id) || motion_visual(id))
         return 1;
     if (id >= P_COUNT || !motion_param(id) || id == P_ED_FX || (id >= P_FM1_ATK && id <= P_FM4_LEVEL))
         return 0;
@@ -74,7 +74,7 @@ static void ev_name(const track_t *t, uint32_t id, char *b)
         return;
     }
     str_cpy(b, pre, 12);
-    str_cpy(b + str_len(b), id == P_LEVEL ? "LEVEL" : id == P_GLIDE ? "GLIDE" : track_desc(t, id)->label, 12 - str_len(b));
+    str_cpy(b + str_len(b), id == P_LEVEL ? "LEVEL" : id == P_GLIDE ? "GLIDE" : motion_visual(id) ? motion_desc(t, id)->label : track_desc(t, id)->label, 12 - str_len(b));
 }
 
 /* a step's CHANCE (kind EVK_CHANCE), RATCH (EVK_RATCH), NUDGE (EVK_NUDGE) or VEL (EVK_VEL): its value, its default
@@ -177,7 +177,7 @@ static uint32_t ev_id_step(const track_t *t, uint32_t step, uint32_t id, int32_t
         i += dir;
         if (i < 0 || i >= (int32_t)P_COUNT + 4)
             return id;
-        if (ev_id_ok(t, ev_id_at(i)) && ev_id_free(t, step, ev_id_at(i)))
+        if (!motion_visual(ev_id_at(i)) && ev_id_ok(t, ev_id_at(i)) && ev_id_free(t, step, ev_id_at(i)))
             return ev_id_at(i);
     }
 }
@@ -406,6 +406,7 @@ static void ev_knob(uint32_t slot, int32_t s)
         motion_undo_take(t, 0x200u | slot | i << 4);   /* (a knob turned on, this record) */
         (void)motion_move(t, i, (uint32_t)to, id, e->value);
     } else if (slot == 2u) {                            /* another parameter, from the sound's own value */
+        if (motion_visual(id)) return;
         uint32_t to = id, m = (uint32_t)(s > 0 ? s : -s), nx;
         while (m--) {                                   /* a detent each: the next free parameter (no step field) */
             nx = ev_id_step(t, step, to, s > 0 ? 1 : -1);
@@ -419,7 +420,7 @@ static void ev_knob(uint32_t slot, int32_t s)
         (void)motion_move(t, i, step, to, motion_base_value(t, to));
         ui.ev_id = (uint8_t)to;
     } else {                                            /* the value */
-        d = track_desc(t, id);
+        d = motion_visual(id) ? motion_desc(t, id) : track_desc(t, id);
         s = accel(EN_K1 + slot, s, d->fmt == F_ENUM ? 0 : d->max - d->min);
         motion_undo_take(t, 0x200u | slot | i << 4);   /* (a knob turned on, this record) */
         (void)motion_move(t, i, step, id, (int16_t)param_turn(d, e->value, s));
@@ -490,6 +491,7 @@ static void ev_oct(void)
     }
     if (k == EVK_REC) {
         const motion_event_t e = motion.event[c & 0xFFu];
+        if (motion_visual(MOTION_ID(&e))) return;
         uint32_t lock = !(e.param & MOTION_LOCK);
         motion_undo_take(t, 0);
         (void)motion_put(t, e.place & 63u, MOTION_ID(&e), e.value, lock ? MOTION_LOCK : 0u);
