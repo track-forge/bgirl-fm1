@@ -11,8 +11,13 @@ const assert=require('node:assert/strict');
    const AW=AudioWorkletNode;window.AudioWorkletNode=class extends AW{constructor(...a){super(...a);window.testNode=this;}};
   });
   await page.goto(process.env.BGIRL_URL||'http://127.0.0.1:8774/');
+  assert(await page.locator('#vocal-group').isDisabled());
+  assert(await page.locator('#vocal-whole-dry').isDisabled());
   await page.getByRole('button',{name:'Switch on',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#vocal-status').textContent.startsWith('Installed bank'));
+  assert(await page.locator('#vocal-group').isEnabled());
+  assert.equal(await page.locator('#vocal-group option:checked').innerText(),'SHOTS · 13 entries');
+  assert(await page.locator('#vocal-whole-dry').isEnabled());
   await page.waitForTimeout(1300);
   const state=()=>page.evaluate(()=>new Promise(resolve=>{
    const f=e=>{if(e.data.type==='vocal-info'){testNode.port.removeEventListener('message',f);resolve(e.data);}};
