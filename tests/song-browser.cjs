@@ -97,6 +97,14 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  // New project detaches all source state, including persisted checkpoint.
  page.once('dialog',d=>d.accept());await page.locator('#blank').click();await page.waitForTimeout(500);
  assert.equal((await read()).dependencies.length,0);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('bgirl-felucca-v1-flash'))._portableSong),undefined);
+ // The bundled demo uses normal snapshot import and leaves named slots untouched.
+ const ticker=require('../felucca/web/emu/demos/ticker.bgirl.json'), slotsBeforeTicker=await flash();
+ page.once('dialog',d=>d.accept());
+ await page.getByRole('button',{name:'Load Ticker',exact:true}).click();
+ await page.waitForFunction(()=>JSON.parse(localStorage.getItem('bgirl-felucca-v1-flash'))._portableSong?.title==='Ticker');
+ const bundled=await read();
+ assert.equal(bundled.title,'Ticker');assert.deepEqual(semantic(bundled),semantic(ticker));
+ assert.deepEqual(await flash(),slotsBeforeTicker);
  // FULL is a hardware estimate only; export/import still carries all 384 steps.
  page.once('dialog',d=>d.accept());await page.locator('#six-dense').click();await page.waitForTimeout(500);
  const dense=await exportFile(page);assert((await page.locator('#song-status').textContent()).includes('FULL'));
