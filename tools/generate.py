@@ -29,9 +29,15 @@ if vocal_bank:
         raise ValueError('optional bank header checksum mismatch')
     shutil.copyfile(bank/'bgirl_vocals.h', vocal_dest/'bgirl_vocals.h')
     print('EXPLICIT LOCAL VOCAL BANK:', metadata['bank_sha256'])
-else:
+elif os.environ.get('BGIRL_VOCAL_PACK') == 'fat-boys':
     public = Path(__file__).resolve().parents[1] / 'assets/vocals/g6'
     package_vocals.package(public, public/'slices/manifest.json', vocal_dest, group_ids=[6])
+else:
+    selection = os.environ.get('BGIRL_VOCAL_PACK', 'miami-bass')
+    manifest = (Path(__file__).resolve().parents[1] / 'assets/vocals/miami-bass/pack.json'
+                if selection == 'miami-bass' else Path(selection))
+    report = package_vocals.package_pack(manifest, vocal_dest)
+    print('VOCAL PACK:', report['pack']['name'], report['bytes'], report['bank_sha256'])
 listening = Path(__file__).resolve().parents[1] / 'assets/listening'
 shutil.copytree(listening, Path(__file__).resolve().parents[1] / 'felucca/build/emu/listening', dirs_exist_ok=True)
 

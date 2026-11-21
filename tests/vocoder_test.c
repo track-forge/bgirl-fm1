@@ -137,7 +137,7 @@ int main(int argc,char **argv)
         for(uint32_t k=0;k<(uint32_t)trk[2].p[P_SLEN];k++) assert(trk[2].step[k].time==(k%16 ? ST_TIE : ST_NOTE));
         assert(trk[2].step[0].note[0]==36 && trk[2].step[16].note[0]==43);
         assert(trk[3].p[P_E0]==SLC_SRC_VOCALS);
-        assert(trk[3].p[P_E1]==(NELEM(BG_VOCAL_GROUPS)>6 ? 6 : 1) && slc_vocal_match(&trk[3]));
+        assert(trk[3].p[P_E1]==slc_factory_vocal_group() && slc_vocal_match(&trk[3]));
         assert(trk[2].p[P_SLEN]==32 && trk[3].p[P_SLEN]==32);
         assert(trk[3].step[16].note[0]==60 && trk[3].step[11].n);
         transport_req=1;tick(4410);

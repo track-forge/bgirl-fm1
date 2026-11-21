@@ -62,6 +62,19 @@ static const slc_src_t SLC_BREAK = SLC_BREAK_INIT;
 #include "bgirl_speech.h"
 static const slc_src_t SLC_SPEECH = BG_SPEECH_INIT;
 #include "bgirl_vocals.h"
+#ifndef BG_VOCAL_PACK_V1
+#define BG_VOCAL_PACK_V1 0
+#define BG_VOCAL_PACK_NAME "Fat Boys"
+#endif
+/* Legacy public/full banks keep their original G6 index and note mapping. */
+static uint32_t slc_factory_vocal_group(void)
+{
+    if(BG_VOCAL_PACK_V1) return 0;
+    for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
+        if(!strcmp(BG_VOCAL_VIEWS[i],"G6")) return i;
+    return 1;
+}
+
 static const slc_src_t SLC_VOCALS = BG_VOCAL_INIT;
 static const slc_src_t SLC_PIANO = SLC_PIANO_INIT;
 static slc_src_t slc_usr[SMP_USER_SLOTS];
