@@ -11,18 +11,24 @@ const assert=require('node:assert/strict');
    const AW=AudioWorkletNode;window.AudioWorkletNode=class extends AW{constructor(...a){super(...a);window.testNode=this;}};
   });
   await page.goto(process.env.BGIRL_URL||'http://127.0.0.1:8774/');
+  assert(await page.locator('#vocal-group').isDisabled());
+  assert(await page.locator('#vocal-whole-dry').isDisabled());
   await page.getByRole('button',{name:'Switch on',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#vocal-status').textContent.startsWith('Installed bank'));
+  assert(await page.locator('#vocal-group').isEnabled());
+  assert.equal(await page.locator('#vocal-group option:checked').innerText(),'SHOTS · 13 entries');
+  assert(await page.locator('#vocal-whole-dry').isEnabled());
   await page.waitForTimeout(1300);
   const state=()=>page.evaluate(()=>new Promise(resolve=>{
    const f=e=>{if(e.data.type==='vocal-info'){testNode.port.removeEventListener('message',f);resolve(e.data);}};
    testNode.port.addEventListener('message',f);testNode.port.postMessage({type:'vocal-info'});
   }));
   const check=async()=>{
-   const info=await state(),g6=info.groupNumbers.indexOf(6);
-   assert(g6>=0,'G6 must ship in the ordinary build');
-   assert([4096+6,4096+6+16*(g6+1)].includes(info.state),'VOCALS whole/G6/START0/matching bank');
-   assert.match(await page.locator('#vocal-group option').nth(g6).innerText(),/^G6 /);
+   const info=await state();
+   assert.equal(info.name,'Miami Bass');
+   assert.deepEqual(info.views,[{name:'SHOTS',count:13}]);
+   assert.equal(info.state,4096+6,'VOCALS / SHOTS / START0 / matching bank');
+   assert.match(await page.locator('#vocal-group option').first().innerText(),/^SHOTS/);
   };
   await check();
   page.once('dialog',d=>d.accept());await page.locator('#demo').click();await page.waitForTimeout(400);await check();
@@ -36,6 +42,6 @@ const assert=require('node:assert/strict');
   assert(peak>.001);await check();
   await page.getByRole('button',{name:'PLAY / STOP',exact:true}).click({delay:90});await page.waitForTimeout(3000);
   const stopped=await page.evaluate(()=>{const a=new Float32Array(4096);meter.getFloatTimeDomainData(a);return Math.max(...a.map(Math.abs));});assert(stopped<.0001);
-  assert.deepEqual(errors,[]);console.log({startupAndExplicitDemo:'bundled G6 matching bank',peak,stopped,seconds:9,pageErrors:errors});
+  assert.deepEqual(errors,[]);console.log({startupAndExplicitDemo:'Miami Bass matching bank',peak,stopped,seconds:9,pageErrors:errors});
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

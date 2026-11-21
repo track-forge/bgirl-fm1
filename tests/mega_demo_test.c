@@ -56,7 +56,7 @@ int main(void) {
     }
     assert(trk[3].p[P_VBANDS]==2 && trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==84);
     assert(trk[3].p[P_VREL]==bg_release_value(120) && trk[3].p[P_VCARR]==3 && !trk[3].p[P_VMON]);
-    assert(!strcmp(BG_VOCAL_VIEWS[1],"G6") && slc_vocal_match(&trk[3]));
+    assert(slc_vocal_match(&trk[3]));
     assert(motion.count==0 && !motion.on);
     assert(trk[3].p[P_E1]==0 && trk[3].p[P_E4]==SLC_ONE);
     assert(trk[2].eng_req==0 && trk[2].preset==12);
@@ -87,7 +87,7 @@ int main(void) {
             assert(trk[2].step[k].time==ST_NOTE);
         } else assert(trk[2].step[k].time==ST_TIE);
         assert(trk[3].step[k].n==(k==0 || k==32));
-        if(trk[3].step[k].n)assert(trk[3].step[k].note[0]==60);
+        if(trk[3].step[k].n)assert(trk[3].step[k].note[0]==60+(BG_VOCAL_PACK_V1 ? (k ? BG_VOCAL_GROUPS[0].n-1 : 0) : slc_factory_vocal_group()-1));
     }
     uint32_t bytes=project_bytes();assert(bytes<3000);
     assert(proj_pack(&wire,&fresh) && proj_import(&decoded,&wire,sizeof wire));

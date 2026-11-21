@@ -669,9 +669,17 @@ static void design_column(uint32_t c,const char *label,const char *val,const cha
     else cv_rect(0,0,COL_W,1,mot?T_THEME:T_LINE);
     cv_text_fit(3,1,lf,label,hot?T_ACCENT:mot?T_THEME:T_TEXT,bg,51);
     int32_t vy=tall?(vf==&AF_L?22-AF_L_CAP_Y:vf==&AF_V?25-AF_V_CAP_Y:26-AF_C_CAP_Y):14;
+    int32_t ky=tall?49:29;
+    if(!tall && val[0]) {
+        int32_t value_bounds[4], footer_bounds[4];
+        text_ink(vf,val,value_bounds);
+        text_ink(&AF_C,k,footer_bounds);
+        /* Descenders in mixed-case sample names can enter the knob footer. */
+        if(vy+value_bounds[3]>ky+footer_bounds[1])
+            vy=ky+footer_bounds[1]-value_bounds[3];
+    }
     uint16_t value_ink=vc==T_DIM?T_DIM:hot?T_ACCENT:T_TEXT;
     cv_text_in(0,vy,COL_W,vf,val,value_ink,bg);
-    int32_t ky=tall?49:29;
     cv_text_on(3,ky,&AF_C,k,label[0]||val[0]?T_MID:T_DIM,bg);
     if(unit[0])cv_text_r(54,ky,&AF_C,unit,T_MID,bg);
     if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,hot?T_ACCENT:vc==T_DIM?T_DIM:(design_context()==DC_CUT || design_context()==DC_CUT_SEQ || design_context()==DC_CUT_MORE)?T_RHYTHM:T_THEME);

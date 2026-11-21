@@ -17,7 +17,7 @@ static void bgirl_mega_demo(uint32_t drum_preset)
     static const uint8_t closed[]={0,1,2,6,8,14,16,17,18,22,26,29,30,31};
     static const uint8_t open[]={4,5,10};
     static const uint8_t rim[]={29,30,31};
-    uint32_t i,k,group=0;
+    uint32_t i,k;
     for(i=0;i<NTRK;i++)motion_reset(&trk[i]);
     undo_depth++;
     set_engine_of(&trk[0],ENGI_DRUM);apply_preset_to(&trk[0],drum_preset);
@@ -66,9 +66,7 @@ static void bgirl_mega_demo(uint32_t drum_preset)
     for(k=0;k<64;k+=32) {
         bgirl_mega_note(2,k,45,100);bgirl_mega_note(2,k+16,31,100);
     }
-    /* Find G6 by label. Generated WHOLE parent order mirrors the group order. */
-    for(i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
-        if(!strcmp(BG_VOCAL_VIEWS[i],"G6"))group=i;
+    uint32_t hook=BG_VOCAL_PACK_V1 ? 0 : slc_factory_vocal_group()-1;
     trk[3].p[P_E0]=SLC_SRC_VOCALS;trk[3].p[P_E1]=0;
     trk[3].p[P_E2]=0;trk[3].p[P_ROOT]=0;
     trk[3].p[P_E4]=SLC_ONE;trk[3].p[P_E6]=127;
@@ -81,11 +79,8 @@ static void bgirl_mega_demo(uint32_t drum_preset)
     trk[3].p[P_SLCR]=SL_GATE;trk[3].p[P_SLPAT]=3;
     trk[3].p[P_DLY]=25; /* 20% on the normal FX page */
     slc_vocal_select(&trk[3]);
-    if(group) {
-        /* Doug's listening revision: full one-shot only, beat1 of bars1/3. */
-        bgirl_mega_note(3,0,60+group-1,110);
-        bgirl_mega_note(3,32,60+group-1,106);
-    }
+    bgirl_mega_note(3,0,60+hook,110);
+    bgirl_mega_note(3,32,60+(BG_VOCAL_PACK_V1 ? BG_VOCAL_GROUPS[0].n-1 : hook),106);
     trk[4].p[P_LEVEL]=99;trk[4].p[P_VOICE]=V_MONO;
     trk[4].p[P_REV]=43;trk[4].p[P_REL]=35;trk[4].p[P_SGATE]=127;
     trk[4].p[P_SLCR]=SL_GATE;trk[4].p[P_SLPAT]=1;

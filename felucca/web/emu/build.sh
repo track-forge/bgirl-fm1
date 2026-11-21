@@ -20,9 +20,10 @@ emcc ${EMU_OPT:--O2} -ffp-contract=off -std=gnu99 -w ${EMU_CFLAGS:-} \
     --no-entry -sSTANDALONE_WASM -sSTACK_SIZE=1048576 -sINITIAL_MEMORY=33554432 -sFILESYSTEM=0 \
     -o build/emu/felucca.wasm web/emu/felucca_web.c
 [ "${EMU_PREVIEW:-1}" = 0 ] && PREVIEW='' || PREVIEW=' (preview)'
-sed -e "s/@VERSION@/$VERSION/g" -e "s/@PREVIEW@/$PREVIEW/g" web/emu/index.html > build/emu/index.html
 git rev-parse HEAD > build/emu/build-sha.txt
-sed "s/@BUILD_SHA@/$(git rev-parse HEAD)/g" web/emu/worklet.js > build/emu/worklet.js
+sed "s/@BUILD_SHA@/$(cat build/emu/build-sha.txt)/g" web/emu/worklet.js > build/emu/worklet.js
+ASSET_REV=$(cat build/emu/felucca.wasm build/emu/worklet.js | sha256sum | cut -d ' ' -f 1)
+sed -e "s/@VERSION@/$VERSION/g" -e "s/@PREVIEW@/$PREVIEW/g" -e "s/@ASSET_REV@/$ASSET_REV/g" web/emu/index.html > build/emu/index.html
 cp web/emu/song-snapshot.mjs web/emu/snapshot-layout.mjs build/emu/
 cp web/emu/fonts/*.woff web/emu/fonts/OFL*.txt build/emu/fonts/
 cp ../assets/branding/bgirl-fm1-wordmark.png build/emu/branding/

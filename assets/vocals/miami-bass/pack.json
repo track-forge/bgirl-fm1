@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "id": "miami-bass",
+  "name": "Miami Bass",
+  "max_audio_bytes": 110250,
+  "groups": [
+    {
+      "id": "shots",
+      "kind": "shots",
+      "name": "SHOTS",
+      "entries": [
+        {
+          "id": "ayyy",
+          "name": "Ayyy",
+          "wav": "ayyy.wav",
+          "frames": [
+            0,
+            82688
+          ]
+        },
+        {
+          "id": "yea2",
+          "name": "Yea2",
+          "wav": "yea2.wav",
+          "frames": [
+            0,
+            41344
+          ]
+        },
+        {
+          "id": "rollin",
+          "name": "Rollin",
+          "wav": "rollin.wav",
+          "frames": [
+            0,
+            41344
+          ]
+        },
+        {
+          "id": "aye3",
+          "name": "Aye3",
+          "wav": "aye3.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "yup",
+          "name": "Yup",
+          "wav": "yup.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "hey2",
+          "name": "Hey2",
+          "wav": "hey2.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "uh",
+          "name": "Uh",
+          "wav": "uh.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "aye",
+          "name": "Aye",
+          "wav": "aye.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "yup2",
+          "name": "Yup2",
+          "wav": "yup2.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "ugh",
+          "name": "Ugh",
+          "wav": "ugh.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "ah2",
+          "name": "Ah2",
+          "wav": "ah2.wav",
+          "frames": [
+            0,
+            20672
+          ]
+        },
+        {
+          "id": "ahhh",
+          "name": "Ahhh",
+          "wav": "ahhh.wav",
+          "frames": [
+            0,
+            41344
+          ]
+        },
+        {
+          "id": "beleedat",
+          "name": "BeleeDat",
+          "wav": "beleedat.wav",
+          "frames": [
+            0,
+            41344
+          ]
+        }
+      ]
+    }
+  ]
+}

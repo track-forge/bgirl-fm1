@@ -17,12 +17,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const on=async()=>{await page.locator('#go').click();await page.waitForFunction(()=>document.querySelector('#start').hidden);await page.waitForTimeout(1300);};
   const choose=async(view)=>{await tap('HOME',900);await turn('PRESETS',-1,(await info())[9]);await turn('PRESETS',1,7);await turn('KNOB 1',-1,5);await turn('KNOB 1',1,view);await tap('HOME');assert.equal((await info())[0],view);await page.waitForTimeout(2600);};
   const oldWasm=fs.readFileSync(process.env.BGIRL_CREW_PREVIOUS_WASM);
-  await page.route('**/felucca.wasm',r=>r.fulfill({body:oldWasm,contentType:'application/wasm'}));
+  await page.route(/\/felucca\.wasm(?:\?.*)?$/,r=>r.fulfill({body:oldWasm,contentType:'application/wasm'}));
   await page.goto(process.env.BGIRL_URL||'http://127.0.0.1:8796');await on();
   await choose(0); // Save SCOPE using the genuine pre-migration firmware.
   const before=await page.evaluate(()=>({...localStorage}));assert(Object.keys(before).length>0);
   await page.reload();await on();assert.equal((await info())[0],0,'old firmware restores saved SCOPE');
-  await page.unroute('**/felucca.wasm');
+  await page.unroute(/\/felucca\.wasm(?:\?.*)?$/);
   await page.reload();await on();assert.equal((await info())[0],3,'new firmware upgrades saved SCOPE to CREW');
   await choose(1); // An intentional post-upgrade TRACKS selection must win later.
   await page.reload();await on();assert.equal((await info())[0],1,'new explicit view remains selected');

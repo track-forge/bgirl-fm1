@@ -53,8 +53,8 @@ int main(void) {
     }
     printf("six-track vocoder: %d extra ordered-pair/core-mask comparisons and T5/T6 failure recovery PASS\n",extraComparisons);
     int vocalComparisons=0;
-    for(int view=0;view<2;view++) {
-        setenv("VOCAL_VIEW",view ? "1" : "0",1);
+    for(int view=0;view<(int)NELEM(BG_VOCAL_GROUPS);view++) {
+        char value[8];snprintf(value,sizeof value,"%d",view);setenv("VOCAL_VIEW",value,1);
         for(int b=0;b<3;b++)for(int o=0;o<6;o++) {
             if(o==1 || o==2)continue;
             int c=o<4?3-o:9-o;uint64_t ref=isolated(o,c,0,b,0);
