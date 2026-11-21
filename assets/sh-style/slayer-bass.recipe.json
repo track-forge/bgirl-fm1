@@ -1,0 +1,31 @@
+{
+  "engine": 0,
+  "name": "Slayer Bass",
+  "preset": 16,
+  "values": {
+    "P_ATK": 0,
+    "P_CHOR": 0,
+    "P_DEC": 48,
+    "P_DIST": 0,
+    "P_DLY": 0,
+    "P_E0": 6,
+    "P_E1": 0,
+    "P_E2": 78,
+    "P_E3": 0,
+    "P_E4": 70,
+    "P_E5": 42,
+    "P_E6": 20,
+    "P_E7": 64,
+    "P_ED_FLT": 24,
+    "P_GLIDE": 0,
+    "P_LD_FLT": 0,
+    "P_LD_PIT": 0,
+    "P_LRATE": 29,
+    "P_LWAVE": 1,
+    "P_REL": 23,
+    "P_REV": 0,
+    "P_SUS": 100,
+    "P_VOICE": 1
+  },
+  "version": 1
+}

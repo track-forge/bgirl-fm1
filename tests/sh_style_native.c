@@ -2,7 +2,7 @@
 #include "../felucca/web/emu/felucca_web.c"
 #include <assert.h>
 int main(int argc,char**argv){assert(argc==2);FILE*f=fopen(argv[1],"wb");assert(f);
- for(unsigned sound=0;sound<2;sound++) {
+ for(unsigned sound=0;sound<5;sound++) {
   web_nor_erase();web_boot();assert(!web_bgirl_sh_style_sound(sound));
   for(int n=0;n<4096;n+=128)web_render(128);
   web_midi(0x90,60,100);

@@ -2,7 +2,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const {instance}=await WebAssembly.instantiate(fs.readFileSync('felucca/build/emu/felucca.wasm'),{});const ex=instance.exports;ex._initialize();
 const native=new Float32Array(new Uint8Array(fs.readFileSync('felucca/build/host/sh-style-native.f32')).buffer);let offset=0;
-for(let sound=0;sound<2;sound++) {
+for(let sound=0;sound<5;sound++) {
  ex.web_nor_erase();ex.web_boot();assert.equal(ex.web_bgirl_sh_style_sound(sound),0);
  for(let n=0;n<4096;n+=128)ex.web_render(128);
  ex.web_midi(0x90,60,100);let energy=0;
@@ -13,4 +13,4 @@ for(let sound=0;sound<2;sound++) {
   for(let i=0;i<m;i++)for(const v of [l[i],r[i]]){assert(Number.isFinite(v)&&Math.abs(v)<=1);assert.equal(v,native[offset++],`sample ${offset}`);energy+=v*v;}
  }assert(energy>.00001);
 }
-assert.equal(offset,native.length);console.log('SH-STYLE native/WASM: 176400 frames bit-identical, finite/bounded/nonzero, including release PASS');
+assert.equal(offset,native.length);console.log('SH-STYLE native/WASM: 441000 frames bit-identical, finite/bounded/nonzero, including release PASS');
