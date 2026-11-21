@@ -13,6 +13,29 @@ static int16_t motion_base[NTRK][P_COUNT];
 static uint32_t motion_active[NTRK][(P_COUNT + 31u) / 32u];
 static uint32_t motion_locked[NTRK][(P_COUNT + 31u) / 32u];   /* the ids a lock holds now (put back at the next step) */
 static uint8_t motion_base_valid, motion_full;
+static const char *const crew_names[] = {"WINDMILL", "STEP TURN", "WAVE-ISH", "WORM", "FLOORWORK"};
+static const char *const crew_rates[] = {"HALF", "NORMAL", "DOUBLE"};
+static const char *const crew_effects[] = {"CLEAN", "GHOST", "COLOR"};
+#define CREW_DEFAULTS {{0,1,0,8},{1,1,0,8},{2,1,0,8},{3,1,0,8},{4,1,0,8},{0,1,0,8}}
+static const uint8_t crew_defaults[NTRK][4] = CREW_DEFAULTS;
+static uint8_t crew_base[NTRK][4] = CREW_DEFAULTS;
+static uint8_t crew_live[NTRK][4] = CREW_DEFAULTS;
+static const param_desc_t CREW_PARAM[] = {
+    {"MOVE", F_ENUM, 0, 4, 0, crew_names, 0},
+    {"RATE", F_ENUM, 0, 2, 1, crew_rates, 0},
+    {"EFFECT", F_ENUM, 0, 2, 0, crew_effects, 0},
+    {"AMOUNT", F_INT, 0, 8, 8, 0, 0},
+};
+static int motion_visual(uint32_t id) { return id >= MO_MOVE && id <= MO_AMOUNT; }
+static const param_desc_t *motion_desc(const track_t *t, uint32_t id)
+{
+    return motion_visual(id) ? &CREW_PARAM[id - MO_MOVE] : param_desc_of(eng_idx(t->eng_req), id);
+}
+static int motion_values_ok(uint32_t id, int32_t value, uint32_t kind)
+{
+    if (!motion_visual(id)) return value >= -64 && value <= 127;
+    return !kind && value >= 0 && value <= CREW_PARAM[id - MO_MOVE].max;
+}
 static uint32_t motion_guard(void)
 {
 #if defined(FM1_IRQ_TARGET)
@@ -49,7 +72,8 @@ static int motion_valid(const motion_store_t *m)
     if (m->count > MOTION_MAX || (m->on & ~((1u << NTRK) - 1u))) return 0;
     for (i = 0; i < m->count; i++) {
         const motion_event_t *e = &m->event[i];
-        if (e->place >= NTRK * NSTEP || !motion_param(MOTION_ID(e)) || e->value < -64 || e->value > 127) return 0;
+        if (e->place >= NTRK * NSTEP || (!motion_param(MOTION_ID(e)) && !motion_visual(MOTION_ID(e))) ||
+            !motion_values_ok(MOTION_ID(e), e->value, e->param & MOTION_LOCK)) return 0;
         for (j = 0; j < i; j++)
             if (m->event[j].place == e->place && MOTION_ID(&m->event[j]) == MOTION_ID(e)) return 0;
     }
@@ -99,7 +123,7 @@ static uint32_t motion_mask(uint32_t k, uint32_t m[(P_COUNT + 31u) / 32u])
     if (k >= NTRK || !((motion.on >> k) & 1u)) return 0;
     for (i = 0; i < motion.count; i++) {
         const motion_event_t *e = &motion.event[i];
-        if ((e->place >> 6) != k || MOTION_ID(e) >= P_COUNT) continue;
+        if ((e->place >> 6) != k || motion_visual(MOTION_ID(e)) || MOTION_ID(e) >= P_COUNT) continue;
         m[MOTION_ID(e) / 32u] |= 1u << (MOTION_ID(e) % 32u);
         any = 1;
     }
@@ -115,6 +139,7 @@ static void motion_restore(track_t *t)
     uint32_t k = trk_index(t), id, f = motion_guard();
     for (id = 0; id < P_COUNT; id++)
         if ((motion_active[k][id / 32u] >> (id % 32u)) & 1u) t->p[id] = motion_base[k][id];
+    memcpy(crew_live[k], crew_base[k], sizeof crew_live[k]);
     memset(motion_active[k], 0, sizeof motion_active[k]);
     memset(motion_locked[k], 0, sizeof motion_locked[k]);
     motion_unguard(f);
@@ -168,9 +193,9 @@ static int motion_put(track_t *t, uint32_t step, uint32_t id, int16_t value, uin
 {
     uint32_t k = trk_index(t), i, f;
     const param_desc_t *d;
-    if (k >= NTRK || step >= NSTEP || !motion_param(id)) return 1;
-    d = param_desc_of(eng_idx(t->eng_req), id);
-    if (value < d->min || value > d->max || value < -64 || value > 127) return 1;
+    if (k >= NTRK || step >= NSTEP || (!motion_param(id) && !motion_visual(id))) return 1;
+    d = motion_desc(t, id);
+    if (value < d->min || value > d->max || !motion_values_ok(id, value, kind)) return 1;
     value = (int16_t)param_fit(d, value);                    /* (a retired KIT: the kit it plays) */
     f = motion_guard();
     for (i = 0; i < motion.count; i++)
@@ -216,9 +241,19 @@ static uint32_t motion_clear_locks(track_t *t, uint32_t step)
     motion_unguard(f);
     return gone;
 }
+/* Called under the motion guard: same quantization as a sound knob. */
+static uint32_t motion_record_step(const track_t *t)
+{
+    uint32_t len = (uint32_t)clamp(t->p[P_SLEN], 1, NSTEP);
+    uint32_t idx = t->seq_idx % len;
+    uint32_t period = div_samples((uint32_t)t->p[P_SDIV]);
+    if (t->seq_pos < 0x7FFFFFFFu && t->seq_pos > step_samples(t, period, idx) / 2u)
+        idx = (idx + 1u) % len;
+    return idx;
+}
 static int motion_capture(track_t *t, uint32_t id, int16_t value)
 {
-    uint32_t k = trk_index(t), idx, len, period, f;
+    uint32_t k = trk_index(t), idx, f;
 #if FELUCCA_SLICE
     if(t->eng_req==13 && id==P_E0 && value==SLC_SRC_VOCALS) {
         f=motion_guard(); slc_vocal_select(t); motion_unguard(f);
@@ -233,11 +268,8 @@ static int motion_capture(track_t *t, uint32_t id, int16_t value)
         motion_unguard(f);
         return 0;
     }
-    len = (uint32_t)clamp(t->p[P_SLEN], 1, NSTEP);
-    period = div_samples((uint32_t)t->p[P_SDIV]);
     f = motion_guard();
-    idx = t->seq_idx % len;
-    if (t->seq_pos < 0x7FFFFFFFu && t->seq_pos > step_samples(t, period, idx) / 2u) idx = (idx + 1u) % len;
+    idx = motion_record_step(t);
     /* Mark the immediate knob value transient too, so a stop before its next
      * quantized step still restores the original patch. */
     if ((motion_base_valid >> k) & 1u) motion_active[k][id / 32u] |= 1u << (id % 32u);
@@ -285,6 +317,10 @@ static __attribute__((noinline)) void motion_step(track_t *t, uint32_t step, con
         const motion_event_t *e = &m->event[i];
         uint32_t id = MOTION_ID(e);
         if (e->place != (motion_place(k,step)) || ((e->param & MOTION_LOCK) && !play)) continue;
+        if (motion_visual(id)) {
+            crew_live[k][id - MO_MOVE] = (uint8_t)e->value;
+            continue;
+        }
         const param_desc_t *d = param_desc_of(eng_idx(t->eng_req), id);
         t->p[id] = (int16_t)param_fit(d, e->value);
         motion_active[k][id / 32u] |= 1u << (id % 32u);
@@ -355,13 +391,13 @@ static int motion_move(track_t *t, uint32_t i, uint32_t step, uint32_t id, int16
     const param_desc_t *d;
     int32_t at;
     uint32_t f;
-    if (i >= motion.count || (motion.event[i].place >> 6) != trk_index(t) || step >= NSTEP || !motion_param(id))
+    if (i >= motion.count || (motion.event[i].place >> 6) != trk_index(t) || step >= NSTEP || (!motion_param(id) && !motion_visual(id)))
         return 1;
     at = motion_find(t, step, id);
     if (at >= 0 && (uint32_t)at != i)
         return 1;
-    d = param_desc_of(eng_idx(t->eng_req), id);
-    if (v < d->min || v > d->max || v < -64 || v > 127)
+    d = motion_desc(t, id);
+    if (v < d->min || v > d->max || !motion_values_ok(id, v, motion.event[i].param & MOTION_LOCK))
         return 1;
     f = motion_guard();
     if (motion.event[i].place != (motion_place(trk_index(t),step)) || MOTION_ID(&motion.event[i]) != id)

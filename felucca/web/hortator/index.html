@@ -120,7 +120,7 @@
         <li data-ctl="HOME"><b>HOME</b> Return to the performance views, including CREW, TRACKS and LEVELS. Hold for the menu.</li>
         <li data-ctl="EDIT"><b>EDIT</b> Open the selected track’s sound pages.</li>
         <li data-ctl="SEQ"><b>SEQ</b> Open STEP, then use SELECT to browse the sequencing pages, including PATTERN and SONG.</li>
-        <li data-ctl="FX"><b>FX</b> Open the effects pages. Turn SELECT to reach <b>VOCODER</b>, <b>VOC INPUT</b> and <b>VOC COLOR</b> on the vocoder track. Hold FX for PERFORM.</li>
+        <li data-ctl="FX"><b>FX</b> Open the effects pages. Turn SELECT to reach <b>VOCODER</b>, <b>VOC INPUT</b> and <b>VOC COLOR</b> on the vocoder track. On STAGE (CREW HOME), hold FX to choreograph. Hold FX elsewhere for PERFORM.</li>
         <li data-ctl="ARP"><b>ARP</b> Browse arpeggiator, scale and chord settings for the selected track.</li>
         <li data-ctl="LFO"><b>LFO</b> Edit the track’s LFOs and their destinations.</li>
         <li data-ctl="ENV"><b>ENV</b> Open the envelope pages.</li>
@@ -134,7 +134,7 @@
       <h3>Keys</h3>
       <ul>
         <li data-ctl="white">The white keys select steps in STEP and play notes in KEYS.</li>
-        <li data-ctl="black">The black keys play sharps in KEYS. Hold FX for the PERFORM layer.</li>
+        <li data-ctl="black">The black keys play sharps in KEYS. Outside CREW HOME, hold FX for the PERFORM layer.</li>
       </ul>
     </div>
   </div>
@@ -145,10 +145,25 @@
       <p>Power on, turn down MASTER, then hit PLAY to hear the Mega Jam. Turn ALGORITHM to cycle through T1–T6 and watch the selected track on CREW HOME. Stop the loop, tap SEL, and play that track from the keys.</p>
       <p class="where"><b>PLAY</b> transport · <b>ALGORITHM</b> track · <b>SEL</b> play notes</p>
     </li>
+    <li class="guide" id="m-choreo">
+      <h3>STAGE · Record a dancer move</h3>
+      <ol>
+        <li>Use the powered-up instrument above, not the silent landing-page reel. Hit PLAY and pick T1 with ALGORITHM. If you left STAGE, tap HOME to return to the dancer.</li>
+        <li>Right-click FX (or long-press it on touch) to hold it. The dancer stays up. Try K1 MOVE to swap moves, K2 RATE for half, normal or double speed, K3 EFFECT for clean, ghost or color, and K4 AMOUNT to dial it in. With REC off, these are live changes only. Tap FX to release it.</li>
+        <li>Tap REC to arm T1, hold FX again, and turn RATE on the drum fill. Turn MOVE at the turnaround. Tap REC to disarm and tap FX to release. The knobs go straight back to sound; watch the next two passes for the same cues without changing the beat.</li>
+        <li>To use audio PERFORM instead, tap FX normally to open the audio effects page, then hold FX there. Hold FX also still opens PERFORM on other HOME views and pages.</li>
+      </ol>
+    </li>
     <li class="guide" id="m-patches">
       <h3>LAB · Change the sound</h3>
       <p>Try T2, the bass track. Play a note, turn PRESETS a detent and play it again. Then tap EDIT and move one of the four knobs while watching its label on the LCD. Try this on T2 first so the demo’s vocoder routing stays intact.</p>
       <p class="where"><b>PRESETS</b> browse sounds · <b>EDIT</b> open sound pages</p>
+    </li>
+    <li class="guide" id="m-sampler">
+      <h3>LAB · Recut the vocals</h3>
+      <p>Open <a href="play/">BGIRL Studio</a>, switch on, and hit <b>PLAY</b>. If a saved session opens, confirm <b>Load electro demo</b> to get the factory groove. Turn <b>ALGORITHM</b> to T4 and open <b>EDIT 1</b>. Leave <b>SRC</b> on <b>VOCALS</b> and <b>VIEW</b> on <b>SHOTS</b>. While the beat runs, turn <b>START</b> a notch: the same steps now trigger different hits.</p>
+      <p>To finger-drum, tap <b>SEL</b> for KEYS. With <b>ROOT</b> at zero and <b>START</b> at <b>Ayyy</b>, C4 (MIDI 60) plays Ayyy and C5 (MIDI 72) plays BeleeDat, the 13th shot. On your computer keyboard at the default octave, those are <kbd>B</kbd> and <kbd>W</kbd>. Each semitone picks the next sample, wrapping after the last; it doesn’t pitch-shift a sample.</p>
+      <p>For dry hits, turn <b>WET</b> down to zero on T4’s VOCODER page, or stop and choose <b>Vocal bank → Load group · dry</b>. The latter replaces the working project after confirmation, not your saved slots. <b>VIEW</b> selects groups within the installed bank, not between packs: the Pages build ships Miami Bass, and Fat Boys is a separate build. This is browser playback; hardware fit and playback aren’t verified.</p>
     </li>
     <li class="guide" id="m-vocoder">
       <h3>LAB · Give the beat a voice</h3>

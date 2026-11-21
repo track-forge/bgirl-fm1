@@ -1168,7 +1168,8 @@ static void mix_block(int32_t *out, uint32_t n)
             for(i=0;i<n;i++) bg_bus.car[i]=0;
             memset(bg_voc.synthesis,0,sizeof bg_voc.synthesis);
         }
-        bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
+        if (!stage_voc_off[bg_bus.owner])
+            bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
         T_SPREAD(&trk[bg_bus.owner])=0;
         mix_finish(&trk[bg_bus.owner],bg_bus.mod,n SM_ARG(&mx[0]));
     }

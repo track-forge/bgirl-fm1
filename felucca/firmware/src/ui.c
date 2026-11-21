@@ -1811,9 +1811,46 @@ static uint32_t mix_base(void) { return song.sel >= 4u ? 4u : 0u; }
 static uint32_t mix_track(uint32_t knob) { return mix_base() + (knob & 3u); }
 static int16_t mix_inactive;
 static track_t *home_trk(uint32_t k) { return home_levels() && mix_track(k)<NTRK ? &trk[mix_track(k)] : TSEL; }
+static uint8_t stage_fx_press;
+static int stage_fx_on(void);
+static void stage_visual_turn(uint32_t knob, int32_t delta)
+{
+    uint32_t f = motion_guard(), k = song.sel;
+    int16_t old = crew_live[k][knob], value = (int16_t)param_turn(&CREW_PARAM[knob], old, delta);
+    if (value != old) {
+        crew_live[k][knob] = (uint8_t)value;
+        if (rec_on(TSEL))
+            motion_set_event(TSEL, motion_record_step(TSEL), MO_MOVE + knob, value);
+        else
+            crew_base[k][knob] = (uint8_t)value;
+    }
+    motion_unguard(f);
+}
+static uint32_t stage_sound_id(uint32_t k)
+{
+    const engine_t *engine = ENGINES[TSEL->eng_req % NENGINES];
+    if (!k) return P_LEVEL;
+    if (drum_track(TSEL)) {
+        static const uint8_t ids[] = {P_LEVEL, P_SGATE, P_LN0, P_LN1};
+        return ids[k];
+    }
+    if (k == 1u)
+        for (uint32_t i = P_E0; i <= P_E7; i++)
+            if (track_desc(TSEL, i)->fmt == F_CUTOFF) return i;
+    if (k == 1u) return P_SGATE;
+    return engine->knob[k - 2u] == P_LEVEL ? P_REV : engine->knob[k - 2u];
+}
 static const param_desc_t *home_param(uint32_t k, int16_t **vp)
 {
     uint32_t id = home_levels() ? (uint32_t)P_LEVEL : ENGINES[TSEL->eng_req % NENGINES]->knob[k & 3u];
+    if (home_crew()) {
+        if (TSEL->p[P_VCARR] && voc_owner() == song.sel) {
+            static const char *const name[] = {"ON", "OFF"};
+            static const param_desc_t voc = {"VOC", F_ENUM, 0, 1, 0, name, 0};
+            if (k == 1u) { *vp = &stage_voc_off[song.sel]; return &voc; }
+            id = k == 2u ? P_VHOLD : k == 3u ? P_VWET : P_LEVEL;
+        } else id = stage_sound_id(k);
+    }
     if (home_levels() && mix_track(k)>=NTRK) { *vp=&mix_inactive; return &TP[P_LEVEL]; }
     *vp = &home_trk(k)->p[id];
     return track_desc(home_trk(k), id);

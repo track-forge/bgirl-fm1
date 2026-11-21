@@ -216,26 +216,20 @@ Generated audio stays ignored/local; public builds need no private inputs.
 [Exact audition recipe, compatibility, measurements and verification](docs/VOCODER_CLARITY_VERIFICATION.md).
 **Human musical approval pending; hardware feasibility unverified.**
 
-## Optional whole-phrase / chopped vocal bank
+## Factory vocal sample packs
 
-The **Vocal bank** section loads stopped whole-phrase or sequenced-chop auditions,
-each dry or through the TRIO / FAT BASS vocoder. Normal builds bundle the
-**G6 recording and its six chops**, authorized by Doug for public redistribution.
-The other five supplied recordings are not bundled. Factory SPEECH is unchanged.
-Startup and **Load electro demo** use the four-bar Mega Jam, BG CARR SAW and 24-band routing in public builds too. An explicit custom bank without G6
-leaves the vocal pattern silent rather than substituting an unrelated phrase. Autosaved projects still take
-precedence; refresh and explicitly reload the demo to replace an old arrangement.
+**Miami Bass** is the default: 13 ranked one-shots on Track 4. Switch on and
+press PLAY for the four-bar electro demo. Saved projects still take precedence;
+**Load electro demo** explicitly replaces the working arrangement.
 
-Normal panel: SLICE → EDIT 1 → SRC **VOCALS**, VIEW **WHOLE** or a parent group
-**G1–G6**, START **W01…** / **C01…**. Chromatic keys/MIDI/step notes select entries;
-short taps play to the end, newest trigger replaces, STOP/panic ends playback.
-Projects/presets retain bank identity and selection; a missing/different bank is
-silent (**BANK MISS**), never substituted.
+Track 4 → EDIT 1 → SRC **VOCALS** → VIEW **SHOTS**. **START** rotates the entry
+on C4; adjacent semitones select entries, not pitches. For dry play, stop and
+use **Vocal bank → Load group · dry** (replaces the working project on
+confirmation, not saved slots). The normal Track 4 vocoder remains available.
 
-[Packaging, controls and local browser audition](docs/VOCAL_BANKS.md) ·
-[UI/storage contract](docs/VOCAL_BANK_CONTRACT.md) ·
-[host/browser verification](docs/VOCAL_BANK_VERIFICATION.md).
-No warping, tempo fitting, dry overlay or hardware proof.
+Build with `BGIRL_VOCAL_PACK=fat-boys ./build.sh --web` for legacy G6.
+A save for a different bank reports **BANK MISS** and stays silent rather than
+substituting audio. [Pack format, selection and cut sheet](docs/VOCAL_BANKS.md).
 
 ## Arp Dance — twelve-pose FLOORWORK
 
@@ -307,7 +301,7 @@ not establish musical approval or physical-device fit/performance.
 | 1 | DRUM / TIGHT KIT | Reference snare+clap, hats/rim; kick moved to T6; final-bar turnaround |
 | 2 | ANALOG / SQR BASS | Mono SH-01A riff interpretation, A/G/F pitches two octaves lower; original rhythm/accents |
 | 3 | ANALOG / BG CARR SAW | A2 then lower G1, four beats each, repeated; dry MON OFF |
-| 4 | SLICE / VOCALS | Whole G6 one-shots on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET66%; level−15.5dB |
+| 4 | SLICE / VOCALS | Miami Bass Ayyy and BeleeDat on beat 1 of bars 1 and 3; FX GATE / pattern 3, delay 20%; 24 bands, LOG REL ≈120ms, WET66%; level−15.5dB |
 | 5 | FM6 / PAD | D2→C3→E3 (one octave lower); mono; FX GATE/PAT1/1⁄16/depth75%; level−6.5dB |
 | 6 | DRUM / BG KICK | T1 kick rhythm/accents on a separate track; final-step breath retained |
 

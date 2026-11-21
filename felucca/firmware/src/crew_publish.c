@@ -35,9 +35,9 @@ static void crew_publish(uint32_t n)
             if(!admitted) crew_rt[i].pulse=0;
             if(live || crew_rt[i].pulse) {
                 crew_rt[i].settle=quarter;
-                word=(word&CREW_SEEN) | (crew_phase>>24) | CREW_ACTIVE;
+                word=(word&CREW_SEEN) | ((uint32_t)(crew_phase >> 24) & 255u) | ((crew_phase >> 32 & 1u) ? CREW_ODD_CYCLE : 0u) | CREW_ACTIVE;
             } else if(crew_rt[i].settle) {
-                word=(word&CREW_SEEN) | (crew_phase>>24) | CREW_SETTLE;
+                word=(word&CREW_SEEN) | ((uint32_t)(crew_phase >> 24) & 255u) | ((crew_phase >> 32 & 1u) ? CREW_ODD_CYCLE : 0u) | CREW_SETTLE;
             }
             if(crew_rt[i].accent && (word&(CREW_ACTIVE|CREW_SETTLE)))
                 word|=(uint32_t)crew_rt[i].strength<<11;

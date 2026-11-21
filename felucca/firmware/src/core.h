@@ -244,6 +244,10 @@ static void step_set_nudge(step_t *s, int32_t v)
  * param: the P_* id (< 128: P_COUNT is at most 127, project.c), bit 7 (MOTION_LOCK, 1.1) a parameter lock: the value
  * sounds on that step only and goes back after it (motion.c motion_step); without it an automation event, the
  * value holds until another one changes it. One record per (track, step, id), of either kind */
+/* Stable B6S1 motion opcodes in four previously invalid motion slots.
+ * These are not indices into the sounding patch, despite sharing its ID space. */
+enum { MO_MOVE = 25, MO_RATE, MO_EFFECT, MO_AMOUNT };
+_Static_assert(MO_MOVE == (int)P_ROOT && MO_AMOUNT == (int)P_TRANS, "reserved motion slots");
 #define MOTION_LOCK 0x80u
 #define MOTION_ID(e) ((uint32_t)(e)->param & 0x7Fu)
 typedef struct { uint16_t place; uint8_t param; int8_t value; } motion_event_t;
@@ -409,6 +413,7 @@ static inline uint32_t swing_step_len(const track_t *t, uint32_t base, uint32_t 
 }
 
 #include "arp_dance.h"
+static int16_t stage_voc_off[NTRK]; /* live bypass; never changes the assigned carrier */
 #include "crew_activity.h"
 
 /* ----------------------------------------------------------- system --- */

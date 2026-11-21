@@ -51,7 +51,7 @@ static void graph_cut_events(void)
         uint32_t si;
         if(kind==EVK_REC){
             const motion_event_t *e=&motion.event[code&255u];uint32_t id=MOTION_ID(e);
-            si=e->place&63u;ev_name(t,id,name);param_format(track_desc(t,id),e->value,val,&unit);
+            si=e->place&63u;ev_name(t,id,name);param_format(motion_visual(id)?motion_desc(t,id):track_desc(t,id),e->value,val,&unit);
             cv_text(14,y+CAP_IN(C,18),&AF_C,e->param&MOTION_LOCK?"LOCK":"AUTO",e->param&MOTION_LOCK?T_ACCENT:T_RHYTHM);
         }else{
             si=code&255u;const step_t *s=&t->step[si];int32_t v=ev_sval(s,kind);

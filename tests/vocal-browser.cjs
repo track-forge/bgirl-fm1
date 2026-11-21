@@ -22,7 +22,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const peaks={},artifacts=process.env.BGIRL_ARTIFACTS||'tmp/vocal-browser';fs.mkdirSync(artifacts,{recursive:true});
   // Cancel must preserve the project; load only on explicit confirmation.
   page.once('dialog',d=>d.dismiss());await page.locator('#vocal-whole-dry').click();assert.equal(await page.locator('#project-status').innerText(),'');
-  for(const id of ['vocal-whole-dry','vocal-whole-wet','vocal-chops-dry','vocal-chops-wet']) {
+  const miami=bank.includes('Miami Bass');
+  const auditions=['vocal-whole-dry','vocal-whole-wet'];
+  if(!miami) auditions.push('vocal-chops-dry','vocal-chops-wet');
+  for(const id of auditions) {
    page.once('dialog',d=>d.accept());await page.locator('#'+id).click();await page.waitForTimeout(350);
    assert.match(await page.locator('#project-status').innerText(),/^Loaded/);
    await tap('PLAY / STOP');peaks[id]=0;
@@ -34,13 +37,21 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   // Normal EDIT panel, group/START knob changes, chromatic hardware key gesture.
   await tap('EDIT');const before=await page.locator('#screen').evaluate(c=>c.toDataURL());
   await page.getByRole('slider',{name:'KNOB 2',exact:true}).press('ArrowDown');await page.waitForTimeout(180);
+  if(miami) await page.getByRole('slider',{name:'KNOB 3',exact:true}).press('ArrowUp');
   const after=await page.locator('#screen').evaluate(c=>c.toDataURL());assert.notEqual(before,after);
   await page.screenshot({path:`${artifacts}/normal-edit.png`,fullPage:true});
   // Dry tap must continue after key release, with no sequencer running.
   page.once('dialog',d=>d.accept());await page.locator('#vocal-whole-dry').click();await page.waitForTimeout(250);
-  await page.locator('h1').click();await page.keyboard.down('KeyZ');await page.waitForTimeout(80);await page.keyboard.up('KeyZ');
-  let tapPeak=0;for(let i=0;i<4;i++){await page.waitForTimeout(100);tapPeak=Math.max(tapPeak,await peak());}assert(tapPeak>.00001);
-  await page.waitForTimeout(4000);assert((await peak())<.0001);
+  await page.locator('h1').click();
+  const tapNote=async key=>{
+   await page.keyboard.down(key);await page.waitForTimeout(65);await page.keyboard.up(key);
+   let value=0;for(let i=0;i<8;i++){await page.waitForTimeout(35);value=Math.max(value,await peak());}
+   assert(value>.00001,`${key}: ${value}`);
+   await page.waitForTimeout(4000);assert((await peak())<.0001);
+   return value;
+  };
+  const tapPeak=await tapNote(miami?'KeyB':'KeyZ'); // C4 / MIDI 60
+  const lastShotPeak=miami ? await tapNote('KeyW') : null; // C5 / MIDI 72
   // Existing SAVE and autosave browser storage survive reload, selection not reset.
   await tap('SAVE');await tap('OCT+');await tap('OCT+');
   await page.waitForFunction(()=>Object.keys(JSON.parse(localStorage.getItem('bgirl-felucca-v1-flash')||'{}')).length>0);
@@ -59,12 +70,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
    testNode.port.addEventListener('message',fn);testNode.port.postMessage({type:'vocal-info'});
   }));
   assert.equal(restored&15,6,'saved project restores VOCALS, not startup SPEECH');
-  assert.equal((restored>>4)&7,0,'WHOLE view restored');assert(restored&4096,'bank fingerprint matches');
+  assert.equal((restored>>4)&7,0,'initial VIEW restored');assert(restored&4096,'bank fingerprint matches');
   await page.screenshot({path:`${artifacts}/restored-edit.png`,fullPage:true});
   await page.setViewportSize({width:390,height:844});await page.waitForTimeout(150);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.screenshot({path:`${artifacts}/mobile.png`,fullPage:true});assert.deepEqual(errors,[]);
-  const result={bank,peaks,tapPeak,normalPanelChanged:true,projectRestoredState:restored,pageErrors:errors,humanListening:'pending'};
+  const result={bank,peaks,tapPeak,lastShotPeak,normalPanelChanged:true,projectRestoredState:restored,pageErrors:errors,humanListening:'pending'};
   fs.writeFileSync(`${artifacts}/results.json`,JSON.stringify(result,null,2)+'\n');console.log(result);
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

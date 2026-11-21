@@ -653,10 +653,10 @@ static uint32_t bgirl_vocoder_setup(uint32_t mode, int pad_demo)
 }
 
 /* Explicit, stopped audition project; never overrides restored music on boot.
- * mode: whole dry/wet, chops dry/wet. group is the stable parent view 1..6. */
+ * mode: whole dry/wet, chops dry/wet. group is a pack view, or a legacy parent view 1..6. */
 EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
 {
-    if(mode>3 || group<1 || group>=NELEM(BG_VOCAL_GROUPS)) return 1;
+    if(mode>3 || (!BG_VOCAL_PACK_V1 && group<1) || group>=NELEM(BG_VOCAL_GROUPS)) return 1;
     if(web_bgirl_project(0)) return 1;
     bgirl_legacy_demo_steps();
     fm1_irq_off();
@@ -666,7 +666,7 @@ EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
     trk[0].p[P_MUTE]=trk[1].p[P_MUTE]=1;
     trk[2].p[P_MUTE]=!(mode&1);
     trk[3].p[P_E0]=SLC_SRC_VOCALS;
-    trk[3].p[P_E1]=mode<2 ? 0 : (int16_t)group;
+    trk[3].p[P_E1]=mode<2 && !BG_VOCAL_PACK_V1 ? 0 : (int16_t)group;
     trk[3].p[P_E2]=0; trk[3].p[P_ROOT]=0;
     trk[3].p[P_E3]=0; trk[3].p[P_E4]=SLC_ONE;
     trk[3].p[P_E5]=0; trk[3].p[P_E6]=127;
@@ -676,7 +676,7 @@ EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
     trk[3].p[P_CHOR]=trk[3].p[P_DLY]=trk[3].p[P_REV]=0;
     slc_vocal_select(&trk[3]);
     memset(trk[3].step,0,sizeof trk[3].step);
-    if(mode<2) {
+    if(mode<2 && !BG_VOCAL_PACK_V1) {
         uint8_t note[4]={(uint8_t)(60+group-1),0,0,0};
         put_step(&trk[3],0,1,note,ST_NOTE,0);
     } else {
@@ -698,9 +698,8 @@ EXPORT uint32_t web_bgirl_vocals(uint32_t mode, uint32_t group)
 EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,uint32_t carrier,uint32_t wet)
 {
     if(mode>4 || bands>2 || release>127 || carrier>2 || wet>127) return 1;
-    uint32_t group=1;
-    for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
-        if(!strcmp(BG_VOCAL_VIEWS[i],"G6")) group=i;
+    uint32_t group=slc_factory_vocal_group();
+    if(BG_VOCAL_PACK_V1 && mode==1 && NELEM(BG_VOCAL_GROUPS)>1) group=1;
     if(web_bgirl_vocals(mode==1 ? 3 : 1,group))return 1;
     fm1_irq_off();undo_depth++;
     if(!carrier) {
@@ -736,7 +735,7 @@ EXPORT uint32_t web_bgirl_clarity(uint32_t mode,uint32_t bands,uint32_t release,
         /* Ordinary motion changes the bank view for the answering chops. */
         trk[3].p[P_E1]=0;slc_vocal_select(&trk[3]);
         memset(trk[3].step,0,sizeof trk[3].step);
-        uint8_t hook[4]={(uint8_t)(60+group-1),0,0,0};put_step(&trk[3],0,1,hook,ST_NOTE,0);
+        uint8_t hook[4]={(uint8_t)(60+(BG_VOCAL_PACK_V1 ? 0 : group-1)),0,0,0};put_step(&trk[3],0,1,hook,ST_NOTE,0);
         motion_set_event(&trk[3],0,P_E1,0);
         motion_set_event(&trk[3],32,P_E1,group);
         motion_set_enabled(&trk[3],1);
@@ -761,10 +760,7 @@ EXPORT uint32_t web_bgirl_flyer(uint32_t action)
         transport_req=1;
     } else if(action==1) {
         if(!song.playing)return 1;
-        uint32_t group=1;
-        for(uint32_t i=1;i<NELEM(BG_VOCAL_GROUPS);i++)
-            if(!strcmp(BG_VOCAL_VIEWS[i],"G6"))group=i;
-        trk_note_on(&trk[3],60+group-1,100);
+        trk_note_on(&trk[3],60+(BG_VOCAL_PACK_V1 ? 0 : slc_factory_vocal_group()-1),100);
     } else if(action==2) {
         seq_stop();transport_req=0;
         for(uint32_t t=0;t<NTRK;t++)trk_all_off(&trk[t]);
@@ -800,6 +796,10 @@ EXPORT uint32_t web_bgirl_vocal_group_number(uint32_t view) {
     return view>0 && view<NELEM(BG_VOCAL_GROUPS) ? (uint32_t)(BG_VOCAL_VIEWS[view][1]-'0') : 0;
 }
 EXPORT uint32_t web_bgirl_vocal_groups(void) { return NELEM(BG_VOCAL_GROUPS)-1; }
+EXPORT uint32_t web_bgirl_vocal_pack_v1(void) { return BG_VOCAL_PACK_V1; }
+EXPORT const char *web_bgirl_vocal_pack_name(void) { return BG_VOCAL_PACK_NAME; }
+EXPORT const char *web_bgirl_vocal_view(uint32_t view) { return BG_VOCAL_VIEWS[view]; }
+EXPORT uint32_t web_bgirl_vocal_count(uint32_t view) { return BG_VOCAL_GROUPS[view].n; }
 EXPORT const uint8_t *web_bgirl_vocal_id(void) { return BG_VOCAL_ID; }
 
 EXPORT uint32_t web_bgirl_vocoder(uint32_t mode)
@@ -815,7 +815,7 @@ EXPORT uint32_t web_bgirl_crew_info(uint32_t field)
     case 1:return ui.home && home_crew() && !ui.menu && !ui.layer && !ui.confirm && !name_on();
     case 2:return song.sel;
     case 3:return crew_read(song.sel);
-    case 4:return crew_moves[song.sel];
+    case 4:return crew_live[song.sel][0];
     case 5:return crew_graph_paints;
     case 6:return song.playing;
     case 7:return TSEL->p[P_MUTE];
@@ -824,6 +824,19 @@ EXPORT uint32_t web_bgirl_crew_info(uint32_t field)
     case 10:return !!(ui_prefs&PREF_LARGE);
     case 11:return palette_cur();
     case 12:return ui_style;
+    case 13:return stage_fx_on();
+    case 14:return TSEL->seq_idx;
+    case 15:return motion_record_step(TSEL);
+    case 16:return crew_live[song.sel][1];
+    case 17:return crew_live[song.sel][2];
+    case 18:return crew_live[song.sel][3];
+    case 19:return song.rec;
+    case 20:return ui.layer;
+    case 21:return TSEL->p[P_LEVEL];
+    case 22:return stage_voc_off[song.sel];
+    case 23:return TSEL->p[P_VCARR];
+    case 24:return TSEL->p[P_VHOLD];
+    case 25:return TSEL->p[P_VWET];
     default:return 0;
     }
 }

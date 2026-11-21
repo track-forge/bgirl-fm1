@@ -23,7 +23,7 @@ static void pixels(void) {
         ui.force=1;paint();
         for(uint32_t y=0;y<96;y++)for(uint32_t x=0;x<96;x++) {
             uint32_t bit=128u>>(x&7u),off=y*12u+x/8u;
-            uint16_t expected=crew_masks[crew_moves[track]][pose][off]&bit ? T_TEXT : T_BG;
+            uint16_t expected=crew_masks[crew_defaults[track][0]][pose][off]&bit ? T_TEXT : T_BG;
             assert(web_fb[(graph_y()+22u+y)*240u+132u+x]==swap16(expected));
         }
     }
@@ -49,9 +49,35 @@ static void *producer(void *unused) {
 static void stress(void) {
     bare(0,0);trk[0].v[0].active=trk[0].v[0].gate=1;trk[0].v[0].stage=2;
     pthread_t th;assert(!pthread_create(&th,0,producer,0));
-    do {uint32_t s=crew_read(0);assert(!(s&~16383u));assert(!(s&CREW_ACTIVE)||((s&CREW_SEEN)&&!(s&(CREW_MUTED|CREW_SETTLE))));}
+    do {uint32_t s=crew_read(0);assert(!(s&~32767u));assert(!(s&CREW_ACTIVE)||((s&CREW_SEEN)&&!(s&(CREW_MUTED|CREW_SETTLE))));}
     while(!__atomic_load_n(&done,__ATOMIC_ACQUIRE));pthread_join(th,0);
     puts("CREW whole-word: 1M actual producer publications/resets with concurrent snapshot reads PASS");
+}
+static void cue_storage(void) {
+    assert(!project_new());
+    track_t *t = &trk[0];
+    assert(!motion_set_event(t, 11, MO_RATE, 0));
+    assert(!motion_set_event(t, 11, MO_RATE, 2));
+    assert(motion.count == 1);
+    assert(!motion_set_event(t, 14, MO_MOVE, 1));
+    assert(motion_set_lock(t, 14, MO_MOVE, 2) == 1);
+    assert(!project_save_as(0, "CREW TEST"));
+    motion_clear(t);
+    project_load(0);
+    assert(motion.count == 2 && crew_live[0][0] == 0 && crew_live[0][1] == 1);
+    motion_step(t, 11, &motion, 0);
+    motion_step(t, 14, &motion, 0);
+    assert(crew_live[0][0] == 1 && crew_live[0][1] == 2 && crew_live[1][1] == 1);
+    motion_clear(t);
+    for (uint32_t step = 0; step < NSTEP; step++) {
+        assert(!motion_set_event(t, step, P_LEVEL, 60));
+        assert(!motion_set_event(t, step, P_PAN, 0));
+    }
+    motion_store_t kept = motion;
+    assert(motion_set_event(t, 11, MO_RATE, 2) == 2 && motion_full);
+    assert(!memcmp(&kept, &motion, sizeof motion));
+    puts("CREW cues: coalescing, save/reload, track isolation, fill/turnaround, full-pool preservation PASS");
+    assert(!project_new());
 }
 int main(int argc,char **argv) {
     web_nor_erase();web_boot();advance(1200);
@@ -60,6 +86,10 @@ int main(int argc,char **argv) {
         ui.home=visible!=0;ui_home_view=HV_CREW;
         if(visible==2){ui.home=1;ui.layer=LAYER_GLO;}
         trk[1].p[P_AMODE]=AM_RND;trk[1].p[P_APROB]=73;trk[1].p[P_ASWING]=37;
+        if (visible == 1) {
+            assert(!motion_set_event(&trk[0], 1, MO_RATE, 2));
+            assert(!motion_set_event(&trk[0], 3, MO_MOVE, 4));
+        }
         arp_add(&trk[1],60);arp_add(&trk[1],64);arp_add(&trk[1],67);seq_start();
         for(uint32_t k=0;k<4000;k++) {song.sel=k%NTRK;web_render(128);fwrite(out_l,sizeof(float),128,stdout);fwrite(out_r,sizeof(float),128,stdout);fwrite(&rng_state,4,1,stdout);fwrite(&trk[1].arp_note,1,1,stdout);}
         return 0;
@@ -114,7 +144,7 @@ int main(int argc,char **argv) {
     bare(0,0);trk_note_on(t,60,100);for(uint32_t v=0;v<NVOICE;v++)if(t->v[v].active)t->v[v].stage=4;crew_publish(32);assert(!(crew_read(0)&CREW_ACTIVE));
     bare(0,0);trk_note_on(t,60,100);crew_publish(32);panic_req=1;advance(10);assert(!crew_read(0));
     trk_note_on(t,60,100);crew_publish(32);assert(!project_new());assert(!crew_read(0));
-    crew_phase=0xFFFFFFF0u;events_block(128);assert(crew_phase<0xFFFFFFF0u);
+    crew_phase=0xFFFFFFF0u;events_block(128);assert((uint32_t)crew_phase<0xFFFFFFF0u);
     uint32_t prior=crew_phase;song.g[G_BPM]=240;events_block(128);assert(crew_phase!=prior && crew_phase!=0);
     puts("CREW activity: sustained/release/settle/freeze, stopped live, mute/solo inhibition, new attack, rejected/deferred, mono priority/legato, one-shot, stolen, panic/project, phase wrap/BPM PASS");
     song.g[G_CLOCK]=1;events_block(32);midi_clock_transport(0xFAu,fm1_ms);
@@ -125,7 +155,7 @@ int main(int argc,char **argv) {
     prior=crew_phase;midi_clock_transport(0xFBu,fm1_ms);events_block(128);assert(crew_phase==prior);
     midi_clock_transport(0xFAu,fm1_ms);assert(!crew_phase);song.g[G_CLOCK]=0;events_block(32);
     puts("CREW external START/STOP/CONTINUE: exact GRID musical units, BPM-independent phase, stopped local phase, CONTINUE preserves, START resets PASS");
-    pixels();stress();
+    cue_storage();pixels();stress();
     printf("CREW bytes: masks=%zu atomic=%zu producer=%zu phase=%zu canvas=%zu track=%zu wire=%zu graph=%u\n",sizeof bg_windmill_masks*4u,sizeof crew_state,sizeof crew_rt,sizeof crew_phase,sizeof cv_px,sizeof(track_t),sizeof(project_store_t),240*122*2);
     return 0;
 }

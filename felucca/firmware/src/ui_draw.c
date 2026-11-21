@@ -669,9 +669,17 @@ static void design_column(uint32_t c,const char *label,const char *val,const cha
     else cv_rect(0,0,COL_W,1,mot?T_THEME:T_LINE);
     cv_text_fit(3,1,lf,label,hot?T_ACCENT:mot?T_THEME:T_TEXT,bg,51);
     int32_t vy=tall?(vf==&AF_L?22-AF_L_CAP_Y:vf==&AF_V?25-AF_V_CAP_Y:26-AF_C_CAP_Y):14;
+    int32_t ky=tall?49:29;
+    if(!tall && val[0]) {
+        int32_t value_bounds[4], footer_bounds[4];
+        text_ink(vf,val,value_bounds);
+        text_ink(&AF_C,k,footer_bounds);
+        /* Descenders in mixed-case sample names can enter the knob footer. */
+        if(vy+value_bounds[3]>ky+footer_bounds[1])
+            vy=ky+footer_bounds[1]-value_bounds[3];
+    }
     uint16_t value_ink=vc==T_DIM?T_DIM:hot?T_ACCENT:T_TEXT;
     cv_text_in(0,vy,COL_W,vf,val,value_ink,bg);
-    int32_t ky=tall?49:29;
     cv_text_on(3,ky,&AF_C,k,label[0]||val[0]?T_MID:T_DIM,bg);
     if(unit[0])cv_text_r(54,ky,&AF_C,unit,T_MID,bg);
     if(ratio>=0)cv_rect(0,(int32_t)h-1,1+ratio*56/1000,1,hot?T_ACCENT:vc==T_DIM?T_DIM:(design_context()==DC_CUT || design_context()==DC_CUT_SEQ || design_context()==DC_CUT_MORE)?T_RHYTHM:T_THEME);
@@ -1029,11 +1037,18 @@ static void draw_columns(void)
     (void)motion_mask(song.sel, card_mot_mask);       /* (PLAY OFF: no scan) */
     if (ui.home) {
         for (c = 0; c < 4u; c++) {
+            if (stage_fx_on()) {
+                const param_desc_t *d = &CREW_PARAM[c];
+                int16_t value = crew_live[song.sel][c];
+                param_format(d, value, val, &unit);
+                draw_column(c, d->label, val, unit, VAL(c), RATIO(d, value), ICON_NONE);
+                continue;
+            }
             if (home_levels() && mix_track(c)>=NTRK) { draw_column(c,"--","","",T_DIM,-1,ICON_NONE); continue; }
             int16_t *vp;
             const param_desc_t *d = home_param(c, &vp);
             param_format(d, *vp, val, &unit);
-            card_mot_of(vp);
+            if (vp != &stage_voc_off[song.sel]) card_mot_of(vp);
             card_span_of(d);
             if (home_levels())                         /* 1.5: T1..T4 LEVEL, the track's cushion, muted: DIM */
                 draw_column(c, mix_track(c)==0?"T1":mix_track(c)==1?"T2":mix_track(c)==2?"T3":mix_track(c)==3?"T4":mix_track(c)==4?"T5":"T6", val, unit, home_trk(c)->p[P_MUTE] ? T_DIM : VAL(c), RATIO(d, *vp), trk_icon(mix_track(c), 1));
@@ -1143,7 +1158,7 @@ static void draw_columns(void)
             return;
         }
         v = k == EVK_REC ? motion.event[c & 0xFFu].value : motion_base_value(t, id);
-        d = track_desc(t, id);
+        d = motion_visual(id) ? motion_desc(t, id) : track_desc(t, id);
         param_format(d, v, val, &unit);
         draw_column(3, k == EVK_ADD ? "VALUE" : (motion.event[c & 0xFFu].param & MOTION_LOCK) ? "LOCK" : "AUTO", val, unit,
                     k != EVK_ADD ? VAL(3u) : T_DIM, RATIO(d, enum_rank(d, v)), param_icon(d, v));

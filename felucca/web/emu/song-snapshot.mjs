@@ -11,6 +11,11 @@ const keys=(x,ks,p)=>{object(x,p); if(Object.keys(x).some(k=>!ks.includes(k))||k
 const fields=['notes','n','time','flags','velocity','hits','accents','probability'];
 const bounds=[[0,4],[0,2],[0,255],[0,127],[0,255],[0,255],[0,112]];
 // Explicit wire mapping, not a serialized C struct. No padding or hidden payload.
+// B6S1 reserves these otherwise non-automatable IDs for dancer cues.
+const visualMotion = ['CREW_MOVE','CREW_RATE','CREW_EFFECT','CREW_AMOUNT'];
+const visualMax = [4,2,2,8];
+export const motionNames = [...layout.motionParameters.map(i=>layout.parameters[i]), ...visualMotion];
+
 function projectIO(input,read,path='song') {
  const out={},words=[];let pos=0;
  const val=(x,lo,hi,p)=>{if(read)x=input[pos++];integer(x,lo,hi,p);if(!read)words.push(x);return x;};
@@ -66,12 +71,15 @@ function projectIO(input,read,path='song') {
    const e=read?{}:p.motion.events[i],ep=path+`.motion.events[${i}]`;
    if(!read)keys(e,['track','step','parameter','lock','value'],ep);
    const place=val(read?0:integer(e.track,0,5,ep+'.track')*64+integer(e.step,0,63,ep+'.step'),0,383,ep+'.place');
-   if(!read && (typeof e.lock!=='boolean'||!layout.parameters.includes(e.parameter)))fail(ep,'invalid parameter/lock');
-   const param=val(read?0:layout.parameters.indexOf(e.parameter)+(e.lock?128:0),0,255,ep+'.parameter');
-   if(!layout.motionParameters.includes(param&127))fail(ep+'.parameter','unknown parameter');
-   const value=val(e.value,-64,127,ep+'.value'),key=`${place}/${param&127}`;
+   if(!read && (typeof e.lock!=='boolean'||!motionNames.includes(e.parameter)))fail(ep,'invalid parameter/lock');
+   const visual=visualMotion.indexOf(e.parameter);
+   const id=visual>=0 ? 25+visual : layout.parameters.indexOf(e.parameter);
+   const param=val(read?0:id+(e.lock?128:0),0,255,ep+'.parameter');
+   const code=param&127, cue=code-25, isCue=cue>=0&&cue<visualMotion.length;
+   if(isCue ? param&128 : !layout.motionParameters.includes(code))fail(ep+'.parameter','unknown parameter or cue lock');
+   const value=val(e.value,isCue?0:-64,isCue?visualMax[cue]:127,ep+'.value'),key=`${place}/${code}`;
    if(seen.has(key))fail(ep,'duplicate track/step/parameter');seen.add(key);
-   out.motion.events.push({track:place>>6,step:place&63,parameter:layout.parameters[param&127],lock:!!(param&128),value});
+   out.motion.events.push({track:place>>6,step:place&63,parameter:isCue?visualMotion[cue]:layout.parameters[code],lock:!!(param&128),value});
  }
  return read?{project:out,used:pos}:words;
 }

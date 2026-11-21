@@ -3,7 +3,7 @@
 #include <assert.h>
 static void tick(uint32_t n) { for(uint32_t i=0;i<n;i+=CTL) web_render(CTL); }
 static void setup(uint32_t view) {
-    assert(!web_bgirl_vocals(view ? 2 : 0,view ? view : 1));
+    assert(!web_bgirl_vocals(view ? 2 : 0,BG_VOCAL_PACK_V1 ? view : (view ? view : 1)));
     tick(4410);
 }
 static uint32_t duration(uint32_t note) {
@@ -71,20 +71,21 @@ static void lifetime_tests(void) {
     t->p[P_E1]=1;trk_note_off(t,60);tick(HALF_FRAMES*2);assert(t->v[0].ph[0]>before && t->v[0].ph[2]==BG_VOCAL_ENTRIES[0].b);
     t->p[P_E0]=0;trk_note_off(t,60);tick(HALF_FRAMES*2);assert(t->v[0].active);
     seq_stop();tick(HALF_FRAMES*2);assert(!t->v[0].active);
-    setup(1);trk_note_on(t,60,110);tick(HALF_FRAMES*2);panic_req=8;tick(HALF_FRAMES*2);assert(!t->v[0].active);
+    setup(0);trk_note_on(t,60,110);tick(HALF_FRAMES*2);panic_req=8;tick(HALF_FRAMES*2);assert(!t->v[0].active);
     setup(0);trk_note_on(t,60,110);tick(HALF_FRAMES*2);t->p[P_E1]=7;trk_note_on(t,60,110);tick(HALF_FRAMES*2);assert(!t->v[0].active);
     setup(0);bg_vocal_expected[3][0]^=1;trk_note_on(t,60,110);tick(HALF_FRAMES*2);assert(!t->v[0].active);
     assert(!strcmp(track_desc(t,P_E3)->names[0],"MISS"));
     puts("vocal lifetime: original rate despite pitch/loop/reverse/decay/BPM, newest/no fallback, captured view/source, STOP/panic/missing/invalid silence PASS");
 }
 static void save_tests(void) {
-    setup(1);trk[3].p[P_E2]=1;trk[3].p[P_ROOT]=5;
+    uint32_t view=NELEM(BG_VOCAL_GROUPS)>1 ? 1 : 0;
+    setup(view);trk[3].p[P_E2]=1;trk[3].p[P_ROOT]=5;
     trk[3].step[4].note[0]=63;
     static project_t saved,decoded;project_store_t wire;
     project_capture(&saved);assert(!memcmp(saved.vocal_id[3],BG_VOCAL_ID,8));
     assert(proj_pack(&wire,&saved));uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
     assert(proj_import(&decoded,&wire,sizeof wire));assert(!memcmp(decoded.vocal_id[3],BG_VOCAL_ID,8));
-    assert(!project_restore_runtime(&decoded));tick(1024);assert(trk[3].p[P_E0]==6 && trk[3].p[P_E1]==1 && trk[3].p[P_E2]==1 && trk[3].p[P_ROOT]==5 && trk[3].step[4].note[0]==63);
+    assert(!project_restore_runtime(&decoded));tick(1024);assert(trk[3].p[P_E0]==6 && trk[3].p[P_E1]==view && trk[3].p[P_E2]==1 && trk[3].p[P_ROOT]==5 && trk[3].step[4].note[0]==63);
     assert(!up_store_cat(0,"VOCAL",0));assert(up_rec(0)->ver==UP_VER_VOCAL);
     assert(!up_load(0));tick(1024);assert(slc_vocal_match(&trk[3]) && !trk[3].p[P_VCARR]);
     decoded.vocal_id[3][0]^=1;decoded.sum=proj_sum(&decoded);
@@ -109,9 +110,10 @@ static void save_tests(void) {
 }
 static void sequence_tests(void) {
     for(uint32_t bpm=60;bpm<=180;bpm+=120) {
-        setup(1);track_t *t=&trk[3]; song.g[G_BPM]=bpm;
+        uint32_t view=NELEM(BG_VOCAL_GROUPS)>1 ? 1 : 0;
+        setup(view);track_t *t=&trk[3]; song.g[G_BPM]=bpm;
         memset(t->step,0,sizeof t->step);t->p[P_SLEN]=16;
-        for(uint32_t s=0;s<16;s+=4) {uint8_t note[4]={(uint8_t)(60+s/4%BG_VOCAL_GROUPS[1].n),0,0,0};put_step(t,s,1,note,ST_NOTE,0);}
+        for(uint32_t s=0;s<16;s+=4) {uint8_t note[4]={(uint8_t)(60+s/4%BG_VOCAL_GROUPS[view].n),0,0,0};put_step(t,s,1,note,ST_NOTE,0);}
         transport_req=1;
         uint32_t events=0,last=999,positions[4],note=999;
         for(uint32_t frame=0;frame<FS*5 && events<4;frame+=CTL) {
@@ -137,7 +139,7 @@ int main(int argc,char **argv) {
     printf("resources: audio=%zu entries=%zu groups=%zu source=%zu fingerprint=%zu const-UI-descriptors=%zu undo-ID=%zu project-ID=%zu track=%zu bytes\n",sizeof BG_VOCAL_DATA,sizeof BG_VOCAL_ENTRIES,sizeof BG_VOCAL_GROUPS,sizeof SLC_VOCALS,sizeof bg_vocal_expected, sizeof BG_VOCAL_STARTS, sizeof undo.vocal_id, sizeof ((project_t*)0)->vocal_id,sizeof(track_t));
     if(argc>1) {
         for(uint32_t mode=0;mode<4;mode++) {
-            assert(!web_bgirl_vocals(mode,1));tick(4410);
+            assert(!web_bgirl_vocals(mode,slc_factory_vocal_group()));tick(4410);
             char path[512];snprintf(path,sizeof path,"%s/vocal-%u.wav",argv[1],mode);FILE *f=fopen(path,"wb");assert(f);uint32_t frames=FS*8;wav_hdr(f,frames);transport_req=1;double energy=0;
             for(uint32_t n=0;n<frames;n+=CTL) {
                 web_render(CTL);

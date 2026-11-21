@@ -67,6 +67,34 @@ class Packaging(unittest.TestCase):
         self.assertEqual(a['bytes'], (a['samples']+1)//2)
         self.assertEqual(a['entries'][0]['source_sha256'], pv.sha((self.input/self.name).read_bytes()))
 
+    def test_versioned_pack_and_shared_slice(self):
+        path = self.input/'pack.json'
+        shot = dict(id='shot', name='Shot', wav=self.name, frames=[0, 512])
+        loop = dict(id='loop', name='Loop', wav=self.name, frames=[512, 1024], bpm=128)
+        cut = dict(id='cut', name='Cut', parent='loop', frames=[640, 896])
+        manifest = dict(version=1, id='test-pack', name='Test Pack', max_audio_bytes=2048,
+                        groups=[dict(id=kind, kind=kind, name=kind.upper(), entries=[entry])
+                                for kind, entry in [('shots', shot), ('loops', loop), ('slices', cut)]])
+        path.write_text(json.dumps(manifest))
+        a = pv.package_pack(path, self.base/'a')
+        b = pv.package_pack(path, self.base/'b')
+        self.assertEqual(a, b)
+        self.assertEqual((self.base/'a/bank.ima').read_bytes(), (self.base/'b/bank.ima').read_bytes())
+        parent, child = a['entries'][1:]
+        self.assertEqual(a['samples'], parent['end'])
+        self.assertLess(parent['start'], child['start'])
+        self.assertLess(child['end'], parent['end'])
+        for record, key, invalid in [(manifest, 'version', 2), (manifest, 'max_audio_bytes', 1),
+                                     (shot, 'wav', '../missing.wav'), (shot, 'id', 'loop'),
+                                     (cut, 'frames', [128, 384]), (loop, 'bpm', -1)]:
+            with self.subTest(key=key):
+                old = record[key]
+                record[key] = invalid
+                path.write_text(json.dumps(manifest))
+                with self.assertRaises(ValueError):
+                    pv.package_pack(path, self.base/'bad')
+                record[key] = old
+
     def test_fixture_reproduces(self):
         a = pv.fixture(self.base/'fixture1')
         b = pv.fixture(self.base/'fixture2')

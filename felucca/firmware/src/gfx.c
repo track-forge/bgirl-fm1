@@ -599,15 +599,15 @@ static int32_t text_run(int32_t x, int32_t y, const aafont_t *f, const char *s, 
                 cv_alpha(gx, gy, g->bw, g->bh, f->data + g->off, rv);
             if (gx < x0) x0 = gx;
             if (gx + g->bw > x1) x1 = gx + g->bw;
-            if (GFX_HOOKS && gy < y0) y0 = gy;       /* (the rows: for the host's lint only) */
-            if (GFX_HOOKS && gy + g->bh > y1) y1 = gy + g->bh;
+            if ((GFX_HOOKS || !rv) && gy < y0) y0 = gy;       /* (the rows: for the host's lint only) */
+            if ((GFX_HOOKS || !rv) && gy + g->bh > y1) y1 = gy + g->bh;
         }
         pen += g->adv;
         prev = c;
     }
     bb[0] = x0;
     bb[2] = x1;
-    if (GFX_HOOKS) {
+    if (GFX_HOOKS || !rv) {
         bb[1] = y0;
         bb[3] = y1;
     }

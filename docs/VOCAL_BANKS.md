@@ -1,30 +1,97 @@
-# Offline vocal banks and audition
+# Factory vocal sample packs
 
-Issue #13. One optional immutable bank per build, using the existing SLICE
-engine/IMA decoder, sequencer, keys, MIDI and vocoder. No network at runtime.
-Factory SPEECH is not replaced. Startup and **Load electro demo** use the two-bar
-(32-step) G6 groove through the octave-down GRAIN / CLOUD PAD vocoder, with
-original drums/bass retained. Bar two varies the chop order/rhythm. Autosaved
-music still takes precedence; explicitly reload the demo after refreshing.
+The browser embeds one offline mono 22.05 kHz IMA4 bank per build in the
+existing SLICE decoder. The project format and factory SPEECH are unchanged.
 
-Normal builds now bundle only the G6 original and six supplied chops from
-[`assets/vocals/g6`](../assets/vocals/g6/README.md), authorized by Doug for public
-redistribution on 2026-11-16. The other five supplied recordings remain private:
-do not commit/upload those WAVs, full prepared banks, or WASM embedding them.
-Private artifacts belong in ignored `local/`. CI/Pages packages G6 from checked-in
-inputs afresh, never a previously generated private header.
+```sh
+./build.sh --web                                         # Miami Bass
+BGIRL_VOCAL_PACK=fat-boys ./build.sh --web                # legacy public G6
+BGIRL_VOCAL_PACK=/absolute/path/to/pack.json ./build.sh --web
+python3 tools/package_vocals.py --pack path/to/pack.json --output local/my-bank
+```
 
-At 120 BPM (sixteenth-note steps, one-based), bar one triggers chops
-1/2/3/4/5/6 at steps 1/4/7/9/12/15; bar two replies with 1/3/2/4/6/5 at
-17/19/23/25/28/31. T3/T4 loop at 32 steps; the original 16-step drums/bass
-repeat underneath. The shared wet 8/12-band lab buttons use this arrangement too.
+`BGIRL_VOCAL_BANK` is the explicit prepared-bank override and takes precedence.
+Use the pinned Emscripten setup from the README. No runtime upload or hot-swap.
 
-The compact public bank has WHOLE (W01 = G6 original) and G6 (C01..C06).
-Its G6 VIEW index is 1; a full six-parent bank's G6 VIEW index is 6. Public labels,
-not positions, select the demo. Project fingerprints keep these banks distinct;
-loading a project for the other bank correctly reports BANK MISS, not substitution.
-Explicit custom banks without a G6 label use their first chop group and wrap the
-same chop sequence by its count. The browser selector uses installed group labels.
+## Manifest v1
+
+```json
+{
+  "version": 1,
+  "id": "my-pack",
+  "name": "My Pack",
+  "max_audio_bytes": 110250,
+  "groups": [
+    {
+      "id": "shots",
+      "name": "SHOTS",
+      "kind": "shots",
+      "entries": [
+        {"id": "hey", "name": "Hey", "wav": "hey.wav", "frames": [0, 22050]}
+      ]
+    }
+  ]
+}
+```
+
+Ordered arrays define VIEW and chromatic order. Use stable lowercase
+kebab-case IDs; group IDs and entry IDs must each be unique within the pack.
+Names are ASCII (10 characters max for views/entries, 32 for packs). Up to
+seven views, starting with shots; each view has 1–32 entries. A `loops` view
+uses the same WAV fields; `bpm` is optional metadata, not a playback instruction.
+A later `slices` view specifies `"parent": "loop-entry-id"` instead of `wav`.
+Half-open frame ranges use source coordinates. Slices reference encoded parent
+ranges with their own checkpoints; non-grid boundaries round up to encoded
+frame positions. No duplicate payload, per-slice fades, looping or stretching.
+
+Relative WAVs stay inside the manifest directory. PCM16, PCM24 and float32,
+mono/stereo, at 22.05/24/44.1 kHz are supported. Channel averaging, fixed −3 dB
+gain and deterministic resampling precede IMA4. The compiler checks ranges,
+minimum length, audio budget and a 120 s cap. Same inputs reproduce the header,
+payload and report. Fingerprint covers order and source/manifest provenance;
+editing manifest bytes may change it. Existing saves retain their mappings
+and fingerprint. A different bank reports BANK MISS, not substitution.
+
+## Miami Bass cut sheet
+
+All 13 ranked one-shots intact: Ayyy, Yea2, Rollin, Aye3, Yup, Hey2, Uh, Aye,
+Yup2, Ugh, Ah2, Ahhh, BeleeDat. Doug cleared the audio for redistribution.
+The [ranked intake](../assets/vocals/miami-bass/inventory.csv) retains both
+palettes and hashes. Excluded: Candy, HaveIt, Laugh, Lehgetit, DontFront,
+HandsUp, WhatItIs, Cream. No loop was trimmed or promoted into a shot.
+
+- **206,720 frames / 9.375 s**, **103,360 B IMA4 audio**, no inter-entry
+  byte padding or final nibble padding.
+- Entry index **156 B** (including **52 B** of entry checkpoints); group
+  index **2 B**; grid checkpoints **512 B**; identity **8 B**. Subtotal
+  **104,038 B**. On x86-64 the complete SLICE source descriptor is **976 B**
+  including the grid; substituting it yields **104,502 B** before UI strings,
+  pointers and linker padding. Neither subtotal is an installed device size.
+  BSP stock flash is 1 MiB; the loader app interval is 0x4000–0x97000.
+  No target link map or measured free bytes; no hardware fit claim.
+- Full Candy would give **13.125 s / 144,704 B audio**. A nominal one-beat
+  excerpt at 128 BPM would give **9.844 s / 108,528 B audio**; not musically
+  auditioned or shipped. Miami Bass ships no loop or slice views.
+- Decoded against the gain-adjusted resampled mono reference: peak
+  **12,398/32,768**, no decoder clipping, shot SNR **18.8–33.4 dB**.
+  These measurements and browser signal checks are not ear approval.
+
+### Jam
+
+Switch on → PLAY (or confirm **Load electro demo** if resuming). Ayyy and
+BeleeDat hit bars 1 and 3 through the vocoder. For dry manual play, stop and
+confirm **Vocal bank → Load group · dry**. Track 4 → **EDIT 1 → SRC VOCALS →
+VIEW SHOTS**; with START at Ayyy and default octave, `B` / MIDI 60 plays
+Ayyy and `W` / MIDI 72 plays BeleeDat. Turn START to rotate the offset.
+Changing VIEW edits the groove; loading an audition replaces the working
+project, not saved slots.
+
+## Fat Boys legacy builds
+
+Only the cleared G6 original and six chops ship in Fat Boys. Public G6
+fingerprint stays `a0fce7527ad0f979f`. Build that variant for old G6 saves;
+private full-bank saves still require their matching private prepared bank.
+Never publish private audio or its WASM.
 
 ## Package explicit local inputs
 
@@ -97,12 +164,11 @@ Installing/matching a bank means rebuilding with the same explicit package.
 There is no browser upload or hot-swap manager. Audio is compiled read-only, not
 copied into a PCM runtime buffer. The prepared bank need not stay on a network.
 
-Default/public builds regenerate the distributable G6 package each time, even
-after a private build:
+To regenerate the distributable G6 package after a private build:
 
 ```sh
 unset BGIRL_VOCAL_BANK
-./build.sh --web
+BGIRL_VOCAL_PACK=fat-boys ./build.sh --web
 # Reproduce just the public package:
 python3 tools/package_vocals.py --input-dir assets/vocals/g6 \
   --manifest assets/vocals/g6/slices/manifest.json --group-id 6 \

@@ -70,14 +70,9 @@ static void bgirl_demo_vocoder(void)
         s->time=k%16 ? ST_TIE : ST_NOTE;
         if(!(k%16)) { s->n=1; s->note[0]=(uint8_t)(36+(k/16%2)*7); s->vel=100; }
     }
-    /* Prefer G6 by its public label, not its position in an optional bank.
-     * The bundled G6-only bank and full six-parent bank have different VIEW
-     * indices. Other explicit custom banks retain the same two-bar groove. */
     static const uint8_t at[]={0,3,6,8,11,14,16,18,22,24,27,30};
     static const uint8_t chop[]={0,1,2,3,4,5,0,2,1,3,5,4};
-    uint32_t group=1;
-    for(k=1;k<NELEM(BG_VOCAL_GROUPS);k++)
-        if(!strcmp(BG_VOCAL_VIEWS[k],"G6")) { group=k; break; }
+    uint32_t group=slc_factory_vocal_group();
     trk[3].p[P_E0]=SLC_SRC_VOCALS; trk[3].p[P_E1]=(int16_t)group;
     trk[3].p[P_E2]=0; trk[3].p[P_ROOT]=0;
     trk[3].p[P_E4]=SLC_ONE; trk[3].p[P_E6]=127; trk[3].p[P_ATK]=0;

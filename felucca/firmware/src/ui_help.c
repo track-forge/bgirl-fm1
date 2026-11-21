@@ -76,7 +76,7 @@ static const char *help_page(void)
     uint32_t i;
     const char *t;
     if (ui.home)
-        return home_levels() ? H_LEVELS : H_HOME;
+        return home_crew() ? "[FX]HOLD: DANCER[HOME]HOLD: MENU" : home_levels() ? H_LEVELS : H_HOME;
     if (grid_on() && !detail_on())
         return H_GRID;
     t = cur_page()->title;

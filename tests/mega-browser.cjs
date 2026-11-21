@@ -32,7 +32,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   let q=await info();assert(q[11].every(n=>n===64));assert.equal(q[9][4],12);assert.equal(q[9][2],0);assert.equal(q[7][0],0);
   assert.equal(q[10][1],100,'Crunchy Bass HOME mixer -6.0dB');
   const freshBass=await bass();assert.deepEqual(freshBass.slice(0,2),[0,13]);assert.equal(freshBass[7],0);
-  assert.equal((await vocal()).state,4096+6,'whole G6 identity-bound source');
+  assert.equal((await vocal()).state,4096+6,'SHOTS identity-bound source');
   page.once('dialog',d=>d.dismiss());await page.locator('#demo').click();assert.deepEqual(await info(),q);
   page.once('dialog',d=>d.accept());await page.locator('#demo').click();await page.waitForTimeout(400);
   assert.equal((await info())[7][0],0);assert.deepEqual(await bass(),freshBass);
