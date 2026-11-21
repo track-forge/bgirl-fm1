@@ -670,7 +670,7 @@ static void design_column(uint32_t c,const char *label,const char *val,const cha
     cv_text_fit(3,1,lf,label,hot?T_ACCENT:mot?T_THEME:T_TEXT,bg,51);
     int32_t vy=tall?(vf==&AF_L?22-AF_L_CAP_Y:vf==&AF_V?25-AF_V_CAP_Y:26-AF_C_CAP_Y):14;
     int32_t ky=tall?49:29;
-    if(!tall) {
+    if(!tall && val[0]) {
         int32_t value_bounds[4], footer_bounds[4];
         text_ink(vf,val,value_bounds);
         text_ink(&AF_C,k,footer_bounds);
