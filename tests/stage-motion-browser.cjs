@@ -149,6 +149,23 @@ const fs = require('node:fs');
     const level = (await info())[21];
     await turn(3,-1);
     await wait(q => q[21] < level);
+    await turn(4,-1);
+    await page.waitForTimeout(150);
+    const reshaped = await snapshot('song-capture');
+    assert(reshaped.song.tracks[0].parameters.P_SGATE < drum.parameters.P_SGATE);
+
+    // T4's VOC switch must not touch the other three vocoder settings.
+    for (let i = 1; i <= 3; i++) {
+      await turn(1);
+      await wait(q => q[2] === i);
+    }
+    const voc = await info();
+    assert(voc[23] > 0);
+    await turn(4);
+    const off = await wait(q => q[22] === 1);
+    assert.deepEqual(off.slice(23,26), voc.slice(23,26));
+    await turn(4,-1);
+    await wait(q => q[22] === 0);
     assert.deepEqual(errors, []);
     console.log({passes, snapshotRoundTrip:true, audioEventsUnchanged:true, captureBytes:bytes.length});
   } finally { await browser.close(); }
