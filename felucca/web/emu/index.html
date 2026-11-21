@@ -249,7 +249,7 @@ footer nav a { display: inline-flex; align-items: center; min-height: 44px; marg
   <button id="six-dense" disabled>Dense save-capacity stress fixture</button></p>
   <p>Six full tracks / eight shared voices. ALGORITHM selects T1–T6 and follows mixer banks T1–4 / T5–6.
   PROJECT SAVE shows bytes / 3840; FULL leaves the last save intact. Old project formats are not migrated.</p>
-  <p><button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
+  <p><button id="ticker-demo" disabled>Load Ticker</button> <button id="demo" disabled>Load electro demo</button> <button id="blank" disabled>Blank electro template</button> <span id="project-status" role="status"></span></p>
   <p>Fresh starts use this electro demo. Reloading restores your saved session; to hear the updated default here, choose Load electro demo and confirm replacement.</p>
 </section>
 
@@ -312,6 +312,7 @@ FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not
 
 <script type="module">
 import { midiKnob, KNOB_MODES } from "./worklet.js";
+import {loadTicker} from './demo-songs.mjs';
 import {parse as parseSong, toWire, summary, MAX_BYTES} from './song-snapshot.mjs';
 const NS = "http://www.w3.org/2000/svg";
 // panel.c's labels (bit = label) and encoder roles
@@ -729,11 +730,19 @@ document.getElementById('song-export').addEventListener('click',async()=>{
   } catch(e){songSay(e.message);}finally{songBusy=false;}
 });
 document.getElementById('song-import').addEventListener('click',()=>{document.getElementById('song-file').value='';document.getElementById('song-file').click();});
-document.getElementById('song-file').addEventListener('change',async e=>{
- if(songBusy||!e.target.files[0])return;songBusy=true;
+document.getElementById('song-file').addEventListener('change', e => {
+ const file=e.target.files[0];
+ if(!file)return;
+ importSong(async()=>{
+   if(file.size>MAX_BYTES)throw new Error('Song file exceeds 2 MiB.');
+   return parseSong(await file.text());
+ });
+});
+document.getElementById('ticker-demo').addEventListener('click', () => importSong(loadTicker));
+async function importSong(readSong) {
+ if(songBusy)return;songBusy=true;
  try {
-   const file=e.target.files[0];if(file.size>MAX_BYTES)throw new Error('Song file exceeds 2 MiB.');
-   const doc=parseSong(await file.text());const r=await songRequest('song-validate',doc);
+   const doc=await readSong();const r=await songRequest('song-validate',doc);
    if(!confirm(`${summary(doc)}\nHardware save: ${r.bytes}/3840 bytes${r.bytes>3840?' · FULL':''}.\nReplace current unsaved music? Saved slots, libraries and settings stay unchanged.`)){songSay('Import cancelled; current music is unchanged.');return;}
    await songRequest('song-import',doc);
    btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
@@ -743,7 +752,7 @@ document.getElementById('song-file').addEventListener('change',async e=>{
    if(!saveFlash(latestSectors||{}))throw new Error('Imported, stopped · browser storage unavailable: SESSION ONLY. Keep the downloaded file.');
    songSay('Imported, stopped. Saved slots unchanged. Imported sessions checkpoint every 2 seconds while stopped; keep an exported file.');
  }catch(e){songSay(e.message);}finally{songBusy=false;}
-});
+}
 
 // ------------------------------------------------------------------ Web MIDI in (channel messages)
 // With the page's checkbox on, CC 20..27 turn the panel's knobs (worklet.js midiKnob), any channel, CC 20..26 sent
@@ -869,7 +878,7 @@ async function switchOn() {
     go.textContent = "On";
     for (const hit of device.querySelectorAll(".hit")) { hit.tabIndex = 0; hit.setAttribute("aria-disabled", "false"); }
     buttons.find(b => b.bit === B.HOME)?.hit.focus({ preventScroll: true });
-    for (const id of ["song-export","song-import","sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
+    for (const id of ["song-export","song-import","ticker-demo","sh-style-load","six-demo","six-dense","signature-load","signature-blank","signature-a","signature-b","signature-choke"]) document.getElementById(id).disabled=false;
     document.getElementById("demo").disabled = document.getElementById("blank").disabled = false;
     if (ac.sampleRate !== 44100) console.warn(`Felucca: the browser plays at ${ac.sampleRate} Hz, the pitch is off by ${(1200 * Math.log2(ac.sampleRate / 44100)).toFixed(0)} cents.`);
     syncButtons();

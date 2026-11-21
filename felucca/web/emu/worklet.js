@@ -81,6 +81,20 @@ if (typeof registerProcessor === "function") {
         id:Array.from(memory.subarray(ex.web_bgirl_vocal_id(), ex.web_bgirl_vocal_id()+8)).map(x=>x.toString(16).padStart(2,"0")).join("")};
     }
 
+    loadSnapshot(ex, doc, apply) {
+      const wire = toWire(doc);
+      if (wire.length > ex.web_snapshot_capacity()) throw new Error("Logical snapshot capacity exceeded.");
+      new Int32Array(ex.memory.buffer, ex.web_snapshot_buffer(), wire.length).set(wire);
+      const err = apply ? ex.web_snapshot_apply(wire.length) : ex.web_snapshot_validate(wire.length);
+      if (err) throw new Error(errors[err] || "Snapshot rejected");
+      if (apply) {
+        this.queue.length = 0;
+        this.nextOk = 0;
+        this.songTitle = doc.title;
+        this.songMetadata = doc.metadata || {};
+      }
+    }
+
     async onMessage(m) {
       if (m.type === "load") {
         try {
@@ -91,6 +105,7 @@ if (typeof registerProcessor === "function") {
           restoreSectors(new Uint8Array(ex.memory.buffer, ex.web_nor(), ex.web_nor_size()), m.sectors);
           ex.web_master(m.master ?? 700);
           ex.web_boot();
+          if (m.disposable && m.featuredSong) this.loadSnapshot(ex, m.featuredSong, true);
           this.ex = ex;
           this.disposable = m.disposable === true;
           this.sentWrites = ex.web_flash_writes_count();
@@ -120,12 +135,7 @@ if (typeof registerProcessor === "function") {
               result.bytes=ex.web_snapshot_bytes();
             }
           } else {
-            const wire=toWire(m.doc);
-            if(wire.length>ex.web_snapshot_capacity())throw new Error("Logical snapshot capacity exceeded.");
-            new Int32Array(ex.memory.buffer,ex.web_snapshot_buffer(),wire.length).set(wire);
-            const err=m.type==="song-import" ? ex.web_snapshot_apply(wire.length) : ex.web_snapshot_validate(wire.length);
-            if(err)throw new Error(errors[err]||"Snapshot rejected");
-            if(m.type==="song-import") { this.queue.length=0; this.nextOk=0; this.songTitle=m.doc.title; this.songMetadata=m.doc.metadata||{}; }
+            this.loadSnapshot(ex, m.doc, m.type === "song-import");
             result.bytes=ex.web_snapshot_bytes();result.active=!!ex.web_snapshot_active();
           }
         } catch(err) { result.error=String(err.message||err); }

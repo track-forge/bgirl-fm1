@@ -1,0 +1,7691 @@
+{
+  "format": "bgirl-song",
+  "version": 1,
+  "capability": "bgirl-six-clarity-127-v1-7a9e58ed15e72f97",
+  "title": "Ticker",
+  "metadata": {
+    "producer": {
+      "build": "14a33e810b97a283d7e26054316e5124b5a3fc82"
+    }
+  },
+  "resources": {
+    "factory": "bgirl-six-clarity-127-v1-7a9e58ed15e72f97",
+    "vocalBanks": [
+      "a433fc11a7cef65c"
+    ],
+    "unresolved": []
+  },
+  "song": {
+    "selectedTrack": 2,
+    "name": "",
+    "globals": {
+      "G_BPM": 140,
+      "G_SWING": 0,
+      "G_CLOCK": 0,
+      "G_TUNE": 0,
+      "G_DTIME": 1,
+      "G_DFDBK": 71,
+      "G_DCOLOR": 70,
+      "G_DMIX": 90,
+      "G_RSIZE": 90,
+      "G_RDAMP": 60,
+      "G_CRATE": 40,
+      "G_CDEPTH": 60,
+      "G_MIDI": 0,
+      "G_SYNC": 0,
+      "G_ROUTE": 0,
+      "G_INFO": 0,
+      "G_SLOT": 1,
+      "G_NAME": 0,
+      "G_LOAD": 0,
+      "G_SAVE": 0,
+      "G_ENGSEL": 0,
+      "G_ENGGO": 0,
+      "G_CLRSEQ": 0,
+      "G_INITSND": 0,
+      "G_RTYPE": 2,
+      "G_DRLVL": 0,
+      "G_DRREV": 0
+    },
+    "tracks": [
+      {
+        "engine": 10,
+        "preset": 9,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 104,
+          "P_ATK": 0,
+          "P_DEC": 100,
+          "P_SUS": 127,
+          "P_REL": 100,
+          "P_ED_FLT": 0,
+          "P_ED_PIT": 0,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 60,
+          "P_LWAVE": 0,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 16,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 65,
+          "P_DIST": 0,
+          "P_CHOR": 0,
+          "P_DLY": 0,
+          "P_REV": 0,
+          "P_VOICE": 0,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 0,
+          "P_VBANDS": 1,
+          "P_VWET": 127,
+          "P_VMON": 1,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 19,
+          "P_E1": 64,
+          "P_E2": 64,
+          "P_E3": 64,
+          "P_E4": 64,
+          "P_E5": 100,
+          "P_E6": 0,
+          "P_E7": 0
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          99,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          0,
+          8,
+          35,
+          0,
+          0,
+          0,
+          49,
+          24,
+          73,
+          78,
+          73,
+          84,
+          32,
+          86,
+          79,
+          73,
+          67,
+          69
+        ],
+        "vocalIdentity": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "steps": [
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 10,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 10,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 8,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      },
+      {
+        "engine": 13,
+        "preset": 0,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 118,
+          "P_ATK": 0,
+          "P_DEC": 127,
+          "P_SUS": 127,
+          "P_REL": 30,
+          "P_ED_FLT": 0,
+          "P_ED_PIT": 0,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 60,
+          "P_LWAVE": 0,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 16,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 64,
+          "P_DIST": 0,
+          "P_CHOR": 0,
+          "P_DLY": 0,
+          "P_REV": 12,
+          "P_VOICE": 0,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 0,
+          "P_VBANDS": 1,
+          "P_VWET": 127,
+          "P_VMON": 1,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 6,
+          "P_E1": 0,
+          "P_E2": 0,
+          "P_E3": 0,
+          "P_E4": 0,
+          "P_E5": 0,
+          "P_E6": 127,
+          "P_E7": 127
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          75,
+          40,
+          60,
+          99,
+          30,
+          0,
+          0,
+          39,
+          0,
+          0,
+          0,
+          58,
+          12,
+          68,
+          2,
+          0,
+          99,
+          60,
+          40,
+          60,
+          99,
+          30,
+          0,
+          0,
+          39,
+          0,
+          0,
+          0,
+          66,
+          8,
+          74,
+          4,
+          0,
+          99,
+          70,
+          40,
+          60,
+          99,
+          40,
+          0,
+          0,
+          39,
+          0,
+          0,
+          0,
+          58,
+          16,
+          76,
+          6,
+          0,
+          99,
+          45,
+          30,
+          60,
+          99,
+          60,
+          0,
+          0,
+          39,
+          0,
+          0,
+          0,
+          58,
+          8,
+          98,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          4,
+          8,
+          35,
+          0,
+          0,
+          0,
+          1,
+          24,
+          78,
+          89,
+          76,
+          79,
+          78,
+          32,
+          80,
+          73,
+          67,
+          75
+        ],
+        "vocalIdentity": [
+          164,
+          51,
+          252,
+          17,
+          167,
+          206,
+          246,
+          92
+        ],
+        "steps": [
+          {
+            "notes": [
+              60,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      },
+      {
+        "engine": 0,
+        "preset": 4,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 112,
+          "P_ATK": 0,
+          "P_DEC": 55,
+          "P_SUS": 20,
+          "P_REL": 30,
+          "P_ED_FLT": 48,
+          "P_ED_PIT": 0,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 60,
+          "P_LWAVE": 0,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 16,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 64,
+          "P_DIST": 20,
+          "P_CHOR": 0,
+          "P_DLY": 45,
+          "P_REV": 15,
+          "P_VOICE": 2,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 2,
+          "P_VBANDS": 2,
+          "P_VWET": 57,
+          "P_VMON": 0,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 0,
+          "P_E1": 0,
+          "P_E2": 0,
+          "P_E3": 0,
+          "P_E4": 41,
+          "P_E5": 100,
+          "P_E6": 50,
+          "P_E7": 64
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          88,
+          65,
+          65,
+          75,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          96,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          4,
+          8,
+          35,
+          0,
+          0,
+          0,
+          1,
+          24,
+          66,
+          71,
+          32,
+          83,
+          85,
+          66,
+          32,
+          67,
+          76,
+          78
+        ],
+        "vocalIdentity": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "steps": [
+          {
+            "notes": [
+              49,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              49,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              59,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 32,
+            "velocity": 100,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              61,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              59,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              52,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 128,
+            "velocity": 100,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 1,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      },
+      {
+        "engine": 13,
+        "preset": 0,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 100,
+          "P_ATK": 0,
+          "P_DEC": 127,
+          "P_SUS": 127,
+          "P_REL": 30,
+          "P_ED_FLT": 0,
+          "P_ED_PIT": 0,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 60,
+          "P_LWAVE": 0,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 32,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 64,
+          "P_DIST": 0,
+          "P_CHOR": 0,
+          "P_DLY": 0,
+          "P_REV": 12,
+          "P_VOICE": 0,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 0,
+          "P_VBANDS": 1,
+          "P_VWET": 127,
+          "P_VMON": 1,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 6,
+          "P_E1": 0,
+          "P_E2": 0,
+          "P_E3": 0,
+          "P_E4": 0,
+          "P_E5": 0,
+          "P_E6": 127,
+          "P_E7": 127
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          88,
+          65,
+          65,
+          75,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          96,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          4,
+          8,
+          35,
+          0,
+          0,
+          0,
+          1,
+          24,
+          66,
+          71,
+          32,
+          83,
+          85,
+          66,
+          32,
+          67,
+          76,
+          78
+        ],
+        "vocalIdentity": [
+          164,
+          51,
+          252,
+          17,
+          167,
+          206,
+          246,
+          92
+        ],
+        "steps": [
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              65,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              65,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              64,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              66,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              66,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              66,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              66,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      },
+      {
+        "engine": 0,
+        "preset": 17,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 104,
+          "P_ATK": 0,
+          "P_DEC": 65,
+          "P_SUS": 0,
+          "P_REL": 14,
+          "P_ED_FLT": 8,
+          "P_ED_PIT": 63,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 32,
+          "P_LWAVE": 1,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 16,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 64,
+          "P_DIST": 0,
+          "P_CHOR": 0,
+          "P_DLY": 29,
+          "P_REV": 0,
+          "P_VOICE": 1,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 0,
+          "P_VBANDS": 1,
+          "P_VWET": 127,
+          "P_VMON": 1,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 3,
+          "P_E1": 0,
+          "P_E2": 0,
+          "P_E3": 0,
+          "P_E4": 83,
+          "P_E5": 98,
+          "P_E6": 0,
+          "P_E7": 49
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          88,
+          65,
+          65,
+          75,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          96,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          4,
+          8,
+          35,
+          0,
+          0,
+          0,
+          1,
+          24,
+          66,
+          71,
+          32,
+          83,
+          85,
+          66,
+          32,
+          67,
+          76,
+          78
+        ],
+        "vocalIdentity": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "steps": [
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              73,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 32,
+            "velocity": 100,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              73,
+              0,
+              0,
+              0
+            ],
+            "n": 1,
+            "time": 0,
+            "flags": 228,
+            "velocity": 100,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      },
+      {
+        "engine": 10,
+        "preset": 4,
+        "midiChannel": 0,
+        "parameters": {
+          "P_LEVEL": 100,
+          "P_ATK": 0,
+          "P_DEC": 100,
+          "P_SUS": 127,
+          "P_REL": 100,
+          "P_ED_FLT": 0,
+          "P_ED_PIT": 0,
+          "P_ED_SHP": 0,
+          "P_ED_FX": 0,
+          "P_LRATE": 60,
+          "P_LWAVE": 0,
+          "P_LPHASE": 0,
+          "P_LFADE": 0,
+          "P_LD_PIT": 0,
+          "P_LD_FLT": 0,
+          "P_LD_SHP": 0,
+          "P_LD_AMP": 0,
+          "P_AMODE": 0,
+          "P_ARATE": 2,
+          "P_AOCT": 1,
+          "P_AGATE": 64,
+          "P_ASWING": 0,
+          "P_APROB": 127,
+          "P_AHOLD": 0,
+          "P_AORDER": 0,
+          "P_ROOT": 0,
+          "P_SCALE": 0,
+          "P_QUANT": 0,
+          "P_TRANS": 0,
+          "P_SLEN": 16,
+          "P_SDIV": 2,
+          "P_SSWING": 0,
+          "P_SGATE": 64,
+          "P_DIST": 0,
+          "P_CHOR": 0,
+          "P_DLY": 0,
+          "P_REV": 0,
+          "P_VOICE": 0,
+          "P_GLIDE": 0,
+          "P_PAN": 0,
+          "P_MUTE": 0,
+          "P_GLMODE": 0,
+          "P_PRIO": 0,
+          "P_ALLOC": 0,
+          "P_DETUNE": 40,
+          "P_SLCR": 0,
+          "P_SLPAT": 1,
+          "P_SLRATE": 1,
+          "P_SLDEPTH": 127,
+          "P_M1SRC": 0,
+          "P_M1DST": 0,
+          "P_M1AMT": 0,
+          "P_M2SRC": 0,
+          "P_M2DST": 0,
+          "P_M2AMT": 0,
+          "P_M3SRC": 0,
+          "P_M3DST": 0,
+          "P_M3AMT": 0,
+          "P_M4SRC": 0,
+          "P_M4DST": 0,
+          "P_M4AMT": 0,
+          "P_FM1_ATK": 0,
+          "P_FM1_DEC": 0,
+          "P_FM1_SUS": 127,
+          "P_FM1_REL": 0,
+          "P_FM1_LEVEL": 127,
+          "P_FM2_ATK": 0,
+          "P_FM2_DEC": 0,
+          "P_FM2_SUS": 127,
+          "P_FM2_REL": 0,
+          "P_FM2_LEVEL": 127,
+          "P_FM3_ATK": 0,
+          "P_FM3_DEC": 0,
+          "P_FM3_SUS": 127,
+          "P_FM3_REL": 0,
+          "P_FM3_LEVEL": 127,
+          "P_FM4_ATK": 0,
+          "P_FM4_DEC": 0,
+          "P_FM4_SUS": 127,
+          "P_FM4_REL": 0,
+          "P_FM4_LEVEL": 127,
+          "P_CHRD": 0,
+          "P_VOIC": 0,
+          "P_LN0": 127,
+          "P_LN1": 127,
+          "P_LN2": 127,
+          "P_LN3": 127,
+          "P_LN4": 127,
+          "P_LN5": 127,
+          "P_LN6": 127,
+          "P_LN7": 127,
+          "P_LSYNC": 0,
+          "P_LTRIG": 0,
+          "P_LPOL": 0,
+          "P_SQNT": 1,
+          "P_SPRD": 0,
+          "P_ITYPE": 0,
+          "P_IA": 64,
+          "P_IB": 96,
+          "P_IC": 96,
+          "P_IMIX": 127,
+          "P_FTYPE": 0,
+          "P_ESYNC": 0,
+          "P_ATSNS": 0,
+          "P_ATDST": 0,
+          "P_ATAMT": 0,
+          "P_VCARR": 0,
+          "P_VBANDS": 1,
+          "P_VWET": 127,
+          "P_VMON": 1,
+          "P_VHOLD": 0,
+          "P_VMTRIM": 64,
+          "P_VCTRIM": 64,
+          "P_VCONS": 0,
+          "P_VLOW": 64,
+          "P_VMID": 64,
+          "P_VHIGH": 64,
+          "P_VREL": 32,
+          "P_VRANGE": 0,
+          "P_E0": 12,
+          "P_E1": 64,
+          "P_E2": 58,
+          "P_E3": 44,
+          "P_E4": 64,
+          "P_E5": 80,
+          "P_E6": 0,
+          "P_E7": 0
+        },
+        "fm6": [
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          0,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          99,
+          0,
+          39,
+          0,
+          0,
+          0,
+          56,
+          0,
+          99,
+          2,
+          0,
+          99,
+          99,
+          99,
+          99,
+          50,
+          50,
+          50,
+          50,
+          0,
+          8,
+          35,
+          0,
+          0,
+          0,
+          49,
+          24,
+          73,
+          78,
+          73,
+          84,
+          32,
+          86,
+          79,
+          73,
+          67,
+          69
+        ],
+        "vocalIdentity": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "steps": [
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 1,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 1,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 1,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 0,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 1,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          },
+          {
+            "notes": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "n": 0,
+            "time": 2,
+            "flags": 0,
+            "velocity": 0,
+            "hits": 0,
+            "accents": 0,
+            "probability": 0
+          }
+        ]
+      }
+    ],
+    "arrangement": {
+      "count": 0,
+      "rows": [
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        },
+        {
+          "sources": [
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0",
+            "pattern-0"
+          ],
+          "repeat": 1
+        }
+      ]
+    },
+    "motion": {
+      "enabledTracks": 16,
+      "events": [
+        {
+          "track": 4,
+          "step": 12,
+          "parameter": "P_REV",
+          "lock": false,
+          "value": 4
+        },
+        {
+          "track": 4,
+          "step": 13,
+          "parameter": "P_REV",
+          "lock": false,
+          "value": 9
+        },
+        {
+          "track": 4,
+          "step": 14,
+          "parameter": "P_REV",
+          "lock": false,
+          "value": 13
+        },
+        {
+          "track": 4,
+          "step": 15,
+          "parameter": "P_REV",
+          "lock": false,
+          "value": 16
+        },
+        {
+          "track": 4,
+          "step": 0,
+          "parameter": "P_REV",
+          "lock": false,
+          "value": 17
+        }
+      ]
+    }
+  },
+  "dependencies": []
+}

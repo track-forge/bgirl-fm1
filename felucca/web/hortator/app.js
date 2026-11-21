@@ -5,6 +5,7 @@
 // frames it sends back, and keeps the flash it writes in IndexedDB (store.js).
 import { BTN, ENC, KEYS, HeldSet, keyEvent, keyHint, contextMenuLatches } from './controls.js';
 import { panelInput, panelLights } from './bgirl-panel.js';
+import { loadTicker } from './play/demo-songs.mjs';
 import { needsResume, playbackSession } from './audio.js';
 import { initManual } from './manual.js';
 import { initGlitch } from './dither.js';
@@ -325,8 +326,10 @@ async function powerOn() {
     ctx = new AudioContext({ sampleRate: 44100, latencyHint: 'interactive' });
     const resumed = ctx.resume();                         // inside the tap: browsers allow sound from here on
     await resumed;
-    await ctx.audioWorklet.addModule('play/worklet.js');
-    const wasm = (await wasmBytes).slice(0);
+    const [bytes, featuredSong] = await Promise.all([
+      wasmBytes, loadTicker(), ctx.audioWorklet.addModule('play/worklet.js'),
+    ]);
+    const wasm = bytes.slice(0);
     const candidate = new AudioWorkletNode(ctx, 'felucca', { numberOfInputs:0, outputChannelCount:[2] });
     let lights = {leds:0,keyLeds:0};
     await new Promise((resolve,reject) => {
@@ -343,7 +346,7 @@ async function powerOn() {
         }
       };
       candidate.connect(ctx.destination);
-      candidate.port.postMessage({type:'load',wasm,sectors:{},master:masterValue,disposable:true},[wasm]);
+      candidate.port.postMessage({type:'load',wasm,sectors:{},master:masterValue,disposable:true,featuredSong},[wasm]);
     });
     node = candidate;
     send = panelInput(node.port);

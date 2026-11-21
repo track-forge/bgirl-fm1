@@ -24,7 +24,8 @@ git rev-parse HEAD > build/emu/build-sha.txt
 sed "s/@BUILD_SHA@/$(cat build/emu/build-sha.txt)/g" web/emu/worklet.js > build/emu/worklet.js
 ASSET_REV=$(cat build/emu/felucca.wasm build/emu/worklet.js | sha256sum | cut -d ' ' -f 1)
 sed -e "s/@VERSION@/$VERSION/g" -e "s/@PREVIEW@/$PREVIEW/g" -e "s/@ASSET_REV@/$ASSET_REV/g" web/emu/index.html > build/emu/index.html
-cp web/emu/song-snapshot.mjs web/emu/snapshot-layout.mjs build/emu/
+cp web/emu/song-snapshot.mjs web/emu/snapshot-layout.mjs web/emu/demo-songs.mjs build/emu/
+cp -R web/emu/demos build/emu/
 cp web/emu/fonts/*.woff web/emu/fonts/OFL*.txt build/emu/fonts/
 cp ../assets/branding/bgirl-fm1-wordmark.png build/emu/branding/
 echo "emu: build/emu ($(wc -c < build/emu/felucca.wasm | tr -d ' ') B wasm, $VERSION)"
@@ -32,4 +33,4 @@ echo "emu: build/emu ($(wc -c < build/emu/felucca.wasm | tr -d ' ') B wasm, $VER
 # Keep studio-relative imports and reference links intact at its direct route.
 mkdir -p build/emu/play
 cp build/emu/index.html build/emu/worklet.js build/emu/felucca.wasm build/emu/*.mjs build/emu/play/
-cp -R build/emu/fonts build/emu/branding build/emu/listening build/emu/play/
+cp -R build/emu/fonts build/emu/branding build/emu/listening build/emu/demos build/emu/play/

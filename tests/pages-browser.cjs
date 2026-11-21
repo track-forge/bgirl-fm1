@@ -2,6 +2,8 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright");
 const assert = require("node:assert/strict");
 const url = process.env.BGIRL_PAGES_URL || "http://127.0.0.1:8772/bgirl-fm1/";
 (async () => {
+  const { semantic } = await import('../felucca/web/emu/song-snapshot.mjs');
+  const ticker = require('../felucca/web/emu/demos/ticker.bgirl.json');
   const b = await chromium.launch({
     executablePath: process.env.CHROMIUM_PATH || undefined,
     args: ["--no-sandbox"],
@@ -26,6 +28,7 @@ const url = process.env.BGIRL_PAGES_URL || "http://127.0.0.1:8772/bgirl-fm1/";
         window.AudioWorkletNode = class extends AW {
           constructor(ctx, ...args) {
             super(ctx, ...args);
+            window.instrumentPort = this.port;
             window.meter = ctx.createAnalyser();
             this.connect(meter);
           }
@@ -70,6 +73,20 @@ const url = process.env.BGIRL_PAGES_URL || "http://127.0.0.1:8772/bgirl-fm1/";
         () => document.querySelector("#power-note").hidden,
       );
       await p.waitForTimeout(650);
+      const loaded = await p.evaluate(() => new Promise((resolve, reject) => {
+        const port = window.instrumentPort;
+        const listener = ({data}) => {
+          if (data.type !== "song-result" || data.id !== "featured-test") return;
+          clearTimeout(timer);
+          port.removeEventListener("message", listener);
+          data.error ? reject(Error(data.error)) : resolve(data.doc);
+        };
+        const timer = setTimeout(() => reject(Error("Featured song capture timed out")), 5000);
+        port.addEventListener("message", listener);
+        port.postMessage({type:"song-capture", id:"featured-test", deadline:Date.now()+5000});
+      }));
+      assert.equal(loaded.title, "Ticker");
+      assert.deepEqual(semantic(loaded), semantic(ticker));
       if (mobile) await p.locator('[data-ctl="btn:10"]').tap();
       else await p.keyboard.press("Space", { delay: 100 });
       await p.waitForFunction(() => {
