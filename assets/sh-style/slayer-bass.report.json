@@ -161,8 +161,7 @@
     "LFO waveform/mode unknown: target triangle default; rate/depth normalized only; no SH timing/sync claim.",
     "Glide/portamento mode and bend/mod sensitivity omitted; target glide disabled, normal host performance controls remain.",
     "Source noise color unverified; existing target noise only. Source oscillator absolute gains not preserved.",
-    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed.",
-    "Sub component dropped: dominant pulse uses target PWM pair; cannot combine pulse and sub in this single-track mode."
+    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed."
   ],
   "metadata_disposition": {
     "baseline": "validated-private-not-published",
@@ -305,8 +304,8 @@
         "mixer.pulse_level",
         "mixer.sub_level"
       ],
-      "transform": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated). round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
-      "value": 4
+      "transform": "explicit override: Saw substitutes for pulse to restore octave-down square sub",
+      "value": 6
     },
     "P_E1": {
       "disposition": "approximated",
@@ -321,8 +320,8 @@
         "mixer.pulse_level",
         "mixer.sub_level"
       ],
-      "transform": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated). round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
-      "value": 0
+      "transform": "explicit override: Favor sub for weight",
+      "value": 78
     },
     "P_E3": {
       "disposition": "approximated",
@@ -337,22 +336,22 @@
       "sources": [
         "vcf.cutoff"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 56
+      "transform": "explicit override: Open cutoff for the held body",
+      "value": 70
     },
     "P_E5": {
       "disposition": "approximated",
       "sources": [
         "vcf.resonance"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 81
+      "transform": "explicit override: Reduce resonance to favor bass body",
+      "value": 42
     },
     "P_E6": {
       "disposition": "approximated",
       "sources": [],
-      "transform": "policy constant; All raw selector bins unverified: do not decode. Fixed mono retrigger, triangle LFO, LP filter, no glide, no transpose, no chord synthesis, centered PWM; explicit losses.",
-      "value": 0
+      "transform": "explicit override: Mild drive for bite",
+      "value": 20
     },
     "P_E7": {
       "disposition": "approximated",
@@ -367,8 +366,8 @@
       "sources": [
         "vcf.envelope_depth"
       ],
-      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
-      "value": 63
+      "transform": "explicit override: Shorter filter sweep range",
+      "value": 24
     },
     "P_ED_FX": {
       "disposition": "target-descriptor-default",
@@ -726,8 +725,8 @@
       "sources": [
         "envelope.release"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 0
+      "transform": "explicit override: Smooth note-off",
+      "value": 23
     },
     "P_REV": {
       "disposition": "approximated",
@@ -800,8 +799,8 @@
       "sources": [
         "envelope.sustain"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 0
+      "transform": "explicit override: Sustain bass on held notes",
+      "value": 100
     },
     "P_TRANS": {
       "disposition": "retained-track-state",
@@ -885,15 +884,48 @@
       "transform": "normal apply_preset_to / TP default; no source inference"
     }
   },
-  "overrides": {},
+  "overrides": {
+    "P_E0": {
+      "reason": "Saw substitutes for pulse to restore octave-down square sub",
+      "value": 6
+    },
+    "P_E2": {
+      "reason": "Favor sub for weight",
+      "value": 78
+    },
+    "P_E4": {
+      "reason": "Open cutoff for the held body",
+      "value": 70
+    },
+    "P_E5": {
+      "reason": "Reduce resonance to favor bass body",
+      "value": 42
+    },
+    "P_E6": {
+      "reason": "Mild drive for bite",
+      "value": 20
+    },
+    "P_ED_FLT": {
+      "reason": "Shorter filter sweep range",
+      "value": 24
+    },
+    "P_REL": {
+      "reason": "Smooth note-off",
+      "value": 23
+    },
+    "P_SUS": {
+      "reason": "Sustain bass on held notes",
+      "value": 100
+    }
+  },
   "policy_sha256": "a1bd94ba115dd3fd4ee9a07b083904dc788d8232a25984c7b4fb0bc91fbe9b14",
-  "recipe_sha256": "23778b57dc17542dece41512d481231fc46189a27f6d637bcd638f6f01ca13dd",
+  "recipe_sha256": "220cade6e9cb58aa92a8c08f11ef5c7ac00606384f71b1ccfa3cb30c3d12d7c0",
   "source_definition_version": "roland-chart-1.00/raw-v1",
   "source_raw_sha256": "d6a3b6902513c0fed1a540141763d84b44c7ae04cb772d26c20b51661ff94ed3",
   "source_schema_version": 1,
   "source_snapshot_sha256": "48f2c5632ba5df27d34c645df77dd0fd77fd20949ef23b3172c74eb174166942",
   "translation_fidelity": "heuristic; uncalibrated; not acoustic proof",
-  "translator_sha256": "418555bdf378d658e62a184dbd3d7d90f45ae795e4a276d449705966ffa61c1c",
+  "translator_sha256": "632dce5b471eb15f8574ba6a090246eec9e4b992c49e6a7a6c9e989afcc224d8",
   "translator_version": 1,
   "unknown_message_count": 0,
   "version": 1

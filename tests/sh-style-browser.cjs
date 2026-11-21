@@ -24,7 +24,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   for(let t=0;t<6;t++){
    for(let sound=0;sound<5;sound++){
     const before=await info();await load(sound);const after=await info();
-    assert.equal(after[t][0],0);assert.equal(after[t][1],13+sound);assert.equal(after[t][2],[106,25,70,56,69][sound]);assert.equal(after[t][10],1);
+    assert.equal(after[t][0],0);assert.equal(after[t][1],13+sound);assert.equal(after[t][2],[106,25,70,70,83][sound]);assert.equal(after[t][10],1);
     for(let k=0;k<6;k++)if(k!==t)assert.deepEqual(after[k].slice(0,11),before[k].slice(0,11));
    }await turn('ALGORITHM');
   }

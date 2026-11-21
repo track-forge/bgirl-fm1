@@ -36,7 +36,7 @@ def load_policy(path=POLICY):
 
 def bounds(key):
     if key == 'P_E0': return 0,6
-    if key in ('P_ED_FLT','P_LD_PIT','P_LD_FLT'): return -64,63
+    if key in ('P_ED_FLT','P_ED_PIT','P_LD_PIT','P_LD_FLT'): return -64,63
     if key == 'P_VOICE': return 0,3
     if key == 'P_LWAVE': return 0,4
     return 0,127
@@ -98,11 +98,14 @@ def translate(snapshot_bytes, raw_bytes, name, preset, overrides=None, strict=Fa
     for k in ('mixer.saw_level','mixer.pulse_level','mixer.sub_level'):
         if k in raw: inputs[k]=dict(disposition='approximated',reason='dominant single-track waveform; dropped components in losses')
     overrides = overrides or {}
+    if 'P_E0' in overrides:
+        # The default oscillator-selection losses no longer describe the curated wave.
+        losses = losses[:len(p['limitations'])]
     for k,entry in overrides.items():
         if not isinstance(entry,dict) or set(entry) != {'value','reason'} or not isinstance(entry['reason'],str) or not entry['reason'].strip():
             raise ValueError('override requires value and nonempty reason')
-        validate_values({k:entry['value']},values)
-        values[k]=entry['value'];provenance[k]=dict(sources=provenance[k]['sources'],transform='explicit override: '+entry['reason'])
+        validate_values({k:entry['value']},set(values) | {'P_ED_PIT'})
+        values[k]=entry['value'];provenance[k]=dict(sources=provenance.get(k, {}).get('sources', []),transform='explicit override: '+entry['reason'])
     validate_values(values,values)
     recipe = dict(version=1,name=name,engine=0,preset=preset,values=values)
     outputs = {k:dict(value=values[k],disposition='approximated',**provenance[k]) if k in values else

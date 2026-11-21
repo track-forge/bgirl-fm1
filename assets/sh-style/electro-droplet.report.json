@@ -161,8 +161,7 @@
     "LFO waveform/mode unknown: target triangle default; rate/depth normalized only; no SH timing/sync claim.",
     "Glide/portamento mode and bend/mod sensitivity omitted; target glide disabled, normal host performance controls remain.",
     "Source noise color unverified; existing target noise only. Source oscillator absolute gains not preserved.",
-    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed.",
-    "No pitched source mixer gain: target SAW remains present; noise-only/silent source cannot be isolated by this policy."
+    "No reference audio, acoustic similarity, measured source units, listening approval or physical-device fit claimed."
   ],
   "metadata_disposition": {
     "baseline": "validated-private-not-published",
@@ -278,8 +277,8 @@
       "sources": [
         "envelope.decay"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 58
+      "transform": "explicit override: Keep the blip audible through the initial pitch drop while retaining zero sustain",
+      "value": 65
     },
     "P_DETUNE": {
       "disposition": "target-descriptor-default",
@@ -305,8 +304,8 @@
         "mixer.pulse_level",
         "mixer.sub_level"
       ],
-      "transform": "If saw >= pulse and saw > 0: SUB when sub > 0 else SAW. Otherwise PWM when pulse > 0. Otherwise SUB when sub > 0 (mix127); otherwise SAW with NOIS (silent oscillator cannot be isolated). round-half-up(127*sub/(saw+sub)); amplitude ratio heuristic, not source independent mixer gains",
-      "value": 0
+      "transform": "explicit override: Sine stands in for pitched filter resonance without saw harmonics",
+      "value": 3
     },
     "P_E1": {
       "disposition": "approximated",
@@ -337,16 +336,16 @@
       "sources": [
         "vcf.cutoff"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 69
+      "transform": "explicit override: Open up blip onset",
+      "value": 83
     },
     "P_E5": {
       "disposition": "approximated",
       "sources": [
         "vcf.resonance"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 113
+      "transform": "explicit override: Keep a resonant edge without choking the sine",
+      "value": 98
     },
     "P_E6": {
       "disposition": "approximated",
@@ -367,8 +366,8 @@
       "sources": [
         "vcf.envelope_depth"
       ],
-      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
-      "value": 15
+      "transform": "explicit override: Subtle cutoff movement",
+      "value": 8
     },
     "P_ED_FX": {
       "disposition": "target-descriptor-default",
@@ -376,9 +375,10 @@
       "transform": "normal apply_preset_to / TP default; no source inference"
     },
     "P_ED_PIT": {
-      "disposition": "target-descriptor-default",
+      "disposition": "approximated",
       "sources": [],
-      "transform": "normal apply_preset_to / TP default; no source inference"
+      "transform": "explicit override: Fast downward pitch sweep from high onset",
+      "value": 63
     },
     "P_ED_SHP": {
       "disposition": "target-descriptor-default",
@@ -541,8 +541,8 @@
       "sources": [
         "vcf.mod_depth"
       ],
-      "transform": "normalized half-up 0..63; clamp; heuristic not physical equivalence",
-      "value": 16
+      "transform": "explicit override: Remove free-running wobble",
+      "value": 0
     },
     "P_LD_PIT": {
       "disposition": "approximated",
@@ -726,8 +726,8 @@
       "sources": [
         "envelope.release"
       ],
-      "transform": "normalized half-up 0..127; clamp; heuristic not physical equivalence",
-      "value": 0
+      "transform": "explicit override: Small tail for taps",
+      "value": 14
     },
     "P_REV": {
       "disposition": "approximated",
@@ -885,15 +885,48 @@
       "transform": "normal apply_preset_to / TP default; no source inference"
     }
   },
-  "overrides": {},
+  "overrides": {
+    "P_DEC": {
+      "reason": "Keep the blip audible through the initial pitch drop while retaining zero sustain",
+      "value": 65
+    },
+    "P_E0": {
+      "reason": "Sine stands in for pitched filter resonance without saw harmonics",
+      "value": 3
+    },
+    "P_E4": {
+      "reason": "Open up blip onset",
+      "value": 83
+    },
+    "P_E5": {
+      "reason": "Keep a resonant edge without choking the sine",
+      "value": 98
+    },
+    "P_ED_FLT": {
+      "reason": "Subtle cutoff movement",
+      "value": 8
+    },
+    "P_ED_PIT": {
+      "reason": "Fast downward pitch sweep from high onset",
+      "value": 63
+    },
+    "P_LD_FLT": {
+      "reason": "Remove free-running wobble",
+      "value": 0
+    },
+    "P_REL": {
+      "reason": "Small tail for taps",
+      "value": 14
+    }
+  },
   "policy_sha256": "a1bd94ba115dd3fd4ee9a07b083904dc788d8232a25984c7b4fb0bc91fbe9b14",
-  "recipe_sha256": "aa803337505c22cd6c073d5349a6e28dd186625d071020f82cab40f9562f3e37",
+  "recipe_sha256": "5905465996fd0bd2227b66e6472e55fe1feb13efaacb05503707593e2b994b49",
   "source_definition_version": "roland-chart-1.00/raw-v1",
   "source_raw_sha256": "9cf87005e5ab694c9eb5a37a99a2b2dd2ac37cbe78154c9c307aa552ff9cdcf1",
   "source_schema_version": 1,
   "source_snapshot_sha256": "abd8f57ee2e576595855b42df4a4af35167d9077a56854f1f0db54a6ad8880fc",
   "translation_fidelity": "heuristic; uncalibrated; not acoustic proof",
-  "translator_sha256": "418555bdf378d658e62a184dbd3d7d90f45ae795e4a276d449705966ffa61c1c",
+  "translator_sha256": "632dce5b471eb15f8574ba6a090246eec9e4b992c49e6a7a6c9e989afcc224d8",
   "translator_version": 1,
   "unknown_message_count": 0,
   "version": 1
