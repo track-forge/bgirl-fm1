@@ -15,6 +15,9 @@ static const preset_t BG_ANALOG_PRESETS[] = {
     {"BG CARR SAW", {0,0,0,0,127,0,0,0}, {0,0,127,20}, 0,1,FX(0,0,0,0),PAT(4)},
     {"Crunchy Bass", {6,0,42,0,106,42,0,0}, {0,17,57,0}, 12,1,FX(0,0,0,0),PAT(4)},
     {"Velvet Pulse", {4,0,0,0,25,55,0,127}, {16,26,81,18}, 55,1,FX(0,0,0,0),PAT(4)},
+    {"Dark Sweep", {4,0,0,27,70,11,0,56}, {104,113,33,98}, 49,1,FX(0,0,0,0),PAT(4)},
+    {"Slayer Bass", {6,0,78,0,70,42,20,64}, {0,48,100,23}, 24,1,FX(0,0,0,0),PAT(4)},
+    {"Elec Droplet", {3,0,0,0,83,98,0,49}, {0,65,0,14}, 8,1,FX(0,0,0,0),PAT(4)},
 };
 static const engine_t BG_ANALOG = {
     .name = "ANALOG",
@@ -89,6 +92,82 @@ static void sh_style_factory_loaded(track_t *t) {
         t->p[P_REL] = 18;
         t->p[P_REV] = 0;
         t->p[P_SUS] = 81;
+        t->p[P_VOICE] = 1;
+        break;
+    case 15:
+        t->p[P_ATK] = 104;
+        t->p[P_CHOR] = 0;
+        t->p[P_DEC] = 113;
+        t->p[P_DIST] = 0;
+        t->p[P_DLY] = 0;
+        t->p[P_E0] = 4;
+        t->p[P_E1] = 0;
+        t->p[P_E2] = 0;
+        t->p[P_E3] = 27;
+        t->p[P_E4] = 70;
+        t->p[P_E5] = 11;
+        t->p[P_E6] = 0;
+        t->p[P_E7] = 56;
+        t->p[P_ED_FLT] = 49;
+        t->p[P_GLIDE] = 0;
+        t->p[P_LD_FLT] = 0;
+        t->p[P_LD_PIT] = 0;
+        t->p[P_LRATE] = 42;
+        t->p[P_LWAVE] = 1;
+        t->p[P_REL] = 98;
+        t->p[P_REV] = 0;
+        t->p[P_SUS] = 33;
+        t->p[P_VOICE] = 1;
+        break;
+    case 16:
+        t->p[P_ATK] = 0;
+        t->p[P_CHOR] = 0;
+        t->p[P_DEC] = 48;
+        t->p[P_DIST] = 0;
+        t->p[P_DLY] = 0;
+        t->p[P_E0] = 6;
+        t->p[P_E1] = 0;
+        t->p[P_E2] = 78;
+        t->p[P_E3] = 0;
+        t->p[P_E4] = 70;
+        t->p[P_E5] = 42;
+        t->p[P_E6] = 20;
+        t->p[P_E7] = 64;
+        t->p[P_ED_FLT] = 24;
+        t->p[P_GLIDE] = 0;
+        t->p[P_LD_FLT] = 0;
+        t->p[P_LD_PIT] = 0;
+        t->p[P_LRATE] = 29;
+        t->p[P_LWAVE] = 1;
+        t->p[P_REL] = 23;
+        t->p[P_REV] = 0;
+        t->p[P_SUS] = 100;
+        t->p[P_VOICE] = 1;
+        break;
+    case 17:
+        t->p[P_ATK] = 0;
+        t->p[P_CHOR] = 0;
+        t->p[P_DEC] = 65;
+        t->p[P_DIST] = 0;
+        t->p[P_DLY] = 0;
+        t->p[P_E0] = 3;
+        t->p[P_E1] = 0;
+        t->p[P_E2] = 0;
+        t->p[P_E3] = 0;
+        t->p[P_E4] = 83;
+        t->p[P_E5] = 98;
+        t->p[P_E6] = 0;
+        t->p[P_E7] = 49;
+        t->p[P_ED_FLT] = 8;
+        t->p[P_ED_PIT] = 63;
+        t->p[P_GLIDE] = 0;
+        t->p[P_LD_FLT] = 0;
+        t->p[P_LD_PIT] = 0;
+        t->p[P_LRATE] = 32;
+        t->p[P_LWAVE] = 1;
+        t->p[P_REL] = 14;
+        t->p[P_REV] = 0;
+        t->p[P_SUS] = 0;
         t->p[P_VOICE] = 1;
         break;
     default: break;

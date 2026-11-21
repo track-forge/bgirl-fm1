@@ -526,7 +526,7 @@ EXPORT uint32_t web_bgirl_project(uint32_t demo)
 
 /* SH-STYLE is an additive ANALOG collection: exactly the normal factory loader. */
 EXPORT uint32_t web_bgirl_sh_style_sound(uint32_t sound) {
-    if (sound >= 2 || fm1_in.notes || fm1_in.buttons) return 1;
+    if (sound >= BG_ANALOG.npresets - 13u || fm1_in.notes || fm1_in.buttons) return 1;
     set_engine_of(TSEL, 0);
     apply_preset_to(TSEL, 13 + sound);
     ui.force = 1;
