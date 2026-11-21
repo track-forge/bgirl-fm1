@@ -1500,7 +1500,7 @@ static void events_block(uint32_t n)
         arp_step(&trk[i], arp_n, clock_mode && song.playing ? arp_n : n);
     }
     /* Q32 four-quarter phrase; audio-owned, never driven by UI redraw count. */
-    crew_phase += (uint32_t)(((uint64_t)(clock_mode && song.playing ? seq_n : n)<<30) / (clock_mode && song.playing ? MIDI_CLOCK_GRID : beat_samples()));
+    crew_phase +=(((uint64_t)(clock_mode && song.playing ? seq_n : n)<<30) / (clock_mode && song.playing ? MIDI_CLOCK_GRID : beat_samples()));
     beat_pos += clock_mode ? midi_grid_advance(&midi_beat_grid, seq_n, 0u) : n; /* ARP LED beat */
     if (beat_pos >= beat_samples()) {
         beat_pos -= beat_samples();

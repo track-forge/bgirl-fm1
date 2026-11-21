@@ -815,7 +815,7 @@ EXPORT uint32_t web_bgirl_crew_info(uint32_t field)
     case 1:return ui.home && home_crew() && !ui.menu && !ui.layer && !ui.confirm && !name_on();
     case 2:return song.sel;
     case 3:return crew_read(song.sel);
-    case 4:return crew_moves[song.sel];
+    case 4:return crew_live[song.sel][0];
     case 5:return crew_graph_paints;
     case 6:return song.playing;
     case 7:return TSEL->p[P_MUTE];
@@ -824,6 +824,19 @@ EXPORT uint32_t web_bgirl_crew_info(uint32_t field)
     case 10:return !!(ui_prefs&PREF_LARGE);
     case 11:return palette_cur();
     case 12:return ui_style;
+    case 13:return stage_fx_on();
+    case 14:return TSEL->seq_idx;
+    case 15:return motion_record_step(TSEL);
+    case 16:return crew_live[song.sel][1];
+    case 17:return crew_live[song.sel][2];
+    case 18:return crew_live[song.sel][3];
+    case 19:return song.rec;
+    case 20:return ui.layer;
+    case 21:return TSEL->p[P_LEVEL];
+    case 22:return stage_voc_off[song.sel];
+    case 23:return TSEL->p[P_VCARR];
+    case 24:return TSEL->p[P_VHOLD];
+    case 25:return TSEL->p[P_VWET];
     default:return 0;
     }
 }

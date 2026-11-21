@@ -744,6 +744,9 @@ static int project_restore_runtime(const project_t *input)
     transport_req = 0;
     chain_config = p->chain;
     motion = p->motion;
+    memcpy(crew_base, crew_defaults, sizeof crew_base);
+    memcpy(crew_live, crew_defaults, sizeof crew_live);
+    memset(stage_voc_off, 0, sizeof stage_voc_off);
     memset(motion_active, 0, sizeof motion_active);
     motion_base_valid = 0;
     ui.song_row = 0;

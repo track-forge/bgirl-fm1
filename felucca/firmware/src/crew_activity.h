@@ -10,7 +10,8 @@
 static uint32_t crew_state[NTRK];
 typedef struct { uint32_t pulse, settle, accent; uint8_t pending, strength, blocked; } crew_runtime_t;
 static crew_runtime_t crew_rt[NTRK];
-static uint32_t crew_phase;
+#define CREW_ODD_CYCLE (1u << 14)
+static uint64_t crew_phase;
 _Static_assert(__atomic_always_lock_free(sizeof(uint32_t),0), "CREW needs lock-free whole-word publication");
 static uint32_t crew_read(uint32_t i) { return __atomic_load_n(&crew_state[i],__ATOMIC_RELAXED); }
 static void crew_reset(uint32_t i) {

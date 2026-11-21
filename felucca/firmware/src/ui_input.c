@@ -87,6 +87,7 @@ static int mom_turn(uint32_t k, int32_t s)
     if (ui.home) {
         if (home_levels() && mix_track(k)>=NTRK) return 0;
         d = home_param(k, &vp);
+        if (vp == &stage_voc_off[song.sel]) return 0;
     } else if (pg->scope == SC_TRK && !lock_held()) {  /* MIXER (#195): the selected track's LEVEL PAN REV MUTE */
         static const uint8_t MIX_ID[4] = {P_LEVEL, P_PAN, P_REV, P_MUTE};   /* (tracks_edit's knobs) */
         vp = &TSEL->p[MIX_ID[k & 3u]];
@@ -1604,13 +1605,13 @@ static void ui_input(void)
         for (k = 0; k < 4u; k++)                        /* KNOB 1..4: the layer's (ui_layer.c layer_knob) */
             if ((ks[k] = panel_enc(EN_K1 + k)) != 0)
                 combo = 1;
-        if ((s = panel_enc(EN_PRESET)) != 0 && ui.ly == LAYER_FX) {   /* (a stray turn would load another sound) */
+        if ((s = panel_enc(EN_PRESET)) != 0 && ui.ly == LAYER_FX && !stage_fx_press) {   /* (a stray turn would load another sound) */
             fx_assign(s);                               /* FX: the white key held takes the next effect */
             combo = 1;
         }
-        if (ui.ly == LAYER_FX && ((pressed >> panel.btn[B_EDIT]) & 1u))
+        if (ui.ly == LAYER_FX && !stage_fx_press && ((pressed >> panel.btn[B_EDIT]) & 1u))
             fx_default();                               /* .. EDIT: its default back */
-        panel_enc(EN_ALGO);                             /* (another track: OCT- puts back the layer's track only) */
+        if (!stage_fx_press) panel_enc(EN_ALGO);                             /* (another track: OCT- puts back the layer's track only) */
         if (glo && (sel = panel_enc(EN_SELECT)) != 0)   /* GLO + SELECT: the tempo, a combo (OCT- puts it back) */
             combo = 1;
     } else if ((kq = (uint32_t)layer_knobs_quiet()) != 0) {   /* a layer letting go: KNOB 1..4 are nobody's (#39) */
@@ -1820,7 +1821,7 @@ static void ui_input(void)
     kq |= lay;
     if (!lay && (s = panel_enc(EN_PRESET)) != 0)
         presets_turn(s);
-    if (!lay && (s = panel_enc(EN_ALGO)) != 0)     /* ALGORITHM: the selected track, on every page */
+    if ((!lay || stage_fx_on()) && (s = panel_enc(EN_ALGO)) != 0)     /* ALGORITHM: the selected track, on every page */
         track_select((song.sel + (s > 0 ? 1u : NTRK - 1u)) % NTRK);
     if ((s = glo ? sel : panel_enc(EN_SELECT)) != 0) {   /* SELECT knob = global tempo; */
         if (!glo && sel_mode() >= SEL_MODW) {         /* MENU > SELECT MODW / VEL (1.5.6, #84): it plays */
@@ -1872,6 +1873,7 @@ static void ui_input(void)
             int16_t *vp;
             const param_desc_t *d = home_param(k, &vp);
             *vp = (int16_t)param_turn(d, *vp, accel(EN_K1 + k, s, d->fmt == F_ENUM ? 0 : d->max - d->min));
+            if (vp == &stage_voc_off[song.sel]) continue;
             motion_capture(home_trk(k), (uint32_t)(vp - home_trk(k)->p), *vp);   /* (LEVELS: that track's, as MIXER) */
             ml_knob(home_trk(k), (uint32_t)(vp - home_trk(k)->p));
         } else {

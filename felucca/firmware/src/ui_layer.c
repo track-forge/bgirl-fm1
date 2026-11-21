@@ -128,9 +128,13 @@ static uint32_t layer_bits(void)
 static uint32_t layer_btn(void) { return LAYERS[ui.layer % LAYER_N].btn; }
 static const char *layer_head(void) { return ui.layer == LAYER_FX && perf_latch_on ? "[FX] LATCH" : LAYERS[ui.layer % LAYER_N].head; }
 static uint32_t layer_open(void) { return ui.ly && (ui.ly_t0 & LY_OPEN) && ly_down(ui.ly) && layer_allowed() ? ui.ly : 0u; }
+static int stage_fx_on(void)
+{
+    return stage_fx_press && ui.home && home_crew() && layer_open() == LAYER_FX;
+}
 static int layer_set_open(void)                 /* (FX LATCH: FX is one too, OCT- turns all off) */
 {
-    return layer_open() && (LAYERS[layer_open()].kind == LK_SET || (layer_open() == LAYER_FX && perf_latch_on));
+    return layer_open() && (LAYERS[layer_open()].kind == LK_SET || (layer_open() == LAYER_FX && perf_latch_on && !stage_fx_press));
 }
 static uint32_t layer_held(void) { return ui.ly && ly_down(ui.ly) && layer_allowed(); }
 
@@ -143,7 +147,7 @@ static void layer_masks(void)
     uint32_t m = !layer_allowed() || (ui.ly && (ui.ly_t0 & LY_DEAD)) ? 0u
                : ui.ly ? ly_bit(ui.ly) : layer_bits() & ~fm1_in.buttons;
     kb_mask = m;
-    perf_mask = m & ly_bit(LAYER_FX);
+    perf_mask = stage_fx_press || (ui.home && home_crew()) ? 0 : m & ly_bit(LAYER_FX);
     kb_lock = (uint8_t)(m && ui.lock ? 1u | (ui.lock == LAYER_FX ? 2u : 0u) : 0u);   /* (no button held: the ISR's) */
 }
 
@@ -158,6 +162,7 @@ static void layer_arm(uint32_t pressed, uint32_t now)
             ui.ly = (uint8_t)l;
             ui.ly_t0 = (now & ~15u) | 1u | (layer_allowed() ? 0u : LY_DEAD);
             lys.dtap = lys.dt_l == l && fm1_ms - lys.dt_ms <= LY_DTAP_MS;   /* (#83: the second tap of a double tap?) */
+            stage_fx_press = l == LAYER_FX && layer_allowed() && ui.home && home_crew();
             lys.dt_l = 0;
             return;
         }
@@ -169,16 +174,17 @@ static void layer_let_go(uint32_t quiet)
 {
     if (eu.on)                                          /* (SEQ TOOLS: an open EUCLID is applied) */
         eu_close(&trk[lys.trk % NTRK], 1);
-    if (ui.ly == LAYER_FX && !perf_latch_on)
+    if (ui.ly == LAYER_FX && !stage_fx_press && !perf_latch_on)
         perf_k[0] = perf_k[1] = perf_k[2] = perf_k[3] = 0;
     if (lys.rp_dirty) {                                 /* REC: its settings kept, as MENU does when it closes (FX: the map) */
         lys.rp_dirty = 0;
         settings_save();                                /* (deferred while playing) */
     }
-    if (quiet) {
+    if (quiet && !stage_fx_press) {
         lys.quiet = 1;
         lys.quiet_t = fm1_ms;
     }
+    stage_fx_press = 0;
     ui.ly_t0 = 0;
     ui.ly = 0;
     ui.lock = 0;
@@ -235,6 +241,7 @@ static void layer_lock(uint32_t l, uint32_t now)
 static void layer_opened(uint32_t l)
 {
     uint32_t k;
+    if (stage_fx_press) { ui.force = 1; return; }
     if (!((layer_seen >> l) & 1u)) {
         layer_seen |= (uint8_t)(1u << l);
         settings_save();                                /* (deferred while playing) */
@@ -288,6 +295,7 @@ static uint32_t layer_gesture(uint32_t now, uint32_t combo)
         layer_lock(l, now);
         return 0;
     }
+    if (stage_fx_press) ui.force = 1;
     layer_let_go(*t0 & LY_OPEN || combo);
     return l;
 }
@@ -305,7 +313,7 @@ static int layer_knobs_quiet(void)
 /* the map shows while the button is held open, and after it while its keys are still held */
 static void layer_show(void)
 {
-    uint32_t show = layer_allowed() ? (layer_open() ? layer_open() : kb_layer ? ui.layer : 0u) : 0u;
+    uint32_t show = !stage_fx_press && layer_allowed() ? (layer_open() ? layer_open() : kb_layer ? ui.layer : 0u) : 0u;
     if (show != ui.layer) {
         ui.layer = (uint8_t)show;
         ui.force = 1;
@@ -708,6 +716,11 @@ static void layer_keys(uint32_t keys)
 static void layer_knob(uint32_t k, int32_t s)
 {
     uint32_t l = layer_open();
+    if (stage_fx_on()) {
+        stage_visual_turn(k, s);
+        return;
+    }
+    if (stage_fx_press) return;
     if (l == LAYER_FX) {                                /* perform.c perf_k, not recorded */
         if (k == 3u && !perf_harm_on())
             s = -s;                                     /* DEPTH (100 - perf_k[3]) rises to the right (#40: it fell) */
@@ -764,7 +777,7 @@ static void layer_oct_open(uint32_t pressed)
 {
     uint32_t l = ui.ly, oct = 1u << panel.btn[B_OCTDN] | 1u << panel.btn[B_OCTUP];
     if ((pressed & oct) && l && !(ui.ly_t0 & (LY_OPEN | LY_DEAD)) && layer_held() &&
-        (LAYERS[l].kind == LK_SET || (l == LAYER_FX && perf_latch_on))) {
+        (LAYERS[l].kind == LK_SET || (l == LAYER_FX && perf_latch_on && !stage_fx_press))) {
         ui.ly_t0 |= LY_OPEN | LY_COMBO;
         layer_opened(l);
     }
