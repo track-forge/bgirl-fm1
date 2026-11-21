@@ -1368,7 +1368,7 @@ static int sh_style_protocol(void) {
  bad += check("SH-STYLE editor", host_wire[5]==0 && host_wire[6]==BG_ANALOG.npresets);
  const char *s=(const char*)host_wire+7;
  for(unsigned i=0;i<BG_ANALOG.npresets;i++){bad += check("SH-STYLE editor", !strcmp(s,BG_ANALOG_PRESETS[i].name));s+=strlen(s)+1;}
- const int lfo_depth[]={50,0,0,0,16};
+ const int lfo_depth[]={50,0,0,0,0};
  for(unsigned track=0;track<6;track++)for(unsigned preset=13;preset<BG_ANALOG.npresets;preset++) {
   song.sel=track;trk[track].p[P_LEVEL]=80;
   a[0]=0;a[1]=preset;request(ED_PRESET,a,2);
