@@ -70,6 +70,7 @@ if (typeof registerProcessor === "function") {
     }
 
     vocalBank(ex) {
+      if (!ex.web_bgirl_vocal_pack_name) return null; // archived firmware has no pack metadata
       const memory = new Uint8Array(ex.memory.buffer);
       const read = ptr => String.fromCharCode(...memory.subarray(ptr, memory.indexOf(0, ptr)));
       const groups = ex.web_bgirl_vocal_groups();

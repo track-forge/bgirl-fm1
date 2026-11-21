@@ -828,11 +828,11 @@ async function switchOn() {
           if(pending){clearTimeout(pending.timer);songRequests.delete(m.id);m.error?pending.reject(new Error(m.error)):pending.resolve(m);}
         }
         else if (m.type === "ready") {
-          if(!m.vocalBank?.views?.length) {
-            rej(new Error("Vocal bank unavailable. Reload the studio and try again."));
-            return;
+          if(m.vocalBank?.views?.length) showVocalBank(m.vocalBank);
+          else {
+            document.getElementById("vocal-group").replaceChildren(new Option("Bank unavailable"));
+            document.getElementById("vocal-status").textContent="Vocal bank metadata unavailable. Reload to try again.";
           }
-          showVocalBank(m.vocalBank);
           songRestoreAllowed=m.restoreSong!==false;
           res();
         }
