@@ -1,0 +1,192 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only
+     Drum machine fork: 2026 DEADACTIVE -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BGIRL-FM1 · Browser preview</title>
+<meta name="description" content="Jam on BGIRL-FM1, a six-track electro groovebox with a vocoder, right in your browser.">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<section id="hero" class="hero" aria-label="BGIRL-FM1">
+  <div class="hero-stage" id="stage">
+    <nav class="hero-nav">
+      <span class="silk">BGIRL-FM1</span>
+      <span class="nav-links"><a href="#manual">Guide</a><a href="play/">BGIRL studio</a></span>
+    </nav>
+
+    <div class="desk-shadow" id="desk-shadow"></div>
+    <div class="scene" id="scene">
+      <div class="tilt" id="tilt">
+        <div id="fit" class="fit">
+          <div id="device" class="device" aria-label="FM-1 panel"></div>
+        </div>
+      </div>
+    </div>
+    <div class="scene-dim" aria-hidden="true"></div>
+    <div class="power-ui" id="power-ui">                <!-- placed by app.js: a line from the FM-1's own switch -->
+      <span class="power-lead" id="power-lead" aria-hidden="true"></span>
+      <button type="button" class="power-toggle" id="power-on" role="switch" aria-checked="false" aria-label="Power"
+        disabled><span class="knob"></span></button>
+      <span class="power-label" id="power-label">Power</span>
+    </div>
+
+    <div class="hero-copy" id="hero-copy">
+      <h1>BGIRL FM-1</h1>
+      <p class="hero-description">BGIRL FM-1 is a six-track <strong>electro groovebox</strong> for the M-VAVE FM-1, with a built-in <strong>vocoder</strong></p>
+      <p class="hero-description hero-tagline">The machine that turns humans into cybernetic <strong>b-boys and b-girls</strong>.</p>
+      <p class="hero-actions">
+        <a class="cta" href="#play">Play it</a>
+      </p>
+    </div>
+    <p class="scroll-cue" id="scroll-cue" aria-hidden="true">Scroll</p>
+
+    <div class="play-bar" id="play-bar">
+      <p id="note" class="note" role="status"></p>
+      <span class="power-note" id="power-note">Loading…</span>
+      <button type="button" class="bar-btn" id="help-toggle" aria-expanded="false" aria-controls="help">Controls</button>
+      <button type="button" class="bar-btn" id="reset" aria-haspopup="dialog">Reset preview</button>
+      <div id="reset-confirm" class="confirm" role="dialog" aria-label="Reset preview" hidden>
+        <p>Reset this temporary BGIRL session? Studio saves are not affected.</p>
+        <button type="button" id="reset-yes">Reset and restart</button>
+        <button type="button" id="reset-no">Cancel</button>
+      </div>
+    </div>
+    <a class="more-cue" id="more-cue" href="#manual">More below<span aria-hidden="true">↓</span></a>
+    <div id="help" class="help" hidden>
+      <div>
+        <h2>Mouse and touch</h2>
+        <ul>
+          <li>Keys and buttons play while held, several at once.</li>
+          <li>Knobs: drag up or down, the mouse wheel, or hover and press ↑ ↓.</li>
+          <li>To hold a button (GLO, FX, SEQ + a key), right-click or long-press it; tap again to let go.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Getting around</h2>
+        <ul>
+          <li>SELECT turns the pages (on TRACKS: the tempo). ALGORITHM picks the track.</li>
+          <li>HOME switches TRACKS and HOME; hold it for the menu.</li>
+          <li>REC arms the selected track, on any page.</li>
+          <li>Hold GLO: the white keys mute the tracks.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Computer keyboard</h2>
+        <ul>
+          <li>Lower keys: Z X C V B N M , . / and S D F H J L ; '</li>
+          <li>Upper keys: Q W E R T Y and 3 4 6.</li>
+          <li>Space PLAY, Enter REC, Esc HOME, ← OCT−, → OCT+.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="hero-end" id="play" aria-hidden="true"></span>
+</section>
+
+<section class="groovebox-intro" aria-labelledby="groovebox-title">
+  <h2 id="groovebox-title">B-Boys, B-Girls, meet the BGIRL-FM1</h2>
+  <p>BGIRL FM-1 is a six-track electro groovebox for the M-VAVE FM-1, built around vocoded voices, hard-hitting drums, synthesizers, and chopped vocal samples. Its sound draws from the electro continuum—from the early '80s and Drexciya to contemporary artists like client_03 and James Shinra.</p>
+  <p>But electro has always been more than the machines making the music. It's the breakers and poppers, the MCs and DJs, the producers and graffiti writers. BGIRL FM-1 celebrates the entire culture—because whatever your part in the jam, you're part of the show.</p>
+</section>
+
+<section id="manual" class="manual" aria-labelledby="manual-title">
+  <header class="manual-head">
+    <h2 id="manual-title">How to jam on it</h2>
+    <p>Six tracks, three ways in. On <strong>STAGE</strong>, play the groove and work the mix.
+      In the <strong>LAB</strong>, dial in patches, slice a voice and give it a new carrier.
+      In <strong>CUT</strong>, sequence the hits and stitch patterns into a song.
+      Try the moves on the panel above; use <a href="play/">BGIRL Studio</a> when you want to keep a session.</p>
+  </header>
+
+  <div class="panel-map">
+    <div class="map-stage">
+      <div class="map-device" id="manual-mini" aria-hidden="true"></div>
+      <p class="map-caption" id="map-caption">Point at a control, or at a line of the list.</p>
+    </div>
+    <div class="map-list" id="map-list">
+      <h3>Knobs</h3>
+      <ul>
+        <li data-ctl="MASTER"><b>MASTER</b> Set the output volume.</li>
+        <li data-ctl="SELECT"><b>SELECT</b> Browse the current section’s pages or move the menu cursor.</li>
+        <li data-ctl="ALGORITHM"><b>ALGORITHM</b> Picks the track, on any page.</li>
+        <li data-ctl="PRESETS"><b>PRESETS</b> Loads the next or the previous preset onto the track.</li>
+        <li data-ctl="KNOB1 KNOB2 KNOB3 KNOB4"><b>KNOB1</b> to <b>KNOB4</b> Edit the four values on the screen.</li>
+      </ul>
+      <h3>Buttons</h3>
+      <ul>
+        <li data-ctl="HOME"><b>HOME</b> Return to the performance views, including CREW, TRACKS and LEVELS. Hold for the menu.</li>
+        <li data-ctl="EDIT"><b>EDIT</b> Open the selected track’s sound pages.</li>
+        <li data-ctl="SEQ"><b>SEQ</b> Open STEP, then use SELECT to browse the sequencing pages, including PATTERN and SONG.</li>
+        <li data-ctl="FX"><b>FX</b> Open the effects pages. Turn SELECT to reach <b>VOCODER</b>, <b>VOC INPUT</b> and <b>VOC COLOR</b> on the vocoder track. Hold FX for PERFORM.</li>
+        <li data-ctl="ARP"><b>ARP</b> Browse arpeggiator, scale and chord settings for the selected track.</li>
+        <li data-ctl="LFO"><b>LFO</b> Edit the track’s LFOs and their destinations.</li>
+        <li data-ctl="ENV"><b>ENV</b> Open the envelope pages.</li>
+        <li data-ctl="SEL"><b>SEL</b> Use the keys to play the selected track.</li>
+        <li data-ctl="GLO"><b>GLO</b> Open global settings. Hold for the six-track mute layer.</li>
+        <li data-ctl="SAVE"><b>SAVE</b> Open the save screens. The homepage session is temporary; use BGIRL Studio to keep your work.</li>
+        <li data-ctl="PLAY"><b>PLAY</b> Start or stop the sequencer.</li>
+        <li data-ctl="REC"><b>REC</b> Toggle record arming. Hold for recording options.</li>
+        <li data-ctl="OCT- OCT+"><b>OCT-</b> <b>OCT+</b> Move between octaves in KEYS or 16-step banks in STEP. Follow the LCD prompts in menus.</li>
+      </ul>
+      <h3>Keys</h3>
+      <ul>
+        <li data-ctl="white">The white keys select steps in STEP and play notes in KEYS.</li>
+        <li data-ctl="black">The black keys play sharps in KEYS. Hold FX for the PERFORM layer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <ol class="guides">
+    <li class="guide" id="m-around">
+      <h3>STAGE · Play the crew</h3>
+      <p>Power on, turn down MASTER, then hit PLAY to hear the Mega Jam. Turn ALGORITHM to cycle through T1–T6 and watch the selected track on CREW HOME. Stop the loop, tap SEL, and play that track from the keys.</p>
+      <p class="where"><b>PLAY</b> transport · <b>ALGORITHM</b> track · <b>SEL</b> play notes</p>
+    </li>
+    <li class="guide" id="m-patches">
+      <h3>LAB · Change the sound</h3>
+      <p>Try T2, the bass track. Play a note, turn PRESETS a detent and play it again. Then tap EDIT and move one of the four knobs while watching its label on the LCD. Try this on T2 first so the demo’s vocoder routing stays intact.</p>
+      <p class="where"><b>PRESETS</b> browse sounds · <b>EDIT</b> open sound pages</p>
+    </li>
+    <li class="guide" id="m-vocoder">
+      <h3>LAB · Give the beat a voice</h3>
+      <p>Start with a fresh homepage session and hit PLAY. Select T4 (the voice track), tap FX, then turn SELECT until the LCD says VOCODER. In the Mega Jam, T3 supplies the pitched carrier and T4 supplies the voice. Keep both tracks unmuted.</p>
+      <p>Turn the knob under WET toward 0, then back up to 127. Listen for the change from the dry source to the voice shaped by T3. MON controls whether you also hear the dry carrier.</p>
+      <p class="where"><b>ALGORITHM</b> T4 · <b>FX</b> → <b>SELECT</b> → VOCODER · compare <b>WET</b></p>
+    </li>
+    <li class="guide" id="m-beat">
+      <h3>CUT · Change the pocket</h3>
+      <p>Pick T1, open SEQ, and find STEP. Use the white keys to edit the visible steps, and OCT− / OCT+ to move between 16-step banks. Hit PLAY and hear how moving one hit changes the groove.</p>
+      <p class="where"><b>SEQ</b> → STEP · <b>OCT−</b> / <b>OCT+</b> step banks</p>
+    </li>
+    <li class="guide" id="m-song">
+      <h3>CUT · Put the pieces together</h3>
+      <p>When you’re ready to arrange, open BGIRL Studio. Use SAVE → PROJECT to keep your work, and SEQ → SONG to arrange patterns. Studio also lets you export and import song snapshots.</p>
+      <p class="where"><a href="play/">Open BGIRL Studio</a></p>
+    </li>
+  </ol>
+</section>
+
+<div class="foot-band" id="foot-band" aria-hidden="true"></div>
+<footer class="foot">
+  <div class="foot-brand">
+    <p class="silk foot-mark">BGIRL-FM1</p>
+    <p>Roots &amp; credits</p>
+  </div>
+  <nav class="foot-nav" aria-label="On this page">
+    <a href="#play">Play it in the browser</a>
+    <a href="#manual">How to jam on it</a>
+    <a href="https://github.com/track-forge/bgirl-fm1">Source code (GPL-3.0)</a>
+  </nav>
+  <div class="foot-credits">
+    <p><strong>Firmware:</strong> BGIRL-FM1 builds on <a href="https://github.com/hugelton/Felucca">Felucca</a> by Leo Kuroshita (@kurogedelic) and <a href="https://hugelton.com">Hügelton Instruments</a>.</p>
+    <p><strong>Web:</strong> The scroll reveal, interactive FM-1 panel, and guide layout were adapted from <a href="https://github.com/deadactive/hortator/tree/44c9ad4aa57bebf63f412bd552e57143c30b4065/web/sim">Hortator’s browser simulator</a> by DEADACTIVE.</p>
+    <p><a href="LICENSE">GPL-3.0</a>, no warranty. The BGIRL homepage session does not save.</p>
+    <p>Type: <a href="play/fonts/OFL-InterTight.txt">Inter Tight</a>, <a href="play/fonts/OFL-ChakraPetch.txt">Chakra Petch</a>, and <a href="fonts/OFL-Michroma.txt">Michroma</a> (SIL OFL 1.1).</p>
+  </div>
+</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
