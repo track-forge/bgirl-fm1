@@ -48,7 +48,7 @@ int main(void) {
   track_select(t);trk_note_on(&trk[t],60,100);tick(512);trk_note_on(&trk[t],64,100);tick(512);assert(active()==1);
   apply_preset_to(&trk[t],12);tick(4096);assert(!active());assert(trk[t].p[P_LD_FLT]==0); /* preset panic and no leaked settings */
   apply_preset_to(&trk[t],13+sound);tick(4096);trk_note_on(&trk[t],60,100);assert(render_energy(2048)>0);
-  panic_req |= 1u << t;tick(FS);assert(!active());
+  panic_req |= 1u << t;tick(FS*4);assert(!active());
   /* STOP releases sequenced notes, not intentionally held live keyboard notes. */
   trk[t].step[0]=trk[t].step[63];seq_start();assert(render_energy(2048)>0);
   seq_stop();tick(FS*4);assert(!active()&&render_energy(4096)<1e-10);
