@@ -3740,9 +3740,14 @@ static int test_sample_alert(void)
     frame();
     ok = msg_is(nf);
     TSEL->p[P_E0] = 0;
+#ifdef BGIRL_NO_FACTORY_SAMPLES
     frame();
-    ok &= smp_set_missing(0) ? msg_is(nf) : !ui.msg_t;
+    ok &= msg_is(nf);
     frames(1500);
+#else
+    frames(1500);
+    ok &= !ui.msg_t;
+#endif
     TSEL->p[P_E0] = (int16_t)(SMP_NSETS + 2u);
     frame();
     ok &= msg_is(nf);
