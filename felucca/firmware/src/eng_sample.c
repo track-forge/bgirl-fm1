@@ -188,6 +188,10 @@ static void sample_note_on(track_t *t, voice_t *v)
     v->s[2] = v->s[3] = 0;
     v->s[6] = zi == 0xFFFFu;     /* 1 = sample ended (one-shot); a kit key with no sound stays silent */
     v->s[7] = 0;                 /* lo-pass state */
+#ifdef BGIRL_NO_FACTORY_SAMPLES
+    if (si < SMP_NSETS)
+        return;                      /* reserved factory IDs are silent */
+#endif
     if (smp_set_missing(si))
         v->s[6] = 2;             /* 2 = no sample data: the sine (smp_sine; ph[0] its phase) */
 }
