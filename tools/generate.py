@@ -15,6 +15,8 @@ for gen in ("vocoder_time.py", "vocoder_coeff.py", "carrier_bank.py"):
 
 import package_speech
 if hardware:
+    import pack_dancer_rows
+    pack_dancer_rows.main(build.GEN / "bgirl_dancer_rows.h")
     (build.GEN / "bgirl_speech.h").write_text(
         "#define BG_SPEECH_INIT {0}\nstatic const uint8_t BG_SPEECH_DATA[] = {0};\n")
 else:
