@@ -205,7 +205,7 @@ def ld_regions():
 def build_app():
     flags = [*CFLAGS, *HAL_INC, "-Ifirmware/src", "-Ibuild/gen"]
     if os.environ.get("BGIRL_HARDWARE_ASSETS") == "1":
-        flags.append("-DBGIRL_PACK_DANCERS")
+        flags.extend(("-DBGIRL_PACK_DANCERS", "-DBGIRL_MIAMI_SLOT"))
     for flag in ("FELUCCA_FLASH", "FELUCCA_OTA", "FELUCCA_OTA_DRYRUN", "FELUCCA_OTA_RAMONLY", "FELUCCA_CDC",
                  "FELUCCA_UART", "FELUCCA_UAC", "FELUCCA_UAC_TONE", "FELUCCA_UAC_48K", "FELUCCA_ICONS", "FELUCCA_SLICE", "FELUCCA_FM4",
                  "FELUCCA_CDC_DEFAULT", "FELUCCA_UAC_AS_FIRST", "FELUCCA_CPU2", "FELUCCA_ADPCM"):
