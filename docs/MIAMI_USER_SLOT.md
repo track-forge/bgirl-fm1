@@ -33,16 +33,18 @@ target link blockers below are resolved, stage the existing installer with
 `python3 felucca/web/make_site.py PACKAGE VERSION OUTPUT --miami felucca/build/gen/miami.slot`.
 The bank is a separate asset; nothing is appended to the firmware package.
 
-- **First install:** check **Add Miami Bass starter bank**, install firmware,
-  and select an empty slot after the device reconnects. Play the factory demo
-  with transport after the bank shows as verified. Existing sessions/settings
-  are not reset; reload the factory demo explicitly if auditioning an upgraded device.
-- **Routine upgrade:** leave the option unchecked. Existing bank, samples and
-  settings are left alone by provisioning. A matching bank is never rewritten.
-- **Restore:** use **Install or restore Miami Bass only**. A slot recognized as
-  damaged or interrupted can be selected for repair. Replacing other content
-  requires choosing its slot and confirming; save an editor backup first.
-  The archive keeps ordinary samples, not the reproducible starter bank.
+- **First install:** click **Install**. After the device reconnects with the
+  expected firmware, the installer verifies a matching bank or provisions and
+  verifies one in the first erased slot. Then unplug USB, cold boot, and press
+  PLAY for the factory demo. The installer does not reset sessions or settings.
+- **Upgrade:** a verified matching bank is never rewritten. If there is no safe
+  slot, the installer reports firmware success separately and preserves all
+  banks. Back up and free a slot in the editor if desired.
+- **Retry:** use **Retry Miami Bass without reinstalling firmware**. This checks
+  for an already verified bank, then retries a firmware-recognized damaged or
+  interrupted Miami slot or uses an erased slot. It never chooses a slot that
+  the firmware reports as occupied. The archive keeps ordinary samples, not
+  the reproducible starter bank.
 - The firmware updater's application writes remain in `[0x4000, 0x93000)`.
   Provisioning is confined to one of the three existing slots in
   `[0xA0000, 0xDC000)`. It uses the same JEDEC gate as ordinary sample writes
@@ -82,3 +84,28 @@ No physical device was flashed. Attended validation, after the independent
 target blockers are fixed: boot and listen to the factory demo, confirm slot
 durability after power-cycle, upgrade without provisioning, and verify
 interrupted bank restore while retaining the other slots and settings.
+
+
+## #73 early-boot isolation (not a release build)
+
+Build with hardware assets and `BGIRL_MIAMI_EARLY=1`, identity
+`--release 0.7-miamiearly`. This keeps writes and restore disabled, and
+runs window setup, slot 1 header validation and bounded CRC at the former
+`persist_boot()` call site. It does not mount the bank automatically.
+Use `tools/miami_bench.py CDC LOG KNOWN_ROM_BACKUP early` to capture the
+firmware status and retained breadcrumb. The firmware skips the probe after
+a failed boot when its breadcrumb survived, so it can answer over CDC.
+
+| Stamp | Meaning |
+| --- | --- |
+| `73E10000` | Entered window setup, no completion marker |
+| `73E20000` | Window returned; starting header read |
+| `73E40000` | Header read completed but did not match |
+| `73E80000` OR payload offset | Entered the next CRC chunk at that offset (offset may set bit 16) |
+| `73E50000` | CRC completed but did not match |
+| `73E60000` | CRC completed and matched |
+
+A recovered stamp is evidence only on a restart on which SRAM survived. If
+the device goes straight to ROM or loses retention, record that separately;
+don't infer a failing stage without a breadcrumb. Keep the 906 bench image
+and app-only V15 recovery available. Do not provision or erase the test bank.

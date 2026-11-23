@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run an explicit FM-1_906 Miami probe against the bench's USB CDC console."""
+"""Run a Miami diagnostic probe against the bench's USB CDC console."""
 import argparse
 import os
 import select
@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("device")
 parser.add_argument("log", type=Path)
 parser.add_argument("backup", type=Path, help="Known-good full ROM backup")
-parser.add_argument("stage", choices=("boot", "window", "header", "crc", "mount"))
+parser.add_argument("stage", choices=("boot", "window", "header", "crc", "mount", "early"))
 args = parser.parse_args()
 
 rom = args.backup.read_bytes()
@@ -56,8 +56,13 @@ with args.log.open("a", encoding="utf-8") as log:
         time.sleep(0.25)
         termios.tcflush(fd, termios.TCIFLUSH)
         status = exchange("status")
-        if "felucca v0.6-miamistep" not in status:
-            raise RuntimeError("Expected v0.6-miamistep; no probe sent")
+        version = "v0.7-miamiearly" if args.stage == "early" else "v0.6-miamistep"
+        if f"felucca {version}" not in status:
+            raise RuntimeError(f"Expected {version}; no probe sent")
+        if args.stage == "early":
+            reply = exchange("miamiearly")
+            if "early_stamp 0x73E60000" not in reply or "early_recovered 0" not in reply:
+                raise RuntimeError("Early boot did not complete on this boot; see retained breadcrumb")
         if args.stage in ("window", "header", "mount"):
             reply = exchange("miami " + args.stage)
             expected = "OK mounted read-only" if args.stage == "mount" else "OK " + args.stage

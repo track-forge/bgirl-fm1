@@ -185,7 +185,9 @@ static void fm1_main(void)
 #if FELUCCA_CPU2
     uint8_t c1_told = 0;                                /* 2ND CORE MISREAD shown (and ON cleared) */
 #endif
-#ifndef BGIRL_MIAMI_BENCH
+#if defined(BGIRL_MIAMI_EARLY)
+    miami_early_probe();
+#elif !defined(BGIRL_MIAMI_BENCH)
     persist_boot();
 #endif
 #if FELUCCA_OTA

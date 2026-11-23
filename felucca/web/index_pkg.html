@@ -38,9 +38,8 @@
     <a href="https://github.com/kurogedelic/FM-1-transporter" target="_blank" rel="noopener" style="color:inherit">FM-1-transporter</a></p>
   <p><button id="go" disabled data-t="install"></button></p>
   <section id="miami" hidden>
-    <p><label><input type="checkbox" id="miami-first"> Add Miami Bass starter bank after firmware install (uses one user sample slot)</label></p>
-    <p><button id="miami-go">Install or restore Miami Bass only</button></p>
-    <p class="small">For routine upgrades, leave the box unchecked. Back up your samples in the editor before replacing an occupied slot.</p>
+    <p class="small">Install verifies Miami Bass and adds it to an empty sample slot if needed. Existing user banks are not replaced.</p>
+    <p><button id="miami-go">Retry Miami Bass without reinstalling firmware</button></p>
   </section>
   <details style="margin-top:24px">
     <summary data-t="stockTitle"></summary>
@@ -147,7 +146,7 @@ const meta = /*META*/;
 $("miami").hidden = !meta.miami;
 
 let writing = false, stock = null, stockFileEpoch = 0;
-const lockInstaller = (on) => { writing = on; $("go").disabled = on || !image; $("stock-go").disabled = on || !stock; $("stock-file").disabled = on; $("stock-recovery").disabled = on; $("miami-go").disabled = on; $("miami-first").disabled = on; };
+const lockInstaller = (on) => { writing = on; $("go").disabled = on || !image; $("stock-go").disabled = on || !stock; $("stock-file").disabled = on; $("stock-recovery").disabled = on; $("miami-go").disabled = on; };
 window.addEventListener("beforeunload", (e) => { if (writing) { e.preventDefault(); e.returnValue = t("leave"); } });
 
 (async () => {
@@ -163,7 +162,7 @@ window.addEventListener("beforeunload", (e) => { if (writing) { e.preventDefault
   } catch (e) { sayK("loadfail", e.message); }
 })();
 
-async function installMiami(up) {
+async function installMiami(up, retry = false) {
   const r = await fetch(meta.miami);
   if (!r.ok) throw new Error("Could not download the Miami starter bank");
   const bank = new Uint8Array(await r.arrayBuffer());
@@ -173,30 +172,23 @@ async function installMiami(up) {
   device.link.close();
   const connection = new BackupConnection(input, output, 0x36);
   try {
-    const result = await provisionMiami((req, options) => connection.request(req, options), bank, states => {
-      const suggested = states.includes("needs restore") ? states.indexOf("needs restore") : states.indexOf("empty");
-      const answer = prompt("Choose a slot for Miami Bass:\n" + states.map((state, k) =>
-        `USR${k + 1}: ${state}`).join("\n"), suggested < 0 ? "" : String(suggested + 1));
-      if (answer === null) return null;
-      if (!/^[123]$/.test(answer)) throw new Error("Choose USR1, USR2, or USR3");
-      const slot = Number(answer) - 1;
-      if (states[slot] === "occupied" && !confirm(`Replace USR${slot + 1}? This erases its sample bank. Back it up in the editor first.`))
-        return null;
-      return slot;
-    }, progress => { $("bar").value = 100 * progress; say("Writing Miami Bass…"); });
-    say(result ? `Miami Bass ${result.skipped ? "already verified" : "installed and verified"} in USR${result.slot + 1}.`
-               : "Miami Bass unchanged.");
+    const result = await provisionMiami((req, options) => connection.request(req, options), bank, progress => {
+      $("bar").value = 100 * progress;
+      say("Firmware verified. Writing Miami Bass…");
+    }, {retry});
+    say(result ? `Firmware verified. Miami Bass ${result.skipped ? "already verified" : "installed and verified"} in USR${result.slot + 1}.`
+               : "Firmware verified. No empty sample slot; existing banks were left unchanged. Back up and free a slot in the editor, or retry an interrupted Miami transfer below.");
   } finally { connection.close(); }
 }
-function miamiError(error) {
-  say(`Miami Bass: ${error.message}. Use Install or restore Miami Bass only to try again.`);
+function miamiError(error, firmwareVerified = false) {
+  say(`${firmwareVerified ? "Firmware installed and verified. " : ""}Miami Bass not verified: ${error.message}. Use the Miami-only retry button; no firmware reinstall is needed.`);
 }
 $("miami-go").addEventListener("click", async () => {
   if (writing || !meta.miami) return;
   lockInstaller(true);
   try {
     const midi = await navigator.requestMIDIAccess({sysex: true});
-    await installMiami(new Updater(midi, log));
+    await installMiami(new Updater(midi, log), true);
   } catch (e) { miamiError(e); }
   finally { lockInstaller(false); }
 });
@@ -226,8 +218,10 @@ $("go").addEventListener("click", async () => {
     } else {
       await up.install(image, meta.product, step);
     }
-    if (meta.miami && $("miami-first").checked) {
-      try { await installMiami(up); } catch (e) { miamiError(e); }
+    if (meta.miami) {
+      say("Firmware installed and verified. Checking Miami Bass…");
+      try { await installMiami(up); }
+      catch (e) { miamiError(e, true); }
     }
   } catch (e) {
     if (e && e.code && TEXT[lang][e.code]) sayK(e.code, e.detail || "");

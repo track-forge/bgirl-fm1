@@ -372,6 +372,54 @@ static void con_at(void)
 #endif
 _Static_assert(SMP_USER_DATA + MIAMI_PAYLOAD_BYTES <= SMP_USER_SIZE, "Miami exceeds slot");
 
+#ifdef BGIRL_MIAMI_EARLY
+/* One aligned retained store per breadcrumb. On watchdog/fault restart, skip
+ * the experiment so CDC can report the last operation instead of repeating it. */
+#define MIAMI_EARLY_MASK 0xFFF00000u
+#define MIAMI_EARLY_MAGIC 0x73E00000u
+static uint32_t miami_early_stamp __attribute__((section(".noinit")));
+static uint8_t miami_early_recovered;
+
+static void miami_early_mark(uint32_t stage)
+{
+    fm1_snapshot_store(&miami_early_stamp, MIAMI_EARLY_MAGIC | stage);
+    (void)fm1_snapshot_load(&miami_early_stamp);
+}
+
+static void miami_early_probe(void)
+{
+    const uint8_t *slot = smp_user_xip(0);
+    if (bootguard.failed && (miami_early_stamp & MIAMI_EARLY_MASK) == MIAMI_EARLY_MAGIC) {
+        miami_early_recovered = 1;
+        return;
+    }
+    miami_early_mark((1u << 16));
+    fl_plain_window_init();
+    miami_early_mark((2u << 16));
+    if (memcmp(slot, MIAMI_HEADER, sizeof MIAMI_HEADER)) {
+        miami_early_mark((4u << 16));
+        return;
+    }
+    uint32_t crc = 0xFFFFFFFFu;
+    for (uint32_t offset = 0; offset < MIAMI_PAYLOAD_BYTES; offset += 1024u) {
+        uint32_t length = MIAMI_PAYLOAD_BYTES - offset;
+        if (length > 1024u)
+            length = 1024u;
+        miami_early_mark((8u << 16) | offset);
+        crc = st_crc32_add(crc, slot + SMP_USER_DATA + offset, length);
+    }
+    miami_early_mark(~crc == MIAMI_PAYLOAD_CRC ? (6u << 16) : (5u << 16));
+}
+
+static void con_miami_early(void)
+{
+    con_kx("early_stamp", miami_early_stamp);
+    con_kv("early_recovered", miami_early_recovered);
+    con_kx("early_p3_reset", fm1_boot.p3_rst);
+    con_kx("early_reset_source", fm1_boot.rst_src);
+}
+#endif
+
 static int con_miami_word(const char *cmd, const char *word)
 {
     return con_word(&cmd, word) && !*cmd;
@@ -501,6 +549,10 @@ static void con_exec(const char *p)
     }
 #endif
 #ifdef BGIRL_MIAMI_BENCH
+#ifdef BGIRL_MIAMI_EARLY
+    else if (con_word(&p, "miamiearly"))
+        con_miami_early();
+#endif
     else if (con_word(&p, "miami"))
         con_miami(p);
 #endif
