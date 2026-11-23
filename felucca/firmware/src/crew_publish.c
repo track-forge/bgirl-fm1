@@ -46,7 +46,7 @@ static void crew_publish(uint32_t n)
             crew_rt[i].accent=crew_sub(crew_rt[i].accent,n);
         }
         crew_rt[i].pending=0;
-        __atomic_store_n(&crew_state[i],word,__ATOMIC_RELAXED);
+        BG_SNAPSHOT_STORE(&crew_state[i], word);
     }
 #else
     (void)n;

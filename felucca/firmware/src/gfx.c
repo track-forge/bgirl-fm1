@@ -67,9 +67,14 @@ typedef struct { uint16_t off; uint8_t w; const char *label; } kc_t;
 #define AL_CELLS 32u                               /* the next cells (cv_rrect), not ink: a row of keys, a fill */
 #define AL_N(n) ((uint32_t)(n) << 8)
 
-#define CV_MAX (240u * 124u)      /* the graph strip is 240 x 124 */
+/* Windowed RGB565: keep full logical coordinates, store only this band.
+ * Only the foreground renderer and its LCD DMA use the pixels. */
+#ifndef CV_ROWS
+#define CV_ROWS 124u
+#endif
+#define CV_MAX (240u * CV_ROWS)
 static uint16_t cv_px[CV_MAX] __attribute__((section(".pool")));
-static uint32_t cv_w, cv_h;
+static uint32_t cv_w, cv_h, cv_top, cv_end;
 static uint16_t cv_bg;           /* what cv_begin cleared the canvas to */
 static uint8_t cv_scroll;        /* 1: drawing a scrolled view (its text may run past the canvas) */
 static int32_t cv_oy;            /* y offset for graph drawing */
@@ -214,12 +219,11 @@ static int palette_stored_ok(uint32_t v) { return v < 20u || (v >= UI_PAL_TAG &&
 static inline uint16_t swap16(uint32_t c) { return (uint16_t)(((c >> 8) & 0xFFu) | ((c & 0xFFu) << 8)); }
 
 /* ------------------------------------------------------------ canvas --- */
-static void cv_begin(uint32_t w, uint32_t h, uint16_t bg)
+static void cv_band(uint32_t w, uint32_t h, uint16_t bg, uint32_t top)
 {
     uint32_t i, n;
     uint16_t s = swap16(bg);
-    if (w * h > CV_MAX)
-        h = CV_MAX / w;
+    uint32_t rows = CV_MAX / w;
     lcd_sync();                     /* the last blit may still read cv_px */
     GFX_HOOK_BEGIN();
     cv_w = w;
@@ -227,30 +231,44 @@ static void cv_begin(uint32_t w, uint32_t h, uint16_t bg)
     cv_cy0 = 0;
     cv_cy1 = (int16_t)h;
     cv_bg = bg;
-    n = w * h;
+    cv_top = top;
+    cv_end = h - top > rows ? top + rows : h;
+    n = w * (cv_end - top);
     for (i = 0; i < n; i++)
         cv_px[i] = s;
+}
+
+static void cv_begin(uint32_t w, uint32_t h, uint16_t bg)
+{
+    uint32_t rows = CV_MAX / w;
+    cv_band(w, h > rows ? rows : h, bg, 0);
+}
+
+static inline uint16_t *cv_row(uint32_t y)
+{
+    return cv_px + (y - cv_top) * cv_w;
 }
 
 static void cv_blit(uint32_t x, uint32_t y)
 {
     GFX_HOOK_BLIT(x, y, 0u);
-    lcd_blit(x, y, cv_w, cv_h, cv_px);
+    lcd_blit(x, y + cv_top, cv_w, cv_end - cv_top, cv_px);
 }
 
 /* canvas rows r0 .. cv_h-1 only, to screen row y + r0 */
 static void cv_blit_from(uint32_t x, uint32_t y, uint32_t r0)
 {
     GFX_HOOK_BLIT(x, y, r0);
-    if (r0 < cv_h)
-        lcd_blit(x, y + r0, cv_w, cv_h - r0, cv_px + r0 * cv_w);
+    if (r0 < cv_top) r0 = cv_top;
+    if (r0 < cv_end)
+        lcd_blit(x, y + r0, cv_w, cv_end - r0, cv_row(r0));
 }
 
 static inline void cv_pset(int32_t x, int32_t y, uint16_t c)
 {
     y += cv_oy;
-    if ((uint32_t)x < cv_w && (uint32_t)y < cv_h)
-        cv_px[(uint32_t)y * cv_w + (uint32_t)x] = swap16(c);
+    if ((uint32_t)x < cv_w && (uint32_t)y >= cv_top && (uint32_t)y < cv_end)
+        cv_row((uint32_t)y)[x] = swap16(c);
 }
 
 static void cv_rect(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t c)
@@ -260,15 +278,15 @@ static void cv_rect(int32_t x, int32_t y, int32_t w, int32_t h, uint16_t c)
     y += cv_oy;                             /* clipped once, then filled row by row */
     if (x < 0)
         x = 0;
-    if (y < 0)
-        y = 0;
+    if (y < (int32_t)cv_top)
+        y = (int32_t)cv_top;
     if (x1 > (int32_t)cv_w)
         x1 = (int32_t)cv_w;
-    if (y1 > (int32_t)cv_h)
-        y1 = (int32_t)cv_h;
+    if (y1 > (int32_t)cv_end)
+        y1 = (int32_t)cv_end;
     for (; y < y1; y++)
         for (i = x; i < x1; i++)
-            cv_px[(uint32_t)y * cv_w + (uint32_t)i] = sc;
+            cv_row((uint32_t)y)[i] = sc;
 }
 
 /* a divider (LINE): a 1 px T_RULE line on the canvas, a cell edge for the host lint */
@@ -415,11 +433,11 @@ static void cv_alpha(int32_t x, int32_t y, uint32_t w, uint32_t h, const uint8_t
     for (gy = 0; gy < h; gy++) {
         int32_t py = y + (int32_t)gy;
         uint16_t *row;
-        if (py < cv_cy0 || py >= cv_cy1) {
+        if (py < cv_cy0 || py >= cv_cy1 || (uint32_t)py < cv_top || (uint32_t)py >= cv_end) {
             k += w;
             continue;
         }
-        row = cv_px + (uint32_t)py * cv_w;
+        row = cv_row((uint32_t)py);
         for (gx = 0; gx < w; gx++, k++) {
             uint32_t v = (d[k >> 1] >> ((k & 1u) ? 0 : 4)) & 15u;
             int32_t px = x + (int32_t)gx;
@@ -464,7 +482,7 @@ static void cv_alpha_hc(int32_t x, int32_t y, uint32_t w, uint32_t h, const uint
     y += cv_oy;
     for (gy = 0; gy < h; gy++) {
         int32_t py = y + (int32_t)gy;
-        uint16_t *row = py < cv_cy0 || py >= cv_cy1 ? 0 : cv_px + (uint32_t)py * cv_w;
+        uint16_t *row = py < cv_cy0 || py >= cv_cy1 || (uint32_t)py < cv_top || (uint32_t)py >= cv_end ? 0 : cv_row((uint32_t)py);
         uint32_t gx = 0;
         while (gx < w) {
             uint32_t n;

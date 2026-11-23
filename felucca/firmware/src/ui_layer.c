@@ -1275,22 +1275,24 @@ static void draw_layer(void)
                eqa_sig() * 2654435761u;
     if (ui.force || sig != ui.layer_sig) {
         ui.layer_sig = sig;
-        cv_begin(240, H_GRAPH, T_BG);
-        cv_rect(3, 0, 234, H_GRAPH, T_BG);
-        cv_bg = T_BG;
-        if (l == LAYER_FX)
-            layer_fx();
-        else if (l == LAYER_GLO)
-            layer_glo();
-        else if (l == LAYER_SCL)
-            layer_scl();
-        else if (l == LAYER_SEQ)
-            layer_seq();
-        else if (l == LAYER_REC)
-            layer_rec();
-        else
-            layer_edit();
-        cv_blit(0, Y_GRAPH);
+    for (uint32_t top = 0; top < H_GRAPH; top = cv_end) {
+            cv_band(240, H_GRAPH, T_BG, top);
+            cv_rect(3, 0, 234, H_GRAPH, T_BG);
+            cv_bg = T_BG;
+            if (l == LAYER_FX)
+                layer_fx();
+            else if (l == LAYER_GLO)
+                layer_glo();
+            else if (l == LAYER_SCL)
+                layer_scl();
+            else if (l == LAYER_SEQ)
+                layer_seq();
+            else if (l == LAYER_REC)
+                layer_rec();
+            else
+                layer_edit();
+            cv_blit(0, Y_GRAPH);
+    }
     }
     if (ui.force) {                                     /* the footer: what the keys, knobs and buttons do */
         cv_begin(240, H_FOOT, T_BG);
