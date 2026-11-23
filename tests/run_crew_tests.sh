@@ -13,3 +13,6 @@ for mode in 0 1 2; do
 done
 echo 'CREW audio/RNG preservation: disabled vs hidden/visible/covered, six-track playback +random arp, 512000 frames +4000 state snapshots identical PASS'
 python3 tests/test_convert_crew.py
+python3 tools/pack_dancer_rows.py felucca/build/host/bgirl_dancer_rows.h
+cc -std=c11 -O2 -Wall -Wextra -Werror -Ifelucca/build/host -o felucca/build/host/dancer_rows_test tests/dancer_rows_test.c
+felucca/build/host/dancer_rows_test

@@ -3093,7 +3093,12 @@ static int test_product_ux(void)
         uint32_t old = sample_wave.pos; sample_wave_tick(TSEL);
         ok &= sample_wave.pos - old <= 512u;
     }
-    ok &= sample_wave.ready && !memcmp(voices, TSEL->v, sizeof voices);
+#ifdef BGIRL_NO_FACTORY_SAMPLES
+    ok &= (!sample_wave.zone || !sample_wave.zone->n) && smp_set_missing(0);
+#else
+    ok &= sample_wave.ready;
+#endif
+    ok &= !memcmp(voices, TSEL->v, sizeof voices);
     int16_t lo[SAMPLE_WAVE_COLS] = {0}, hi[SAMPLE_WAVE_COLS] = {0};
     voice_t probe = {0}; const smp_zone_t *zone = sample_wave.zone;
     if (zone) for (i = 0; i < zone->n; i++) {
@@ -3734,9 +3739,15 @@ static int test_sample_alert(void)
     TSEL->p[P_E0] = (int16_t)(SMP_NSETS + 2u);      /* USR3: said for it */
     frame();
     ok = msg_is(nf);
-    TSEL->p[P_E0] = 0;                              /* PIANO: nothing; then USR3 again: said again */
+    TSEL->p[P_E0] = 0;
+#ifdef BGIRL_NO_FACTORY_SAMPLES
+    frame();
+    ok &= msg_is(nf);
+    frames(1500);
+#else
     frames(1500);
     ok &= !ui.msg_t;
+#endif
     TSEL->p[P_E0] = (int16_t)(SMP_NSETS + 2u);
     frame();
     ok &= msg_is(nf);
@@ -3755,7 +3766,8 @@ static int test_sample_alert(void)
     frames(1500);
     TSEL->p[P_E0] = 4;                               /* PIANO: there (the CC0 build) */
     frame();
-    ok &= !ui.msg_t && !snd_missing(TSEL, &i) == (SLC_PIANO.len != 0u);
+    ok &= SLC_PIANO.len ? !ui.msg_t && !snd_missing(TSEL, &i)
+                       : msg_is(nf) && snd_missing(TSEL, &i);
     bad += check("SLICE on an empty USR3: said; PIANO: not (it has its sample)", ok);
     frames(1500);
 #endif
@@ -3830,7 +3842,7 @@ static int test_slices(void)
     TSEL->p[P_E0] = 4;                               /* SRC PIANO: its 16 slices shown, no edits */
     frame();
     turn(EN_K2, 1);
-    ok = slice_count() == 16u && TSEL->p[P_E1] == p0 && msg_is("SRC USR1-3 TO EDIT");
+    ok = slice_count() == (SLC_PIANO.len ? 16u : 0u) && TSEL->p[P_E1] == p0 && msg_is("SRC USR1-3 TO EDIT");
     TSEL->p[P_E0] = 0;
     frame();
     bad += check("SLICES on PIANO: its 16 slices shown; edits need USR1-3 (DIV unchanged)", ok);

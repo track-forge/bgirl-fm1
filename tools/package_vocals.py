@@ -207,7 +207,7 @@ def label(value, limit):
     return value
 
 
-def package_pack(manifest_path, output):
+def package_pack(manifest_path, output, *, trim_zero_tails=False):
     manifest_path, output = Path(manifest_path), Path(output)
     manifest = json.loads(manifest_path.read_text())
     if type(manifest['version']) is not int or manifest['version'] != 1:
@@ -223,6 +223,8 @@ def package_pack(manifest_path, output):
         if ident in group_ids or kind not in ('shots', 'loops', 'slices'):
             raise ValueError('duplicate group ID or unknown group kind')
         group_ids.add(ident)
+        if trim_zero_tails and kind != 'shots':
+            raise ValueError('tail trimming is only supported for shot-only banks')
         rows = group['entries']
         if not 1 <= len(rows) <= 32:
             raise ValueError('each view requires 1..32 entries')
@@ -255,6 +257,10 @@ def package_pack(manifest_path, output):
             else:
                 start = len(pcm)
                 converted = resample(mono[a:b], rate)
+                if trim_zero_tails:
+                    end_of_sound = next((i for i in range(len(converted), 0, -1)
+                                         if converted[i - 1] != 0), 0)
+                    converted = converted[:max(64, end_of_sound + round(RATE * 0.010))]
                 if start + len(converted) > MAX_SAMPLES:
                     raise ValueError('bank exceeds 120s runtime sample limit')
                 pcm.extend(round(v * GAIN * 32767) for v in converted)

@@ -100,7 +100,8 @@ def generate():
     for old in ("felucca_font.h", "felucca_icons.h"):     # headers of the bitmap font and icon atlas
         (GEN / old).unlink(missing_ok=True)
     tools = SRC / "tools"
-    cmds = [[tools / "gen_aa_font.py", GEN / "ui_fonts.h", "--preset", "bgirl"],
+    font_preset = "bgirl-hardware" if os.environ.get("BGIRL_HARDWARE_ASSETS") == "1" else "bgirl"
+    cmds = [[tools / "gen_aa_font.py", GEN / "ui_fonts.h", "--preset", font_preset],
             [tools / "gen_aa_icons.py", GEN / "ui_icons.h"],
             [tools / "gen_aa_keycaps.py", GEN / "ui_keycaps.h"],
             [tools / "gen_ui_palettes.py", GEN / "ui_palettes.h"],
@@ -203,6 +204,8 @@ def ld_regions():
 
 def build_app():
     flags = [*CFLAGS, *HAL_INC, "-Ifirmware/src", "-Ibuild/gen"]
+    if os.environ.get("BGIRL_HARDWARE_ASSETS") == "1":
+        flags.append("-DBGIRL_PACK_DANCERS")
     for flag in ("FELUCCA_FLASH", "FELUCCA_OTA", "FELUCCA_OTA_DRYRUN", "FELUCCA_OTA_RAMONLY", "FELUCCA_CDC",
                  "FELUCCA_UART", "FELUCCA_UAC", "FELUCCA_UAC_TONE", "FELUCCA_UAC_48K", "FELUCCA_ICONS", "FELUCCA_SLICE", "FELUCCA_FM4",
                  "FELUCCA_CDC_DEFAULT", "FELUCCA_UAC_AS_FIRST", "FELUCCA_CPU2", "FELUCCA_ADPCM"):
@@ -233,7 +236,7 @@ def build_app():
         tc("cc", *[f for f in flags if not f.startswith(("-I", "-D", "-W"))], "-c",
            OUT / "felucca_size.ll", "-o", OUT / "felucca.o")
     elf = OUT / "felucca.elf"
-    tc("pi32v2/bin/ld", "-T", FW / "app.ld", OUT / "crt0.o", OUT / "fm1_vec.o", OUT / "fm1_isr.o",
+    tc("pi32v2/bin/ld", "-Map", OUT / "felucca.map", "-T", FW / "app.ld", OUT / "crt0.o", OUT / "fm1_vec.o", OUT / "fm1_isr.o",
        *([OUT / "fm1_cpu1.o"] if CPU2 else []), OUT / "felucca.o", "-o", elf)
     for sect in ("text.bin", "data.bin", "ramtext.bin", "c1text.bin"):   # (c1text.bin: before the BSP, its own section)
         (OUT / sect).unlink(missing_ok=True)

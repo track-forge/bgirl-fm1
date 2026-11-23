@@ -1247,17 +1247,25 @@ static void graph_title(void)
     cv_text_in(0, y, 240, f, ti, T_THEME, T_SURF);
 }
 
+#ifdef BGIRL_PACK_DANCERS
+#include "dancer_rows.h"
+#else
 #include "../../../assets/dance/bgirl_dance.h"
 _Static_assert(sizeof bg_dance_masks == 13824u && BG_DANCE_COUNT == 12u && BG_DANCE_SIZE == 96u && BG_DANCE_STRIDE == 12u,
                "dance pack layout");
+#endif
 /* Existing canvas + DMA synchronization, no new framebuffer. 96x96 fits the
  * actual 122px panel at 1x. LARGE retains the stage, enlarging labels only. */
 static void dance_mask(uint32_t pose, uint16_t color)
 {
+#ifdef BGIRL_PACK_DANCERS
+    draw_dancer_rows(DANCER_FLOORWORK, pose, 72, 0, color);
+#else
     for (uint32_t y=0; y<BG_DANCE_SIZE; y++)
         for (uint32_t x=0; x<BG_DANCE_SIZE; x++)
             if (bg_dance_masks[pose][y*BG_DANCE_STRIDE+x/8u] & (128u>>(x&7u)))
                 cv_pset(72+(int32_t)x, 22+(int32_t)y, color);
+#endif
 }
 static void graph_dance(const track_t *t, uint16_t c)
 {

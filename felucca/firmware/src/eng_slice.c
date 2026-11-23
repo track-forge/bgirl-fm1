@@ -130,7 +130,7 @@ static int slc_vocal_match(const track_t *t)
 /* source 0 = BREAK, 1..3 = USR1..3, 4 = PIANO; 0 = no material (an empty or erased slot, no PIANO in the build) */
 static const slc_src_t *slc_get(uint32_t src)
 {
-    if (src == SLC_SRC_SPEECH) return &SLC_SPEECH;
+    if (src == SLC_SRC_SPEECH) return SLC_SPEECH.len ? &SLC_SPEECH : 0;
     if (src == SLC_SRC_VOCALS) return &SLC_VOCALS;
     if (!src)
         return SLC_BREAK.len ? &SLC_BREAK : 0;
@@ -505,6 +505,12 @@ static void slice_note_on(track_t *t, voice_t *v)
     v->s[6] = 2;
     v->s[7] = 0;
     v->env_out = 0;                                     /* a new slice fades in over one block */
+#ifdef BGIRL_NO_FACTORY_SAMPLES
+    if (!s && (src == SLC_SRC_PIANO || src == SLC_SRC_SPEECH)) {
+        v->active = v->gate = 0;
+        return;
+    }
+#endif
     if (!s) {                                           /* no material: the sine (from phase 0: no click) */
         v->s[4] = (int32_t)SLC_SINE;
         v->s[6] = 1;

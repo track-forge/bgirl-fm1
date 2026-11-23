@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
 """Browser-only entry into upstream's generators; no device toolchain/package needed."""
+import os
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'felucca/tools'))
 import build
+hardware = os.environ.get("BGIRL_HARDWARE_ASSETS") == "1"
 build.generate()
 
 import subprocess
@@ -12,15 +14,26 @@ for gen in ("vocoder_time.py", "vocoder_coeff.py", "carrier_bank.py"):
     subprocess.run([sys.executable, str(Path(__file__).resolve().parent/gen)], check=True)
 
 import package_speech
-package_speech.package()
+if hardware:
+    import pack_dancer_rows
+    pack_dancer_rows.main(build.GEN / "bgirl_dancer_rows.h")
+    (build.GEN / "bgirl_speech.h").write_text(
+        "#define BG_SPEECH_INIT {0}\nstatic const uint8_t BG_SPEECH_DATA[] = {0};\n")
+else:
+    package_speech.package()
 
 import shutil
-import os
 import json
 import package_vocals
 vocal_dest = Path(__file__).resolve().parents[1] / 'felucca/build/gen'
 vocal_bank = os.environ.get('BGIRL_VOCAL_BANK')
-if vocal_bank:
+if hardware:
+    if vocal_bank or os.environ.get('BGIRL_VOCAL_PACK', 'miami-bass') != 'miami-bass':
+        raise ValueError('hardware asset profile requires the stock Miami Bass shot bank')
+    manifest = Path(__file__).resolve().parents[1] / 'assets/vocals/miami-bass/pack.json'
+    report = package_vocals.package_pack(manifest, vocal_dest, trim_zero_tails=True)
+    print('HARDWARE VOCAL PACK:', report['bytes'], report['bank_sha256'])
+elif vocal_bank:
     bank = Path(vocal_bank).resolve()
     metadata = json.loads((bank/'bank.json').read_text())
     if package_vocals.sha((bank/'bank.ima').read_bytes()) != metadata['audio_sha256']:
@@ -45,5 +58,6 @@ import package_logo
 package_logo.package()
 
 # Interchange descriptors must match this engine/layout without regenerating by surprise.
-subprocess.run([sys.executable, str(Path(__file__).resolve().parent/'song-snapshots/generate_layout.py'), '--check'], check=True)
-subprocess.run(['node', str(Path(__file__).resolve().parent/'song-snapshots/schema.mjs'), '--check'], check=True)
+if not hardware:
+    subprocess.run([sys.executable, str(Path(__file__).resolve().parent/'song-snapshots/generate_layout.py'), '--check'], check=True)
+    subprocess.run(['node', str(Path(__file__).resolve().parent/'song-snapshots/schema.mjs'), '--check'], check=True)

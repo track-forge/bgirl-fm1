@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-only
  * One selected dancer. No musical state mutations and no other-track evaluation. */
+#ifndef BGIRL_PACK_DANCERS
 #include "../../../assets/crew/windmill/bgirl_windmill.h"
 #include "../../../assets/crew/reference-02/bgirl_reference_02.h"
 #include "../../../assets/crew/wave-ish/bgirl_wave_ish.h"
@@ -7,6 +8,7 @@
 static const uint8_t (*const crew_masks[])[1152] = {
     bg_windmill_masks,bg_reference_02_masks,bg_wave_ish_masks,bg_worm_masks,bg_dance_masks
 };
+#endif
 
 static uint32_t crew_graph_sig, crew_graph_ms, crew_graph_track=~0u, crew_graph_word;
 static uint32_t crew_graph_paints;
@@ -46,6 +48,11 @@ static void draw_crew(void)
         uint16_t colors[] = {color, T_STAGE, T_PLAY, T_ACCENT};
         color = colors[(phase * amount / 128u) % 4u];
     }
+#ifdef BGIRL_PACK_DANCERS
+    if (effect == 1 && amount)
+        draw_dancer_rows(move, pose, 132, amount, T_DIM);
+    draw_dancer_rows(move, pose, 132, 0, color);
+#else
     if (effect == 1 && amount)
     for (uint32_t y = 0; y < 96; y++)
         for (uint32_t x = 0; x < 96; x++) {
@@ -57,5 +64,6 @@ static void draw_crew(void)
         for (uint32_t x = 0; x < 96; x++)
             if (crew_masks[move][pose][y * 12u + x / 8u] & (128u >> (x & 7u)))
                 cv_pset(132 + (int32_t)x, 22 + (int32_t)y, color);
+#endif
     cv_blit(0,graph_y());crew_graph_paints++;
 }
