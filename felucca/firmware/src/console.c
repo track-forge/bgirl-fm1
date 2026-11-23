@@ -372,6 +372,35 @@ static void con_exec(const char *p)
         con_puts("status  dbg  inp  at  crash  params  memr ADDR [LEN]  flr OFF [LEN]  uboot yes\r\n");
     else if (con_word(&p, "status"))
         con_status();
+#ifdef BGIRL_VOCODER_BENCH
+    else if (con_word(&p, "vocbench")) {
+        if (con_word(&p, "bypass"))
+            voc_bench_request(VOC_BYPASS);
+        else if (con_word(&p, "float"))
+            voc_bench_request(VOC_FLOAT);
+        else if (con_word(&p, "fixed"))
+            voc_bench_request(VOC_FIXED);
+        else if (con_word(&p, "reset"))
+            voc_bench_request(voc_request & 3u);
+        /* Copy one coherent interval before the potentially slow USB write. */
+        uint32_t irq = irq_save();
+        const struct voc_profile report = voc_bench;
+        irq_restore(irq);
+        static const char *const peak[] = {"render_ticks", "setup_ticks", "join_ticks",
+                                          "wet_ticks", "silent_ticks", "timer_ticks"};
+        static const char *const calls[] = {"render_calls", "setup_calls", "join_calls",
+                                           "wet_calls", "silent_calls", "timer_calls"};
+        con_kv("request", (int32_t)voc_request);
+        con_kv("epoch", (int32_t)report.epoch);
+        con_kv("mode", report.mode);
+        con_kv("missing", (int32_t)report.missing);
+        con_kv("overlap", (int32_t)report.overlap);
+        for (uint32_t i = 0; i < VOC_N; i++) {
+            con_kv(peak[i], (int32_t)report.peak[i]);
+            con_kv(calls[i], (int32_t)report.calls[i]);
+        }
+    }
+#endif
     else if (con_word(&p, "dbg"))
         con_dbg();
     else if (con_word(&p, "crash"))

@@ -878,12 +878,18 @@ static const uint16_t ENG_VCOST[NENGINES] = {163, FELUCCA_FM4 ? 181 : 0, 162, 67
 
 #if BGIRL_VOCODER
 #include "bgirl_vocoder.c"
+#ifdef BGIRL_VOCODER_BENCH
+#include "bgirl_vocoder_fixed.c"
+#endif
 static struct {
     int owner, carrier;
     int32_t mod[CTL], car[CTL];
     uint32_t mod_valid, car_valid;
     uint32_t reset, signature;
 } bg_bus = {.owner=-1, .carrier=-1};
+#ifdef BGIRL_VOCODER_BENCH
+#include "bgirl_vocoder_bench.c"
+#endif
 static void bg_capture_begin(uint32_t n)
 {
     int owner = voc_owner(), carrier = -1;
@@ -1122,7 +1128,13 @@ static void mix_block(int32_t *out, uint32_t n)
     drum_closed_block = 0;
     events_block(n);
 #if BGIRL_VOCODER
+#ifdef BGIRL_VOCODER_BENCH
+    uint32_t voc_start = fm1_ticks();
+#endif
     bg_capture_begin(n);
+#ifdef BGIRL_VOCODER_BENCH
+    voc_bench_sample(VOC_SETUP, voc_start);
+#endif
 #endif
     perf = perf_begin(n);                               /* the FX hold layer at work (perform.c) */
 #if FELUCCA_CPU2
@@ -1164,12 +1176,45 @@ static void mix_block(int32_t *out, uint32_t n)
 #endif
 #if BGIRL_VOCODER
     if(bg_bus.owner>=0 && bg_bus.mod_valid) {
+#ifdef BGIRL_VOCODER_BENCH
+        uint32_t start = fm1_ticks();
+        uint32_t missing = !bg_bus.car_valid;
+#endif
         if(!bg_bus.car_valid || (bg_bus.carrier>=0 && (trk[bg_bus.carrier].p[P_MUTE] || (pf.mute>>bg_bus.carrier&1u)))) {
             for(i=0;i<n;i++) bg_bus.car[i]=0;
-            memset(bg_voc.synthesis,0,sizeof bg_voc.synthesis);
+#ifdef BGIRL_VOCODER_BENCH
+            if (voc_bench.mode == VOC_FIXED)
+                memset(bg_fixed.synthesis, 0, sizeof bg_fixed.synthesis);
+            else
+#endif
+                memset(bg_voc.synthesis,0,sizeof bg_voc.synthesis);
         }
-        if (!stage_voc_off[bg_bus.owner])
-            bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
+#ifdef BGIRL_VOCODER_BENCH
+        uint32_t mod_bits = 0, car_bits = 0;
+        voc_bench_sample(VOC_JOIN, start);
+        for (i = 0; i < n; i++) {
+            mod_bits |= (uint32_t)bg_bus.mod[i];
+            car_bits |= (uint32_t)bg_bus.car[i];
+        }
+        voc_bench.missing += missing;
+        voc_bench.overlap += mod_bits != 0 && car_bits != 0;
+#endif
+        if (!stage_voc_off[bg_bus.owner]
+#ifdef BGIRL_VOCODER_BENCH
+            && voc_bench.mode != VOC_BYPASS
+#endif
+        ) {
+#ifdef BGIRL_VOCODER_BENCH
+            start = fm1_ticks();
+            if (voc_bench.mode == VOC_FIXED)
+                bg_fixed_process(bg_bus.mod, bg_bus.car, n, trk[bg_bus.owner].p);
+            else
+#endif
+                bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
+#ifdef BGIRL_VOCODER_BENCH
+            voc_bench_sample(car_bits && mod_bits ? VOC_WET : VOC_SILENT, start);
+#endif
+        }
         T_SPREAD(&trk[bg_bus.owner])=0;
         mix_finish(&trk[bg_bus.owner],bg_bus.mod,n SM_ARG(&mx[0]));
     }

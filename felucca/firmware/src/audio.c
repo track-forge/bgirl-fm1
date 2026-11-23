@@ -128,6 +128,9 @@ void fm1_alnk0_irq(void)                       /* via isr_alnk0 (bsp/chip/fm1_is
 #if FELUCCA_UAC
         uac_render_start();
 #endif
+#ifdef BGIRL_VOCODER_BENCH
+        voc_bench_begin();
+#endif
         for (b = 0; b < HALF_FRAMES; b += CTL) {
 #ifdef FM1_INPUT_LAT
             kb_out_tick = t0 + (HALF_FRAMES + b) * DAC_TICKS;   /* when this block plays (seq.c kb_lat) */
@@ -146,6 +149,9 @@ void fm1_alnk0_irq(void)                       /* via isr_alnk0 (bsp/chip/fm1_is
         }
         if (fm1_audio_free_half() != half)
             felucca_dbg.late++;                         /* the DMA moved on while we rendered */
+#ifdef BGIRL_VOCODER_BENCH
+        voc_bench_sample(VOC_RENDER, t0);
+#endif
         felucca_dbg.halves++;
         felucca_dbg.last_us = us;
         if (us > felucca_dbg.max_us)
