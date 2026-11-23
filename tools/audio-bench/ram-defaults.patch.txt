@@ -1,0 +1,23 @@
+diff --git a/felucca/firmware/src/main.c b/felucca/firmware/src/main.c
+index 0201d03..f85cc81 100644
+--- a/felucca/firmware/src/main.c
++++ b/felucca/firmware/src/main.c
+@@ -185,7 +185,8 @@ static void fm1_main(void)
+ #if FELUCCA_CPU2
+     uint8_t c1_told = 0;                                /* 2ND CORE MISREAD shown (and ON cleared) */
+ #endif
+-    persist_boot();
++    /* Bench only: keep flash_ok false and use the unmodified RAM defaults.
++     * Do not read or mutate saved settings, projects, or sample banks. */
+ #if FELUCCA_OTA
+     if (flash_ok)
+         ota_boot_cleanup();                             /* staging area left by an update */
+@@ -236,7 +237,7 @@ static void fm1_main(void)
+         panel_setup();                        /* OCT- + OCT+ held at power-on */
+         settings_save();
+     }
+-    autosave_boot(boot_clean);                /* (1.2) the last session's music, under the splash */
++    autosave_boot(0);                /* (1.2) the last session's music, under the splash */
+     for (ms = 0; ms < 400u; ms += 10u) {      /* the splash; the pot followed (MIDI IN plays under it) */
+         fm1_delay_ms(10);
+         master_poll();
