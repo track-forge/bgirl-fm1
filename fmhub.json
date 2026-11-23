@@ -3,5 +3,6 @@
   "author": "Doug Smith (dougbtv)",
   "kinds": ["groove"],
   "play": "https://track-forge.github.io/bgirl-fm1/play/",
-  "image": "docs/img/fmhub-card.png"
+  "image": "docs/img/fmhub-card.png",
+  "sounds": "own: BGIRL Miami and legacy G6 vocals (maker declaration); also includes CC0 Hügelton and Versilian sounds and BGIRL synthetic speech."
 }
