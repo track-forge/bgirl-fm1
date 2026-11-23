@@ -1,0 +1,7 @@
+{
+  "what": "A six-track electro groovebox with a sample-fed vocoder and five synth patches shaped by sounds from our Roland SH-01A. The Hub install is firmware-only; the optional Miami vocal pack comes through the BGIRL web installer.",
+  "author": "Doug Smith (dougbtv)",
+  "kinds": ["groove"],
+  "play": "https://track-forge.github.io/bgirl-fm1/play/",
+  "image": "docs/img/fmhub-card.png"
+}
