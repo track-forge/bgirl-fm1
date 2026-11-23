@@ -33,7 +33,7 @@ PYTHON
 fi
 cd "$(dirname "$0")/.."
 mkdir "$output"
-cp felucca/web/hortator/*.js felucca/web/hortator/*.css "$output/"
+cp felucca/web/hortator/*.js felucca/web/hortator/*.css felucca/web/hortator/favicon.png "$output/"
 homepage=felucca/web/hortator/index.html
 if [ "$#" -eq 4 ]; then
     python3 felucca/web/make_site.py "$bundle/felucca-$version.fwsc" "$version" "$output" \
