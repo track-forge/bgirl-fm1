@@ -36,7 +36,7 @@ jobs:
           if test -f tools/pages-installer-v0.0.1.sha256; then
             bundle=$(mktemp -d)
             release=https://github.com/${GITHUB_REPOSITORY}/releases/download/v0.0.1
-            for asset in felucca-v0.0.1.fwsc miami.slot; do
+            for asset in bgirl-fm1-v0.0.1.fwsc miami.slot; do
               curl --fail --silent --show-error --location --retry 3 "$release/$asset" -o "$bundle/$asset"
             done
             cp tools/pages-installer-v0.0.1.sha256 "$bundle/SHA256SUMS"

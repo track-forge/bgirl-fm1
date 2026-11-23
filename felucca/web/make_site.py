@@ -58,7 +58,8 @@ def main(pkg, version, out, miami=None, installer_only=False):
         strip_module((HERE / "fm1ota.js").read_text(encoding="utf-8")) + "\n" + \
         strip_module((HERE / "fm1backup.js").read_text(encoding="utf-8")) + "\n" + \
         strip_module((HERE / "fm1miami.js").read_text(encoding="utf-8"))
-    name = f"felucca-{re.sub(r'[^A-Za-z0-9.-]', '-', version)}.fwsc"
+    prefix = "bgirl-fm1" if installer_only else "felucca"
+    name = f"{prefix}-{re.sub(r'[^A-Za-z0-9.-]', '-', version)}.fwsc"
     bank = Path(miami).read_bytes() if miami else None
     meta = json.dumps({"version": version, "product": product, "pkg": "../../firmware/" + name,
                        "miami": "../../firmware/miami.slot" if bank else None})
@@ -69,7 +70,7 @@ def main(pkg, version, out, miami=None, installer_only=False):
     inst, ed, fw = out / "webapp" / "installer", out / "webapp" / "editor", out / "firmware"
     for d in (inst, fw):
         d.mkdir(parents=True, exist_ok=True)
-    for old in fw.glob("felucca-*.fwsc"):          # one package: the current one
+    for old in fw.glob(f"{prefix}-*.fwsc"):          # one package: the current one
         old.unlink()
     (inst / "index.html").write_text(html, encoding="utf-8")
     shutil.copy(pkg, fw / name)

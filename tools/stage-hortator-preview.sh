@@ -25,7 +25,7 @@ if not re.fullmatch(r"v[0-9]+[.][0-9]+[.][0-9]+(?:-[A-Za-z0-9.-]+)?", version):
 expected = (bundle / "SHA256SUMS").read_text().splitlines()
 actual = [
     f"{hashlib.sha256((bundle / name).read_bytes()).hexdigest()}  {name}"
-    for name in (f"felucca-{version}.fwsc", "miami.slot")
+    for name in (f"bgirl-fm1-{version}.fwsc", "miami.slot")
 ]
 if actual != expected:
     sys.exit("Installer bundle does not match SHA256SUMS")
@@ -36,7 +36,7 @@ mkdir "$output"
 cp felucca/web/hortator/*.js felucca/web/hortator/*.css felucca/web/hortator/favicon.png "$output/"
 homepage=felucca/web/hortator/index.html
 if [ "$#" -eq 4 ]; then
-    python3 felucca/web/make_site.py "$bundle/felucca-$version.fwsc" "$version" "$output" \
+    python3 felucca/web/make_site.py "$bundle/bgirl-fm1-$version.fwsc" "$version" "$output" \
         --miami "$bundle/miami.slot" --installer-only
     cp "$homepage" "$output/index.html"
 else
