@@ -121,12 +121,19 @@ void fm1_alnk0_irq(void)                       /* via isr_alnk0 (bsp/chip/fm1_is
     if (p & FM1_AUDIO_HALF) {
         uint32_t half = fm1_audio_free_half(), b, us;
         int32_t *o = &abuf[half * HALF_WORDS];
+#ifdef BGIRL_VOCODER_BENCH
+        uint32_t before_shed = shed_count;
+        voc_trace_begin();
+#endif
         if (shed_req) {
             shed_req = 0;
             shed_voice();
         }
 #if FELUCCA_UAC
         uac_render_start();
+#endif
+#ifdef BGIRL_VOCODER_BENCH
+        voc_bench_begin();
 #endif
         for (b = 0; b < HALF_FRAMES; b += CTL) {
 #ifdef FM1_INPUT_LAT
@@ -136,7 +143,8 @@ void fm1_alnk0_irq(void)                       /* via isr_alnk0 (bsp/chip/fm1_is
         }
         fm1_audio_ack_half();
         audio_halves++;
-        us = shed_check(fm1_ticks() - t0);
+        uint32_t elapsed = fm1_ticks() - t0;
+        us = shed_check(elapsed);
         if (us > audio_max_us)
             audio_max_us = us;
         {
@@ -144,8 +152,14 @@ void fm1_alnk0_irq(void)                       /* via isr_alnk0 (bsp/chip/fm1_is
             song.cpu_q8 = load / CPU_AVG;
             audio_cpu_rem = load % CPU_AVG;
         }
-        if (fm1_audio_free_half() != half)
+        uint32_t late = fm1_audio_free_half() != half;
+        if (late)
             felucca_dbg.late++;                         /* the DMA moved on while we rendered */
+#ifdef BGIRL_VOCODER_BENCH
+        voc_bench_sample(VOC_RENDER, t0);
+        voc_trace_end(felucca_dbg.halves + 1, elapsed, t5_nested_ticks,
+                      late | ((shed_count != before_shed) << 1));
+#endif
         felucca_dbg.halves++;
         felucca_dbg.last_us = us;
         if (us > felucca_dbg.max_us)

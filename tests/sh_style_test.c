@@ -35,7 +35,11 @@ int main(void) {
   assert(trk[t].p[P_LEVEL]==98&&trk[t].p[P_PAN]==9&&trk[t].p[P_TRANS]==-12&&trk[t].step[63].n==1);
   assert(!strcmp(sound_group_name(&trk[t]),"SH-ISH"));
   assert(trk[t].p[P_LD_FLT]==lfo_depth[sound]&&trk[t].p[P_ED_FLT]==env_depth[sound]&&trk[t].p[P_LWAVE]==1);
-  for(unsigned k=0;k<P_COUNT;k++){const param_desc_t*d=track_desc(&trk[t],k);assert(trk[t].p[k]>=d->min&&trk[t].p[k]<=d->max);}
+  for (unsigned k = 0; k < P_COUNT; k++) {
+   /* BANDS is fixed on the panel, but presets retain the wire encoding. */
+   const param_desc_t *d = k == P_VBANDS ? &TP[k] : track_desc(&trk[t], k);
+   assert(trk[t].p[k] >= d->min && trk[t].p[k] <= d->max);
+  }
   assert(ml_learn(21,t,P_E4)==1);assert(midi_learned(21,63));assert(trk[t].p[P_E4]==63);
   assert(!motion_set_lock(&trk[t],0,P_E4,99));
   assert(!motion_set_event(&trk[t],63,P_E5,70));

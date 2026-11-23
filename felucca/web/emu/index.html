@@ -243,7 +243,7 @@ footer nav a { display: inline-flex; align-items: center; min-height: 44px; marg
   <button id="signature-choke" disabled>Signature hat choke audition</button></p>
 </section>
 <section class="intro-card" aria-label="Live demo controls">
-  <strong>1 · MEGA DRUMS / 2 · CRUNCHY BASS / 3 · BG CARR SAW / 4 · VOCALS → 24 BANDS / GATE 3 / 5 · FM6 PAD / 6 · BG KICK</strong>
+  <strong>1 · MEGA DRUMS / 2 · CRUNCHY BASS / 3 · BG CARR SAW / 4 · VOCALS → 8 BANDS / GATE 3 / 5 · FM6 PAD / 6 · BG KICK</strong>
   <p>Press PLAY for the four-bar Mega Jam vocoder electro demo at 128 BPM. Factory vocal hits on beat 1 of bars 1 and 3, with D→C→E pad movement and SH-ISH Crunchy Bass on track 2. Use the labs below for isolated vocal and band comparisons.</p>
   <p><button id="six-demo" disabled>Six-track electro audition</button>
   <button id="six-dense" disabled>Dense save-capacity stress fixture</button></p>
@@ -289,8 +289,8 @@ FX pages 2–4: VOCODER → VOC INPUT → VOC COLOR. HOLD freezes envelopes, not
 </section>
 <section class="lab" aria-label="Vocoder clarity audition">
 <h2 data-id="03">Vocoder clarity · whole phrase first</h2>
-<p>Explicit stopped auditions; saved slots stay. T3 carries T4. Defaults: BG CARR SAW, 24 bands, nearest 150 ms, fully wet. Existing electro demo remains above. No musical approval or hardware-fit claim.</p>
-<label>Bands <select id="clarity-bands"><option value="0">8</option><option value="1">12</option><option value="2" selected>24</option></select></label>
+<p>Explicit stopped auditions; saved slots stay. T3 carries T4. Defaults: BG CARR SAW, 8 bands, nearest 150 ms, fully wet. Existing electro demo remains above. No musical approval or hardware-fit claim.</p>
+<p>Bands: 8</p>
 <label>Release <select id="clarity-release"><option value="63">≈50 ms (49.1)</option><option value="83">≈100 ms (101.4)</option><option value="94" selected>≈150 ms (151.1)</option></select></label>
 <label>Carrier <select id="clarity-carrier"><option value="0">BG CARR SAW</option><option value="2">TRIO / FAT BASS</option></select></label>
 <label>Wet <select id="clarity-wet"><option value="127">100%</option><option value="117">92.13% (117/127)</option></select></label>
@@ -921,7 +921,7 @@ for (const [id,mode] of [["clarity-whole",0],["clarity-chops",1],["clarity-arran
  document.getElementById(id).onclick=()=>{
   if(!node || !confirm("Replace current unsaved project with the clarity audition? Saved slots stay."))return;
   btnBy.clear();keyBy.clear();latched=0;syncButtons();syncKeys();
-  send({type:"clarity-project",mode,bands:+document.getElementById("clarity-bands").value,
+  send({type:"clarity-project",mode,bands:0,
     release:+document.getElementById("clarity-release").value,carrier:+document.getElementById("clarity-carrier").value,wet:+document.getElementById("clarity-wet").value});
  };
 }

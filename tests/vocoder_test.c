@@ -65,11 +65,11 @@ int main(int argc,char **argv)
     puts("speech: original pitch, one-shot note-off, latest phrase/no fallback PASS");
     setup(2);trigger(0);tick(8820);assert(bg_bus.owner==3 && bg_bus.carrier==1 && bg_bus.mod_valid && bg_bus.car_valid);assert(block_peak()>.00001f);
     uint32_t ph=trk[3].v[0].ph[0];trk_note_on(&trk[1],55,110);assert(trk[3].v[0].ph[0]==ph);
-    trk[3].p[P_VHOLD]=1;tick(1024);float held=bg_voc.held[4];assert(held>0);tick(88200);
-    assert(bg_voc.hold && bg_voc.held[4]==held && !trk[3].v[0].active);
-    trk[3].p[P_VHOLD]=0;tick(44100);assert(!bg_voc.hold && bg_voc.applied[4]<held*.01f);
-    trk[3].p[P_VHOLD]=1;tick(1024);seq_stop();tick(1024);assert(!bg_voc.hold && !trk[3].p[P_VHOLD]);
-    trk[3].p[P_VHOLD]=1;tick(1024);panic_req=15;tick(1024);assert(!bg_voc.hold);
+    trk[3].p[P_VHOLD]=1;tick(1024);float held=bg_fixed.held[4];assert(held>0);tick(88200);
+    assert(bg_fixed.hold && bg_fixed.held[4]==held && !trk[3].v[0].active);
+    trk[3].p[P_VHOLD]=0;tick(44100);assert(!bg_fixed.hold && bg_fixed.applied[4]<held*.01f);
+    trk[3].p[P_VHOLD]=1;tick(1024);seq_stop();tick(1024);assert(!bg_fixed.hold && !trk[3].p[P_VHOLD]);
+    trk[3].p[P_VHOLD]=1;tick(1024);panic_req=15;tick(1024);assert(!bg_fixed.hold);
     puts("vocoder: real carrier/pitch independence, Freeze beyond sample, release, stop/panic PASS");
     setup(2);trigger(1);tick(8820);trk[3].p[P_VCONS]=127;trk[3].p[P_VCARR]=4;tick(4410);assert(bg_bus.carrier==-1 && !bg_bus.car_valid);
     for(uint32_t i=0;i<CTL;i++)assert(bg_bus.mod[i]==0);
@@ -91,7 +91,7 @@ int main(int argc,char **argv)
     setup(2);trk[3].p[P_VLOW]=90;trk[3].p[P_VHOLD]=1;tick(1024);
     static project_t saved;project_capture(&saved);assert(!saved.t[3].p[P_VHOLD]);
     assert(!project_save_as(0,"VOCODER"));assert(!web_bgirl_project(0));project_load(0);tick(4410);
-    assert(trk[3].p[P_E0]==5 && trk[3].p[P_VCARR]==2 && trk[3].p[P_VLOW]==90 && !trk[3].p[P_VHOLD] && !bg_voc.hold);
+    assert(trk[3].p[P_E0]==5 && trk[3].p[P_VCARR]==2 && trk[3].p[P_VLOW]==90 && !trk[3].p[P_VHOLD] && !bg_fixed.hold);
     song.sel=3;assert(!up_store_cat(0,"SPEECH",0));assert(!up_load(0));tick(4410);assert(!trk[3].p[P_VCARR] && !trk[3].p[P_VHOLD]);
     uint32_t editSlot=999;assert(!slice_edit_begin(&editSlot) && editSlot==999);
     puts("storage: route/bank/controls roundtrip, load unfrozen, preset reference clearing PASS");

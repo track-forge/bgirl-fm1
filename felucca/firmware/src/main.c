@@ -185,7 +185,9 @@ static void fm1_main(void)
 #if FELUCCA_CPU2
     uint8_t c1_told = 0;                                /* 2ND CORE MISREAD shown (and ON cleared) */
 #endif
+#ifndef BGIRL_MIAMI_BENCH
     persist_boot();
+#endif
 #if FELUCCA_OTA
     if (flash_ok)
         ota_boot_cleanup();                             /* staging area left by an update */
@@ -236,7 +238,11 @@ static void fm1_main(void)
         panel_setup();                        /* OCT- + OCT+ held at power-on */
         settings_save();
     }
+#ifdef BGIRL_MIAMI_BENCH
+    autosave_boot(0);
+#else
     autosave_boot(boot_clean);                /* (1.2) the last session's music, under the splash */
+#endif
     for (ms = 0; ms < 400u; ms += 10u) {      /* the splash; the pot followed (MIDI IN plays under it) */
         fm1_delay_ms(10);
         master_poll();

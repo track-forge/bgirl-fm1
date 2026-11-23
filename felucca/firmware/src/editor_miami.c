@@ -87,6 +87,17 @@ static uint32_t ed_miami_end(uint32_t k)
 
 static void ed_miami(const uint8_t *a, uint32_t na)
 {
+#ifdef BGIRL_MIAMI_BENCH
+    /* Let the existing Ticker loader require a mounted bank, without rescanning
+     * flash or exposing any upload commands. The other slots aren't probed. */
+    if (na == 1u && a[0] == 0u) {
+        ed_b(1);
+        ed_b(miami_slot ? MIAMI_READY : MIAMI_OCCUPIED);
+        ed_b(MIAMI_OCCUPIED);
+        ed_b(MIAMI_OCCUPIED);
+    }
+    return;
+#endif
     if (!flash_ok || !na) return;
     autosave_hold();
     if (a[0] == 0u && na == 1u) {

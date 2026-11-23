@@ -212,6 +212,10 @@ def build_app():
         v = os.environ.get(flag)    # unset: the default in firmware/src/felucca.c
         if v in ("0", "1"):
             flags.append(f"-D{flag}={v}")
+    if os.environ.get("BGIRL_VOCODER_BENCH") == "1":
+        flags.append("-DBGIRL_VOCODER_BENCH")
+    if os.environ.get("BGIRL_MIAMI_BENCH") == "1":
+        flags.extend(("-DBGIRL_MIAMI_BENCH", "-DFELUCCA_CDC_DEFAULT=1"))
     v = os.environ.get("FELUCCA_USB_LAYOUT")   # firmware/src/usb.c: how the USB composite presents itself (#67), 0..3
     if v in ("0", "1", "2", "3"):
         flags.append(f"-DFELUCCA_USB_LAYOUT={v}")

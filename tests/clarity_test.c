@@ -31,7 +31,7 @@ int main(void) {
   assert(!project_save_as(0,"CLARITY"));assert(!web_bgirl_project(0));project_load(0);tick(3000);
   assert(trk[3].p[P_VRANGE]==1 && trk[3].p[P_VWET]==117 && trk[3].p[P_VREL]==bg_release_value(150));
   transport_req=1;double energy=0;for(int n=0;n<FS;n+=CTL){web_render(CTL);for(int i=0;i<CTL;i++){assert(isfinite(out_l[i]) && fabsf(out_l[i])<=1);energy+=fabsf(out_l[i]);}}
-  assert(energy>.001);seq_stop();tick(1000);assert(!bg_voc.hold);
+  assert(energy>.001);seq_stop();tick(1000);assert(!bg_fixed.hold);
  }
  assert(!web_bgirl_clarity(0,2,0,0,127));tick(3000);
  song.sel=3;assert(!up_store_cat(0,"REL TEST",0));trk[3].p[P_VRANGE]=0;assert(!up_load(0));assert(trk[3].p[P_VRANGE]==1 && trk[3].p[P_VREL]==0);

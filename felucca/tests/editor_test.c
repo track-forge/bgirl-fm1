@@ -1354,14 +1354,17 @@ static int custom_palette(void)
 #ifndef EDITOR_TEST_NO_MAIN                              /* (robust_test.c, fuzz_*.c: this file is their base) */
 static int clarity_protocol(void) {
     reset();uint8_t a[4]={0,P_VBANDS,0,0};
-    request(ED_DESC,a,2);int ok=host_wire[7]==F_ENUM && ed_rv(host_wire+10)==2;
+    request(ED_DESC,a,2);int ok=host_wire[7]==F_ENUM && ed_rv(host_wire+8)==0 && ed_rv(host_wire+10)==0;
+    TSEL->p[P_VBANDS]=2;
+    a[2]=1;a[3]=64;request(ED_SET,a,4);
+    ok &= TSEL->p[P_VBANDS]==2;
     TSEL->p[P_VRANGE]=0;a[1]=P_VREL;request(ED_DESC,a,2);
     ok &= host_wire[7]==F_VOCLEG && ed_rv(host_wire+8)==1;
     a[1]=P_VRANGE;a[2]=1;a[3]=64;request(ED_SET,a,4);
     ok &= TSEL->p[P_VRANGE]==1 && sync_reload;
     a[1]=P_VREL;request(ED_DESC,a,2);ok &= host_wire[7]==F_VOCREL && ed_rv(host_wire+8)==0;
     a[2]=0;a[3]=64;request(ED_SET,a,4);ok &= TSEL->p[P_VREL]==0;
-    return check("clarity DESC/SET:8/12/24, legacy/log ms formats, range reload and5ms endpoint",ok);
+    return check("clarity DESC/SET: fixed 8, legacy encoding retained, release range and 5ms endpoint",ok);
 }
 static int sh_style_protocol(void) {
  int bad=0;reset();uint8_t a[4]={0};request(ED_NAMES,a,1);
