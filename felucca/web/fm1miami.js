@@ -2,7 +2,7 @@
 import {bkCrc, bkPack} from "./fm1backup.js";
 
 const MIAMI_CMD = 82, MIAMI_DATA = 512;
-const MIAMI_STATES = ["empty", "ready", "needs restore", "occupied"];
+const [MIAMI_EMPTY, MIAMI_READY, MIAMI_RESTORE, MIAMI_OCCUPIED] = [0, 1, 2, 3];
 
 export function checkMiamiImage(image) {
   if (image.length !== 69634) throw new Error("Wrong Miami bank size");
@@ -16,19 +16,19 @@ export function checkMiamiImage(image) {
 
 export async function miamiSlots(request) {
   const reply = await request([MIAMI_CMD, [0]], {timeout: 5000});
-  if (reply.length !== 4 || reply[0] !== 1 || reply.slice(1).some(n => !MIAMI_STATES[n]))
+  if (reply.length !== 4 || reply[0] !== 1 || reply.slice(1).some(n => !Number.isInteger(n) || n < MIAMI_EMPTY || n > MIAMI_OCCUPIED))
     throw new Error("This firmware cannot provision Miami Bass");
   return reply.slice(1);
 }
 
-export async function provisionMiami(request, image, choose, progress) {
+export async function provisionMiami(request, image, progress, {retry = false} = {}) {
   checkMiamiImage(image);
   const states = await miamiSlots(request);
-  const ready = states.indexOf(1);
+  const ready = states.indexOf(MIAMI_READY);
   if (ready !== -1) return {slot: ready, skipped: true};
-  const slot = await choose(states.map(n => MIAMI_STATES[n]));
-  if (slot == null) return null;
-  if (!Number.isInteger(slot) || slot < 0 || slot >= states.length) throw new Error("Invalid slot");
+  const interrupted = retry ? states.indexOf(MIAMI_RESTORE) : -1;
+  const slot = interrupted >= 0 ? interrupted : states.indexOf(MIAMI_EMPTY);
+  if (slot < 0) return null;
   const send = async (op, args = []) => {
     const r = await request([MIAMI_CMD, [op, slot, ...args]], {timeout: 5000});
     if (r.length !== 3 || r[0] !== op || r[1] !== slot || r[2] !== 0)
@@ -41,6 +41,6 @@ export async function provisionMiami(request, image, choose, progress) {
     progress((off + bytes.length - MIAMI_DATA) / (image.length - MIAMI_DATA));
   }
   await send(3);
-  if ((await miamiSlots(request))[slot] !== 1) throw new Error("Miami bank readback failed");
+  if ((await miamiSlots(request))[slot] !== MIAMI_READY) throw new Error("Miami bank readback failed");
   return {slot, skipped: false};
 }

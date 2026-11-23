@@ -36,15 +36,17 @@ const output = {send(frame) {
 const connection = new BackupConnection(input, output, 0x36);
 const request = (req, opt) => connection.request(req, opt);
 const noop = () => {};
-assert.equal(await provisionMiami(request, image, () => null, noop), null);
-assert.deepEqual(states, [0, 3, 0]);
-await assert.rejects(provisionMiami(request, image, () => 0, noop), /disconnected/);
-assert.deepEqual(states, [2, 3, 0]);
-assert.deepEqual(await provisionMiami(request, image, slots => {
-  assert.deepEqual(slots, ["needs restore", "occupied", "empty"]);
-  return 0;
-}, noop), {slot: 0, skipped: false});
+states = [3, 3, 3];
+assert.equal(await provisionMiami(request, image, noop), null);
+assert.deepEqual(states, [3, 3, 3]);
+assert.equal(writes.length, 0);
+states = [0, 3, 3];
+await assert.rejects(provisionMiami(request, image, noop), /disconnected/);
+assert.deepEqual(states, [2, 3, 3]);
+assert.equal(await provisionMiami(request, image, noop), null);
+assert.deepEqual(states, [2, 3, 3]);
+assert.deepEqual(await provisionMiami(request, image, noop, {retry: true}), {slot: 0, skipped: false});
 assert.equal(writes.length, Math.ceil((image.length - 512) / 256));
-assert.deepEqual(await provisionMiami(request, image, assert.fail, noop), {slot: 0, skipped: true});
+assert.deepEqual(await provisionMiami(request, image, noop), {slot: 0, skipped: true});
 connection.close();
-console.log("Miami installer MIDI framing, image validation, cancellation, recovery and no rewrite PASS");
+console.log("Miami installer: image validation, full-slot preservation, interruption, retry and no rewrite PASS");
