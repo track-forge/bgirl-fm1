@@ -298,6 +298,8 @@ static const param_desc_t VC_MISSING = {"NO SRC", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t VC_BUSY = {"BUSY", F_ENUM,0,6,0,N_VCARR,0};
 static const param_desc_t *track_desc(const track_t *t, uint32_t id)
 {
+    static const param_desc_t bands_fixed = {"BANDS", F_ENUM, 0, 0, 0, N_VBANDS, 0};
+    if (id == P_VBANDS) return &bands_fixed;
     if(id==P_VREL && !t->p[P_VRANGE]) return &VC_LEGACY_REL;
     if(id==P_VCARR && t->p[P_VCARR]) {
         int owner = voc_owner();

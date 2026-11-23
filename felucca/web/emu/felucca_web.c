@@ -770,7 +770,7 @@ EXPORT uint32_t web_bgirl_flyer(uint32_t action)
 
 EXPORT uint32_t web_bgirl_clarity_info(uint32_t field) {
     switch(field) {
-    case 0:return trk[3].p[P_VBANDS];case 1:return trk[3].p[P_VRANGE];
+    case 0:return 0; /* effective band index; project storage is unchanged */case 1:return trk[3].p[P_VRANGE];
     case 2:return trk[3].p[P_VREL];case 3:return trk[3].p[P_VWET];
     case 4:return trk[2].eng_req;case 5:return song.playing;
     case 6:return (uint32_t)(BG_REL_MS[clamp(trk[3].p[P_VREL],0,127)]+.5f);

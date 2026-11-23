@@ -110,7 +110,7 @@ int main(void) {
     fclose(audio);assert(mod_energy && energy>1);
     printf("Mega: bytes=%u margin=%u maxvoices=%u steals=%u peak=%.8g RMS=%.8g mod=%llu\n",bytes,3840-bytes,max_busy,voice_kills-start_kills,peak,sqrt(energy/(FS*30u*2)),(unsigned long long)mod_energy);
     assert(voice_kills==start_kills);
-    seq_stop();tick(FS*5);assert(!voices_busy() && !bg_voc.hold);
+    seq_stop();tick(FS*5);assert(!voices_busy() && !bg_fixed.hold);
     for(uint32_t i=0;i<128;i++)assert(fabsf(out_l[i])+fabsf(out_r[i])<.0001f);
     seq_start();tick(FS);seq_stop();tick(FS*5);assert(!voices_busy());
     /* Exercise deliberate user overload, then normal panic/stop recovery. */

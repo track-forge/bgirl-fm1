@@ -33,7 +33,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await tap('PLAY / STOP');await page.waitForTimeout(700);assert(await peak()>.00001);await tap('PLAY / STOP');
   await page.locator('#clarity-carrier').selectOption('0');
   await fixture('clarity-whole');await tap('FX');await tap('FX');
-  await turn('KNOB 2',-2);assert.equal((await info())[0],0);await turn('KNOB 2',1);assert.equal((await info())[0],1);await turn('KNOB 2',1);assert.equal((await info())[0],2);
+  await turn('KNOB 2',2);assert.equal((await info())[0],0);
   await tap('PLAY / STOP');await tap('FX'); // input
   await turn('KNOB 1',1);assert.equal((await info())[7],1);await page.waitForTimeout(300);assert.equal((await info())[8],1);
   await tap('FX'); // color
@@ -42,8 +42,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await turn('KNOB 4',-127);q=await info();assert.equal(q[2],0);assert.equal(q[6],5);
   await tap('PLAY / STOP');assert.equal((await info())[7],0);
   // Set preset back through loader, then normal panel save and fresh-instance restore.
-  await page.locator('#clarity-wet').selectOption('117');await page.locator('#clarity-bands').selectOption('1');
-  await fixture('clarity-whole');q=await info();assert.deepEqual(q.slice(0,7),[1,1,94,117,0,0,151]);
+  await page.locator('#clarity-wet').selectOption('117');
+  await fixture('clarity-whole');q=await info();assert.deepEqual(q.slice(0,7),[0,1,94,117,0,0,151]);
   await page.waitForTimeout(15000);await page.reload();await on();assert.deepEqual((await info()).slice(0,7),q.slice(0,7));
   await tap('SAVE');await tap('SAVE');await tap('SAVE');await tap('SAVE');await turn('KNOB 4',1);await tap('OCT+');await tap('OCT+');
   const flash=await page.evaluate(()=>localStorage.getItem('bgirl-felucca-v1-flash'));assert(flash);

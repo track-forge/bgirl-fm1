@@ -878,9 +878,7 @@ static const uint16_t ENG_VCOST[NENGINES] = {163, FELUCCA_FM4 ? 181 : 0, 162, 67
 
 #if BGIRL_VOCODER
 #include "bgirl_vocoder.c"
-#ifdef BGIRL_VOCODER_BENCH
 #include "bgirl_vocoder_fixed.c"
-#endif
 static struct {
     int owner, carrier;
     int32_t mod[CTL], car[CTL];
@@ -902,7 +900,10 @@ static void bg_capture_begin(uint32_t n)
             if (carrier >= 0 && trk[carrier].engine != trk[carrier].eng_req) carrier = -1;
             /* Pack route, engines and SLICE resource without aliasing synth knobs. */
             signature = (uint32_t)(owner + 1) | (uint32_t)(carrier + 1) << 3 |
-                        (uint32_t)t->engine << 6 | (uint32_t)t->p[P_VBANDS] << 10;
+                        (uint32_t)t->engine << 6;
+#ifdef BGIRL_VOCODER_BENCH
+            signature |= (uint32_t)t->p[P_VBANDS] << 10;
+#endif
             if (carrier >= 0) signature |= (uint32_t)trk[carrier].engine << 12;
             if (t->engine == 13) {
                 signature |= (uint32_t)t->p[P_E0] << 16;
@@ -911,7 +912,11 @@ static void bg_capture_begin(uint32_t n)
         }
     }
     if(bg_bus.signature!=signature || bg_bus.reset!=bg_vreset) {
+#ifdef BGIRL_VOCODER_BENCH
         bg_vocoder_reset();
+#else
+        bg_fixed_reset();
+#endif
         if (bg_bus.owner >= 0) trk[bg_bus.owner].p[P_VHOLD] = 0;
         if (owner >= 0) trk[owner].p[P_VHOLD] = 0;
     }
@@ -1192,8 +1197,10 @@ static void mix_block(int32_t *out, uint32_t n)
             if (voc_bench.mode >= VOC_FIXED)
                 memset(bg_fixed.synthesis, 0, sizeof bg_fixed.synthesis);
             else
-#endif
                 memset(bg_voc.synthesis,0,sizeof bg_voc.synthesis);
+#else
+            memset(bg_fixed.synthesis, 0, sizeof bg_fixed.synthesis);
+#endif
         }
 #ifdef BGIRL_VOCODER_BENCH
         uint32_t mod_bits = 0, car_bits = 0;
@@ -1217,8 +1224,10 @@ static void mix_block(int32_t *out, uint32_t n)
                 bg_fixed_run(bg_bus.mod, bg_bus.car, n, trk[bg_bus.owner].p,
                              voc_bench.mode == VOC_OPT);
             else
-#endif
                 bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
+#else
+            bg_fixed_run(bg_bus.mod, bg_bus.car, n, trk[bg_bus.owner].p, 1);
+#endif
 #ifdef BGIRL_VOCODER_BENCH
             if (tracing) {
                 voc_current.bank += fm1_ticks() - start;

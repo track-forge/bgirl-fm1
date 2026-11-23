@@ -3,9 +3,6 @@
  * use Q31 except the feedback term near 2, which uses Q30. */
 #include "bgirl_vocoder_qcoeff.h"
 
-#ifdef BGIRL_VOCODER_FIXED_TEST
-static bg_fixed_t bg_fixed;
-#endif
 
 static int32_t bg_q31(int32_t x, int32_t q)
 {
@@ -53,7 +50,7 @@ static void bg_fixed_reset(void) { memset(&bg_fixed, 0, sizeof bg_fixed); }
 
 static void bg_fixed_run(int32_t *mod, const int32_t *car, uint32_t n, const int16_t *p, int optimized)
 {
-    uint32_t mode = p[P_VBANDS] >= 2 ? 2 : p[P_VBANDS] > 0 ? 1 : 0;
+    uint32_t mode = optimized ? 0 : p[P_VBANDS] >= 2 ? 2 : p[P_VBANDS] > 0 ? 1 : 0;
     uint32_t bands = mode == 2 ? 24 : mode ? 12 : 8;
     const int32_t (*coef)[3] = mode == 2 ?
 #ifdef BGIRL_VOCODER_NARROW24

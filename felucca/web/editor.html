@@ -3159,6 +3159,8 @@ function buildGroups() {
 
 function paramRow(s, id) {
   const d = s ? dev.gdesc[id] : dev.pdesc[id];
+  if (!s && d?.label === "BANDS" && d.min === 0 && d.max === 0)
+    return el("div", { class: "row", text: "Bands: 8" });
   if (!visible(d) || (s === 1 && G_SKIP.has(d.label))) return null;
   const k = key(s, id);
   let input;

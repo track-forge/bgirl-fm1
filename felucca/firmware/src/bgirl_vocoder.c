@@ -11,14 +11,12 @@ typedef struct {
     float env[24], held[24], applied[24], hp, carrier_env;
     uint32_t hold, mode;
 } bg_vocoder_t;
-#if defined(BGIRL_VOCODER_BENCH) || defined(BGIRL_VOCODER_FIXED_TEST)
 typedef struct { int32_t z1, z2; } bg_qbq_t;
 typedef struct {
     bg_qbq_t analysis[24], synthesis[24];
     int32_t env[24], held[24], applied[24], hp;
     uint32_t hold, mode;
 } bg_fixed_t;
-#endif
 #ifdef BGIRL_VOCODER_BENCH
 /* Modes are mutually exclusive and reset at a half-buffer boundary. */
 static union {
@@ -29,6 +27,7 @@ static union {
 #define bg_fixed bg_bank.candidate
 #else
 static bg_vocoder_t bg_voc;
+static bg_fixed_t bg_fixed;
 #endif
 static float bg_abs(float x) { return x < 0 ? -x : x; }
 static float bg_filter(bg_bq_t *s, const float *c, float x)

@@ -1,7 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-only */
 #define BGIRL_VOCODER_FIXED_TEST
 #include "../felucca/web/emu/felucca_web.c"
-#include "../felucca/firmware/src/bgirl_vocoder_fixed.c"
 #include <assert.h>
 
 int main(void)
