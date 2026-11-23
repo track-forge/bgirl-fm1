@@ -1,23 +1,30 @@
 # BGIRL-FM1
 
-> BGIRL-FM1: The machine to convert all humans into cybernetic b-boys and b-girls.
+[![BGIRL-FM1 chrome wordmark](assets/branding/bgirl-fm1-wordmark.png)](https://track-forge.github.io/bgirl-fm1/)
 
-An electro groovebox with a sample-fed vocoder. Give the machine a voice.
+**An electro groovebox with opinions.** Start with a Miami bass groove, give a
+synth line a voice through the sample-fed vocoder, and punch in a bass patch
+shaped by a real SH-01A. Six tracks share eight voices on the M-VAVE FM-1.
+The idea isn’t to put every synth in one box. It’s to put the sounds we reach
+for when making electro close enough to play with both hands.
 
-**[Try the vocoder](https://track-forge.github.io/bgirl-fm1/)** ·
-**[Open full studio](https://track-forge.github.io/bgirl-fm1/play/)**
+**[Play the browser demo](https://track-forge.github.io/bgirl-fm1/)** ·
+**[Open the full studio](https://track-forge.github.io/bgirl-fm1/play/)** ·
+[Build locally](#run-locally)
 
-**Browser development preview only: do not install on hardware.**
-[Roots & credits](#roots--credits) · independent GPL-3.0-only Felucca derivative,
-not an official Hügelton build.
+![BGIRL studio with the CREW display](docs/img/crew/desktop.png)
+
+**Hardware installation:** FM-1 firmware is in hardware testing. The public
+Pages site is a playable preview, not a firmware installer.
+Independent Felucca derivative; see [roots & credits](#roots--credits).
 
 ## Portable browser songs
 
 **Export song** captures live unsaved music as readable `.bgirl.json`; edit it
 locally/with an agent, then **Import song** and audition without rebuilding.
-Stop playback and release controls first. All six sounds,64-step patterns,
+Stop playback and release controls first. All six sounds, 64-step patterns,
 FM6, motion/locks and SONG sources travel together; named saves stay untouched.
-Imported sessions checkpoint in browser storage every2seconds while stopped;
+Imported sessions checkpoint in browser storage every 2 seconds while stopped;
 keep an exported file. Portable arrangements use JSON, not named-slot SAVE.
 [Format, offline validate/inspect/diff and refresh policy](docs/SONG_SNAPSHOTS.md).
 [Verification and local audition](docs/SONG_SNAPSHOTS_VERIFICATION.md).
@@ -27,13 +34,17 @@ smoke, **not** a rebuild/full engine suite. UI changes need affected browser che
 project/bridge/storage code needs the relevant regressions and one final root
 host run. [Scoped policy](AGENTS.md#song-snapshots--scoped-validation-budget).
 
-## SH-STYLE collection
+## SH-ISH: five patches from our SH-01A
 
-Two real-capture, approximate ANALOG sounds: **SH 1-1** and **SH WIRE1**.
-Select a track with ALGORITHM and use the SH-STYLE browser loader, or normal
-PRESETS → ANALOG / LIST SH-STYLE. Existing sounds, projects and demos stay intact.
-[Translation, limitations and demo commands](tools/sh_style/README.md) ·
-[verification](docs/SH_STYLE_VERIFICATION.md). Not a Roland emulator or acoustic match.
+**Crunchy Bass** comes from patch 1-1. **Velvet Pulse** comes from a saved
+patch whose slot we couldn’t confirm. **Noisy Dark Sweep** (T1-6), **Slayer
+Bass** (T1-7), and **Electro Droplet** (T2-8) round out the set. These are
+BGIRL ANALOG recipes translated from captured settings, not sampled notes or
+a Roland emulation.
+
+Choose a track with **ALGORITHM**, then **PRESETS → LIST → SH-ISH**. Loading a
+sound keeps the pattern, so you can hear all five against the same groove.
+[Capture manifest and recipes](assets/sh-style/manifest.json)
 
 ## Play in your browser
 
@@ -43,7 +54,6 @@ Click **Switch on**, then **PLAY** to hear the electro groove with vocoded speec
 No installation needed. The preview updates automatically after successful main
 builds; use **Load electro demo** if a previous session's autosave is restored.
 
-![BGIRL browser edition](docs/img/browser.png)
 
 ## Run locally
 
