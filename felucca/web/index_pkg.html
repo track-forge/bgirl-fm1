@@ -37,6 +37,11 @@
   <p class="small"><span data-t="brick"></span>
     <a href="https://github.com/kurogedelic/FM-1-transporter" target="_blank" rel="noopener" style="color:inherit">FM-1-transporter</a></p>
   <p><button id="go" disabled data-t="install"></button></p>
+  <section id="miami" hidden>
+    <p><label><input type="checkbox" id="miami-first"> Add Miami Bass starter bank after firmware install (uses one user sample slot)</label></p>
+    <p><button id="miami-go">Install or restore Miami Bass only</button></p>
+    <p class="small">For routine upgrades, leave the box unchecked. Back up your samples in the editor before replacing an occupied slot.</p>
+  </section>
   <details style="margin-top:24px">
     <summary data-t="stockTitle"></summary>
     <p class="small" data-t="back"></p>
@@ -139,9 +144,10 @@ const say = (txt) => { lastKey = null; $("status").textContent = txt; };
 const log = (t) => { $("log").textContent += t + "\n"; };
 let image = null;
 const meta = /*META*/;
+$("miami").hidden = !meta.miami;
 
 let writing = false, stock = null, stockFileEpoch = 0;
-const lockInstaller = (on) => { writing = on; $("go").disabled = on || !image; $("stock-go").disabled = on || !stock; $("stock-file").disabled = on; $("stock-recovery").disabled = on; };
+const lockInstaller = (on) => { writing = on; $("go").disabled = on || !image; $("stock-go").disabled = on || !stock; $("stock-file").disabled = on; $("stock-recovery").disabled = on; $("miami-go").disabled = on; $("miami-first").disabled = on; };
 window.addEventListener("beforeunload", (e) => { if (writing) { e.preventDefault(); e.returnValue = t("leave"); } });
 
 (async () => {
@@ -156,6 +162,44 @@ window.addEventListener("beforeunload", (e) => { if (writing) { e.preventDefault
     $("go").disabled = false;
   } catch (e) { sayK("loadfail", e.message); }
 })();
+
+async function installMiami(up) {
+  const r = await fetch(meta.miami);
+  if (!r.ok) throw new Error("Could not download the Miami starter bank");
+  const bank = new Uint8Array(await r.arrayBuffer());
+  const device = await up.find(id => id.text === meta.product);
+  if (!device) throw new Error("Connect the FM-1 running this BGIRL firmware");
+  const {input, output} = device.link;
+  device.link.close();
+  const connection = new BackupConnection(input, output, 0x36);
+  try {
+    const result = await provisionMiami((req, options) => connection.request(req, options), bank, states => {
+      const suggested = states.includes("needs restore") ? states.indexOf("needs restore") : states.indexOf("empty");
+      const answer = prompt("Choose a slot for Miami Bass:\n" + states.map((state, k) =>
+        `USR${k + 1}: ${state}`).join("\n"), suggested < 0 ? "" : String(suggested + 1));
+      if (answer === null) return null;
+      if (!/^[123]$/.test(answer)) throw new Error("Choose USR1, USR2, or USR3");
+      const slot = Number(answer) - 1;
+      if (states[slot] === "occupied" && !confirm(`Replace USR${slot + 1}? This erases its sample bank. Back it up in the editor first.`))
+        return null;
+      return slot;
+    }, progress => { $("bar").value = 100 * progress; say("Writing Miami Bass…"); });
+    say(result ? `Miami Bass ${result.skipped ? "already verified" : "installed and verified"} in USR${result.slot + 1}.`
+               : "Miami Bass unchanged.");
+  } finally { connection.close(); }
+}
+function miamiError(error) {
+  say(`Miami Bass: ${error.message}. Use Install or restore Miami Bass only to try again.`);
+}
+$("miami-go").addEventListener("click", async () => {
+  if (writing || !meta.miami) return;
+  lockInstaller(true);
+  try {
+    const midi = await navigator.requestMIDIAccess({sysex: true});
+    await installMiami(new Updater(midi, log));
+  } catch (e) { miamiError(e); }
+  finally { lockInstaller(false); }
+});
 
 $("go").addEventListener("click", async () => {
   if (writing) return;
@@ -178,16 +222,18 @@ $("go").addEventListener("click", async () => {
     const ota = await up.find((id) => /^ota-/i.test(id.model));
     if (ota) {
       ota.link.close();
-      sayK((await up.resume(image, step, meta.product)) ? "done" : "stopped");
+      if (!(await up.resume(image, step, meta.product))) { sayK("stopped"); return; }
     } else {
       await up.install(image, meta.product, step);
+    }
+    if (meta.miami && $("miami-first").checked) {
+      try { await installMiami(up); } catch (e) { miamiError(e); }
     }
   } catch (e) {
     if (e && e.code && TEXT[lang][e.code]) sayK(e.code, e.detail || "");
     else sayK("error", e && e.message);
     log(String(e && e.stack || e));
-  }
-  lockInstaller(false);
+  } finally { lockInstaller(false); }
 });
 
 $("stock-file").addEventListener("change", async () => {

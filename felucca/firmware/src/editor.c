@@ -348,6 +348,7 @@ static int ed_flash_stop(void)
     return song.playing || chain_busy();
 }
 
+#include "editor_miami.c"
 #include "editor_preferences.c"
 #include "editor_backup.c"
 #include "editor_fm6.c"
@@ -603,12 +604,17 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
         for (i = 0; i < 2u; i++)                           /* then the two edit-page titles */
             ed_str(ENGINES[a[0]]->page_title[i], 8);
         break;
+#if FELUCCA_FLASH && FELUCCA_SLICE && defined(BGIRL_MIAMI_SLOT)
+    case ED_MIAMI:
+        ed_miami(a, na);
+        break;
+#endif
     case ED_SMP_BEGIN:                                     /* slot -> slot, rc */
     case ED_SMP_ERASE:
         if (na < 1u || a[0] >= SMP_USER_SLOTS || !flash_ok)
             return;
         ed_b(a[0]);
-        ed_b(ed_flash_stop() || ed_smp_erase(a[0], cmd == ED_SMP_ERASE) ? 1u : 0u);
+        ed_b(ed_miami_owned(a[0]) || ed_flash_stop() || ed_smp_erase(a[0], cmd == ED_SMP_ERASE) ? 1u : 0u);
         break;
     case ED_SMP_WRITE: {                                   /* slot, off (3 x 7 bit), pack7 data -> slot, off, rc */
         uint32_t off, len, rc = 0, took;
@@ -618,7 +624,7 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
         len = ed_unpack7(a + 4, na - 4u, ed_smp_buf, 256u);
         if (off < SMP_USER_DATA || (off & 0xFFu) || !len || off + len > SMP_USER_SIZE)
             rc = 1;
-        else if (usr_nz[a[0]])
+        else if (usr_nz[a[0]] || ed_miami_owned(a[0]))
             rc = 4;                                        /* slot in use: SMP_BEGIN first (voices read it) */
         else if (ed_flash_stop())
             rc = 1;
@@ -641,7 +647,7 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
         if (na < 2u || a[0] >= SMP_USER_SLOTS || !flash_ok)
             return;
         ed_b(a[0]);
-        ed_b((uint32_t)ed_smp_end(a[0], a + 1, na - 1u));
+        ed_b(ed_miami_owned(a[0]) ? 2u : (uint32_t)ed_smp_end(a[0], a + 1, na - 1u));
         break;
     case ED_SMP_INFO:                                      /* -> per slot: zones (0 = empty), name, data KiB */
         ed_b(SMP_USER_SLOTS);
@@ -650,6 +656,12 @@ static void ed_handle(const uint8_t *f, uint32_t n)   /* f: the bytes between F0
             const smp_user_hdr_t *h = (const smp_user_hdr_t *)smp_user_xip(i);
             char nm[9] = {0};
             uint32_t j;
+            if (ed_miami_owned(i)) {
+                ed_b(127); /* reserved, not 127 playable zones */
+                ed_str("MIAMI", 8);
+                ed_b(0);
+                continue;
+            }
             ed_b(usr_nz[i]);
             for (j = 0; usr_nz[i] && j < 8u; j++)
                 nm[j] = h->name[j] >= 32 && h->name[j] < 127 ? h->name[j] : 0;

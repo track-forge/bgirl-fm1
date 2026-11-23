@@ -857,6 +857,26 @@ static uint8_t persist_pending;                 /* 1 requested, 2 waiting after 
 static uint32_t persist_retry_ms;
 #endif
 
+#if FELUCCA_FLASH && FELUCCA_SLICE && defined(BGIRL_MIAMI_SLOT)
+static int miami_valid(const uint8_t *slot)
+{
+    return !memcmp(slot, MIAMI_HEADER, sizeof MIAMI_HEADER) &&
+           st_crc32(slot + SMP_USER_DATA, MIAMI_PAYLOAD_BYTES) == MIAMI_PAYLOAD_CRC;
+}
+
+static void miami_scan(void)
+{
+    for (uint32_t k = 0; k < SMP_USER_SLOTS; k++) {
+        const uint8_t *slot = smp_user_xip(k);
+        if (miami_valid(slot)) {
+            miami_slot = slot;
+            return;
+        }
+    }
+    miami_slot = 0;
+}
+#endif
+
 static void persist_boot(void)                    /* before settings_init / panel_init */
 {
 #if FELUCCA_FLASH
@@ -878,6 +898,9 @@ static void persist_boot(void)                    /* before settings_init / pane
             smp_user_scan(k);
     }
     {
+#if FELUCCA_SLICE && defined(BGIRL_MIAMI_SLOT)
+        miami_scan();
+#endif
         int n = st_load(OBJ_SETTINGS, &p, sizeof p);
         if (settings_import(&p, n))
             persist_saved = p;

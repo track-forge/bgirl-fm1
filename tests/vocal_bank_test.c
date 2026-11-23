@@ -18,7 +18,7 @@ static void entry_tests(void) {
     for(uint32_t k=0;k<SLC_GRID;k++) {
         uint32_t pos=slc_gpos(&SLC_VOCALS,k);
         while(grid.pos<pos) slc_dec_next(&SLC_VOCALS,&grid);
-        assert(slc_dec_st(&grid)==SLC_VOCALS.grid[k]);
+        assert(slc_dec_st(&grid)==slc_grid_state(&SLC_VOCALS,k));
         assert(slc_state_at(&SLC_VOCALS,pos)==slc_dec_st(&grid));
     }
     for(uint32_t g=0;g<NELEM(BG_VOCAL_GROUPS);g++) {
@@ -85,6 +85,17 @@ static void save_tests(void) {
     project_capture(&saved);assert(!memcmp(saved.vocal_id[3],BG_VOCAL_ID,8));
     assert(proj_pack(&wire,&saved));uint32_t magic;memcpy(&magic,wire.raw,4);assert(magic==PROJ_MAGIC);
     assert(proj_import(&decoded,&wire,sizeof wire));assert(!memcmp(decoded.vocal_id[3],BG_VOCAL_ID,8));
+#ifdef BGIRL_MIAMI_SLOT
+    uint8_t *from = (uint8_t *)smp_user_xip(0), *to = (uint8_t *)smp_user_xip(2);
+    memcpy(to, from, SMP_USER_SIZE);
+    memset(from, 0xff, SMP_USER_SIZE);
+    to[MIAMI_AUDIO_OFF] ^= 1;
+    miami_scan();
+    assert(!miami_slot && !slc_get(SLC_SRC_VOCALS));
+    to[MIAMI_AUDIO_OFF] ^= 1;
+    miami_scan();
+    assert(miami_slot == to);
+#endif
     assert(!project_restore_runtime(&decoded));tick(1024);assert(trk[3].p[P_E0]==6 && trk[3].p[P_E1]==view && trk[3].p[P_E2]==1 && trk[3].p[P_ROOT]==5 && trk[3].step[4].note[0]==63);
     assert(!up_store_cat(0,"VOCAL",0));assert(up_rec(0)->ver==UP_VER_VOCAL);
     assert(!up_load(0));tick(1024);assert(slc_vocal_match(&trk[3]) && !trk[3].p[P_VCARR]);
@@ -127,7 +138,33 @@ static void sequence_tests(void) {
     }
 }
 int main(int argc,char **argv) {
-    web_nor_erase();web_boot();tick(FS);
+    web_nor_erase();
+#ifdef BGIRL_MIAMI_SLOT
+    assert(argc == 3);
+    FILE *slot = fopen(argv[2], "rb");
+    assert(slot);
+    assert(fread((uint8_t *)smp_user_xip(0), 1, SMP_USER_DATA + MIAMI_PAYLOAD_BYTES, slot)
+           == SMP_USER_DATA + MIAMI_PAYLOAD_BYTES);
+    assert(fgetc(slot) == EOF);
+    fclose(slot);
+#endif
+    web_boot();tick(FS);
+#ifdef BGIRL_MIAMI_SLOT
+    assert(miami_slot == smp_user_xip(0));
+#endif
+    slc_dec_t d;
+    slc_dec_at(&d, 0, 0);
+    if (argc > 1) {
+        char path[512];
+        snprintf(path, sizeof path, "%s/decoded.pcm", argv[1]);
+        FILE *pcm = fopen(path, "wb");
+        assert(pcm);
+        while (d.pos < SLC_VOCALS.len) {
+            int16_t value = (int16_t)slc_dec_next(&SLC_VOCALS, &d);
+            assert(fwrite(&value, sizeof value, 1, pcm) == 1);
+        }
+        assert(!fclose(pcm));
+    }
     entry_tests();lifetime_tests();save_tests();sequence_tests();
     setup(0);
     trk[3].p[P_E0]=0;

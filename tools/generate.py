@@ -32,6 +32,8 @@ if hardware:
         raise ValueError('hardware asset profile requires the stock Miami Bass shot bank')
     manifest = Path(__file__).resolve().parents[1] / 'assets/vocals/miami-bass/pack.json'
     report = package_vocals.package_pack(manifest, vocal_dest, trim_zero_tails=True)
+    import miami_slot
+    miami_slot.package(vocal_dest, report)
     print('HARDWARE VOCAL PACK:', report['bytes'], report['bank_sha256'])
 elif vocal_bank:
     bank = Path(vocal_bank).resolve()

@@ -75,7 +75,27 @@ static uint32_t slc_factory_vocal_group(void)
     return 1;
 }
 
+#ifdef BGIRL_MIAMI_SLOT
+#include "bgirl_miami_slot.h"
+static const slc_src_t SLC_VOCALS = {
+    .len = MIAMI_SAMPLES, .rate = 32768u, .nseg = 1,
+    .seg = {{0, 0, MIAMI_SAMPLES}},
+};
+static const uint8_t *volatile miami_slot;
+#define VOCAL_DATA (miami_slot + MIAMI_AUDIO_OFF)
+#else
 static const slc_src_t SLC_VOCALS = BG_VOCAL_INIT;
+#define VOCAL_DATA BG_VOCAL_DATA
+#endif
+
+static uint32_t slc_grid_state(const slc_src_t *s, uint32_t k)
+{
+#ifdef BGIRL_MIAMI_SLOT
+    if (s == &SLC_VOCALS)
+        return ((const uint32_t *)(miami_slot + MIAMI_GRID_OFF))[k];
+#endif
+    return s->grid[k];
+}
 static const slc_src_t SLC_PIANO = SLC_PIANO_INIT;
 static slc_src_t slc_usr[SMP_USER_SLOTS];
 typedef int16_t slc_rbuf_t[NVOICE][SLC_RB];           /* reverse windows, one per part voice (the part's eng_mem) */
@@ -125,13 +145,21 @@ static int slc_vocal_playing(const track_t *t)
 }
 static int slc_vocal_match(const track_t *t)
 {
+#ifdef BGIRL_MIAMI_SLOT
+    if (!miami_slot) return 0;
+#endif
     return !memcmp(bg_vocal_expected[t-trk],BG_VOCAL_ID,8);
 }
 /* source 0 = BREAK, 1..3 = USR1..3, 4 = PIANO; 0 = no material (an empty or erased slot, no PIANO in the build) */
 static const slc_src_t *slc_get(uint32_t src)
 {
     if (src == SLC_SRC_SPEECH) return SLC_SPEECH.len ? &SLC_SPEECH : 0;
-    if (src == SLC_SRC_VOCALS) return &SLC_VOCALS;
+    if (src == SLC_SRC_VOCALS) {
+#ifdef BGIRL_MIAMI_SLOT
+        if (!miami_slot) return 0;
+#endif
+        return &SLC_VOCALS;
+    }
     if (!src)
         return SLC_BREAK.len ? &SLC_BREAK : 0;
     if (src == SLC_SRC_PIANO)
@@ -169,7 +197,7 @@ static inline int32_t slc_dec_next(const slc_src_t *s, slc_dec_t *d)
         d->pred = 0;
         d->idx = 0;
     }
-    b = (s == &SLC_SPEECH ? BG_SPEECH_DATA : s == &SLC_VOCALS ? BG_VOCAL_DATA : SMP_DATA)[g->off + (rel >> 1)];
+    b = (s == &SLC_SPEECH ? BG_SPEECH_DATA : s == &SLC_VOCALS ? VOCAL_DATA : SMP_DATA)[g->off + (rel >> 1)];
     code = (rel & 1u) ? (b >> 4) : (b & 15u);
     step = IMA_STEP[d->idx];
     vd = step >> 3;
@@ -222,7 +250,12 @@ static void slc_bounds(const slc_src_t *s, uint32_t div, uint32_t j, uint32_t *a
         *a=*b=*st=0;
         if (div<NELEM(BG_VOCAL_GROUPS) && j<BG_VOCAL_GROUPS[div].n) {
             uint32_t e=BG_VOCAL_GROUPS[div].first+j;
+#ifdef BGIRL_MIAMI_SLOT
+            const uint32_t *entry = (const uint32_t *)(miami_slot + SMP_USER_DATA) + 3u * e;
+            *a = entry[0]; *b = entry[1]; *st = entry[2];
+#else
             *a=BG_VOCAL_ENTRIES[e].a; *b=BG_VOCAL_ENTRIES[e].b; *st=BG_VOCAL_ENTRIES[e].st;
+#endif
         }
         return;
     }
@@ -232,7 +265,7 @@ static void slc_bounds(const slc_src_t *s, uint32_t div, uint32_t j, uint32_t *a
         uint32_t w = SLC_GRID >> (2u + div);
         *a = slc_gpos(s, j * w);
         *b = slc_gpos(s, (j + 1u) * w);
-        *st = s->grid[j * w];
+        *st = slc_grid_state(s, j * w);
     } else if (m) {
         j = j < m->n ? j : m->n - 1u;
         *a = m->pos[j];
@@ -353,7 +386,7 @@ static uint32_t slc_state_at(const slc_src_t *s, uint32_t pos)
         k--;
     while (k + 1u < SLC_GRID && slc_gpos(s, k + 1u) <= pos)
         k++;
-    slc_dec_at(&d, slc_gpos(s, k), s->grid[k]);
+    slc_dec_at(&d, slc_gpos(s, k), slc_grid_state(s, k));
     while (d.pos < pos)
         slc_dec_next(s, &d);
     return slc_dec_st(&d);
@@ -511,6 +544,11 @@ static void slice_note_on(track_t *t, voice_t *v)
         return;
     }
 #endif
+    if (!s && src == SLC_SRC_VOCALS) {
+        v->active = v->gate = 0;
+        speech_last[t-trk] = 0;
+        return;
+    }
     if (!s) {                                           /* no material: the sine (from phase 0: no click) */
         v->s[4] = (int32_t)SLC_SINE;
         v->s[6] = 1;
@@ -549,7 +587,7 @@ static void slc_fill(const slc_src_t *s, int16_t *rb, uint32_t ws, uint32_t n, u
     if (a <= ws && a > slc_gpos(s, k))
         slc_dec_at(&d, a, sa);
     else
-        slc_dec_at(&d, slc_gpos(s, k), s->grid[k]);
+        slc_dec_at(&d, slc_gpos(s, k), slc_grid_state(s, k));
     while (d.pos < ws)
         slc_dec_next(s, &d);
     for (i = 0; i < n; i++)

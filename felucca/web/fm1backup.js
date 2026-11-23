@@ -151,11 +151,11 @@ export async function restoreBackup(request, file, onProgress = () => {}) {
 
 // Installer connection: no editor page or watcher owns this input simultaneously.
 export class BackupConnection {
-  constructor(input, output) {
-    this.input = input; this.output = output; this.pending = null;
+  constructor(input, output, editorTag = 76) {
+    this.input = input; this.output = output; this.editorTag = editorTag; this.pending = null;
     input.onmidimessage = (e) => {
       const d = e.data;
-      if (d.length < 6 || d[0] !== 240 || d[1] !== 125 || d[2] !== 70 || d[3] !== 76 || d.at(-1) !== 247) return;
+      if (d.length < 6 || d[0] !== 240 || d[1] !== 125 || d[2] !== 70 || d[3] !== this.editorTag || d.at(-1) !== 247) return;
       if (this.pending?.cmd === d[4]) { const p = this.pending; this.pending = null; clearTimeout(p.timer); p.resolve(Array.from(d.slice(5, -1))); }
     };
   }
@@ -164,7 +164,7 @@ export class BackupConnection {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => { this.pending = null; reject(new Error("Backup timed out. Keep the FM-1 connected and stopped.")); }, opt.timeout || 1200);
       this.pending = { cmd, timer, resolve, reject };
-      try { this.output.send([240, 125, 70, 76, cmd, ...args, 247]); }
+      try { this.output.send([240, 125, 70, this.editorTag, cmd, ...args, 247]); }
       catch (e) { clearTimeout(timer); this.pending = null; reject(e); }
     });
   }
