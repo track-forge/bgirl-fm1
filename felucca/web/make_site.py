@@ -36,7 +36,7 @@ def product_of(raw):
     return "".join(chr((m - i - 1) & 0xFF) for i in range(BLOCKS) if (m := raw[i * BLK + KEEP]) != 0x7D)
 
 
-def main(pkg, version, out, miami=None):
+def main(pkg, version, out, miami=None, installer_only=False):
     pkg, out = Path(pkg), Path(out)
     raw = pkg.read_bytes()
     product = product_of(raw)
@@ -46,11 +46,20 @@ def main(pkg, version, out, miami=None):
         raise SystemExit(f"{pkg}: no Felucca loader in it; the site ships only fm1pkg_make.py packages "
                          "(a package patched from an official one carries vendor files)")
     html = (HERE / "index_pkg.html").read_text(encoding="utf-8")
+    if installer_only:
+        html = html.replace("<title>Felucca</title>", "<title>BGIRL FM-1 installer</title>")
+        html = html.replace("<h1>Felucca</h1>", "<h1>BGIRL FM-1</h1>")
+        html = html.replace("Felucca 1.0 is a field-testing release; please report problems on GitHub.",
+                            "BGIRL FM-1 is custom firmware for the M-VAVE FM-1.")
+        html = html.replace("Felucca 1.0 は実地テスト版です。不具合は GitHub で知らせてください。",
+                            "BGIRL FM-1 は M-VAVE FM-1 用のカスタムファームウェアです。")
+        html = html.replace("say(`Felucca ${meta.version}`)", "say(`BGIRL FM-1 ${meta.version}`)")
     lib = strip_module((HERE / "fm1pkg.js").read_text(encoding="utf-8")) + "\n" + \
         strip_module((HERE / "fm1ota.js").read_text(encoding="utf-8")) + "\n" + \
         strip_module((HERE / "fm1backup.js").read_text(encoding="utf-8")) + "\n" + \
         strip_module((HERE / "fm1miami.js").read_text(encoding="utf-8"))
-    name = f"felucca-{re.sub(r'[^A-Za-z0-9.-]', '-', version)}.fwsc"
+    prefix = "bgirl-fm1" if installer_only else "felucca"
+    name = f"{prefix}-{re.sub(r'[^A-Za-z0-9.-]', '-', version)}.fwsc"
     bank = Path(miami).read_bytes() if miami else None
     meta = json.dumps({"version": version, "product": product, "pkg": "../../firmware/" + name,
                        "miami": "../../firmware/miami.slot" if bank else None})
@@ -59,9 +68,9 @@ def main(pkg, version, out, miami=None):
             raise SystemExit(f"index_pkg.html must contain {mark} once; update make_site.py")
     html = html.replace("/*LIB*/", lib).replace("/*META*/", meta)
     inst, ed, fw = out / "webapp" / "installer", out / "webapp" / "editor", out / "firmware"
-    for d in (inst, ed, fw):
+    for d in (inst, fw):
         d.mkdir(parents=True, exist_ok=True)
-    for old in fw.glob("felucca-*.fwsc"):          # one package: the current one
+    for old in fw.glob(f"{prefix}-*.fwsc"):          # one package: the current one
         old.unlink()
     (inst / "index.html").write_text(html, encoding="utf-8")
     shutil.copy(pkg, fw / name)
@@ -79,6 +88,10 @@ def main(pkg, version, out, miami=None):
         encoding="utf-8")
     for doc in ("LICENSE", "LICENSING.md"):
         shutil.copy(HERE.parent / doc, fw / doc)
+    if installer_only:
+        print(f"site: {out}: webapp/installer, firmware/{name} ({len(raw)} B, {product})")
+        return
+    ed.mkdir(parents=True, exist_ok=True)
     shutil.copy(HERE / "editor.html", ed / "index.html")
     for f in ("fukiai.ttf", "FUKIAI-LICENSE.txt", "fm1backup.js"):
         if (HERE / f).exists():
@@ -96,5 +109,6 @@ if __name__ == "__main__":
     parser.add_argument("version")
     parser.add_argument("output")
     parser.add_argument("--miami", help="matching hardware build/gen/miami.slot")
+    parser.add_argument("--installer-only", action="store_true", help="omit editor and homepage redirect")
     args = parser.parse_args()
-    main(args.package, args.version, args.output, args.miami)
+    main(args.package, args.version, args.output, args.miami, args.installer_only)

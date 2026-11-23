@@ -27,6 +27,29 @@ The two other slots remain ordinary SAMPLE/SLICE/GRAIN slots.
 
 ## Installer
 
+### GitHub Pages
+
+After a web build, stage the same Pages layout with a local candidate bundle:
+
+```sh
+tools/stage-hortator-preview.sh "$PWD/felucca/build/emu" /absolute/new/site /absolute/bundle v0.0.1-rc1
+```
+
+The bundle contains `bgirl-fm1-v0.0.1-rc1.fwsc`, `miami.slot`, and
+`SHA256SUMS` (the SHA-256 of the firmware then the bank, in standard
+`sha256sum` format). Use the hashes of the exact artifacts under test.
+Serve the output on loopback and open it in desktop Chrome or Edge.
+
+To enable the public installer after hardware qualification, attach
+`bgirl-fm1-v0.0.1.fwsc` and its matching `miami.slot` to the v0.0.1 GitHub
+Release and add their hashes (firmware first) to
+`tools/pages-installer-v0.0.1.sha256`. Pages downloads those exact assets
+and rejects missing or mismatched bytes. Without the checked-in manifest,
+Pages remains a browser-only preview. FM-SWITCH uses the FWSC alone.
+
+### Standalone installer
+
+
 Generate with `BGIRL_HARDWARE_ASSETS=1 python3 tools/generate.py`. Build the
 matching firmware with `BGIRL_HARDWARE_ASSETS=1 ./felucca/build.sh`. Once the
 target link blockers below are resolved, stage the existing installer with

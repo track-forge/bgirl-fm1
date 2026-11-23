@@ -6,6 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BGIRL-FM1 · Browser preview</title>
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
 <meta name="description" content="Jam on BGIRL-FM1, a six-track electro groovebox with a vocoder, right in your browser.">
 <link rel="stylesheet" href="sim.css">
 </head>
@@ -38,7 +39,10 @@
       <p class="hero-description">BGIRL FM-1 is a six-track <strong>electro groovebox</strong> for the M-VAVE FM-1, with a built-in <strong>vocoder</strong></p>
       <p class="hero-description hero-tagline">The machine that turns humans into cybernetic <strong>b-boys and b-girls</strong>.</p>
       <p class="hero-actions">
-        <a class="cta" href="#play">Play it</a>
+        <a class="cta" href="#play">Play in browser</a>
+<!-- BGIRL-INSTALL-BEGIN -->
+        <a class="cta ghost" href="#install">Install on your FM-1</a>
+<!-- BGIRL-INSTALL-END -->
       </p>
     </div>
     <p class="scroll-cue" id="scroll-cue" aria-hidden="true">Scroll</p>
@@ -188,6 +192,21 @@
     </li>
   </ol>
 </section>
+
+<!-- BGIRL-INSTALL-BEGIN -->
+<section id="install" class="install" aria-labelledby="install-title">
+  <header class="install-head">
+    <h2 id="install-title">Put it on your FM-1.</h2>
+    <p>Install BGIRL firmware and the Miami vocal starter pack. A verified pack is reused; other sample banks are not overwritten.</p>
+  </header>
+  <ol class="install-steps">
+    <li><h3>Use Chrome or Edge</h3><p>Open the installer on a computer with Web MIDI support.</p></li>
+    <li><h3>Plug in your FM-1</h3><p>Use a USB data cable. Back up any work you want to keep before switching firmware.</p></li>
+    <li><h3>Press Install</h3><p>Allow MIDI access and keep the cable connected until the installer finishes.</p></li>
+  </ol>
+  <p class="where"><a class="cta" href="webapp/installer/">Open the BGIRL installer</a></p>
+</section>
+<!-- BGIRL-INSTALL-END -->
 
 <div class="foot-band" id="foot-band" aria-hidden="true"></div>
 <footer class="foot">

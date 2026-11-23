@@ -1,7 +1,5 @@
 # BGIRL-FM1
 
-[![BGIRL-FM1 chrome wordmark](assets/branding/bgirl-fm1-wordmark.png)](https://track-forge.github.io/bgirl-fm1/)
-
 **An electro groovebox with opinions.** Start with a Miami bass groove, give a
 synth line a voice through the sample-fed vocoder, and punch in a bass patch
 shaped by a real SH-01A. Six tracks share eight voices on the M-VAVE FM-1.
@@ -12,7 +10,7 @@ for when making electro close enough to play with both hands.
 **[Open the full studio](https://track-forge.github.io/bgirl-fm1/play/)** ·
 [Build locally](#run-locally)
 
-![BGIRL studio with the CREW display](docs/img/crew/desktop.png)
+[![BGIRL browser preview showing the pink FM-1 panel and the CREW dancer](docs/img/bgirl-browser-preview.png)](https://track-forge.github.io/bgirl-fm1/)
 
 **Hardware installation:** FM-1 firmware is in hardware testing. The public
 Pages site is a playable preview, not a firmware installer.
