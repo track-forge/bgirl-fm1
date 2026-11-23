@@ -424,12 +424,15 @@ static void draw_menu(void)
     if (ui.menu == 3) {                                /* INFO: its rows in the first band, the second clear */
         for (pass = 0; pass < 2u; pass++) {
             uint32_t top_y = pass ? 132u : (uint32_t)H_HEAD;
-            cv_begin(240, pass ? 240u - 132u : 132u - H_HEAD, T_BG);
-            cv_oy = -(int32_t)top_y;
-            if (!pass)
-                info_rows();
-            cv_oy = 0;
-            cv_blit(0, top_y);
+            uint32_t height = pass ? 240u - 132u : 132u - H_HEAD;
+            for (uint32_t top = 0; top < height; top = cv_end) {
+                cv_band(240, height, T_BG, top);
+                cv_oy = -(int32_t)top_y;
+                if (!pass)
+                    info_rows();
+                cv_oy = 0;
+                cv_blit(0, top_y);
+            }
         }
         return;
     }
@@ -438,15 +441,18 @@ static void draw_menu(void)
         int32_t thumb = MENU_DOC_H * MENU_DOC_H / (max + MENU_DOC_H);
         if (thumb < 12) thumb = 12;
         for (pass = 0; pass < 2u; pass++) {
-            cv_begin(240, pass ? MENU_DOC_H - 124u : 124u, T_BG);
-            cv_oy = pass ? -124 : 0;
-            cv_scroll = 1;
-            menu_document(-scroll, 1);
-            cv_scroll = 0;
-            cv_rrect(235, 2, 3, MENU_DOC_H - 4, 1, T_LINE, T_BG);           /* the scroll bar */
-            cv_rrect(235, 2 + (max ? scroll * (MENU_DOC_H - 4 - thumb) / max : 0), 3, thumb, 1, T_MID, T_LINE);
-            cv_oy = 0;
-            cv_blit(0, H_HEAD + pass * 124u);
+        uint32_t height = pass ? MENU_DOC_H - 124u : 124u;
+        for (uint32_t top = 0; top < height; top = cv_end) {
+                cv_band(240, height, T_BG, top);
+                cv_oy = pass ? -124 : 0;
+                cv_scroll = 1;
+                menu_document(-scroll, 1);
+                cv_scroll = 0;
+                cv_rrect(235, 2, 3, MENU_DOC_H - 4, 1, T_LINE, T_BG);           /* the scroll bar */
+                cv_rrect(235, 2 + (max ? scroll * (MENU_DOC_H - 4 - thumb) / max : 0), 3, thumb, 1, T_MID, T_LINE);
+                cv_oy = 0;
+                cv_blit(0, H_HEAD + pass * 124u);
+        }
         }
         cv_begin(240, 240 - (H_HEAD + MENU_DOC_H), T_BG);
         cv_key_hint(8, 4, KC_PRESETS, "SCROLL", 1, T_BG);
@@ -458,19 +464,22 @@ static void draw_menu(void)
     split = menu_split(n);
     for (pass = 0; pass < 2u; pass++) {
         int32_t top_y = pass ? (int32_t)split : H_HEAD;
-        cv_begin(240, pass ? 240u - split : split - H_HEAD, T_BG);
-        cv_oy = -top_y;                               /* drawn in screen rows */
-        if (!pass)
-            menu_tabs();
-        if (0)                                        /* SYSTEM rows stay on the open canvas */
-            cv_rrect(4, MP_Y, 232, mr_y(n) - mr_gap() + MP_PAD - MP_Y, 8, T_SURF, T_BG);
-        for (k = 0; k < n; k++)
-            if (mr_y(k) + mr_h() > top_y && mr_y(k) - 1 < top_y + (int32_t)cv_h)
-                menu_row(k, first + k);
-        if (pass)
-            cv_key_row(8, 232, MK_Y, KEYS[ui.menu_sel == MI_LCLEAR ? 2 : !menu_valued(ui.menu_sel)], 3, 7u, T_BG);
-        cv_oy = 0;
-        cv_blit(0, (uint32_t)top_y);
+        uint32_t height = pass ? 240u - split : split - H_HEAD;
+        for (uint32_t top = 0; top < height; top = cv_end) {
+            cv_band(240, height, T_BG, top);
+            cv_oy = -top_y;                               /* drawn in screen rows */
+            if (!pass)
+                menu_tabs();
+            if (0)                                        /* SYSTEM rows stay on the open canvas */
+                cv_rrect(4, MP_Y, 232, mr_y(n) - mr_gap() + MP_PAD - MP_Y, 8, T_SURF, T_BG);
+            for (k = 0; k < n; k++)
+                if (mr_y(k) + mr_h() > top_y && mr_y(k) - 1 < top_y + (int32_t)cv_h)
+                    menu_row(k, first + k);
+            if (pass)
+                cv_key_row(8, 232, MK_Y, KEYS[ui.menu_sel == MI_LCLEAR ? 2 : !menu_valued(ui.menu_sel)], 3, 7u, T_BG);
+            cv_oy = 0;
+            cv_blit(0, (uint32_t)top_y);
+        }
     }
 }
 static void enc_drop(void)                             /* knob turns nobody takes */

@@ -1759,9 +1759,9 @@ static void knob_arc(int32_t x, int32_t y, int32_t r, const uint8_t *cov, const 
             for (m = 0; m < 4; m++) {                /* top right, bottom right, bottom left, top left */
                 int32_t s = m == 0 ? q : m == 1 ? 512 - q : m == 2 ? q - 512 : -q;
                 int32_t px = m < 2 ? x + r + i : x + r - 1 - i, py = (m == 0 || m == 3 ? y + r - 1 - j : y + r + j) + cv_oy;
-                if (s < -KA_END || s > KA_END || (uint32_t)px >= cv_w || (uint32_t)py >= cv_h)
+                if (s < -KA_END || s > KA_END || (uint32_t)px >= cv_w || (uint32_t)py < cv_top || (uint32_t)py >= cv_end)
                     continue;
-                cv_px[(uint32_t)py * cv_w + (uint32_t)px] = (s >= lo && s <= hi ? rv : rt)[a];
+                cv_row((uint32_t)py)[px] = (s >= lo && s <= hi ? rv : rt)[a];
             }
         }
 }
@@ -1996,11 +1996,15 @@ static void draw_home_tracks(void)
 static void graph_scope(uint16_t c)
 {
     static int16_t snap[SCOPE_N] __attribute__((section(".pool")));
-    uint32_t w = scope_w, i, trig = 0;
+    uint32_t i, trig = 0;
     int32_t stage=ui.home && design_context()==DC_STAGE_MORE, h=stage?(int32_t)graph_h()-44:(int32_t)cv_h;
     int32_t cy = (stage?26:0)+h/2, py = cy, x, peak = 1500, a = stage?h/2-6:cv_h == H_GRAPH ? 46 : cy - 6;   /* (LARGE: the strip) */
+    if (!cv_top) {                                  /* use one trace for every band */
+        uint32_t w = scope_w;
+        for (i = 0; i < SCOPE_N; i++)
+            snap[i] = scope_buf[(w + i) & (SCOPE_N - 1u)];
+    }
     for (i = 0; i < SCOPE_N; i++) {
-        snap[i] = scope_buf[(w + i) & (SCOPE_N - 1u)];
         if (snap[i] > peak)
             peak = snap[i];
         else if (-snap[i] > peak)
@@ -2316,28 +2320,8 @@ static void graph_song(void)
 #include "ui_stage.c"
 #include "ui_system.c"
 
-static void draw_graph(void)
+static void draw_graph_pixels(const page_t *pg, const track_t *t, uint16_t c)
 {
-    const page_t *pg = cur_page();
-    const track_t *t = TSEL;
-    uint16_t c = ACC;
-    uint32_t sig;
-    if (!ui.home && pg->graph == GR_TRK) {
-        if(design_context()==DC_STAGE_MORE)stage_mixer();else draw_tracks();
-        return;
-    }
-    if (ui.home && home_crew()) { draw_crew(); return; }
-    if (ui.home && home_tracks()) {                  /* MENU > HOME TRACKS (1.3) */
-        if(design_context()==DC_STAGE_MORE)stage_tracks();else draw_home_tracks();
-        return;
-    }
-    if (!ui.home && pg->scope == SC_ENGINE && ENGINES[t->eng_req % NENGINES] == &ENG_SAMPLE) sample_wave_tick(t);
-    if (!ui.home && pg->graph == GR_DANCE) dance_snapshot = dance_read(song.sel);
-    sig = graph_signature();
-    if (!ui.force && sig == ui.graph_sig)
-        return;
-    ui.graph_sig = sig;
-    cv_begin(240, graph_h(), T_BG);
     cv_rrect(3, 0, 234, graph_h(), design_context()?0:5, design_context()?T_BG:T_SURF, T_BG);   /* the panel (MENU > LARGE: the strip) */
     cv_bg = design_context()?T_BG:T_SURF;             /* (text drawn with cv_text lands on it) */
     cv_oy = GOY;                                     /* graphs on a 100 px scale */
@@ -2473,5 +2457,33 @@ static void draw_graph(void)
         cv_text(10,26,&AF_C,label,T_MID);
     }
     if(design_context()==DC_CUT_SEQ)cut_sequence_heading(pg,t);
-    cv_blit(0, graph_y());
+}
+
+static void draw_graph(void)
+{
+    const page_t *pg = cur_page();
+    const track_t *t = TSEL;
+    uint32_t sig;
+    if (!ui.home && pg->graph == GR_TRK) {
+        if(design_context()==DC_STAGE_MORE)stage_mixer();else draw_tracks();
+        return;
+    }
+    if (ui.home && home_crew()) { draw_crew(); return; }
+    if (ui.home && home_tracks()) {                  /* MENU > HOME TRACKS (1.3) */
+        if(design_context()==DC_STAGE_MORE)stage_tracks();else draw_home_tracks();
+        return;
+    }
+    if (!ui.home && pg->scope == SC_ENGINE && ENGINES[t->eng_req % NENGINES] == &ENG_SAMPLE) sample_wave_tick(t);
+    if (!ui.home && pg->graph == GR_DANCE) dance_snapshot = dance_read(song.sel);
+    sig = graph_signature();
+    if (!ui.force && sig == ui.graph_sig)
+        return;
+    ui.graph_sig = sig;
+    uint32_t h = graph_h(), y = graph_y();
+    uint16_t c = ACC;
+    for (uint32_t top = 0; top < h; top = cv_end) {
+        cv_band(240, h, T_BG, top);
+        draw_graph_pixels(pg, t, c);
+        cv_blit(0, y);
+    }
 }

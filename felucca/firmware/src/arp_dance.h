@@ -10,16 +10,20 @@
 #ifndef BGIRL_DANCE_TELEMETRY
 #define BGIRL_DANCE_TELEMETRY 1
 #endif
-_Static_assert(__atomic_always_lock_free(sizeof(uint32_t), 0), "dance needs lock-free 32-bit load/store");
+#ifndef BG_SNAPSHOT_LOAD
+_Static_assert(__atomic_always_lock_free(sizeof(uint32_t), 0), "telemetry needs lock-free 32-bit load/store");
+#define BG_SNAPSHOT_LOAD(p) __atomic_load_n(p, __ATOMIC_RELAXED)
+#define BG_SNAPSHOT_STORE(p, v) __atomic_store_n(p, v, __ATOMIC_RELAXED)
+#endif
 static uint32_t dance_state[NTRK];
-static uint32_t dance_read(uint32_t i) { return __atomic_load_n(&dance_state[i], __ATOMIC_RELAXED); }
-static void dance_reset(uint32_t i) { __atomic_store_n(&dance_state[i], 0u, __ATOMIC_RELAXED); }
+static uint32_t dance_read(uint32_t i) { return BG_SNAPSHOT_LOAD(&dance_state[i]); }
+static void dance_reset(uint32_t i) { BG_SNAPSHOT_STORE(&dance_state[i], 0u); }
 static void dance_trigger(uint32_t i)
 {
 #if BGIRL_DANCE_TELEMETRY
     uint32_t s = dance_read(i), p = s & 15u;
     s = s & 512u ? 512u | 256u | (p << 4) | (p == 11u ? 0u : p + 1u) : 512u;
-    __atomic_store_n(&dance_state[i], s, __ATOMIC_RELAXED);
+    BG_SNAPSHOT_STORE(&dance_state[i], s);
 #else
     (void)i;
 #endif

@@ -79,9 +79,11 @@ static __attribute__((noinline)) int c1_wait(void) { return fm1_cpu1_wait(); }  
 /* ----------------------------------------------------- base, display --- */
 #include "../bsp/chip/libc.c"
 #include "lcd.c"
+#define CV_ROWS 80u
 #include "gfx.c"
 
 /* ----------------------------------------------------------- sound --- */
+#include "fm1_snapshot.h"
 #include "core.h"
 #include "engines.c"             /* dsp.c, the eng_*.c files, the factory patterns */
 #include "params.c"
