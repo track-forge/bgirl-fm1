@@ -3914,6 +3914,9 @@ function renderSamples() {
   if (!dev || !dev.smp) { box.replaceChildren(); return; }
   const max = SMP.MAX_DATA;
   box.replaceChildren(...dev.smp.slots.map((u, k) => {
+    if (u.zones === 127)
+      return el("div", { class: "smp" }, el("b", { text: `USR${k + 1}` }),
+        el("span", { text: " · Miami Bass — managed by the installer" }));
     const d = smpDraft[k];
     const status = u.zones ? `${u.name || "—"}, ${u.zones} ${t("zones")}, ${u.kib} KiB` : t("empty");
     const bar = el("progress", { max: dev.smp.slotKiB, value: u.kib, title: `${u.kib} / ${dev.smp.slotKiB} KiB` });

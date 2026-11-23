@@ -37,6 +37,10 @@ def slot_info(r):
         for k in range(n):
             nz = r[i]
             j = r.index(0, i + 1)
+            if nz == 127:
+                out.append(f"USR{k + 1}: Miami Bass (managed by the installer)")
+                i = j + 2
+                continue
             out.append(f"USR{k + 1}: {'empty' if not nz else f'{nz} zones, {printable(r[i + 1:j])}, {r[j + 1]} KiB'}")
             i = j + 2
         return out

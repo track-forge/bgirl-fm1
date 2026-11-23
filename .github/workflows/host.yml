@@ -73,6 +73,8 @@ jobs:
               'kind': 'browser firmware preview, not a hardware release',
           }, indent=2) + '\n')
           PYTHON
+      - name: Verify Miami user-slot playback and provisioning
+        run: ./tests/run_miami_slot_test.sh
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:

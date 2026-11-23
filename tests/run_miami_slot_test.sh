@@ -18,3 +18,8 @@ for file in decoded.pcm vocal-0.wav vocal-1.wav vocal-2.wav vocal-3.wav; do
     cmp "build/host/miami-embedded/$file" "build/host/miami-slot/$file"
 done
 echo "Miami XIP PCM and four dry/vocoded renders match the embedded hardware oracle byte for byte"
+cc -O1 -w -ffp-contract=off -DBGIRL_MIAMI_SLOT -Ifirmware/hal -Ifirmware/bsp/chip \
+    -Ifirmware/bsp/boards/fm1 -Ifirmware/src -Ibuild/gen \
+    -o build/host/miami-slot/provision ../tests/miami_provision_test.c -lm
+build/host/miami-slot/provision build/gen/miami.slot
+node web/test_miami.mjs build/gen/miami.slot
