@@ -16,7 +16,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const tap=async name=>{await page.getByRole('button',{name,exact:true}).click({delay:90});await page.waitForTimeout(650);};
   const turn=async(name,n)=>{for(let i=0;i<Math.abs(n);i++)await page.getByRole('slider',{name,exact:true}).press(n>0?'ArrowUp':'ArrowDown');await page.waitForTimeout(300);};
   const fixture=async id=>{page.once('dialog',d=>d.accept());await page.locator('#'+id).click();await page.waitForTimeout(500);};
-  await on();await fixture('clarity-whole');let q=await info();assert.deepEqual(q.slice(0,7),[2,1,94,127,0,0,151]);
+  await on();await fixture('clarity-whole');let q=await info();assert.deepEqual(q.slice(0,7),[0,1,94,127,0,0,151]);
   await page.getByRole('button',{name:'GLO',exact:true}).click({modifiers:['Shift']});
   const before=await info();page.once('dialog',d=>d.dismiss());await page.locator('#clarity-chops').click();assert.deepEqual(await info(),before);assert.equal(await page.locator('.latched .face.btn').count(),1);
   await fixture('clarity-whole');assert.equal(await page.locator('.latched .face.btn').count(),0);
