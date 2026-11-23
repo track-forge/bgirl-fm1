@@ -30,7 +30,19 @@ jobs:
       - run: python -m pip install Pillow==12.1.1 fonttools==4.68.0
       - run: ./build.sh --web
       - run: ./tests/run_tests.sh
-      - run: tools/stage-hortator-preview.sh "$PWD/felucca/build/emu" "$PWD/felucca/build/pages"
+      - name: Stage Pages and the pinned installer, if enabled
+        run: |
+          set -- "$PWD/felucca/build/emu" "$PWD/felucca/build/pages"
+          if test -f tools/pages-installer-v0.0.1.sha256; then
+            bundle=$(mktemp -d)
+            release=https://github.com/${GITHUB_REPOSITORY}/releases/download/v0.0.1
+            for asset in felucca-v0.0.1.fwsc miami.slot; do
+              curl --fail --silent --show-error --location --retry 3 "$release/$asset" -o "$bundle/$asset"
+            done
+            cp tools/pages-installer-v0.0.1.sha256 "$bundle/SHA256SUMS"
+            set -- "$@" "$bundle" v0.0.1
+          fi
+          tools/stage-hortator-preview.sh "$@"
       - name: Install browser acceptance tools
         run: |
           npm install --prefix "$RUNNER_TEMP/bgirl-browser" --no-save playwright@1.59.1
@@ -70,7 +82,7 @@ jobs:
               'commit': sha,
               'source': f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/tree/{sha}',
               'license': 'GPL-3.0-only',
-              'kind': 'browser firmware preview, not a hardware release',
+              'kind': 'browser preview with pinned installer' if Path('felucca/build/pages/webapp/installer').is_dir() else 'browser preview',
           }, indent=2) + '\n')
           PYTHON
       - name: Verify Miami user-slot playback and provisioning
