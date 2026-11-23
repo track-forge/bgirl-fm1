@@ -1134,6 +1134,9 @@ static void mix_block(int32_t *out, uint32_t n)
     bg_capture_begin(n);
 #ifdef BGIRL_VOCODER_BENCH
     voc_bench_sample(VOC_SETUP, voc_start);
+    const uint32_t tracing = voc_trace_ack & 1u;
+    if (tracing) voc_current.capture += fm1_ticks() - voc_start;
+    uint32_t parts_start = tracing ? fm1_ticks() : 0;
 #endif
 #endif
     perf = perf_begin(n);                               /* the FX hold layer at work (perform.c) */
@@ -1174,6 +1177,9 @@ static void mix_block(int32_t *out, uint32_t n)
     for (i = 0; i < NPART; i++)                         /* (one core: as 1.6) */
         mix_part(&trk[i], n);
 #endif
+#ifdef BGIRL_VOCODER_BENCH
+    if (tracing) voc_current.parts += fm1_ticks() - parts_start;
+#endif
 #if BGIRL_VOCODER
     if(bg_bus.owner>=0 && bg_bus.mod_valid) {
 #ifdef BGIRL_VOCODER_BENCH
@@ -1183,7 +1189,7 @@ static void mix_block(int32_t *out, uint32_t n)
         if(!bg_bus.car_valid || (bg_bus.carrier>=0 && (trk[bg_bus.carrier].p[P_MUTE] || (pf.mute>>bg_bus.carrier&1u)))) {
             for(i=0;i<n;i++) bg_bus.car[i]=0;
 #ifdef BGIRL_VOCODER_BENCH
-            if (voc_bench.mode == VOC_FIXED)
+            if (voc_bench.mode >= VOC_FIXED)
                 memset(bg_fixed.synthesis, 0, sizeof bg_fixed.synthesis);
             else
 #endif
@@ -1192,6 +1198,7 @@ static void mix_block(int32_t *out, uint32_t n)
 #ifdef BGIRL_VOCODER_BENCH
         uint32_t mod_bits = 0, car_bits = 0;
         voc_bench_sample(VOC_JOIN, start);
+        if (tracing) voc_current.capture += fm1_ticks() - start;
         for (i = 0; i < n; i++) {
             mod_bits |= (uint32_t)bg_bus.mod[i];
             car_bits |= (uint32_t)bg_bus.car[i];
@@ -1206,21 +1213,35 @@ static void mix_block(int32_t *out, uint32_t n)
         ) {
 #ifdef BGIRL_VOCODER_BENCH
             start = fm1_ticks();
-            if (voc_bench.mode == VOC_FIXED)
-                bg_fixed_process(bg_bus.mod, bg_bus.car, n, trk[bg_bus.owner].p);
+            if (voc_bench.mode >= VOC_FIXED)
+                bg_fixed_run(bg_bus.mod, bg_bus.car, n, trk[bg_bus.owner].p,
+                             voc_bench.mode == VOC_OPT);
             else
 #endif
                 bg_vocoder_process(bg_bus.mod,bg_bus.car,n,trk[bg_bus.owner].p);
 #ifdef BGIRL_VOCODER_BENCH
+            if (tracing) {
+                voc_current.bank += fm1_ticks() - start;
+                voc_current.calls++;
+            }
             voc_bench_sample(car_bits && mod_bits ? VOC_WET : VOC_SILENT, start);
 #endif
         }
+#ifdef BGIRL_VOCODER_BENCH
+        uint32_t finish_start = tracing ? fm1_ticks() : 0;
+#endif
         T_SPREAD(&trk[bg_bus.owner])=0;
         mix_finish(&trk[bg_bus.owner],bg_bus.mod,n SM_ARG(&mx[0]));
+#ifdef BGIRL_VOCODER_BENCH
+        if (tracing) voc_current.fx += fm1_ticks() - finish_start;
+#endif
     }
 #endif
 #if FELUCCA_CPU2
     for(i=0;i<NPART;i++) track_lfo_end(&trk[i]);
+#endif
+#ifdef BGIRL_VOCODER_BENCH
+    uint32_t fx_start = tracing ? fm1_ticks() : 0;
 #endif
     crew_publish(n);
     if (perf)
@@ -1232,6 +1253,9 @@ static void mix_block(int32_t *out, uint32_t n)
         scope_take_mix(n);
     if (perf) {
         perf_master(out, n);
+#ifdef BGIRL_VOCODER_BENCH
+        if (tracing) voc_current.fx += fm1_ticks() - fx_start;
+#endif
         return;
     }
     for (i = 0; i < n; i++) {
@@ -1241,4 +1265,7 @@ static void mix_block(int32_t *out, uint32_t n)
         out[2u * i] = l;
         out[2u * i + 1u] = r;
     }
+#ifdef BGIRL_VOCODER_BENCH
+    if (tracing) voc_current.fx += fm1_ticks() - fx_start;
+#endif
 }

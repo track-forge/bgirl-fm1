@@ -366,6 +366,75 @@ static void con_at(void)
     }
 }
 
+#ifdef BGIRL_MIAMI_BENCH
+#if !FELUCCA_FLASH || !FELUCCA_SLICE || !defined(BGIRL_MIAMI_SLOT) || !FELUCCA_CDC
+#error "The Miami bench requires flash, SLICE, Miami assets and CDC"
+#endif
+_Static_assert(SMP_USER_DATA + MIAMI_PAYLOAD_BYTES <= SMP_USER_SIZE, "Miami exceeds slot");
+
+static int con_miami_word(const char *cmd, const char *word)
+{
+    return con_word(&cmd, word) && !*cmd;
+}
+
+static void con_miami(const char *cmd)
+{
+    /* RAM only: reboot always returns to the untouched-window control. */
+    static enum { IDLE, WINDOW, HEADER, VALID, MOUNTED, FAILED } stage;
+    static uint32_t offset, crc;
+    const uint8_t *slot = smp_user_xip(0);  /* physical slot 1 */
+    if (transport_busy() || fm1_in.notes) {
+        con_puts("ERR stop transport and release keys\r\n");
+        return;
+    }
+
+    if (con_miami_word(cmd, "window") && stage == IDLE) {
+        fl_plain_window_init();
+        stage = WINDOW;
+        con_puts("OK window\r\n");
+    } else if (con_miami_word(cmd, "header") && stage == WINDOW) {
+        uint8_t header[sizeof MIAMI_HEADER];
+        memcpy(header, slot, sizeof header);
+        con_puts("header=");
+        for (uint32_t i = 0; i < sizeof header; i++)
+            con_hex(header[i], 2);
+        con_puts("\r\n");
+        if (memcmp(header, MIAMI_HEADER, sizeof header)) {
+            stage = FAILED;
+            con_puts("ERR header mismatch\r\n");
+            return;
+        }
+        stage = HEADER;
+        crc = 0xFFFFFFFFu;
+        con_puts("OK header\r\n");
+    } else if (con_miami_word(cmd, "chunk") && stage == HEADER) {
+        uint32_t n = MIAMI_PAYLOAD_BYTES - offset;
+        if (n > 1024u)
+            n = 1024u;
+        uint32_t start = fm1_ms;
+        crc = st_crc32_add(crc, slot + SMP_USER_DATA + offset, n);
+        uint32_t elapsed = fm1_ms - start;
+        con_kv("offset", (int32_t)offset);
+        con_kv("length", (int32_t)n);
+        con_kv("elapsed_ms", (int32_t)elapsed);
+        offset += n;
+        if (offset == MIAMI_PAYLOAD_BYTES) {
+            con_kx("crc", ~crc);
+            stage = ~crc == MIAMI_PAYLOAD_CRC ? VALID : FAILED;
+        }
+        con_puts(stage == FAILED ? "ERR CRC mismatch\r\n" :
+                 stage == VALID ? "OK valid\r\n" : "OK chunk\r\n");
+    } else if (con_miami_word(cmd, "mount") && stage == VALID) {
+        miami_slot = slot;
+        ui.force = 1;
+        stage = MOUNTED;
+        con_puts("OK mounted read-only\r\n");
+    } else {
+        con_puts("ERR order: miami window, header, chunk (repeat), mount\r\n");
+    }
+}
+#endif
+
 static void con_exec(const char *p)
 {
     if (con_word(&p, "help") || con_word(&p, "?"))
@@ -373,11 +442,41 @@ static void con_exec(const char *p)
     else if (con_word(&p, "status"))
         con_status();
 #ifdef BGIRL_VOCODER_BENCH
+    else if (con_word(&p, "voctrace")) {
+        if (con_word(&p, "on"))
+            voc_trace_request = (voc_trace_request + 2u) | 1u;
+        else if (con_word(&p, "off"))
+            voc_trace_request &= ~1u;
+        else if (con_word(&p, "row") && !(voc_trace_request & 1u) &&
+                 voc_trace_request == voc_trace_ack) {
+            int ok;
+            uint32_t i = con_num(&p, &ok);
+            if (ok && i < 13u) {
+                struct voc_half r = i ? voc_events[(i - 1) / 3][(i - 1) % 3] : voc_worst;
+                con_kv("id", r.id);
+                con_kv("total_ticks", r.total);
+                con_kv("nested_ticks", r.nested);
+                con_kv("parts_ticks", r.parts);
+                con_kv("capture_ticks", r.capture);
+                con_kv("bank_ticks", r.bank);
+                con_kv("bank_calls", r.calls);
+                con_kv("fx_ticks", r.fx);
+                con_kv("song_tick", r.tick);
+                con_kv("voices_end", r.voices);
+                con_kv("flags", r.flags);
+                for (uint32_t t = 0; t < NPART; t++)
+                    con_kv("step", r.step[t]);
+            }
+        }
+        con_kv("trace_ack", voc_trace_ack);
+    }
     else if (con_word(&p, "vocbench")) {
         if (con_word(&p, "bypass"))
             voc_bench_request(VOC_BYPASS);
         else if (con_word(&p, "float"))
             voc_bench_request(VOC_FLOAT);
+        else if (con_word(&p, "opt"))
+            voc_bench_request(VOC_OPT);
         else if (con_word(&p, "fixed"))
             voc_bench_request(VOC_FIXED);
         else if (con_word(&p, "reset"))
@@ -400,6 +499,10 @@ static void con_exec(const char *p)
             con_kv(calls[i], (int32_t)report.calls[i]);
         }
     }
+#endif
+#ifdef BGIRL_MIAMI_BENCH
+    else if (con_word(&p, "miami"))
+        con_miami(p);
 #endif
     else if (con_word(&p, "dbg"))
         con_dbg();
