@@ -53,6 +53,21 @@ No installation needed. The preview updates automatically after successful main
 builds; use **Load electro demo** if a previous session's autosave is restored.
 
 
+### Mr. Dropout
+
+Select the speech track (T4 in the electro demo) and tap **FX** through
+**VOC TIME** to **MR DROPOUT**. **LOSS** sets how often and how badly the
+signal breaks, **MIX** blends it with the clean track, and **SYNC** selects
+**FREE** or an unswung **1/16** grid while transport runs. The grid schedules
+burst starts; the repeated fragments stay about 20 ms long at any tempo.
+
+Hold **OCT+** (**]** in the browser) for **LOSING YOU**. In 1/16 mode it
+waits for the next grid point; releasing first cancels the fill. Release
+after it starts to fade back to the dialed-in setting. With transport
+stopped the gesture works without waiting for a grid. Leave LOSS at zero
+for a clean signal between fills. The insert runs on one track at a time;
+its performance controls are session-local, not part of project saves.
+
 ## Run locally
 
 Requires Git, Python 3.11+, C compiler/libm, Node 24, Emscripten **6.0.10**.

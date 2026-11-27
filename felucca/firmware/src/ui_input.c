@@ -1076,6 +1076,19 @@ static void edit_param(uint32_t slot, int32_t steps)
     if (!d || !vp || d->max == d->min)
         return;
     v = param_turn(d, *vp, accel(EN_K1 + slot, steps, d->fmt == F_ENUM ? 0 : d->max - d->min));
+    if (pg->scope == SC_DROP) {
+        *vp = (int16_t)v;
+        unsigned owner = drop_base & 7u;
+        if (slot == 0 && v && owner && owner != song.sel + 1u)
+            drop_controls[owner - 1u][0] = 0;
+        if (slot == 0 || owner == song.sel + 1u) {
+            if (drop_controls[song.sel][0])
+                drop_base = dropout_controls(song.sel);
+            else if (owner == song.sel + 1u)
+                drop_base = 0;
+        }
+        return;
+    }
     if (vp == &TSEL->p[P_VCARR] && BGIRL_VOCODER) {
         int owner = voc_owner();
         if (owner >= 0 && owner != song.sel) {
@@ -1537,6 +1550,20 @@ static void ui_input(void)
     uint32_t lay, combo = 0, lytap, lkeys, glo, kq = 0;
     int32_t s, sel = 0, ks[4] = {0, 0, 0, 0};
     static uint32_t lock_ms;                            /* BPM LOCK: the last locked SELECT turn (fm1_ms | 1; 0 none) */
+    uint32_t drop_button = 1u << panel.btn[B_OCTUP];
+    int drop_page = !ui.home && !ui.menu && !ui.confirm && !ui.layer &&
+                    !name_on() && cur_page()->graph == GR_DROP;
+    drop_monitor = drop_page ? song.sel + 1u : 0;
+    unsigned held_track = drop_hold & 7u;
+    if (!drop_page || !(fm1_in.buttons & drop_button) || held_track != song.sel + 1u)
+        drop_hold = 0;
+    else
+        drop_hold = dropout_controls(song.sel);
+    if (drop_page && (pressed & drop_button)) {
+        if (fm1_in.buttons & drop_button)
+            drop_hold = dropout_controls(song.sel);
+        pressed &= ~drop_button;
+    }
     midi_take();                                        /* (MIDI IN notes: lights, SCREEN WAKE, AUTO SELECT's) */
     midi_pc_poll();                                     /* MIDI Program Change (before fm6_poll: a bank voice) */
     fm6_poll();                                         /* FM6: PTCH turned -> its patch */
