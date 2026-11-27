@@ -175,6 +175,13 @@ static void ui_power_on(void)
     chain_defaults(&chain_config);
     memset(&ui, 0, sizeof ui);
     memset(&sp, 0, sizeof sp);                    /* simulated power-on: no slice cursor from an earlier soak */
+    drop_base = drop_hold = drop_monitor = 0;
+    memset(&drop, 0, sizeof drop);
+    drop.rng = 0x83a14297u;
+    for (i = 0; i < NTRK; i++) {
+        drop_controls[i][0] = drop_controls[i][2] = 0;
+        drop_controls[i][1] = 127;
+    }
     for (i=0; i<NTRK; i++) dance_reset(i);
     dance_style=0; dance_snapshot=0;
     page_over = 0;                                /* (no layer's knobs; roll_settle's test page gone) */
