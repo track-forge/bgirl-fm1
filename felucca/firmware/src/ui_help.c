@@ -29,7 +29,7 @@ static const struct { const char *title, *hint; } HELP_PAGE[] = {
     {"VOCODER", "[K1]CARRIER[FX]INPUT"},
     {"VOC INPUT", "[K1]FREEZE[FX]COLOR"},
     {"VOC COLOR", "[K1-4]COLOR[FX]TIME"},
-    {"VOC TIME", "[K1]RANGE[K2]REL MS[FX]MR DROPOUT"},
+    {"VOC TIME", "[K1]RANGE[FX]MR DROPOUT"},
     {"DLY", "[K1-4]ALL TRACKS[FX]REVERB"},
     {"REVERB", "[K1]ROOM SPRING HALL[FX]CHORUS"},
     {"CHORUS", "[K1-4]ALL TRACKS[FX]FX"},
