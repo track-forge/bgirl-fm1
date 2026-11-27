@@ -896,6 +896,7 @@ static void seq_start(void)
 {
     uint32_t i;
     crew_phase=0;
+    drop_start=1;
     midi_grid_reset();
     motion_begin();
     chain_start();
@@ -1419,6 +1420,9 @@ static void events_block(uint32_t n)
     }
     pr = panic_req;
     panic_req = 0;
+    if (drop.owner && (pr & (1u << (drop.owner - 1u)))) {
+        drop.valid = drop.fill = drop.left = drop.gain = 0;
+    }
     if (midi_in_overflow) {                            /* a lost note-off must never leave a held note */
         mi_r = mi_w;
         memset(midi_sel_on, 0, sizeof midi_sel_on);

@@ -840,6 +840,7 @@ static __attribute__((noinline)) void mix_spread(track_t *t, int32_t *b, uint32_
     if (t->p[P_ITYPE] | t->ins_run)
         track_insert(t, b, n);                          /* (the mono sum, as DIST) */
     slicer_track_sd(t, b, d, n);
+    dropout_track(t, b, d, n);
     if ((pf.mute >> (t - trk)) & 1u)
         perf_mute_sd((uint32_t)(t - trk), b, d, n);
     for (i = 0; i < n; i++) {
@@ -934,6 +935,7 @@ static void mix_finish(track_t *t, int32_t *b, uint32_t n SM_DECL)
     if ((int)(t-trk)==bg_bus.owner) {
         if(t->p[P_ITYPE] | t->ins_run) track_insert(t,b,n);
         slicer_track(t,b,n);
+        dropout_track(t, b, 0, n);
         if ((pf.mute >> (t-trk)) & 1u) perf_mute((uint32_t)(t-trk),b,n);
         if(t->p[P_MUTE]) for(i=0;i<n;i++) b[i]=0;
     }
@@ -998,6 +1000,7 @@ static void mix_part(track_t *t, uint32_t n SM_DECL)
              (int)(t-trk)!=bg_bus.owner &&
 #endif
              (!t->tail || !(t->p[P_DIST] | t->p[P_ITYPE]) || !--t->tail) && !slicer_busy(t)) {
+        dropout_track(t, 0, 0, n);
         slicer_track(t, 0, n);                          /* (the SLICER's step clock runs on) */
         if (t->ins_run && !t->p[P_ITYPE])
             ins_rest(t);                                /* TYPE OFF while silent: no fade-out left for the next note */
@@ -1018,7 +1021,8 @@ static void mix_part(track_t *t, uint32_t n SM_DECL)
 #endif
         if (t->p[P_ITYPE] | t->ins_run)
             track_insert(t, b, n);                      /* the INSERT (1.5): off, nothing */
-        slicer_track(t, b, n);                          /* slicer.c: before the level, pan and sends */
+        slicer_track(t, b, n);
+        dropout_track(t, b, 0, n);                          /* slicer.c: before the level, pan and sends */
 #if BGIRL_VOCODER
         if((int)(t-trk)==bg_bus.carrier) {
             for(i=0;i<n;i++) bg_bus.car[i]=(t->p[P_MUTE] || ((pf.mute>>(t-trk))&1u)) ? 0 : b[i];
@@ -1132,6 +1136,7 @@ static void mix_block(int32_t *out, uint32_t n)
         send_c[i] = send_d[i] = send_r[i] = mix_l[i] = mix_r[i] = 0;
     drum_closed_block = 0;
     events_block(n);
+    dropout_begin();
 #if BGIRL_VOCODER
 #ifdef BGIRL_VOCODER_BENCH
     uint32_t voc_start = fm1_ticks();

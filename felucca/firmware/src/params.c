@@ -515,16 +515,35 @@ static void param_format(const param_desc_t *d, int32_t v, char *val, const char
 /* ------------------------------------------------------------ pages --- */
 enum { FAM_HOME, FAM_ENV, FAM_LFO, FAM_FX, FAM_SCL, FAM_EDIT, FAM_GLO, FAM_SAVE, FAM_ARP, FAM_SEQ, FAM_TRK,
        FAM_COUNT };
-enum { SC_TRACK, SC_GLOBAL, SC_ENGINE, SC_STEP, SC_TRK };   /* SC_TRK: the TRACKS page (ui_input.c tracks_edit) */
+enum { SC_TRACK, SC_GLOBAL, SC_ENGINE, SC_STEP, SC_TRK, SC_DROP };   /* SC_TRK: the TRACKS page (ui_input.c tracks_edit) */
 enum { GR_NONE, GR_ADSR, GR_LFO, GR_STEPS, GR_ARP, GR_SCALE, GR_FX, GR_ROLL, GR_BROWSE, GR_SLOTS, GR_USER, GR_TRK,
        GR_SLCR, GR_MOD, GR_PATS, GR_SONG, GR_TOOLS, GR_CHORD, GR_SLICES, GR_EVENTS,
-       GR_FMOP, GR_FMOP2, GR_FMENV, GR_INS, GR_DANCE };   /* (GR_STEPS: SEQ TOOLS' knobs; GR_FMOP..: FM6's operator pages, ui_fm6op.c) */
+       GR_FMOP, GR_FMOP2, GR_FMENV, GR_INS, GR_DANCE, GR_DROP };   /* (GR_STEPS: SEQ TOOLS' knobs; GR_FMOP..: FM6's operator pages, ui_fm6op.c) */
 
 typedef struct {
     const char *title;
     uint8_t fam, scope, graph;
     uint8_t id[4];               /* param ids; 0xFF = empty slot */
 } page_t;
+
+/* Session-local performance settings: no new project or preset wire IDs. */
+static volatile uint32_t drop_base, drop_hold, drop_monitor;
+static int16_t drop_controls[NTRK][3] = {
+    {0,127,0}, {0,127,0}, {0,127,0}, {0,127,0}, {0,127,0}, {0,127,0}
+};
+static const char *const DROP_SYNC[] = {"FREE", "1/16"};
+static const param_desc_t DROP_PARAM[] = {
+    PD("LOSS", F_PCT, 0, 127, 0),
+    PD("MIX", F_PCT, 0, 127, 127),
+    PE("SYNC", DROP_SYNC, 0),
+};
+
+static uint32_t dropout_controls(unsigned track)
+{
+    const int16_t *p = drop_controls[track];
+    return (track + 1u) | ((uint32_t)p[0] << 3) |
+           ((uint32_t)p[1] << 10) | ((uint32_t)p[2] << 17);
+}
 
 static const page_t PAGES[] = {
     {"ENV", FAM_ENV, SC_TRACK, GR_ADSR, {P_ATK, P_DEC, P_SUS, P_REL}},
@@ -539,6 +558,7 @@ static const page_t PAGES[] = {
     {"VOC INPUT", FAM_FX, SC_TRACK, GR_NONE, {P_VHOLD, P_VMTRIM, P_VCTRIM, P_VCONS}},
     {"VOC COLOR", FAM_FX, SC_TRACK, GR_NONE, {P_VLOW, P_VMID, P_VHIGH, P_VREL}},
     {"VOC TIME", FAM_FX, SC_TRACK, GR_NONE, {P_VRANGE, P_VREL, P_VCONS, P_VWET}},
+    {"MR DROPOUT", FAM_FX, SC_DROP, GR_DROP, {0, 1, 2, 0xFF}},
     {"SLICER", FAM_FX, SC_TRACK, GR_SLCR, {P_SLCR, P_SLPAT, P_SLRATE, P_SLDEPTH}},
     {"INSERT", FAM_FX, SC_TRACK, GR_INS, {P_ITYPE, P_IA, P_IB, P_IC}},   /* 1.5: the track's INSERT (fx.c) */
     {"INSERT 2", FAM_FX, SC_TRACK, GR_INS, {P_IMIX, 0xFF, 0xFF, 0xFF}},  /* .. its dry / wet */
@@ -601,6 +621,10 @@ static const param_desc_t *page_desc(const page_t *pg, uint32_t slot, int16_t **
     if (id == 0xFFu) {
         *valp = 0;
         return 0;
+    }
+    if (pg->scope == SC_DROP) {
+        *valp = &drop_controls[song.sel][id];
+        return &DROP_PARAM[id];
     }
     if (pg->scope == SC_STEP || pg->scope == SC_TRK) {
         *valp = 0;
